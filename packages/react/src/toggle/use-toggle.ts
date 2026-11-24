@@ -23,7 +23,7 @@ export interface UseToggleOptions extends Omit<UseButtonOptions, 'type' | 'busy'
 /** Spread on a `<button>`. */
 export interface TogglePartProps extends Omit<ButtonPartProps, 'className'> {
   /**
-   * The part's classes, for `@kvirn-ui/theme` and your own CSS: `.kv-button` and `.kv-toggle`.
+   * The part's classes, for `@kvirn/theme` and your own CSS: `.kv-button` and `.kv-toggle`.
    * Add classes of your own next to them with `mergeProps`: class names join.
    */
   className: 'kv-button kv-toggle'

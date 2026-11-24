@@ -1,7 +1,7 @@
 'use client'
 
-import { Link, Navigation } from '@kvirn-ui/react'
-import type { LinkProps } from '@kvirn-ui/react'
+import { Link, Navigation } from '@kvirn/ui'
+import type { LinkProps } from '@kvirn/ui'
 import type { ComponentPropsWithRef, ElementType, ReactElement } from 'react'
 
 export interface LanguageLinksRootProps extends Omit<

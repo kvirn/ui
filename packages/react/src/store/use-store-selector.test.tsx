@@ -1,4 +1,4 @@
-import { createComponentStore } from '@kvirn-ui/core'
+import { createComponentStore } from '@kvirn/core'
 import { Profiler } from 'react'
 import { expect, test } from 'vite-plus/test'
 import { page, userEvent } from 'vite-plus/test/browser'

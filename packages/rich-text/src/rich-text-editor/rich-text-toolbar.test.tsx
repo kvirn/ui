@@ -1,8 +1,8 @@
 // kv-lang-ok-file: the tests run on the Swedish catalog and assert its built-in strings
-import { Field, KvirnProvider } from '@kvirn-ui/react'
-import { sv } from '@kvirn-ui/i18n/sv'
-import { expectNoA11yViolations } from '@kvirn-ui/testing'
-import { readAloud, readAnnouncements } from '@kvirn-ui/testing/read-aloud'
+import { Field, KvirnProvider } from '@kvirn/ui'
+import { sv } from '@kvirn/i18n/sv'
+import { expectNoA11yViolations } from '@kvirn/testing'
+import { readAloud, readAnnouncements } from '@kvirn/testing/read-aloud'
 import { Mark } from '@tiptap/core'
 import type { ReactNode } from 'react'
 import { afterEach, beforeEach, describe, expect, test, vi } from 'vite-plus/test'

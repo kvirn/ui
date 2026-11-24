@@ -1,6 +1,6 @@
 import { afterEach, describe, expect, test, vi } from 'vite-plus/test'
 import { kvirnBaseMap, kvirnGeocoder, type KvirnGeocoderOptions } from './kvirn.ts'
-import type { MapTheme } from '@kvirn-ui/core'
+import type { MapTheme } from '@kvirn/core'
 
 // Contract: the provider contract in address-search.md and plan 0147. `fetch` is stubbed:
 // nothing leaves the process.

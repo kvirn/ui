@@ -82,7 +82,7 @@ None. The name is the consumer's `label` or `aria-labelledby`, in the consumer's
 
 ## Visual / modes
 
-Headless: Navigation ships no CSS. With `@kvirn-ui/theme/theme.css`:
+Headless: Navigation ships no CSS. With `@kvirn/theme/theme.css`:
 
 - Focus indicator: the link's focus ring, at least 2 pixels thick with 3:1 contrast, outside the item (2.4.7 Focus Visible, AA; 2.4.13 Focus Appearance, AAA). Around the solid fill the offset band is what tells the ring from the fill. A story asserts the ring on the current page.
 - Target size: every item is at least 24 by 24 CSS pixels, in a list and in a bar, also in compact density, which helps touch and tremor users (2.5.8 Target Size (Minimum), AA). Stories assert that threshold for a list, a bar and compact density.

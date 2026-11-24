@@ -1,4 +1,4 @@
-import { Button, Field, OneTimeCode } from '@kvirn-ui/react'
+import { Button, Field, OneTimeCode } from '@kvirn/ui'
 import contract from '../../../../../packages/react/src/one-time-code/one-time-code.a11y.md?raw'
 import guide from '../../../../../packages/react/src/one-time-code/one-time-code.md?raw'
 import type { Meta, StoryObj } from '@storybook/react-vite'

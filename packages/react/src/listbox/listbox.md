@@ -10,7 +10,7 @@ Use a [Combobox](../combobox/combobox.md) when the user should type to filter a 
 ## The popup
 
 ```tsx
-import { Field, Listbox } from '@kvirn-ui/react'
+import { Field, Listbox } from '@kvirn/ui'
 
 interface Municipality {
   code: string
@@ -76,7 +76,7 @@ interface Municipality {
 - **`Listbox.Empty`**: shown only while the popup is open and there are no options, as plain text beside the (then hidden) list, not an option. Default text: "No results" in the locale.
 - **`useListbox(options)`** returns `triggerProps`, `valueProps`, `popupProps`, `listProps`, `emptyProps`, `getOptionProps(entry)`, `getGroupProps(section)`, `getGroupLabelProps(section)`, `hiddenInputs`, `entries`, `sections`, `selectedItems`, `isOpen`, `isNative` and the Field's `isInvalid`, `isRequired`, `isDisabled`, for your own markup.
 
-Every part renders exactly one element and takes your own `className`, `ref` and handlers (merged with its own), and has a stable class: `kv-listbox-trigger`, `kv-listbox-value`, `kv-listbox-popup`, `kv-listbox-list`, `kv-listbox-option`, `kv-listbox-group`, `kv-listbox-group-label` and `kv-listbox-empty`. State is in `data-open`, `data-active`, `data-selected`, `data-disabled`, `data-placeholder` and `data-placement`. With `@kvirn-ui/theme/theme.css` imported, the trigger looks like an Input with a chevron and the popup has level 3 elevation; headless, it is unstyled.
+Every part renders exactly one element and takes your own `className`, `ref` and handlers (merged with its own), and has a stable class: `kv-listbox-trigger`, `kv-listbox-value`, `kv-listbox-popup`, `kv-listbox-list`, `kv-listbox-option`, `kv-listbox-group`, `kv-listbox-group-label` and `kv-listbox-empty`. State is in `data-open`, `data-active`, `data-selected`, `data-disabled`, `data-placeholder` and `data-placement`. With `@kvirn/theme/theme.css` imported, the trigger looks like an Input with a chevron and the popup has level 3 elevation; headless, it is unstyled.
 
 ### Keys
 

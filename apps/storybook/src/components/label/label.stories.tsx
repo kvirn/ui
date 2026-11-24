@@ -1,4 +1,4 @@
-import { Field, TextInput } from '@kvirn-ui/react'
+import { Field, TextInput } from '@kvirn/ui'
 import contract from '../../../../../packages/react/src/field/field.a11y.md?raw'
 import guide from '../../../../../packages/react/src/field/field-label.md?raw'
 import type { Meta, StoryObj } from '@storybook/react-vite'

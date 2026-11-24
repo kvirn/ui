@@ -18,7 +18,7 @@ The browser puts the menu in the **top layer**, so no ancestor's `overflow` clip
 ## API
 
 ```tsx
-import { Menu } from '@kvirn-ui/react'
+import { Menu } from '@kvirn/ui'
 
 ;<Menu.Root onOpenChange={(open, { reason }) => {}}>
   <Menu.Trigger>Actions</Menu.Trigger>
@@ -60,7 +60,7 @@ import { Menu } from '@kvirn-ui/react'
 ## Hook
 
 ```tsx
-import { useMenu } from '@kvirn-ui/react'
+import { useMenu } from '@kvirn/ui'
 
 function Actions() {
   const menu = useMenu()

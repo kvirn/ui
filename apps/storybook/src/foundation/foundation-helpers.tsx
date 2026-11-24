@@ -1,12 +1,12 @@
-import { contrastRatio, readRootProperties, themeEnvironment } from '@kvirn-ui/theme'
-import type { ThemeEnvironment, ThemeName } from '@kvirn-ui/theme'
-import themeCss from '@kvirn-ui/theme/theme.css?raw'
+import { contrastRatio, readRootProperties, themeEnvironment } from '@kvirn/theme'
+import type { ThemeEnvironment, ThemeName } from '@kvirn/theme'
+import themeCss from '@kvirn/theme/theme.css?raw'
 import { useEffect, useId, useLayoutEffect, useRef, useState } from 'react'
 import type { ReactNode, RefObject } from 'react'
 import { expect, waitFor } from 'storybook/test'
 
 // Shared by the Foundation pages (docs/design/foundations-and-prose.md §6.6). Storybook
-// tooling only: @kvirn-ui/theme stays React-free. Values are read live from the story's own
+// tooling only: @kvirn/theme stays React-free. Values are read live from the story's own
 // element, not from :root, so a scoped override shows up. Maintainer pages are in English.
 
 export const themeLabels: Record<ThemeName, string> = {

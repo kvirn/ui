@@ -1,8 +1,8 @@
 // kv-lang-ok-file: per-locale story texts: the toolbar locale selects the sv, fi, nb, nn or en table
-import { en } from '@kvirn-ui/i18n/en'
-import { nb } from '@kvirn-ui/i18n/nb'
-import { nn } from '@kvirn-ui/i18n/nn'
-import { sv } from '@kvirn-ui/i18n/sv'
+import { en } from '@kvirn/i18n/en'
+import { nb } from '@kvirn/i18n/nb'
+import { nn } from '@kvirn/i18n/nn'
+import { sv } from '@kvirn/i18n/sv'
 import {
   Button,
   checks,
@@ -12,8 +12,8 @@ import {
   mergeProps,
   TextInput,
   useMask,
-} from '@kvirn-ui/react'
-import type { TextInputChangeDetails } from '@kvirn-ui/react'
+} from '@kvirn/ui'
+import type { TextInputChangeDetails } from '@kvirn/ui'
 import type { FormLocale } from '../form/form.fixture.tsx'
 import type { Decorator } from '@storybook/react-vite'
 import { useState } from 'react'

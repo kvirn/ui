@@ -1,6 +1,6 @@
-import { createCombobox } from '@kvirn-ui/core'
-import type { Combobox, Env, ListboxEntry, ListboxGroup, ListboxSection } from '@kvirn-ui/core'
-import type { KvirnMessages } from '@kvirn-ui/i18n'
+import { createCombobox } from '@kvirn/core'
+import type { Combobox, Env, ListboxEntry, ListboxGroup, ListboxSection } from '@kvirn/core'
+import type { KvirnMessages } from '@kvirn/i18n'
 import {
   useContext,
   useEffect,
@@ -154,7 +154,7 @@ export type UseListboxOptions<TItem> =
 
 /** Spread on the trigger: a `<div role="combobox" tabindex="0">`, as in the APG select-only example. */
 export interface ListboxTriggerPartProps extends FieldStateAttributes {
-  /** The part's class, for `@kvirn-ui/theme` and your own CSS: `.kv-listbox-trigger`. */
+  /** The part's class, for `@kvirn/theme` and your own CSS: `.kv-listbox-trigger`. */
   className: 'kv-listbox-trigger'
   id: string
   role: 'combobox'

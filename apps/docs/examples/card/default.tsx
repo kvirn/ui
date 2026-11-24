@@ -1,5 +1,5 @@
 'use client'
-import { Card, Heading } from '@kvirn-ui/react'
+import { Card, Heading } from '@kvirn/ui'
 import { useCardTexts } from './texts.ts'
 
 export function DefaultCard() {

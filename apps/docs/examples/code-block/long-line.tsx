@@ -1,5 +1,5 @@
 'use client'
-import { CodeBlock } from '@kvirn-ui/react'
+import { CodeBlock } from '@kvirn/ui'
 import { useCodeBlockTexts } from './texts.ts'
 
 export function LongLine() {

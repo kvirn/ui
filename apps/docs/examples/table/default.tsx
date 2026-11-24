@@ -1,5 +1,5 @@
 'use client'
-import { Table, useFormat } from '@kvirn-ui/react'
+import { Table, useFormat } from '@kvirn/ui'
 import { useId } from 'react'
 import { useTableTexts } from './texts.ts'
 

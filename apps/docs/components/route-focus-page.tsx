@@ -1,4 +1,4 @@
-import { Link } from '@kvirn-ui/react'
+import { Link } from '@kvirn/ui'
 import { ApiBlock } from './api-block.tsx'
 import { apiHookPart } from './api-ids.ts'
 import { CodeBlock } from './code-block.tsx'
@@ -23,7 +23,7 @@ export type RouteFocusExampleSources = Record<
 >
 
 const nextRecipe = `'use client'
-import { useRouteFocus } from '@kvirn-ui/react'
+import { useRouteFocus } from '@kvirn/ui'
 import { usePathname, useSearchParams } from 'next/navigation'
 import { useRef } from 'react'
 
@@ -164,7 +164,7 @@ export function RouteFocusPage({
       contractSections={contractSectionList(contract)}
       api={
         <ApiBlock
-          importLine="import { useRouteFocus } from '@kvirn-ui/react'"
+          importLine="import { useRouteFocus } from '@kvirn/ui'"
           parts={[]}
           hook={{
             name: 'useRouteFocus',

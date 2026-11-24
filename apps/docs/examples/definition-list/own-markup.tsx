@@ -1,5 +1,5 @@
 'use client'
-import { useDefinitionList } from '@kvirn-ui/react'
+import { useDefinitionList } from '@kvirn/ui'
 import { useId } from 'react'
 import { useDefinitionListTexts } from './texts.ts'
 

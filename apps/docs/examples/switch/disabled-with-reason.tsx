@@ -1,5 +1,5 @@
 'use client'
-import { Field, Switch } from '@kvirn-ui/react'
+import { Field, Switch } from '@kvirn/ui'
 import { useSwitchTexts } from './texts.ts'
 
 export function DisabledWithReason() {

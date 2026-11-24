@@ -112,7 +112,7 @@ function sourceFiles(directory: string): string[] {
   return found
 }
 
-/** Every package that has a `src` folder, as `@kvirn-ui/react` and `@kvirn-ui/rich-text` do. */
+/** Every package that has a `src` folder, as `@kvirn/ui` and `@kvirn/rich-text` do. */
 function packageSourceDirectories(): string[] {
   const packages = join(repositoryRoot, 'packages')
   return readdirSync(packages)

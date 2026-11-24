@@ -1,4 +1,4 @@
-import type { Announcer as AnnouncerStore } from '@kvirn-ui/core'
+import type { Announcer as AnnouncerStore } from '@kvirn/core'
 import type { CSSProperties } from 'react'
 import { useStoreSelector } from '../store/use-store-selector.ts'
 

@@ -1,5 +1,5 @@
 'use client'
-import { Button, ButtonGroup } from '@kvirn-ui/react'
+import { Button, ButtonGroup } from '@kvirn/ui'
 import { useButtonGroupTexts } from './texts.ts'
 
 export function Attached() {

@@ -1,7 +1,7 @@
 'use client'
 
-import { Button, ButtonGroup, Heading, Link, Prose, Section, mergeProps } from '@kvirn-ui/react'
-import type { ButtonGroupProps, ButtonProps, HeadingProps, LinkProps } from '@kvirn-ui/react'
+import { Button, ButtonGroup, Heading, Link, Prose, Section, mergeProps } from '@kvirn/ui'
+import type { ButtonGroupProps, ButtonProps, HeadingProps, LinkProps } from '@kvirn/ui'
 import { createContext, useContext, useEffect, useId, useMemo, useRef, useState } from 'react'
 import type {
   ComponentPropsWithRef,

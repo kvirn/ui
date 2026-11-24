@@ -20,9 +20,9 @@ import {
   StatusPages,
   Subpage,
   UnitPage,
-} from '@kvirn-ui/patterns/content-types'
-import type { ContentTypeShellProps } from '@kvirn-ui/patterns/content-types'
-import { Link } from '@kvirn-ui/react'
+} from '@kvirn/patterns/content-types'
+import type { ContentTypeShellProps } from '@kvirn/patterns/content-types'
+import { Link } from '@kvirn/ui'
 import type { Metadata } from 'next'
 import { notFound } from 'next/navigation'
 import type { ReactNode } from 'react'

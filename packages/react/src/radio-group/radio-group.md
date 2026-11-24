@@ -9,7 +9,7 @@ A RadioGroup is one question with exactly one answer: "How long do you need the 
 - **Controlled:** pass `value` (the checked radio's value, or `null` for none) and `onValueChange(value, { reason: 'input', event })`. **Uncontrolled:** pass `defaultValue` and `name`, and the browser keeps the state until a form submit reads it.
 - The browser does the keys. The group is one Tab stop, and the arrow keys move focus and check, mirrored in right-to-left. No key handler is added.
 - **A radio never gets `aria-invalid`.** ARIA doesn't support it on `radio`. An invalid group marks every radio with `data-invalid` for the theme, and the group's error reaches users through the fieldset's description.
-- Headless: no CSS. It renders `kv-radio-group` next to `kv-fieldset`, and each radio renders `kv-radio`. Your `className` joins them. With `@kvirn-ui/theme/theme.css` imported it is styled.
+- Headless: no CSS. It renders `kv-radio-group` next to `kv-fieldset`, and each radio renders `kv-radio`. Your `className` joins them. With `@kvirn/theme/theme.css` imported it is styled.
 
 ## API
 
@@ -67,7 +67,7 @@ Eight parts. Each is also exported on its own (`RadioGroupRoot`, `RadioGroupOpti
 ## Component
 
 ```tsx
-import { Field, RadioGroup } from '@kvirn-ui/react'
+import { Field, RadioGroup } from '@kvirn/ui'
 
 ;<RadioGroup.Root
   name="duration"
@@ -115,7 +115,7 @@ Your part:
 ## Hook
 
 ```tsx
-import { useFieldset, useRadioGroup } from '@kvirn-ui/react'
+import { useFieldset, useRadioGroup } from '@kvirn/ui'
 
 function Duration({
   value,

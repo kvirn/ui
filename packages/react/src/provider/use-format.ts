@@ -1,4 +1,4 @@
-import type { MessageFormatter } from '@kvirn-ui/core'
+import type { MessageFormatter } from '@kvirn/core'
 import { useContext } from 'react'
 import { KvirnConfigContext } from './provider-context.ts'
 

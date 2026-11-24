@@ -58,7 +58,7 @@ The mono family draws larger than IBM Plex Sans at the same size, so 14px mono s
 | `aliases`, `label`                        | as today                       | unchanged                                                                                                           |
 | (library) `copyButton.copied` / `.failed` | –                              | reused, no new key: "Copied" in the tooltip and touch chip; "Could not copy. Select the text and copy it yourself." |
 
-- The clipboard gets the whole line: `import { arrowBack } from '@kvirn-ui/icons'`.
+- The clipboard gets the whole line: `import { arrowBack } from '@kvirn/icons'`.
 - `meaning` is shown whole. Nothing is truncated, line-clamped or shown only on hover.
 - Optional parts render nothing when empty: no meta block without aliases or a label, and no badge without `mirrorInRtl`.
 

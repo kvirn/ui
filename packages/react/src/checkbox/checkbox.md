@@ -9,7 +9,7 @@ A Checkbox is one yes-or-no answer: a declaration, a consent, or a "select all" 
 - **Controlled:** pass `checked` and `onCheckedChange(checked, { reason: 'input', event })`. **Uncontrolled:** pass `defaultChecked` and `name`, and the browser keeps the state until a form submit reads it. `onChange` and every other native input prop, `name` and `ref` pass through.
 - **Indeterminate** is the mixed state of a "select all" box. It is a DOM property, so a screen reader hears "mixed", and the prop decides: a click checks the box, and you pass `indeterminate={false}` once the user has chosen.
 - Inside a [CheckboxGroup](../checkbox-group/checkbox-group.md) it takes its `name` and its checked state from the group, by its `value`.
-- Headless: no CSS. It renders `kv-checkbox`, and your `className` joins it. With `@kvirn-ui/theme/theme.css` imported it is styled.
+- Headless: no CSS. It renders `kv-checkbox`, and your `className` joins it. With `@kvirn/theme/theme.css` imported it is styled.
 
 ## API
 
@@ -41,7 +41,7 @@ Checkbox is a single part, `<Checkbox>`, and it renders an `<input type="checkbo
 ## Component
 
 ```tsx
-import { Checkbox, Field } from '@kvirn-ui/react'
+import { Checkbox, Field } from '@kvirn/ui'
 
 ;<Field.Root required invalid={errors.declaration !== undefined}>
   <Checkbox name="declaration" checked={declaration} onCheckedChange={setDeclaration} />
@@ -81,7 +81,7 @@ const allChecked = rows.every((row) => row.selected)
 ## Hook
 
 ```tsx
-import { useCheckbox } from '@kvirn-ui/react'
+import { useCheckbox } from '@kvirn/ui'
 
 function AllRows({ someChecked, allChecked }: { someChecked: boolean; allChecked: boolean }) {
   const checkbox = useCheckbox({ checked: allChecked, indeterminate: someChecked && !allChecked })

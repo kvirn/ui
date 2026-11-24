@@ -1,6 +1,6 @@
 'use client'
 
-import { Heading, Stack } from '@kvirn-ui/react'
+import { Heading, Stack } from '@kvirn/ui'
 import { PageFrame } from '../../page-frame/page-frame.tsx'
 import { ServiceLink } from '../../navigation-and-promotion/service-link/service-link.tsx'
 

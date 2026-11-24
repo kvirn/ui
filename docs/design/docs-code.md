@@ -221,7 +221,7 @@ None in `theme.css` or `DESIGN.md`, and variant B adds no colour pair: `text` an
 1. The example language select (now one global select in Display settings) offers Swedish and English only. Finnish and Sámi break layouts first, so adding them later is a decision for the maintainer.
 2. A `copy` icon in the built-in Icon set: now D9.
 3. Package-manager tabs (reference image 3) for install commands: out of scope; KvirnUI `Tabs` when wanted.
-4. When G7's library `CopyButton` ships, the docs swap to it and its `@kvirn-ui/i18n` keys; `docs.code.copy*` then retire.
+4. When G7's library `CopyButton` ships, the docs swap to it and its `@kvirn/i18n` keys; `docs.code.copy*` then retire.
 5. One-line blocks (image 3, "Usage"): the same tools row above the line (fewer ceremonies), or Copy inline at its end?
 
 ## 10. Handoff: text for the plan's Design section
@@ -239,7 +239,7 @@ None in `theme.css` or `DESIGN.md`, and variant B adds no colour pair: `text` an
 | `apps/docs/components/code-block.test.tsx`    | Copy in `.docs-code-tools`; header without a button, absent without a file name; region name still the file name                                                                                                                                                               |
 | `apps/docs/messages/en.ts`                    | Only `docs.code.languages` goes (D7). No new string                                                                                                                                                                                                                            |
 
-**Separate plan item, Plan 0112 (done) (library, lands first):** the `copy` built-in per icon.md §6.1 (historical: `built-in-icons.tsx` is deleted, Plan 0128; `copy` now comes from `@kvirn-ui/icons`); `icon.test.tsx` name list and its "24 icons" title → 25; `icon.a11y.md` icon-only list; `apps/docs/examples/icon/built-in-set.tsx`; the Icon stories' built-in grid and icon-only row (icon.md §6.6). The docs button uses `<Icon name="copy" />` once it lands. Not affected: `docs-disclosure.tsx`, `lib/highlight.ts`, `theme.css`.
+**Separate plan item, Plan 0112 (done) (library, lands first):** the `copy` built-in per icon.md §6.1 (historical: `built-in-icons.tsx` is deleted, Plan 0128; `copy` now comes from `@kvirn/icons`); `icon.test.tsx` name list and its "24 icons" title → 25; `icon.a11y.md` icon-only list; `apps/docs/examples/icon/built-in-set.tsx`; the Icon stories' built-in grid and icon-only row (icon.md §6.6). The docs button uses `<Icon name="copy" />` once it lands. Not affected: `docs-disclosure.tsx`, `lib/highlight.ts`, `theme.css`.
 
 ## Built (Plan 0064; decisions taken during implementation)
 

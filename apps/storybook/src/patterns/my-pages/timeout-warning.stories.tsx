@@ -1,16 +1,8 @@
-import { en } from '@kvirn-ui/i18n/en'
-import {
-  Alert,
-  AlertDialog,
-  Button,
-  Heading,
-  KvirnProvider,
-  Link,
-  useAnnouncer,
-} from '@kvirn-ui/react'
+import { en } from '@kvirn/i18n/en'
+import { Alert, AlertDialog, Button, Heading, KvirnProvider, Link, useAnnouncer } from '@kvirn/ui'
 import type { Meta, StoryObj } from '@storybook/react-vite'
 import { useEffect, useRef, useState } from 'react'
-import { readAnnouncements } from '@kvirn-ui/testing/read-aloud'
+import { readAnnouncements } from '@kvirn/testing/read-aloud'
 import { expect, userEvent, waitFor } from 'storybook/test'
 import { chromeViewports, narrowGlobals, wideGlobals } from '../patterns-story-support.tsx'
 import contract from '../../../../../packages/patterns/src/my-pages/timeout-warning/timeout-warning.a11y.md?raw'

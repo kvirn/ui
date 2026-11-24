@@ -1,5 +1,5 @@
 'use client'
-import { DateInput, Field, Fieldset, TextInput, masks } from '@kvirn-ui/react'
+import { DateInput, Field, Fieldset, TextInput, masks } from '@kvirn/ui'
 import { useDateInputTexts } from './texts.ts'
 
 export function ReadOnlyDate() {

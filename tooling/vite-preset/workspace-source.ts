@@ -6,7 +6,7 @@ const root = resolve(import.meta.dirname, '../..')
 type Condition = string | { default?: string }
 
 /**
- * Aliases `@kvirn-ui/<package>` imports to the package's TypeScript source, so Storybook and the
+ * Aliases `@kvirn/<package>` imports to the package's TypeScript source, so Storybook and the
  * tests need no build. A package's `exports` point to `dist`, exactly as an adopter gets them;
  * `./dist/x.mjs` is built from `./src/x.ts`. The docs site gets no alias: it reads the built `dist`.
  */

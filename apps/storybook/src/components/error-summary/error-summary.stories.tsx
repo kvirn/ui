@@ -1,4 +1,4 @@
-import { ErrorSummary } from '@kvirn-ui/react'
+import { ErrorSummary } from '@kvirn/ui'
 import contract from '../../../../../packages/react/src/error-summary/error-summary.a11y.md?raw'
 import guide from '../../../../../packages/react/src/error-summary/error-summary.md?raw'
 import type { Meta, StoryObj } from '@storybook/react-vite'
@@ -9,7 +9,7 @@ import { expectNoHorizontalOverflow } from '../theme-story-assertions.ts'
 import { inDocsFrame, ParkingForm, withErrorSummaryLocale } from './error-summary.fixture.tsx'
 
 // Components/ErrorSummary: the headless ErrorSummary, an Alert.Danger styled by
-// @kvirn-ui/theme/theme.css. The stories are the question page of a parking-permit application
+// @kvirn/theme/theme.css. The stories are the question page of a parking-permit application
 // after a failed submit, in Swedish. The summary takes focus when it appears, and a focus move in
 // a Docs frame scrolls the whole page. So the stories set disableAutoFocus, and the two that drive
 // focus (OnSubmit, Keyboard) run their play function in the Canvas only. The focus rows are proved

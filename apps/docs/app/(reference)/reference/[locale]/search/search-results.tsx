@@ -1,6 +1,6 @@
 'use client'
-import { getMessages } from '@kvirn-ui/react/server'
-import { PageFrame } from '@kvirn-ui/patterns'
+import { getMessages } from '@kvirn/ui/server'
+import { PageFrame } from '@kvirn/patterns'
 import {
   Breadcrumb,
   Button,
@@ -17,8 +17,8 @@ import {
   TagGroup,
   TextInput,
   useAnnouncer,
-} from '@kvirn-ui/react'
-import { sv } from '@kvirn-ui/i18n/sv'
+} from '@kvirn/ui'
+import { sv } from '@kvirn/i18n/sv'
 import { useSearchParams } from 'next/navigation'
 import { Fragment, useMemo, useState } from 'react'
 import { referenceSearchMessages } from '../../../../../messages/reference-search.ts'

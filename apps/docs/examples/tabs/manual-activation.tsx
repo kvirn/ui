@@ -1,5 +1,5 @@
 'use client'
-import { Tabs } from '@kvirn-ui/react'
+import { Tabs } from '@kvirn/ui'
 import { useTabsTexts } from './texts.ts'
 
 export function ManualActivation() {

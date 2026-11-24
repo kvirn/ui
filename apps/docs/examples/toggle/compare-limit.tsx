@@ -1,5 +1,5 @@
 'use client'
-import { Toggle, VisuallyHidden, useAnnouncer } from '@kvirn-ui/react'
+import { Toggle, VisuallyHidden, useAnnouncer } from '@kvirn/ui'
 import { useState } from 'react'
 import { useToggleTexts } from './texts.ts'
 

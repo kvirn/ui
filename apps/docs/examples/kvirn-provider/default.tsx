@@ -1,12 +1,6 @@
 'use client'
-import { sv } from '@kvirn-ui/i18n/sv'
-import {
-  DefinitionList,
-  KvirnProvider,
-  useDateSettings,
-  useFormat,
-  useLocale,
-} from '@kvirn-ui/react'
+import { sv } from '@kvirn/i18n/sv'
+import { DefinitionList, KvirnProvider, useDateSettings, useFormat, useLocale } from '@kvirn/ui'
 import { useKvirnProviderTexts } from './texts.ts'
 
 export function DefaultKvirnProvider() {

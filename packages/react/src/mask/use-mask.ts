@@ -1,6 +1,6 @@
-import { resolveMask, unknownMaskName } from '@kvirn-ui/core'
-import type { Mask, MaskAttributes, MaskInput } from '@kvirn-ui/core'
-import type { KvirnMessages } from '@kvirn-ui/i18n'
+import { resolveMask, unknownMaskName } from '@kvirn/core'
+import type { Mask, MaskAttributes, MaskInput } from '@kvirn/core'
+import type { KvirnMessages } from '@kvirn/i18n'
 import { useCallback, useContext, useEffect, useId, useMemo, useRef } from 'react'
 import type {
   ChangeEvent,

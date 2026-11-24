@@ -1,4 +1,4 @@
-import type { MaskCountry, MaskInput } from '@kvirn-ui/core'
+import type { MaskCountry, MaskInput } from '@kvirn/core'
 import { useLocale } from '../provider/use-locale.ts'
 
 export type AddressInputPart = 'line1' | 'line2' | 'postalCode' | 'city' | 'country'
@@ -21,7 +21,7 @@ export interface UseAddressInputOptions {
 /** Spread on the `<div>` that holds the parts. */
 export interface AddressInputRootPartProps {
   /**
-   * The part's class, for `@kvirn-ui/theme` and your own CSS: `.kv-address-input`. Add your own
+   * The part's class, for `@kvirn/theme` and your own CSS: `.kv-address-input`. Add your own
    * class next to it with `mergeProps`: class names join.
    */
   className: 'kv-address-input'

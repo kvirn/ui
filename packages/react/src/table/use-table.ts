@@ -1,4 +1,4 @@
-import { createListVirtualizer, createTable } from '@kvirn-ui/core'
+import { createListVirtualizer, createTable } from '@kvirn/core'
 import type {
   Cell,
   Header,
@@ -10,8 +10,8 @@ import type {
   SortDirection,
   TableFeatures,
   TanStackTable,
-} from '@kvirn-ui/core'
-import type { KvirnMessages } from '@kvirn-ui/i18n'
+} from '@kvirn/core'
+import type { KvirnMessages } from '@kvirn/i18n'
 import {
   useCallback,
   useEffect,

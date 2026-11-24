@@ -1,6 +1,6 @@
 'use client'
-import { kvirnGeocoder } from '@kvirn-ui/map/kvirn'
-import { AddressInput, Field, Fieldset } from '@kvirn-ui/react'
+import { kvirnGeocoder } from '@kvirn/map/kvirn'
+import { AddressInput, Field, Fieldset } from '@kvirn/ui'
 import { useAddressInputTexts } from './texts.ts'
 
 const geocoder = kvirnGeocoder({

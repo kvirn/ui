@@ -1,5 +1,5 @@
 'use client'
-import { Badge, DefinitionList } from '@kvirn-ui/react'
+import { Badge, DefinitionList } from '@kvirn/ui'
 import { useBadgeTexts } from './texts.ts'
 
 export function WithContext() {

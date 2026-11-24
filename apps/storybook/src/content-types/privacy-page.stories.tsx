@@ -1,5 +1,5 @@
-import { PageFrame } from '@kvirn-ui/patterns'
-import { PrivacyPage } from '@kvirn-ui/patterns/content-types'
+import { PageFrame } from '@kvirn/patterns'
+import { PrivacyPage } from '@kvirn/patterns/content-types'
 import type { Meta, StoryObj } from '@storybook/react-vite'
 import source from '../../../../packages/patterns/src/content-types/privacy-page/privacy-page.tsx?raw'
 import { expectNoHorizontalOverflow } from '../components/theme-story-assertions.ts'
@@ -7,7 +7,7 @@ import { chromeViewports, narrowGlobals, wideGlobals } from '../patterns/pattern
 import { expectPageOutline } from './page-outline.ts'
 import { withShell } from './shell.tsx'
 // Content types/Privacy page: a whole page in the site chrome (docs/design/storybook-patterns-t5.md S14).
-// The page is a component in `@kvirn-ui/patterns/content-types`; the source panel shows its module text, which an adopter copies.
+// The page is a component in `@kvirn/patterns/content-types`; the source panel shows its module text, which an adopter copies.
 
 const description = `A privacy notice at the reading width: the \`h1\`, a preamble, a contents list and \`h2\` sections. What is collected is a [Table](?path=/docs/components-content-table--docs) of purpose, legal basis and retention, the rights are a [List](?path=/docs/components-content-list--docs) and the data protection officer is a contact card. The text is an example: the section on the supervisory authority is marked \`TODO(legal-verify)\` and an adopter has its own text checked by a lawyer.
 

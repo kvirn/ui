@@ -54,7 +54,7 @@ interface IconByComponentProps {
   /** With `icon`: a registered `name` wins, else the `icon` draws. How a library component lets an app swap its icon. */
   name?: IconName
   /**
-   * A drawing from `@kvirn-ui/icons` (`icon={search}`) or a component from another icon library,
+   * A drawing from `@kvirn/icons` (`icon={search}`) or a component from another icon library,
    * or your own (`icon={Search}`). It needs no registration. Icon's `size` and `label` replace
    * the component's own, and `className` is joined with it.
    */

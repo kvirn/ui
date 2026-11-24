@@ -1,5 +1,5 @@
 'use client'
-import { Button, Field, RadioGroup, Stepper } from '@kvirn-ui/react'
+import { Button, Field, RadioGroup, Stepper } from '@kvirn/ui'
 import { useStepperTexts } from './texts.ts'
 
 export function OptionsPage() {

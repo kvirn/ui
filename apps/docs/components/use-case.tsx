@@ -1,4 +1,4 @@
-import { Heading, Link } from '@kvirn-ui/react'
+import { Heading, Link } from '@kvirn/ui'
 import type { ReactNode } from 'react'
 import { messages } from '../messages/en.ts'
 import { apiRowId } from './api-ids.ts'

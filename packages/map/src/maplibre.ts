@@ -11,7 +11,7 @@ import {
   type MapProviderEvents,
   type MapTheme,
   type MapView,
-} from '@kvirn-ui/core'
+} from '@kvirn/core'
 import { Map as MapLibreMap, setWorkerUrl, type StyleSpecification } from 'maplibre-gl'
 
 type MapLibreStyle = string | StyleSpecification

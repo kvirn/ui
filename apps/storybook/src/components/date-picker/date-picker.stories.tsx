@@ -1,4 +1,4 @@
-import { DatePicker } from '@kvirn-ui/react'
+import { DatePicker } from '@kvirn/ui'
 import contract from '../../../../../packages/react/src/date-picker/date-picker.a11y.md?raw'
 import guide from '../../../../../packages/react/src/date-picker/date-picker.md?raw'
 import type { Meta, StoryObj } from '@storybook/react-vite'

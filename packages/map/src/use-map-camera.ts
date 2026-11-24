@@ -1,16 +1,9 @@
-import { MAX_ZOOM, MIN_ZOOM, panBy, zoomBy } from '@kvirn-ui/core'
-import type {
-  MapBaseMap,
-  MapBounds,
-  MapHandle,
-  MapProvider,
-  MapTheme,
-  MapView,
-} from '@kvirn-ui/core'
-import type { MapStore } from '@kvirn-ui/core'
-import type { KvirnMessages } from '@kvirn-ui/i18n'
-import type { ResolvedMessages } from '@kvirn-ui/core'
-import { useTheme } from '@kvirn-ui/react'
+import { MAX_ZOOM, MIN_ZOOM, panBy, zoomBy } from '@kvirn/core'
+import type { MapBaseMap, MapBounds, MapHandle, MapProvider, MapTheme, MapView } from '@kvirn/core'
+import type { MapStore } from '@kvirn/core'
+import type { KvirnMessages } from '@kvirn/i18n'
+import type { ResolvedMessages } from '@kvirn/core'
+import { useTheme } from '@kvirn/ui'
 import { useEffect, useMemo, useRef, useState } from 'react'
 
 export type MapPanDirection = 'north' | 'south' | 'east' | 'west'

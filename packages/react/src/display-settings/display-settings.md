@@ -12,13 +12,13 @@ The component has no notes of its own. Pass what you want to say after the group
 - **Choosing is the feedback.** The checked radio is the only feedback: nothing is announced and focus stays.
 - **Opening never moves focus.** The popups follow their button in the Tab order.
 - **The choices are kept by `KvirnProvider`** in this browser only. Nothing is sent anywhere.
-- **Strings:** the `displaySettings` messages of `@kvirn-ui/i18n`, in all five locales. Override them in the provider, or per instance with `messages`.
+- **Strings:** the `displaySettings` messages of `@kvirn/i18n`, in all five locales. Override them in the provider, or per instance with `messages`.
 - Headless: no CSS. The parts render `kv-display-settings-*` classes; the default theme styles them.
 
 ## API
 
 ```tsx
-import { DisplaySettings } from '@kvirn-ui/react'
+import { DisplaySettings } from '@kvirn/ui'
 
 ;<DisplaySettings.Inline />
 ;<DisplaySettings.Floating />

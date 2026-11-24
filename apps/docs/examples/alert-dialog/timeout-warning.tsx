@@ -1,5 +1,5 @@
 'use client'
-import { AlertDialog, useFormat } from '@kvirn-ui/react'
+import { AlertDialog, useFormat } from '@kvirn/ui'
 import { useEffect, useRef, useState } from 'react'
 import { useAlertDialogTexts } from './texts.ts'
 

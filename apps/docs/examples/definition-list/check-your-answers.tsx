@@ -1,5 +1,5 @@
 'use client'
-import { Heading, DefinitionList } from '@kvirn-ui/react'
+import { Heading, DefinitionList } from '@kvirn/ui'
 import { useDefinitionListTexts } from './texts.ts'
 
 export function CheckYourAnswers() {

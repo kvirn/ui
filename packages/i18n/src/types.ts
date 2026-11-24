@@ -315,7 +315,7 @@ export interface KvirnMessages {
     rowDetailsNumber: MessageFunction<{ index: number }>
   }
   /**
-   * Every visible, named and announced string of the rich text editor (`@kvirn-ui/rich-text`,
+   * Every visible, named and announced string of the rich text editor (`@kvirn/rich-text`,
    * Plan 0036, design spec `docs/design/rich-text-editor.md` §4.3). Control names are the same in
    * both label modes: an icon-only button's `aria-label` and its tooltip, or its visible text.
    * Announced sentences end with their full stop. Key names in shortcuts are not translated.
@@ -753,7 +753,7 @@ export interface KvirnMessages {
     title: TextMessage
   }
   /**
-   * The map (`@kvirn-ui/map`, plan 0117, design spec `docs/design/map.md` §4). Announced sentences
+   * The map (`@kvirn/map`, plan 0117, design spec `docs/design/map.md` §4). Announced sentences
    * end with their full stop. The map's own name, layer names and place data are the consumer's.
    */
   map: {

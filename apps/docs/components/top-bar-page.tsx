@@ -1,4 +1,4 @@
-import { LinkRoot } from '@kvirn-ui/react'
+import { LinkRoot } from '@kvirn/ui'
 import { apiHookPart } from './api-ids.ts'
 import { ApiBlock } from './api-block.tsx'
 import type { ApiPart } from './api-block.tsx'
@@ -153,7 +153,7 @@ export function TopBarPage({
       contractSections={contractSectionList(contract)}
       api={
         <ApiBlock
-          importLine="import { TopBar, useTopBar } from '@kvirn-ui/react'"
+          importLine="import { TopBar, useTopBar } from '@kvirn/ui'"
           parts={parts}
           hook={useTopBarHook}
         />

@@ -76,7 +76,7 @@ CardFooter.displayName = 'Card.Footer'
 /**
  * A plain container for one thing on the page: a service, a news item, a case (contract: card.a11y.md). It is always `surface-raised`. A region of the page, such as a
  * sidebar, is a `Section`. Every part is one `<div>` with no role, ARIA, text or
- * behaviour. Only `Card.Root` takes `as`. With `@kvirn-ui/theme`, add modifier classes:
+ * behaviour. Only `Card.Root` takes `as`. With `@kvirn/theme`, add modifier classes:
  * `kv-card--radius-md`, `kv-card--padding-sm`, `kv-card-header--padding-none`,
  * `kv-card--dividers` and so on.
  *

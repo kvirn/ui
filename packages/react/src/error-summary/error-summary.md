@@ -12,7 +12,7 @@ The problems of a failed submit, at the top of the form, each a link to its fiel
 ## Component
 
 ```tsx
-import { ErrorSummary, Field, TextInput } from '@kvirn-ui/react'
+import { ErrorSummary, Field, TextInput } from '@kvirn/ui'
 
 ;<main>
   {errors.length > 0 && (
@@ -57,7 +57,7 @@ Your part:
 ## Hook
 
 ```tsx
-import { useErrorSummary } from '@kvirn-ui/react'
+import { useErrorSummary } from '@kvirn/ui'
 
 function Problems({ errors, submitCount }) {
   const errorSummary = useErrorSummary({ focusKey: submitCount })

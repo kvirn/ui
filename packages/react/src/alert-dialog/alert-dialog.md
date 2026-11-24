@@ -10,7 +10,7 @@ An AlertDialog is a Dialog for a message that needs an answer: a confirm-before-
 - Classes: the parts carry the shared `kv-dialog*` classes (the theme styles those) and their own `kv-alert-dialog*` classes as hooks.
 
 ```tsx
-import { AlertDialog } from '@kvirn-ui/react'
+import { AlertDialog } from '@kvirn/ui'
 
 ;<AlertDialog.Root open={isOpen} onOpenChange={setIsOpen} initialFocusRef={keepRef}>
   <AlertDialog.Popup>

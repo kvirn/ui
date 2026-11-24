@@ -1,4 +1,4 @@
-import { Field, Slider } from '@kvirn-ui/react'
+import { Field, Slider } from '@kvirn/ui'
 import contract from '../../../../../packages/react/src/slider/slider.a11y.md?raw'
 import guide from '../../../../../packages/react/src/slider/slider.md?raw'
 import type { Meta, StoryObj } from '@storybook/react-vite'
@@ -8,7 +8,7 @@ import { localeOf, withFormLocale } from '../form/form.fixture.tsx'
 import { expectMinimumTargetSize, expectNoHorizontalOverflow } from '../theme-story-assertions.ts'
 import { DistanceWithNumberInput, KeyboardSliders, sliderTextsFor } from './slider.fixture.tsx'
 
-// Components/Form/Slider: the native <input type="range">, styled by @kvirn-ui/theme/theme.css
+// Components/Form/Slider: the native <input type="range">, styled by @kvirn/theme/theme.css
 // (design spec docs/design/slider.md). It sits in a Field after the label. Use it for an
 // approximate value; an exact one is a NumberInput, and a slider beside a NumberInput (With
 // NumberInput) gives a resident both.

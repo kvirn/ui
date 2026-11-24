@@ -1,5 +1,5 @@
 'use client'
-import { Field, RadioGroup, useTheme } from '@kvirn-ui/react'
+import { Field, RadioGroup, useTheme } from '@kvirn/ui'
 import { useKvirnProviderTexts } from './texts.ts'
 
 const colorSchemes = ['system', 'light', 'dark'] as const

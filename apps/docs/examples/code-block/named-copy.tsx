@@ -1,5 +1,5 @@
 'use client'
-import { CodeBlock } from '@kvirn-ui/react'
+import { CodeBlock } from '@kvirn/ui'
 import { useCodeBlockTexts } from './texts.ts'
 
 export function NamedCopy() {
@@ -7,7 +7,7 @@ export function NamedCopy() {
   return (
     <CodeBlock.Root>
       <CodeBlock.Label>{texts.installLabel}</CodeBlock.Label>
-      <CodeBlock.Code>pnpm add @kvirn-ui/react @kvirn-ui/theme</CodeBlock.Code>
+      <CodeBlock.Code>pnpm add @kvirn/ui @kvirn/theme</CodeBlock.Code>
       <CodeBlock.Copy>{texts.copyCommand}</CodeBlock.Copy>
     </CodeBlock.Root>
   )

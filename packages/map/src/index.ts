@@ -127,4 +127,4 @@ export type {
   MapProviderEvents,
   MapSize,
   MapView,
-} from '@kvirn-ui/core'
+} from '@kvirn/core'

@@ -1,4 +1,4 @@
-import type { Announcer, AnnounceOptions } from '@kvirn-ui/core'
+import type { Announcer, AnnounceOptions } from '@kvirn/core'
 import { useContext, useMemo } from 'react'
 import { warnOnce } from '../dev/dev-warning.ts'
 import { AnnouncerContext } from './announcer-context.ts'

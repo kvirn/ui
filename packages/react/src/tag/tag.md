@@ -10,12 +10,12 @@ A short fact in words, such as an applied filter: `Year: 2025`. It is either sta
 - `Tag.Remove` must be inside a `TagGroup.Root`. A group needs a `TagGroup.Label` or a `focusFallback`, and a `focusFallback` must return a focusable element, or the label is used. A removal the consumer refuses moves nothing and says nothing.
 - A removal is announced (`tag.removed`, polite). Set `announceRemoval={false}` when you say one combined message, because the live region keeps only the last.
 - A locked value is a static tag, never a disabled button. A selectable filter is a Checkbox, not a tag. Badge stays a static status and is never put in a tag group.
-- Headless: no CSS. With `@kvirn-ui/theme/theme.css` imported, `kv-tag` and `kv-tag-remove` draw the chip, 44px high (32px in `kv-compact`), with a cross drawn in borders that forced colours keep.
+- Headless: no CSS. With `@kvirn/theme/theme.css` imported, `kv-tag` and `kv-tag-remove` draw the chip, 44px high (32px in `kv-compact`), with a cross drawn in borders that forced colours keep.
 
 ## Component
 
 ```tsx
-import { Tag, TagGroup } from '@kvirn-ui/react'
+import { Tag, TagGroup } from '@kvirn/ui'
 
 ;<TagGroup.Root>
   <TagGroup.Label>Selected filters</TagGroup.Label>
@@ -34,7 +34,7 @@ import { Tag, TagGroup } from '@kvirn-ui/react'
 ## Hook
 
 ```tsx
-import { useTagGroup } from '@kvirn-ui/react'
+import { useTagGroup } from '@kvirn/ui'
 
 const group = useTagGroup({ announceRemoval: false })
 <span id={group.labelId} ref={group.labelRef}>Selected filters</span>

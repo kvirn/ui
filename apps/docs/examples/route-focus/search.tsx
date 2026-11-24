@@ -1,5 +1,5 @@
 'use client'
-import { Field, Heading, TextInput, useRouteFocus } from '@kvirn-ui/react'
+import { Field, Heading, TextInput, useRouteFocus } from '@kvirn/ui'
 import { useRef, useState } from 'react'
 import { useRouteFocusTexts } from './texts.ts'
 

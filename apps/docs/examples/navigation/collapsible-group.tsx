@@ -1,5 +1,5 @@
 'use client'
-import { Button, Link, Navigation } from '@kvirn-ui/react'
+import { Button, Link, Navigation } from '@kvirn/ui'
 import { useId, useState } from 'react'
 import { useNavigationTexts } from './texts.ts'
 

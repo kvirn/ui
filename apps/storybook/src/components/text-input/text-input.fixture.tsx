@@ -1,5 +1,5 @@
-import { Button, Field, masks, TextInput } from '@kvirn-ui/react'
-import type { TextInputChangeDetails } from '@kvirn-ui/react'
+import { Button, Field, masks, TextInput } from '@kvirn/ui'
+import type { TextInputChangeDetails } from '@kvirn/ui'
 import { useState } from 'react'
 import { dateTextsFor } from '../date-input/date-input.fixture.tsx'
 import { textsFor } from '../form/form.fixture.tsx'

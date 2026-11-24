@@ -1,6 +1,6 @@
 // kv-lang-ok-file: sv and en fixture text pairs, picked by the locale toolbar
-import { Button, FocusScope, Stack, useFocus } from '@kvirn-ui/react'
-import type { UseFocusOptions } from '@kvirn-ui/react'
+import { Button, FocusScope, Stack, useFocus } from '@kvirn/ui'
+import type { UseFocusOptions } from '@kvirn/ui'
 import { useRef, useState } from 'react'
 import type { ReactNode } from 'react'
 import type { FormLocale } from '../form/form.fixture.tsx'

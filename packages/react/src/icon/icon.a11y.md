@@ -19,7 +19,7 @@ An icon is decorative by default: text next to it already says what it means, so
 
 `useIcon` gives the same `iconProps`, and the component for a name, for your own `<svg>`.
 
-### SvgIcon (`@kvirn-ui/icons/react`)
+### SvgIcon (`@kvirn/icons/react`)
 
 The standalone component for apps without KvirnUI. It has no hooks or context and takes `icon` (icon data), `size` and `title`, plus SVG props. Its roles:
 
@@ -57,7 +57,7 @@ Icon has no strings of its own. A `label` comes from your own translations, or f
 
 ### Read aloud
 
-Approximated by `@kvirn-ui/testing`'s `readAloud` (English); not NVDA or JAWS output.
+Approximated by `@kvirn/testing`'s `readAloud` (English); not NVDA or JAWS output.
 
 | State or action               | Expected phrase(s) as read aloud | Live region politeness | Test                                                                                                  |
 | ----------------------------- | -------------------------------- | ---------------------- | ----------------------------------------------------------------------------------------------------- |
@@ -77,7 +77,7 @@ Approximated by `@kvirn-ui/testing`'s `readAloud` (English); not NVDA or JAWS ou
 - Never convey status by an icon's colour alone: the status icons differ in shape, and status always comes with text (1.4.1 Use of Color, A).
 - Give a meaningful icon (one with a `label`) at least 3:1 contrast against its background (1.4.11 Non-text Contrast, AA). `currentColor` follows the text colour, which already has at least 4.5:1 contrast in the default theme, and every variant is measured at 3:1 or more on canvas, surface and surface-raised in all four themes.
 - Set `mirrorInRtl` only on directional icons (arrows, chevrons), never on a tick, a logo or anything with text in it.
-- Register or pass components that forward their ref and spread SVG props onto one `<svg>`. An icon from `@kvirn-ui/icons` is plain data and needs nothing.
+- Register or pass components that forward their ref and spread SVG props onto one `<svg>`. An icon from `@kvirn/icons` is plain data and needs nothing.
 
 ## Visual / modes
 

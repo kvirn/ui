@@ -1,6 +1,6 @@
-import { en } from '@kvirn-ui/i18n/en'
-import { kvirnbyUnitAreas, kvirnbyUnitLanguages, kvirnbyUnits } from '@kvirn-ui/patterns/fixtures'
-import type { KvirnbyUnit, KvirnbyUnitArea, KvirnbyUnitLanguage } from '@kvirn-ui/patterns/fixtures'
+import { en } from '@kvirn/i18n/en'
+import { kvirnbyUnitAreas, kvirnbyUnitLanguages, kvirnbyUnits } from '@kvirn/patterns/fixtures'
+import type { KvirnbyUnit, KvirnbyUnitArea, KvirnbyUnitLanguage } from '@kvirn/patterns/fixtures'
 import {
   Address,
   Button,
@@ -19,7 +19,7 @@ import {
   TagGroup,
   useAnnouncer,
   useFormat,
-} from '@kvirn-ui/react'
+} from '@kvirn/ui'
 import type { Meta, StoryObj } from '@storybook/react-vite'
 import { useState } from 'react'
 import type { ReactNode } from 'react'

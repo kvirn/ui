@@ -1,7 +1,7 @@
 # Plan 0151: Kvirn read-aloud service (voice.kvirn.com) and its engine
 
 - **Status:** Approved (maintainer, 2026-10-23). **Superseded in part by [0153](0153-read-aloud-kvirn-only.md)**
-  (2026-10-25): the Kvirn engine is now the *only* engine, so this plan's `allowRemoteVoices` opt-in, its
+  (2026-10-25): the Kvirn engine is now the _only_ engine, so this plan's `allowRemoteVoices` opt-in, its
   `localService` gating and the synchronous `ReadAloudEngine` it assumed are retired. Its service API,
   D1–D7 and the §Gaps table stand.
 - **Was:** Approved (maintainer, 2026-10-23). The service is phase 1 of `kvirn-voice-provider` (spike first); this plan is the KvirnUI side.
@@ -105,7 +105,7 @@ No keyboard, role or focus change: 0088's contract stands. This plan adds:
 - **D5 Rule 7 exception (maintainer, 2026-10-23).** The docs site and Storybook may send text to `voice.kvirn.com`, only after a visitor presses Play. Lands with T6, together with its docs.
 - **D6 One sentence per request, MP3, client-side rate.** These keep caching simple and work in every browser. Streaming inside a sentence buys little at about 200 chars. Opus is smaller, but older Safari can't play it.
 - **D7 Text in the POST body, no store by default.** URLs get logged, bodies don't. Under privacy by default (GDPR art. 25) the consumer opts in to caching for public text.
-- **D8 The factory in `core`.** Like `createSpeechEngine`, it uses browser APIs only at call time. Its name follows `kvirnGeocoder`. `@kvirn-ui/read-aloud` stays React-only (0088).
+- **D8 The factory in `core`.** Like `createSpeechEngine`, it uses browser APIs only at call time. Its name follows `kvirnGeocoder`. `@kvirn/read-aloud` stays React-only (0088).
 
 ## Risks & open questions
 

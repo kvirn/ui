@@ -1,6 +1,6 @@
 'use client'
-import { ApplicationLogo, LanguageLinks } from '@kvirn-ui/patterns'
-import { kvirnbyMark } from '@kvirn-ui/patterns/fixtures'
+import { ApplicationLogo, LanguageLinks } from '@kvirn/patterns'
+import { kvirnbyMark } from '@kvirn/patterns/fixtures'
 import { referenceLocales, referenceMessages } from '../../../../messages/reference.ts'
 import type { ReferenceLocale } from '../../../../messages/reference.ts'
 

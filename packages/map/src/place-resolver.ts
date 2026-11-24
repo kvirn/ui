@@ -1,4 +1,4 @@
-import type { MapPlace, MapPlaceSource } from '@kvirn-ui/core'
+import type { MapPlace, MapPlaceSource } from '@kvirn/core'
 
 export interface PlaceResolver<Data> {
   /** The place at a source index, or `undefined` while an async `get` is pending. */

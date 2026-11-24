@@ -1,6 +1,6 @@
 import type { ComponentType, Ref } from 'react'
-import type { IconData } from '@kvirn-ui/icons'
-import { createIconComponent } from '@kvirn-ui/icons/react'
+import type { IconData } from '@kvirn/icons'
+import { createIconComponent } from '@kvirn/icons/react'
 import type { Register } from '../provider/register.ts'
 
 /**
@@ -25,7 +25,7 @@ export interface IconComponentProps {
  */
 export type IconComponent = ComponentType<IconComponentProps>
 
-/** One registry entry: drawing data from `@kvirn-ui/icons`, a component, or a component with options. */
+/** One registry entry: drawing data from `@kvirn/icons`, a component, or a component with options. */
 export type IconRegistryEntry =
   | IconData
   | IconComponent
@@ -50,7 +50,7 @@ export type IconNameOf<Registration> = Registration extends { icons: infer Icons
  * A name `<Icon name>` accepts: one the app registered, or any string until it registers icons.
  *
  * ```ts
- * declare module '@kvirn-ui/react' {
+ * declare module '@kvirn/ui' {
  *   interface Register {
  *     icons: typeof icons
  *   }

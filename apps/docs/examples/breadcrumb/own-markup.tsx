@@ -1,5 +1,5 @@
 'use client'
-import { Link, useBreadcrumb } from '@kvirn-ui/react'
+import { Link, useBreadcrumb } from '@kvirn/ui'
 import { useBreadcrumbTexts } from './texts.ts'
 
 export function OwnMarkup() {

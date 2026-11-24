@@ -1,4 +1,4 @@
-import { Tabs } from '@kvirn-ui/react'
+import { Tabs } from '@kvirn/ui'
 import contract from '../../../../../packages/react/src/tabs/tabs.a11y.md?raw'
 import guide from '../../../../../packages/react/src/tabs/tabs.md?raw'
 import type { Meta, StoryObj } from '@storybook/react-vite'
@@ -22,7 +22,7 @@ import {
 } from './tabs.fixture.tsx'
 
 // Components/Tabs: a list of tabs and a panel for each (APG Tabs, contract: tabs.a11y.md), styled
-// by @kvirn-ui/theme/theme.css (design spec docs/design/tabs.md).
+// by @kvirn/theme/theme.css (design spec docs/design/tabs.md).
 // Tabs have no library strings: the names and the
 // panel texts are the story's own, in sv by default.
 

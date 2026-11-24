@@ -23,7 +23,7 @@ export interface UseListboxNativeOptions {
 /** Spread on the native `<select>` (`Listbox.Native`). */
 export interface ListboxNativePartProps extends FieldStateAttributes {
   /**
-   * The part's class, for `@kvirn-ui/theme` and your own CSS: `.kv-listbox-native`. Add a width
+   * The part's class, for `@kvirn/theme` and your own CSS: `.kv-listbox-native`. Add a width
    * class or your own next to it with `mergeProps`: class names join.
    */
   className: 'kv-listbox-native'

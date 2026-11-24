@@ -1,6 +1,6 @@
 // kv-lang-ok-file: per-locale story texts: the toolbar locale selects the sv, fi, nb, nn or en table
-import { Button, Icon, Kbd, Popover, Toolbar, Tooltip } from '@kvirn-ui/react'
-import type { TooltipRootProps } from '@kvirn-ui/react'
+import { Button, Icon, Kbd, Popover, Toolbar, Tooltip } from '@kvirn/ui'
+import type { TooltipRootProps } from '@kvirn/ui'
 import type { ComponentPropsWithRef, CSSProperties } from 'react'
 
 // Fixtures for Components/Tooltip. Each exported function is one example, written to be read: the

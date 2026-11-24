@@ -1,4 +1,4 @@
-import type { ThemeOptions } from '@kvirn-ui/core'
+import type { ThemeOptions } from '@kvirn/core'
 import type {
   KvirnProviderProps,
   KvirnThemeScriptProps,
@@ -7,7 +7,7 @@ import type {
   UseFormatResult,
   UseLocaleResult,
   UseThemeResult,
-} from '@kvirn-ui/react'
+} from '@kvirn/ui'
 import { propRows } from '../components/api-block.tsx'
 import type { ApiHook, AttributeRow } from '../components/api-block.tsx'
 
@@ -34,7 +34,7 @@ export const providerRows = propRows<KvirnProviderProps>({
     type: 'PartialMessages',
     default: 'Inherited, then English',
     description:
-      'A catalog, such as sv from @kvirn-ui/i18n/sv, or a partial override of the texts. A non-English locale needs its catalog, or English texts show under a non-English lang.',
+      'A catalog, such as sv from @kvirn/i18n/sv, or a partial override of the texts. A non-English locale needs its catalog, or English texts show under a non-English lang.',
   },
   timeZone: {
     type: 'string (IANA)',
@@ -64,7 +64,7 @@ export const providerRows = propRows<KvirnProviderProps>({
     type: 'IconRegistry',
     default: "The parent's",
     description:
-      'The names for <Icon name>, from defineIcons: icons from @kvirn-ui/icons, or from Lucide or others. KvirnUI draws no icon by name until you register it, and a registered name also replaces that icon in KvirnUI’s own components. Merged by name. Register only the ones you need: the whole set from @kvirn-ui/icons/all adds every icon to your bundle.',
+      'The names for <Icon name>, from defineIcons: icons from @kvirn/icons, or from Lucide or others. KvirnUI draws no icon by name until you register it, and a registered name also replaces that icon in KvirnUI’s own components. Merged by name. Register only the ones you need: the whole set from @kvirn/icons/all adds every icon to your bundle.',
   },
   iconDefaults: {
     type: 'IconDefaults',

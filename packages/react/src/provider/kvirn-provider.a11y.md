@@ -65,26 +65,26 @@ The provider has no strings of its own. It resolves every component's keys. Each
 
 ## Consumer responsibilities
 
-- Set `<html lang dir>` to the root provider's locale and direction (3.1.1 Language of Page, A), with `getLocaleProps(locale)` from `@kvirn-ui/react/server`. The provider can't: it renders no element of its own to carry them, and a server layout can't spread `localeProps` on `<html>`.
+- Set `<html lang dir>` to the root provider's locale and direction (3.1.1 Language of Page, A), with `getLocaleProps(locale)` from `@kvirn/ui/server`. The provider can't: it renders no element of its own to carry them, and a server layout can't spread `localeProps` on `<html>`.
 - Spread `useLocale().localeProps` on the element that starts a section in another language, so `lang` matches the strings (3.1.2 Language of Parts, AA). Nested providers inherit everything they don't set.
 - Pass a catalog (`messages={sv}`) for a non-English locale. Otherwise English strings render under a non-English `lang`, with a dev warning per key.
 - A nested provider that changes the language must pass that language's catalog too (`<KvirnProvider locale="fi-FI" messages={fi}>`). Otherwise its strings stay in the parent's language while `lang` says otherwise. A dev warning names both locales.
 - When overriding a message that forms an accessible name, keep it consistent with the visible label (2.5.3 Label in Name, A).
 - Build the theme switcher from native controls with visible labels (for example radio groups in a `<fieldset>` with a `<legend>`), and don't make the resolved-theme text a live region.
-- Render `KvirnThemeScript` with the response's CSP `nonce` in the server-rendered `<head>`, and put `suppressHydrationWarning` on `<html>`. Pass it the provider's `theme` object, from the server entry (`@kvirn-ui/react/server`) in a Server Component. It runs before first paint, and until it does the theme's own `prefers-*` rules answer for a visitor's OS setting (1.4.3 Contrast (Minimum), AA; 1.4.11 Non-text Contrast, AA).
+- Render `KvirnThemeScript` with the response's CSP `nonce` in the server-rendered `<head>`, and put `suppressHydrationWarning` on `<html>`. Pass it the provider's `theme` object, from the server entry (`@kvirn/ui/server`) in a Server Component. It runs before first paint, and until it does the theme's own `prefers-*` rules answer for a visitor's OS setting (1.4.3 Contrast (Minimum), AA; 1.4.11 Non-text Contrast, AA).
 - Set `timeZone` explicitly, the same on the server and in the browser. Without one, instants are shown in UTC and the first one formatted warns in development.
 
 ## Visual / modes
 
-- Focus indicator: the provider renders nothing visible. A theme switcher relies on the browser's native radio focus ring. The default theme restyles rings in `@kvirn-ui/theme`.
+- Focus indicator: the provider renders nothing visible. A theme switcher relies on the browser's native radio focus ring. The default theme restyles rings in `@kvirn/theme`.
 - Target size: the switcher's radios are 24 × 24 CSS px, in labels at least 28px tall (2.5.8 Target Size (Minimum), AA).
-- forced-colors behaviour: the provider keeps writing the resolved attributes. `@kvirn-ui/theme` must let the OS palette win and never override `forced-colors: active`.
+- forced-colors behaviour: the provider keeps writing the resolved attributes. `@kvirn/theme` must let the OS palette win and never override `forced-colors: active`.
 - reduced-motion behaviour: no motion. A theme change is instant, and `data-kv-motion="reduce"` stops theme transitions and animations like `prefers-reduced-motion` (2.3.3 Animation from Interactions, AAA, is not counted toward AA).
 - Reflow: No horizontal scrolling at 320 CSS px (1.4.10 Reflow, AA): the reflow sweep checks every story at 320 CSS pixels for horizontal overflow, including those with Swedish text, a theme switcher, a nested locale and right-to-left.
 
 ## WCAG SCs covered
 
-- 1.4.3 Contrast (Minimum) (AA) and 1.4.11 Non-text Contrast (AA): OS preferences are honoured by default, and high contrast is user-selectable. The contrast values themselves are `@kvirn-ui/theme`'s, checked automatically in every theme. 1.4.6 Contrast (Enhanced), AAA, is not counted toward AA.
+- 1.4.3 Contrast (Minimum) (AA) and 1.4.11 Non-text Contrast (AA): OS preferences are honoured by default, and high contrast is user-selectable. The contrast values themselves are `@kvirn/theme`'s, checked automatically in every theme. 1.4.6 Contrast (Enhanced), AAA, is not counted toward AA.
 - 1.4.10 Reflow (AA): the reflow sweep checks every story at 320 CSS pixels for horizontal overflow.
 - 3.1.1 Language of Page (A): your duty (`<html lang dir>`, with `getLocaleProps`); see Set-up on this page.
 - 3.1.2 Language of Parts (AA): `localeProps`, and a warning in development for a nested language change without a catalog.

@@ -1,5 +1,5 @@
-import { en } from '@kvirn-ui/i18n/en'
-import { expectNoA11yViolations } from '@kvirn-ui/testing'
+import { en } from '@kvirn/i18n/en'
+import { expectNoA11yViolations } from '@kvirn/testing'
 import { createRef, useState } from 'react'
 import type { ReactNode, Ref } from 'react'
 import { renderToString } from 'react-dom/server'

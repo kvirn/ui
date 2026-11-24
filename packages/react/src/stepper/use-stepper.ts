@@ -1,4 +1,4 @@
-import type { KvirnMessages } from '@kvirn-ui/i18n'
+import type { KvirnMessages } from '@kvirn/i18n'
 import { useCallback, useEffect, useState } from 'react'
 import type { RefCallback } from 'react'
 import { warnOnce } from '../dev/dev-warning.ts'
@@ -6,7 +6,7 @@ import { useMessages } from '../provider/use-messages.ts'
 
 /** Spread on the Stepper's element. Only the part's class and a ref for the placement check: Stepper adds no role, ARIA or state. */
 export interface StepperPartProps {
-  /** The part's class, for `@kvirn-ui/theme` and your own CSS: `kv-stepper`. */
+  /** The part's class, for `@kvirn/theme` and your own CSS: `kv-stepper`. */
   className: string
   /** Checks, in development, that the element is not inside a heading, label, legend, summary, button, link or caption. Pass it on if you set your own `ref`. */
   ref: RefCallback<HTMLElement>

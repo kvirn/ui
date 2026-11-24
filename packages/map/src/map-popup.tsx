@@ -1,5 +1,5 @@
-import { computePlacement } from '@kvirn-ui/core'
-import { useMergedRef } from '@kvirn-ui/react/internal'
+import { computePlacement } from '@kvirn/core'
+import { useMergedRef } from '@kvirn/ui/internal'
 import { useLayoutEffect, useRef, useState } from 'react'
 import { createPortal } from 'react-dom'
 import type {

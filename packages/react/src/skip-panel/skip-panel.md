@@ -19,7 +19,7 @@ A skip panel: on the first Tab, a list of links shows where to skip to and which
 ## Component
 
 ```tsx
-import { SkipPanel } from '@kvirn-ui/react'
+import { SkipPanel } from '@kvirn/ui'
 
 ;<SkipPanel.Root reopenShortcut={{ key: 'k', alt: true, shift: true }}>
   <SkipPanel.Group>

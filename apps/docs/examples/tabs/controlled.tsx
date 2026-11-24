@@ -1,5 +1,5 @@
 'use client'
-import { Button, Tabs } from '@kvirn-ui/react'
+import { Button, Tabs } from '@kvirn/ui'
 import { useState } from 'react'
 import { useTabsTexts } from './texts.ts'
 

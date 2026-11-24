@@ -1,5 +1,5 @@
 'use client'
-import { Button, Checkbox, ErrorSummary, Field, RadioGroup, Stack } from '@kvirn-ui/react'
+import { Button, Checkbox, ErrorSummary, Field, RadioGroup, Stack } from '@kvirn/ui'
 import { useId, useState } from 'react'
 import { useErrorSummaryTexts } from './texts.ts'
 

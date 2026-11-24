@@ -113,7 +113,7 @@ Each is a `warnOnce` call (see SKILL.md, Developer warnings). Format of the key 
 | `Menu.Group`      | no `Menu.GroupLabel` and no `aria-label` or `aria-labelledby` (`menu-group-without-name`, 1.3.1, 4.1.2, effect) |
 | `Menu.*`          | a part outside a `Menu.Root` (`menu-<part>-outside-root`, effect)                                               |
 
-## RichTextEditor (`@kvirn-ui/rich-text`)
+## RichTextEditor (`@kvirn/rich-text`)
 
 | Where                                      | Fires when                                                                                                                                                          |
 | ------------------------------------------ | ------------------------------------------------------------------------------------------------------------------------------------------------------------------- |

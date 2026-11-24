@@ -1,5 +1,5 @@
 'use client'
-import { Popover } from '@kvirn-ui/react'
+import { Popover } from '@kvirn/ui'
 import { useState } from 'react'
 import { usePopoverTexts } from './texts.ts'
 

@@ -18,7 +18,7 @@ There is no `render` prop and no `asChild`.
 | **Component** | `as={AcmeButton}` and `tone="quiet"` on the part | Your component gets the part's props and every other prop you wrote on the part, as plain props               |
 
 ```tsx
-import { Link, Section, Tooltip } from '@kvirn-ui/react'
+import { Link, Section, Tooltip } from '@kvirn/ui'
 
 // Tag: a landmark instead of a div, named by its heading.
 <Section as="aside" aria-labelledby="contact">
@@ -60,7 +60,7 @@ A component you pass to `as` must:
 A part with no `as` (a Button, a Toggle, a Tab, a form control, a Listbox, a Table) is not a place to swap the element, because its role, its keys and its disabled state come from the native element it renders. If you need your own element, or your design system's component, use the hook and spread what it returns.
 
 ```tsx
-import { mergeProps, useButton } from '@kvirn-ui/react'
+import { mergeProps, useButton } from '@kvirn/ui'
 
 function SaveButton() {
   const button = useButton()
@@ -77,7 +77,7 @@ A hook that disables something must stay in charge of its activation: a disabled
 When you spread a hook's props on your own element, `mergeProps` joins them with yours. It is public, and the parts use the same function when they merge your props on a part with `as`.
 
 ```tsx
-import { mergeProps, useButton } from '@kvirn-ui/react'
+import { mergeProps, useButton } from '@kvirn/ui'
 
 // Two objects, merged: the result is one object for one element.
 mergeProps(

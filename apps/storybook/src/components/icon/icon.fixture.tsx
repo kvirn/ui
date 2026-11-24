@@ -1,13 +1,13 @@
 // kv-lang-ok-file: per-locale story texts: the toolbar locale selects the sv, fi, nb, nn or en table
-import { search } from '@kvirn-ui/icons'
+import { search } from '@kvirn/icons'
 import {
   ArrowRightIcon,
   MagnifyingGlassIcon,
   MapPinIcon,
   TrashIcon,
 } from '@heroicons/react/24/outline'
-import { Alert, Button, ButtonGroup, defineIcons, Icon, KvirnProvider, Link } from '@kvirn-ui/react'
-import type { UseFormatResult } from '@kvirn-ui/react'
+import { Alert, Button, ButtonGroup, defineIcons, Icon, KvirnProvider, Link } from '@kvirn/ui'
+import type { UseFormatResult } from '@kvirn/ui'
 import { Warning as PhosphorWarning } from '@phosphor-icons/react'
 import { ArrowRight, MapPin, Search, Trash2, X as LucideClose } from 'lucide-react'
 import { useCallback, useState } from 'react'
@@ -351,7 +351,7 @@ export function LucideOneOff() {
 /**
  * Lucide, registered: `<Icon name>` and every KvirnUI component use Lucide's drawings. Call
  * `defineIcons` once at module level in your app, next to the provider: a library's drawings
- * replace the library's drawings of the same names, and Lucide draws its own 2 stroke. Names that `@kvirn-ui/icons` doesn't have need `Register` (see the Icon guide).
+ * replace the library's drawings of the same names, and Lucide draws its own 2 stroke. Names that `@kvirn/icons` doesn't have need `Register` (see the Icon guide).
  */
 export function LucideRegistered() {
   const icons = defineIcons({
@@ -413,7 +413,7 @@ export function HeroiconsRegistered() {
  * Registered over the library's icons, another library's drawing replaces the name's icon for
  * every component, with the same `size` and `color`. A plain component carries no direction, so
  * `arrow-forward` is registered as `{ component, mirrorInRtl: true }` to keep flipping in
- * right-to-left text (design spec §4.2). `logo` isn't in `@kvirn-ui/icons`: an app adds it with
+ * right-to-left text (design spec §4.2). `logo` isn't in `@kvirn/icons`: an app adds it with
  * its own entry.
  */
 export function LibraryIcons() {
@@ -489,7 +489,7 @@ export function UnstyledIcons() {
   )
 }
 
-/** No registration: pass the drawing from `@kvirn-ui/icons` as `icon`. */
+/** No registration: pass the drawing from `@kvirn/icons` as `icon`. */
 export function IconFromDrawing() {
   return <Icon icon={search} />
 }

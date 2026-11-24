@@ -1,5 +1,5 @@
 'use client'
-import { Calendar } from '@kvirn-ui/react'
+import { Calendar } from '@kvirn/ui'
 import { useCalendarTexts } from './texts.ts'
 
 const closedDays = new Set(['2026-10-16', '2026-10-17', '2026-10-24'])

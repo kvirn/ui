@@ -1,4 +1,4 @@
-import { Card, Grid } from '@kvirn-ui/react'
+import { Card, Grid } from '@kvirn/ui'
 import contract from '../../../../../packages/react/src/grid/grid.a11y.md?raw'
 import guide from '../../../../../packages/react/src/grid/grid.md?raw'
 import type { Meta, StoryObj } from '@storybook/react-vite'
@@ -6,7 +6,7 @@ import { expect } from 'storybook/test'
 import { usageGuide } from '../../docs-source.ts'
 import { expectNoHorizontalOverflow } from '../theme-story-assertions.ts'
 
-// Components/Layout/Grid: the headless Grid, styled by @kvirn-ui/theme/theme.css (DESIGN.md,
+// Components/Layout/Grid: the headless Grid, styled by @kvirn/theme/theme.css (DESIGN.md,
 // Layout). Every placement is a class on the Root or the Item, never a prop. The responsive forms
 // answer the grid's own width, so the stories reflow in the canvas, not only in the window.
 

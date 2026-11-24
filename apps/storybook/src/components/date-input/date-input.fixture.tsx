@@ -1,5 +1,5 @@
 // kv-lang-ok-file: per-locale fixture text sets (sv, fi, nb, nn), picked by the locale toolbar
-import { sv } from '@kvirn-ui/i18n/sv'
+import { sv } from '@kvirn/i18n/sv'
 import {
   Button,
   DateInput,
@@ -9,8 +9,8 @@ import {
   masks,
   TextInput,
   useDateInput,
-} from '@kvirn-ui/react'
-import type { DateInputRootProps, DateInputValue } from '@kvirn-ui/react'
+} from '@kvirn/ui'
+import type { DateInputRootProps, DateInputValue } from '@kvirn/ui'
 import type { Decorator } from '@storybook/react-vite'
 import { useId, useState } from 'react'
 import type { FormLocale } from '../form/form.fixture.tsx'

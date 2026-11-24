@@ -1,4 +1,4 @@
-import { Button, Link, Navigation, Prose, ScrollArea } from '@kvirn-ui/react'
+import { Button, Link, Navigation, Prose, ScrollArea } from '@kvirn/ui'
 import { useId } from 'react'
 import type { CSSProperties } from 'react'
 import { articleFor, updatedDate } from '../../foundation/foundations.fixture.tsx'

@@ -1,4 +1,4 @@
-import { colorSchemeAttribute, contrastAttribute, themeStorageKey } from '@kvirn-ui/core'
+import { colorSchemeAttribute, contrastAttribute, themeStorageKey } from '@kvirn/core'
 import { afterEach, beforeEach, expect, test } from 'vite-plus/test'
 import { cdp, page } from 'vite-plus/test/browser'
 import { render } from 'vitest-browser-react'

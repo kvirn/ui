@@ -1,5 +1,5 @@
 'use client'
-import { Heading, Link, List } from '@kvirn-ui/react'
+import { Heading, Link, List } from '@kvirn/ui'
 import { useId } from 'react'
 import { useListTexts } from './texts.ts'
 

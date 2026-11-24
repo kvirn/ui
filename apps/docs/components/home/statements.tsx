@@ -1,5 +1,5 @@
 'use client'
-import { Heading, Link } from '@kvirn-ui/react'
+import { Heading, Link } from '@kvirn/ui'
 import { homeMessages } from '../../messages/home.ts'
 import { Band } from './band.tsx'
 

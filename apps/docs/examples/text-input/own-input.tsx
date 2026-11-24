@@ -1,5 +1,5 @@
 'use client'
-import { Field, useTextInput } from '@kvirn-ui/react'
+import { Field, useTextInput } from '@kvirn/ui'
 import { useTextInputTexts } from './texts.ts'
 
 export function OwnInput() {

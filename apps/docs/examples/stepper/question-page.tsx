@@ -1,5 +1,5 @@
 'use client'
-import { Button, Field, Heading, Stack, Stepper, TextInput } from '@kvirn-ui/react'
+import { Button, Field, Heading, Stack, Stepper, TextInput } from '@kvirn/ui'
 import { useStepperTexts } from './texts.ts'
 
 export function QuestionPage() {

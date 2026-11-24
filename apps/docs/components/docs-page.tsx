@@ -1,6 +1,6 @@
 'use client'
-import { PageHeader } from '@kvirn-ui/patterns'
-import { Breadcrumb, Container, GridItem, GridRoot, Prose } from '@kvirn-ui/react'
+import { PageHeader } from '@kvirn/patterns'
+import { Breadcrumb, Container, GridItem, GridRoot, Prose } from '@kvirn/ui'
 import { createContext, useContext } from 'react'
 import type { ReactNode } from 'react'
 import type { SitePage } from './site-sections.ts'

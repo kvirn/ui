@@ -1,5 +1,5 @@
 {
-  "name": "@kvirn-ui/i18n",
+  "name": "@kvirn/i18n",
   "version": "0.0.0",
   "description": "KvirnUI message catalogs for sv, fi, nb, nn and en.",
   "homepage": "https://ui.kvirn.com",

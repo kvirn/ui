@@ -1,6 +1,6 @@
-import { getLanguage } from '@kvirn-ui/core'
-import type { LocaleCode } from '@kvirn-ui/i18n'
-import { useLocale } from '@kvirn-ui/react'
+import { getLanguage } from '@kvirn/core'
+import type { LocaleCode } from '@kvirn/i18n'
+import { useLocale } from '@kvirn/ui'
 
 export interface LocalExampleTexts<T> {
   texts: T

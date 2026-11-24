@@ -1,4 +1,4 @@
-import { Card, Field, Switch } from '@kvirn-ui/react'
+import { Card, Field, Switch } from '@kvirn/ui'
 import contract from '../../../../../packages/react/src/switch/switch.a11y.md?raw'
 import guide from '../../../../../packages/react/src/switch/switch.md?raw'
 import type { Meta, StoryObj } from '@storybook/react-vite'
@@ -14,7 +14,7 @@ import {
 } from './switch.fixture.tsx'
 
 // Components/Form/Switch: the native <input type="checkbox" role="switch">, styled by
-// @kvirn-ui/theme/theme.css (design spec docs/design/switch.md). It sits directly in a Field,
+// @kvirn/theme/theme.css (design spec docs/design/switch.md). It sits directly in a Field,
 // before the label, which makes the whole row the click target. Use it for a setting that takes
 // effect at once; an answer sent with a form is a Checkbox.
 //

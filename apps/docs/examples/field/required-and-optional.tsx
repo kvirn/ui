@@ -1,5 +1,5 @@
 'use client'
-import { Field, TextInput } from '@kvirn-ui/react'
+import { Field, TextInput } from '@kvirn/ui'
 import { useFieldTexts } from './texts.ts'
 
 export function RequiredAndOptional() {

@@ -9,7 +9,7 @@ import {
   TableRow,
   TableRowHeader,
   TableScrollRegion,
-} from '@kvirn-ui/react'
+} from '@kvirn/ui'
 import type { Metadata } from 'next'
 import { CodeBlock } from '../../../components/code-block.tsx'
 import { PageWithContents } from '../../../components/page-contents.tsx'
@@ -23,10 +23,10 @@ const text = messages.docs.getStartedPage
 
 const packageText = text.packages
 const packageRows = [
-  { name: '@kvirn-ui/react', purpose: packageText.react, install: packageText.withTheOthers },
-  { name: '@kvirn-ui/i18n', purpose: packageText.i18n, install: packageText.withTheOthers },
-  { name: '@kvirn-ui/theme', purpose: packageText.theme, install: packageText.withTheOthers },
-  { name: '@kvirn-ui/core', purpose: packageText.core, install: packageText.comesWithReact },
+  { name: '@kvirn/ui', purpose: packageText.react, install: packageText.withTheOthers },
+  { name: '@kvirn/i18n', purpose: packageText.i18n, install: packageText.withTheOthers },
+  { name: '@kvirn/theme', purpose: packageText.theme, install: packageText.withTheOthers },
+  { name: '@kvirn/core', purpose: packageText.core, install: packageText.comesWithReact },
 ]
 
 export default function GetStartedPage() {
@@ -57,17 +57,17 @@ export default function GetStartedPage() {
               <Heading as="h3" id="installation">
                 {text.startHere.installation}
               </Heading>
-              <CodeBlock code="pnpm add @kvirn-ui/react @kvirn-ui/i18n" />
+              <CodeBlock code="pnpm add @kvirn/ui @kvirn/i18n" />
               <p>
-                {text.startHere.themeBefore} <code>@kvirn-ui/theme</code>{' '}
-                {text.startHere.themeMiddle} <code>theme.css</code> {text.startHere.themeAfter}{' '}
+                {text.startHere.themeBefore} <code>@kvirn/theme</code> {text.startHere.themeMiddle}{' '}
+                <code>theme.css</code> {text.startHere.themeAfter}{' '}
                 <Link href="/foundation/theming">{text.startHere.themingLink}</Link>{' '}
                 {text.startHere.themingAfter}
               </p>
               <CodeBlock
-                code={`pnpm add @kvirn-ui/theme
+                code={`pnpm add @kvirn/theme
 
-import '@kvirn-ui/theme/theme.css'`}
+import '@kvirn/theme/theme.css'`}
               />
               <p>{text.startHere.importHint}</p>
             </>
@@ -103,26 +103,26 @@ import '@kvirn-ui/theme/theme.css'`}
                     ))}
                     <TableRow>
                       <TableRowHeader>
-                        <code>@kvirn-ui/map</code>
+                        <code>@kvirn/map</code>
                       </TableRowHeader>
                       <TableCell>
                         {packageText.map} <Link href="/components/map">{packageText.mapLink}</Link>
                       </TableCell>
                       <TableCell>
-                        {packageText.separate}: <code>pnpm add @kvirn-ui/map</code>{' '}
+                        {packageText.separate}: <code>pnpm add @kvirn/map</code>{' '}
                         {packageText.andMapEngine}
                       </TableCell>
                     </TableRow>
                     <TableRow>
                       <TableRowHeader>
-                        <code>@kvirn-ui/rich-text</code>
+                        <code>@kvirn/rich-text</code>
                       </TableRowHeader>
                       <TableCell>
                         {packageText.richText}{' '}
                         <Link href="/components/rich-text-editor">{packageText.richTextLink}</Link>
                       </TableCell>
                       <TableCell>
-                        {packageText.separate}: <code>pnpm add @kvirn-ui/rich-text</code>{' '}
+                        {packageText.separate}: <code>pnpm add @kvirn/rich-text</code>{' '}
                         {packageText.andTiptap}
                       </TableCell>
                     </TableRow>

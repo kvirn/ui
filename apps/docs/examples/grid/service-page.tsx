@@ -1,5 +1,5 @@
 'use client'
-import { Grid, Heading, Link, Stack } from '@kvirn-ui/react'
+import { Grid, Heading, Link, Stack } from '@kvirn/ui'
 import { useGridTexts } from './texts.ts'
 
 export function ServicePage() {

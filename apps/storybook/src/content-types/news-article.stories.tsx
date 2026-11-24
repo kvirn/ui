@@ -1,5 +1,5 @@
-import { PageFrame } from '@kvirn-ui/patterns'
-import { NewsArticle } from '@kvirn-ui/patterns/content-types'
+import { PageFrame } from '@kvirn/patterns'
+import { NewsArticle } from '@kvirn/patterns/content-types'
 import type { Meta, StoryObj } from '@storybook/react-vite'
 import source from '../../../../packages/patterns/src/content-types/news-article/news-article.tsx?raw'
 import { expectNoHorizontalOverflow } from '../components/theme-story-assertions.ts'
@@ -7,7 +7,7 @@ import { chromeViewports, narrowGlobals, wideGlobals } from '../patterns/pattern
 import { expectPageOutline } from './page-outline.ts'
 import { withShell } from './shell.tsx'
 // Content types/News article: a whole page in the site chrome (docs/design/storybook-patterns-t5.md S9).
-// The page is a component in `@kvirn-ui/patterns/content-types`; the source panel shows its module text, which an adopter copies.
+// The page is a component in `@kvirn/patterns/content-types`; the source panel shows its module text, which an adopter copies.
 
 const description = `One news item: the title, when it was published (and updated), read aloud, a preamble, a figure, the prose, related news and the page tools. The column is the reading width. Built from [Breadcrumb](?path=/docs/components-navigation-breadcrumb--docs), [Page tools](?path=/docs/patterns-site-chrome-page-tools--docs), \`Prose\`, \`Heading\` and a [List](?path=/docs/components-content-list--docs).
 

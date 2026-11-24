@@ -1,4 +1,4 @@
-import { Pagination } from '@kvirn-ui/react'
+import { Pagination } from '@kvirn/ui'
 import contract from '../../../../../packages/react/src/pagination/pagination.a11y.md?raw'
 import guide from '../../../../../packages/react/src/pagination/pagination.md?raw'
 import type { Meta, StoryObj } from '@storybook/react-vite'
@@ -9,7 +9,7 @@ import { expectMinimumTargetSize, expectNoHorizontalOverflow } from '../theme-st
 import { chromeViewports, wideGlobals } from '../../patterns/patterns-story-support.tsx'
 import { withLocale } from './pagination.fixture.tsx'
 
-// Components/Pagination: the headless Pagination, styled by @kvirn-ui/theme/theme.css (brief B17
+// Components/Pagination: the headless Pagination, styled by @kvirn/theme/theme.css (brief B17
 // in docs/design/municipality-reference-site.md). The words are the library's own strings and
 // follow the locale toolbar. The links go nowhere (#). The narrow layout (Previous, status and
 // Next) follows the viewport width, below 40rem, so a 320px column in a wide preview can't show

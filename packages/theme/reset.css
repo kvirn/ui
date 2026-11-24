@@ -1,13 +1,13 @@
 /*
- * KvirnUI reset: @kvirn-ui/theme/reset.css
+ * KvirnUI reset: @kvirn/theme/reset.css
  *
  * Optional. Import it before theme.css to start from the same blank page as Tailwind CSS. It
  * resets margins, borders, headings, links, form controls and media, so the elements you write
  * have no browser styling until you (or theme.css, or a `kv-prose` block) style them. The
  * theme works with or without it: its components set their own box, border and type.
  *
- *   import '@kvirn-ui/theme/reset.css'
- *   import '@kvirn-ui/theme/theme.css'
+ *   import '@kvirn/theme/reset.css'
+ *   import '@kvirn/theme/theme.css'
  *
  * It is Tailwind CSS's Preflight (tailwindcss v4, packages/tailwindcss/preflight.css), the
  * reset Tailwind's typography plugin is built on, ported to plain CSS. Preflight is MIT

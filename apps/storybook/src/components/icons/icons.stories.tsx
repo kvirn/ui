@@ -1,15 +1,15 @@
-import { allIcons, iconNames } from '@kvirn-ui/icons/all'
-import { Button, Icon, KvirnProvider, Progress } from '@kvirn-ui/react'
+import { allIcons, iconNames } from '@kvirn/icons/all'
+import { Button, Icon, KvirnProvider, Progress } from '@kvirn/ui'
 import catalog from '../../../../../packages/icons/catalog.json'
 import mirroredNames from '../../../../../packages/icons/mirror-in-rtl.json'
 import contract from '../../../../../packages/react/src/icon/icon.a11y.md?raw'
-import type { IconSize, IconVariant } from '@kvirn-ui/react'
+import type { IconSize, IconVariant } from '@kvirn/ui'
 import type { Meta, StoryObj } from '@storybook/react-vite'
 import { expect, within } from 'storybook/test'
 import { showSource } from '../../docs-source.ts'
 import { expectNoHorizontalOverflow } from '../theme-story-assertions.ts'
 
-// Components/Content/Icon library: the drawn set in @kvirn-ui/icons, registered through the
+// Components/Content/Icon library: the drawn set in @kvirn/icons, registered through the
 // provider. The variant control is the Icon's own prop; the stroke control picks a class.
 
 const sizeOptions = [
@@ -138,7 +138,7 @@ const meta = {
     docs: {
       description: {
         component:
-          'The drawn icon set of @kvirn-ui/icons, registered with `KvirnProvider icons={allIcons}`. Apps that name only the icons they use import them one by one from the package root instead. The 421 icons are drawn and checked by tests and agents. Recognition tests, a native-speaker review of the labels (sv, fi, nb, nn, en), checks with real assistive technology and a sensitivity review are not done yet. Copy a name from the galleries into `<Icon name="…" />`.',
+          'The drawn icon set of @kvirn/icons, registered with `KvirnProvider icons={allIcons}`. Apps that name only the icons they use import them one by one from the package root instead. The 421 icons are drawn and checked by tests and agents. Recognition tests, a native-speaker review of the labels (sv, fi, nb, nn, en), checks with real assistive technology and a sensitivity review are not done yet. Copy a name from the galleries into `<Icon name="…" />`.',
       },
     },
   },

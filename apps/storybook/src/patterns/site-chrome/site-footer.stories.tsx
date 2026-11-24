@@ -1,15 +1,6 @@
-import { en } from '@kvirn-ui/i18n/en'
-import { PageFrame, SiteFooter } from '@kvirn-ui/patterns'
-import {
-  Address,
-  Grid,
-  Heading,
-  KvirnProvider,
-  Link,
-  List,
-  Stack,
-  DefinitionList,
-} from '@kvirn-ui/react'
+import { en } from '@kvirn/i18n/en'
+import { PageFrame, SiteFooter } from '@kvirn/patterns'
+import { Address, Grid, Heading, KvirnProvider, Link, List, Stack, DefinitionList } from '@kvirn/ui'
 import type { Meta, StoryObj } from '@storybook/react-vite'
 import { expect } from 'storybook/test'
 import contract from '../../../../../packages/patterns/src/site-chrome/site-footer/site-footer.a11y.md?raw'
@@ -37,7 +28,7 @@ Each part is also a flat export (\`SiteFooterRoot\`, \`SiteFooterOrganisation\`)
 
 ## Parts and gaps
 
-Parts used: \`Section as="footer"\`, \`Container\`, \`Grid\`, \`Heading\`, \`DefinitionList\`, \`Address\`, \`Link\`, \`List\`. Gap: a Site footer block in \`@kvirn-ui/react\`.
+Parts used: \`Section as="footer"\`, \`Container\`, \`Grid\`, \`Heading\`, \`DefinitionList\`, \`Address\`, \`Link\`, \`List\`. Gap: a Site footer block in \`@kvirn/ui\`.
 `
 
 const meta = {

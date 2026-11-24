@@ -27,7 +27,7 @@ import {
   masks,
   maskedDateToIsoDate,
   useLocale,
-} from '@kvirn-ui/react'
+} from '@kvirn/ui'
 
 const { locale } = useLocale()
 ;<DatePicker.Root
@@ -55,7 +55,7 @@ import {
   Fieldset,
   dateInputValueToIsoDate,
   isoDateToDateInputValue,
-} from '@kvirn-ui/react'
+} from '@kvirn/ui'
 
 ;<DatePicker.Root
   value={dateInputValueToIsoDate(date)}

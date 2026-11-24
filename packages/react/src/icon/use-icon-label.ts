@@ -1,4 +1,4 @@
-import type { KvirnMessages } from '@kvirn-ui/i18n'
+import type { KvirnMessages } from '@kvirn/i18n'
 import { useMessages } from '../provider/use-messages.ts'
 
 type IconMessages = KvirnMessages['icons']

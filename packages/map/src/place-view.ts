@@ -1,5 +1,5 @@
-import { boundsContains } from '@kvirn-ui/core'
-import type { ClusterTree, MapBounds, MapCluster, MapMarkerItem, MapPlace } from '@kvirn-ui/core'
+import { boundsContains } from '@kvirn/core'
+import type { ClusterTree, MapBounds, MapCluster, MapMarkerItem, MapPlace } from '@kvirn/core'
 import type { PlaceResolver } from './place-resolver.ts'
 
 // Above this step every place is its own marker; below it nearby places share a cluster.

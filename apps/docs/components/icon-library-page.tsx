@@ -1,5 +1,5 @@
-import { allIcons } from '@kvirn-ui/icons/all'
-import { Icon, Link, LinkIcon } from '@kvirn-ui/react'
+import { allIcons } from '@kvirn/icons/all'
+import { Icon, Link, LinkIcon } from '@kvirn/ui'
 import catalog from '../../../packages/icons/catalog.json'
 import { messages } from '../messages/en.ts'
 import { DocsPage } from './docs-page.tsx'

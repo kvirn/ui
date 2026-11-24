@@ -1,5 +1,5 @@
-import type { ResolvedMessages } from '@kvirn-ui/core'
-import type { KvirnMessages } from '@kvirn-ui/i18n'
+import type { ResolvedMessages } from '@kvirn/core'
+import type { KvirnMessages } from '@kvirn/i18n'
 import { useCallback, useEffect, useId, useLayoutEffect, useRef, useState } from 'react'
 import type { RefCallback } from 'react'
 import { useQuietAnnouncer, warnAnnouncerMissing } from '../announcer/use-announcer.ts'

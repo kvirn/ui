@@ -11,12 +11,12 @@ Links to the pages of a long list: Previous, page numbers with gaps, Next. Each 
 - All the link parts are thin wrappers over `Link.Root`: a native `<a href>` rendered by your registered router link, with the same props, `ref` and `as`. `children` replaces the words or the number, and `messages` overrides the strings for one instance.
 - You decide which numbers and gaps to show. Keep the first and last page and the pages next to the current one.
 - Also `usePagination({ label, messages })`, which returns the part props, `getPageLabel` and `getStatus` for your own elements.
-- Headless: no CSS. With `@kvirn-ui/theme/theme.css` the targets are 44px and the current page is a filled shape. Below `40rem` it shows Previous, the current page, `Pagination.Status` and Next only, so render the status too (a dev warning `pagination-status-missing` reminds you).
+- Headless: no CSS. With `@kvirn/theme/theme.css` the targets are 44px and the current page is a filled shape. Below `40rem` it shows Previous, the current page, `Pagination.Status` and Next only, so render the status too (a dev warning `pagination-status-missing` reminds you).
 
 ## Component
 
 ```tsx
-import { Pagination } from '@kvirn-ui/react'
+import { Pagination } from '@kvirn/ui'
 
 ;<Pagination.Root>
   <Pagination.List>
@@ -48,7 +48,7 @@ import { Pagination } from '@kvirn-ui/react'
 ## Hook
 
 ```tsx
-import { usePagination } from '@kvirn-ui/react'
+import { usePagination } from '@kvirn/ui'
 
 const pagination = usePagination()
 <nav {...pagination.rootProps}>

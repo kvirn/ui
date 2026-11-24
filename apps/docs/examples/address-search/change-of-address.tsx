@@ -1,7 +1,7 @@
 'use client'
-import { AddressSearch } from '@kvirn-ui/map'
-import { kvirnGeocoder } from '@kvirn-ui/map/kvirn'
-import { AddressInput, Button, Field, Fieldset, Stack } from '@kvirn-ui/react'
+import { AddressSearch } from '@kvirn/map'
+import { kvirnGeocoder } from '@kvirn/map/kvirn'
+import { AddressInput, Button, Field, Fieldset, Stack } from '@kvirn/ui'
 import { useState } from 'react'
 import { useAddressSearchTexts } from './texts.ts'
 

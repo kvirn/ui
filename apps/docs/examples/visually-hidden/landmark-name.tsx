@@ -1,5 +1,5 @@
 'use client'
-import { Link, VisuallyHidden } from '@kvirn-ui/react'
+import { Link, VisuallyHidden } from '@kvirn/ui'
 import { useId } from 'react'
 import { useVisuallyHiddenTexts } from './texts.ts'
 

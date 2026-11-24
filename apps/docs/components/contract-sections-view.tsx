@@ -13,9 +13,9 @@ import {
   TableRow,
   TableRowHeader,
   TableScrollRegion,
-} from '@kvirn-ui/react'
-import { Link } from '@kvirn-ui/react'
-import type { HeadingTag } from '@kvirn-ui/react'
+} from '@kvirn/ui'
+import { Link } from '@kvirn/ui'
+import type { HeadingTag } from '@kvirn/ui'
 import { AnchoredHeading } from './anchored-heading.tsx'
 import { Fragment } from 'react'
 import type { ReactNode } from 'react'
@@ -388,7 +388,7 @@ export function ContractSectionsView({
   notes?: ContractNotes
   /** The rows to show when the contract's Announcements is prose, built from the catalog keys. */
   extraAnnouncementRows?: readonly ContractAnnouncementRow[]
-  /** The component's namespace in `@kvirn-ui/i18n`, when it isn't the contract name in camelCase. */
+  /** The component's namespace in `@kvirn/i18n`, when it isn't the contract name in camelCase. */
   messageNamespace?: string
   /** The page has a Strings section, so the table links to it. */
   linkToStrings?: boolean

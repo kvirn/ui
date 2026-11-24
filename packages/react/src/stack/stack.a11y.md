@@ -63,7 +63,7 @@ Stack renders no text, so it has no message keys.
 
 ## Visual / modes
 
-Headless: Stack ships no CSS. With the default theme (`@kvirn-ui/theme/theme.css`):
+Headless: Stack ships no CSS. With the default theme (`@kvirn/theme/theme.css`):
 
 - Focus indicator, target size, contrast: not applicable. Stack has no colour, no edge and no control of its own.
 - forced-colors behaviour: not applicable, nothing is drawn.

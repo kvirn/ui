@@ -23,12 +23,12 @@ catalog:
   vitest-browser-react: ^2.3.0
   # Accessibility engine
   axe-core: 4.13.0
-  # Approximate screen-reader transcript for tests (plan 0077 Part B): a pinned dev dependency, and an optional peer (~) of @kvirn-ui/testing/read-aloud.
+  # Approximate screen-reader transcript for tests (plan 0077 Part B): a pinned dev dependency, and an optional peer (~) of @kvirn/testing/read-aloud.
   '@guidepup/virtual-screen-reader': 0.33.0
   # The Vitest browser provider's peer. Vitest runs the browser tests; there is no e2e runner.
   # Held at 1.63.0: 1.64.1 (Chromium 156) closes the browser connection partway through a Storybook run (2026-10-19).
   playwright: 1.63.0
-  # Tiptap, the rich text editor's engine: peers of @kvirn-ui/rich-text, devDependencies here.
+  # Tiptap, the rich text editor's engine: peers of @kvirn/rich-text, devDependencies here.
   # One version for every package, pinned exactly, so ProseMirror is never duplicated.
   '@tiptap/core': 3.31.4
   '@tiptap/pm': 3.31.4
@@ -37,9 +37,9 @@ catalog:
   '@tiptap/extension-table': 3.31.4
   '@tiptap/extension-image': 3.31.4
   '@tiptap/extensions': 3.31.4
-  # Map engine: an optional peer of @kvirn-ui/map's /maplibre entry, a devDependency here. Pinned exactly.
+  # Map engine: an optional peer of @kvirn/map's /maplibre entry, a devDependency here. Pinned exactly.
   maplibre-gl: 6.14.0
-  # Map engine: an optional peer of @kvirn-ui/map's /leaflet entry (BSD-2-Clause, no install scripts), a devDependency here. Pinned exactly.
+  # Map engine: an optional peer of @kvirn/map's /leaflet entry (BSD-2-Clause, no install scripts), a devDependency here. Pinned exactly.
   leaflet: 1.9.4
   # Icon libraries: devDependencies only, for Icon's compatibility tests and stories.
   # Pinned exactly, so a release that changes how a library builds its <svg> is a reviewed bump.

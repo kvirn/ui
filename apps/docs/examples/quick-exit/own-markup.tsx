@@ -1,5 +1,5 @@
 'use client'
-import { Checkbox, Field, useQuickExit } from '@kvirn-ui/react'
+import { Checkbox, Field, useQuickExit } from '@kvirn/ui'
 import { useId, useState } from 'react'
 import { useDemoLeave } from './demo-leave.tsx'
 import { useQuickExitTexts } from './texts.ts'

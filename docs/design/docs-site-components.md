@@ -4,7 +4,7 @@
 - **Designer:** ux-designer agent · **Date:** 2026-10-06
 - **Plan:** Plan 0052 §Phase C
 - **Type:** docs site (shell and template), amends [docs-site.md](docs-site.md) §5–§7
-- **Rule:** `apps/docs` uses `@kvirn-ui/react` and `theme.css` as they ship. Where they fall short, the flaw shows on the site, it is listed here as a gap, and the docs keep a thin wrapper until the gap ships. `docs.css` is layout glue only.
+- **Rule:** `apps/docs` uses `@kvirn/ui` and `theme.css` as they ship. Where they fall short, the flaw shows on the site, it is listed here as a gap, and the docs keep a thin wrapper until the gap ships. `docs.css` is layout glue only.
 
 ## 1. Brief
 

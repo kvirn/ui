@@ -1,4 +1,4 @@
-import type { KvirnMessages } from '@kvirn-ui/i18n'
+import type { KvirnMessages } from '@kvirn/i18n'
 import { useCallback, useEffect, useRef, useState } from 'react'
 import type { MouseEvent, RefObject } from 'react'
 import { useAnnouncer } from '../announcer/use-announcer.ts'

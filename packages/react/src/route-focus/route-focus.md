@@ -25,7 +25,7 @@ Next.js has its own route announcer, so leave `announce` off. Put the hook in a 
 
 ```tsx
 'use client'
-import { useRouteFocus } from '@kvirn-ui/react'
+import { useRouteFocus } from '@kvirn/ui'
 import { usePathname, useSearchParams } from 'next/navigation'
 import { useRef } from 'react'
 
@@ -43,7 +43,7 @@ export function PageShell({ children }: { children: React.ReactNode }) {
 If your router does not announce route changes, turn `announce` on, and set `scrollRestoration` on the router so Back and Forward keep the browser's behaviour.
 
 ```tsx
-import { useRouteFocus } from '@kvirn-ui/react'
+import { useRouteFocus } from '@kvirn/ui'
 import { Outlet, useRouterState } from '@tanstack/react-router'
 import { useRef } from 'react'
 

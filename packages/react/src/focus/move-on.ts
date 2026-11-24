@@ -1,4 +1,4 @@
-import type { Env } from '@kvirn-ui/core'
+import type { Env } from '@kvirn/core'
 import { textEntrySelector } from '../focus-visible/use-focus-visible.ts'
 
 export type MoveOnResult =

@@ -1,6 +1,6 @@
-import { en } from '@kvirn-ui/i18n/en'
-import { kvirnbyCaseBadgeVariants, kvirnbyCases } from '@kvirn-ui/patterns/fixtures'
-import type { KvirnbyCase } from '@kvirn-ui/patterns/fixtures'
+import { en } from '@kvirn/i18n/en'
+import { kvirnbyCaseBadgeVariants, kvirnbyCases } from '@kvirn/patterns/fixtures'
+import type { KvirnbyCase } from '@kvirn/patterns/fixtures'
 import {
   Badge,
   Card,
@@ -10,7 +10,7 @@ import {
   KvirnProvider,
   Link,
   useFormat,
-} from '@kvirn-ui/react'
+} from '@kvirn/ui'
 import type { Meta, StoryObj } from '@storybook/react-vite'
 import { expect, userEvent } from 'storybook/test'
 import { expectNoHorizontalOverflow } from '../../components/theme-story-assertions.ts'

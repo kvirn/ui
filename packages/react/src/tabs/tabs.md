@@ -9,7 +9,7 @@ Tabs show one panel of content at a time, with a list of tabs to switch between 
 - **A disabled tab stays focusable** with `aria-disabled="true"`, so keyboard and screen reader users can find it. It is never selected, and a click, Enter or Space does nothing, so focus and selection can differ.
 - **Every panel is rendered**, and the ones that aren't selected are `hidden`, so every `aria-controls` and `aria-labelledby` resolves. A heavy panel renders its children only while its tab is selected, using your own `value`.
 - **A panel has `tabindex="0"` by default**, so keyboard users can reach a panel of text and scroll it. A panel that starts with a focusable element passes `tabIndex={-1}`, and Tab goes straight to that element (an APG deviation, recorded in the contract).
-- Headless: no CSS. With `@kvirn-ui/theme/theme.css` imported it is styled: quiet tabs in the text colour, the selected one in weight 600 with a straight 4px `primary` bar at its edge, a hairline along the list, tabs 44px high (32px inside `kv-compact` from 64rem) and a focus ring on a tab and on the panel. The list wraps and never scrolls sideways. A vertical set is a row of the list and the panel, and stacks below 40rem.
+- Headless: no CSS. With `@kvirn/theme/theme.css` imported it is styled: quiet tabs in the text colour, the selected one in weight 600 with a straight 4px `primary` bar at its edge, a hairline along the list, tabs 44px high (32px inside `kv-compact` from 64rem) and a focus ring on a tab and on the panel. The list wraps and never scrolls sideways. A vertical set is a row of the list and the panel, and stacks below 40rem.
 
 ## API
 
@@ -65,7 +65,7 @@ Keyed `tabs-*`, English, for the developer only: a `Tabs.List`, `Tab` or `Panel`
 ## Component
 
 ```tsx
-import { Tabs } from '@kvirn-ui/react'
+import { Tabs } from '@kvirn/ui'
 
 ;<Tabs.Root defaultValue="details">
   <Tabs.List aria-label="The case">
@@ -98,7 +98,7 @@ Pitfalls: give every tab a panel and every panel a tab, with the same `value`: t
 ## Hook
 
 ```tsx
-import { useTabs } from '@kvirn-ui/react'
+import { useTabs } from '@kvirn/ui'
 
 function CaseTabs() {
   const tabs = useTabs({ defaultValue: 'details', activationMode: 'automatic' })

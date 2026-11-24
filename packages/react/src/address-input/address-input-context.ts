@@ -1,4 +1,4 @@
-import type { AddressResult, GeocoderProvider } from '@kvirn-ui/core'
+import type { AddressResult, GeocoderProvider } from '@kvirn/core'
 import { createContext } from 'react'
 import type { AddressFill } from './use-address-fill.ts'
 import type { UseAddressInputResult } from './use-address-input.ts'

@@ -1,4 +1,4 @@
-import { PageFrameMain, ServiceLinkLink, ServiceLinkRoot } from '@kvirn-ui/patterns'
+import { PageFrameMain, ServiceLinkLink, ServiceLinkRoot } from '@kvirn/patterns'
 import {
   AlertBody,
   AlertTitle,
@@ -10,7 +10,7 @@ import {
   Heading,
   Prose,
   Stack,
-} from '@kvirn-ui/react'
+} from '@kvirn/ui'
 import type { Metadata } from 'next'
 import { notFound } from 'next/navigation'
 import { referenceNewsMessages } from '../../../../../../messages/reference-news.ts'

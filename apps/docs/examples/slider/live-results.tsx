@@ -1,5 +1,5 @@
 'use client'
-import { Field, Slider, Stack, useAnnouncer } from '@kvirn-ui/react'
+import { Field, Slider, Stack, useAnnouncer } from '@kvirn/ui'
 import { useEffect, useState } from 'react'
 import { useSliderTexts } from './texts.ts'
 

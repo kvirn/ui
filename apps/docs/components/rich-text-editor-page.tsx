@@ -1,4 +1,4 @@
-import { Link } from '@kvirn-ui/react'
+import { Link } from '@kvirn/ui'
 import { ApiBlock } from './api-block.tsx'
 import type { ApiPart } from './api-block.tsx'
 import { CodeBlock } from './code-block.tsx'
@@ -46,7 +46,7 @@ export type RichTextEditorExampleSources = Record<
   string
 >
 
-const installLines = `pnpm add @kvirn-ui/rich-text
+const installLines = `pnpm add @kvirn/rich-text
 pnpm add @tiptap/core @tiptap/pm @tiptap/react @tiptap/starter-kit @tiptap/extension-table @tiptap/extension-image @tiptap/extensions`
 
 const helperRows = {
@@ -248,7 +248,7 @@ export function RichTextEditorPage({
     <ComponentPage
       title="RichTextEditor"
       lead="Its output is not sanitized: clean it on your server before you store or publish it."
-      packageName="@kvirn-ui/rich-text"
+      packageName="@kvirn/rich-text"
       pattern="APG Toolbar (above a multi-line text)"
       whenToUse={
         <ul>
@@ -268,9 +268,9 @@ export function RichTextEditorPage({
             text: render it as <Link href="/components/prose">Prose</Link>.
           </li>
           <li>
-            It is its own package, <code>@kvirn-ui/rich-text</code>, built on Tiptap. Tiptap is a
-            peer: you install it yourself, once, so your app has one copy. The install lines are in
-            the <Link href="#api">API reference</Link>.
+            It is its own package, <code>@kvirn/rich-text</code>, built on Tiptap. Tiptap is a peer:
+            you install it yourself, once, so your app has one copy. The install lines are in the{' '}
+            <Link href="#api">API reference</Link>.
           </li>
         </ul>
       }
@@ -495,7 +495,7 @@ export function RichTextEditorPage({
           </p>
           <CodeBlock language="bash" code={installLines} />
           <ApiBlock
-            importLine="import { RichTextEditor, defaultExtensions, useRichTextEditor } from '@kvirn-ui/rich-text'"
+            importLine="import { RichTextEditor, defaultExtensions, useRichTextEditor } from '@kvirn/rich-text'"
             parts={parts}
             hook={useRichTextEditorHook}
             strings={

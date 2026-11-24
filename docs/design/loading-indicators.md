@@ -9,7 +9,7 @@
   - **Loops are endless**, under `prefers-reduced-motion: no-preference` only. No MotionToggle, no library stop control: WCAG 2.2.2 is the **consuming app's duty**, and the docs say so (§7.2).
   - `--kv-color-accent` and `--kv-duration-loop` are approved, and the sheen is at most 20 %.
   - FileUpload's indeterminate hatch moves to the new bar in the same plan.
-  - (2026-10-17, Plan 0126) `spinner` is a still icon in `@kvirn-ui/icons`, not built in (built-ins stay 25). A consumer class, `kv-animate-spinner`, makes it crawl with SVG stroke-dash. Button busy, Progress, the toast and the Map status keep the CSS `kv-spinner` for now (§8.3).
+  - (2026-10-17, Plan 0126) `spinner` is a still icon in `@kvirn/icons`, not built in (built-ins stay 25). A consumer class, `kv-animate-spinner`, makes it crawl with SVG stroke-dash. Button busy, Progress, the toast and the Map status keep the CSS `kv-spinner` for now (§8.3).
 
 ## 1. Brief
 

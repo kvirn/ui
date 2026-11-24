@@ -31,7 +31,7 @@ function walk(directory: string, keep: (name: string) => boolean): string[] {
 
 /**
  * `packages/<name>/src` for every package that has one. Contracts and component tests live in the
- * package that owns the component (`@kvirn-ui/react`, and `@kvirn-ui/rich-text` since Plan 0036).
+ * package that owns the component (`@kvirn/ui`, and `@kvirn/rich-text` since Plan 0036).
  */
 export function listPackageSourceDirectories(repositoryRoot: string): string[] {
   const packagesDirectory = join(repositoryRoot, 'packages')

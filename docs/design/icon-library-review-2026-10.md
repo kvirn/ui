@@ -1,6 +1,6 @@
 # Icon library review, 2026-10-17
 
-`ux-designer` review of the 256 icons in `@kvirn-ui/icons` before release (Plan 0124, Task 8), with the open design questions the maintainer delegated on 2026-10-17. Scope: the most obvious problems only. No redraw of the set; similar icons and variants are fine; the 45°/90°, named 1:2 and 2:1 slopes and `new`'s 28° points are accepted.
+`ux-designer` review of the 256 icons in `@kvirn/icons` before release (Plan 0124, Task 8), with the open design questions the maintainer delegated on 2026-10-17. Scope: the most obvious problems only. No redraw of the set; similar icons and variants are fine; the 45°/90°, named 1:2 and 2:1 slopes and `new`'s 28° points are accepted.
 
 **What was looked at:** every file in `packages/icons/svg/` rendered in Chromium from `catalog.json`, per category at 16, 20, 24, 32 and 48px (1× and 2×), the whole set at 24px light and dark, 20px dark, 20px and 16px greyscale, and 16/20/24/96px zooms of the candidates below. The spinner stories were screenshotted from a running Storybook with and without reduced motion. Recognition by residents, forced colours and AT were **not** checked: they are `pending`.
 

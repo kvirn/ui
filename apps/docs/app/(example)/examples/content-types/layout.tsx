@@ -1,8 +1,8 @@
 // Default theme, in @layer kv. The example pages load no docs.css or gallery.css and no docs shell:
 // each is one whole page, so it has one banner, one main and one contentinfo.
-import '@kvirn-ui/theme/theme.css'
+import '@kvirn/theme/theme.css'
 import '../../../../fonts/ibm-plex/ibm-plex.css'
-import { KvirnThemeScript, getLocaleProps } from '@kvirn-ui/react/server'
+import { KvirnThemeScript, getLocaleProps } from '@kvirn/ui/server'
 import type { Metadata } from 'next'
 import type { ReactNode } from 'react'
 import { messages } from '../../../../messages/en.ts'

@@ -1,4 +1,4 @@
-import { Link } from '@kvirn-ui/react'
+import { Link } from '@kvirn/ui'
 import type { Metadata } from 'next'
 import { PageWithContents } from '../../../components/page-contents.tsx'
 import { messages } from '../../../messages/en.ts'

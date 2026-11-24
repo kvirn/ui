@@ -1,5 +1,5 @@
 {
-  "name": "@kvirn-ui/rich-text",
+  "name": "@kvirn/rich-text",
   "version": "0.0.0",
   "description": "An accessible rich text editor for KvirnUI, built on Tiptap.",
   "homepage": "https://ui.kvirn.com",
@@ -34,13 +34,13 @@
     "build": "vp pack"
   },
   "dependencies": {
-    "@kvirn-ui/core": "workspace:*",
-    "@kvirn-ui/i18n": "workspace:*",
-    "@kvirn-ui/icons": "workspace:*",
-    "@kvirn-ui/react": "workspace:*"
+    "@kvirn/core": "workspace:*",
+    "@kvirn/i18n": "workspace:*",
+    "@kvirn/icons": "workspace:*",
+    "@kvirn/ui": "workspace:*"
   },
   "devDependencies": {
-    "@kvirn-ui/testing": "workspace:*",
+    "@kvirn/testing": "workspace:*",
     "@tiptap/core": "catalog:",
     "@tiptap/extension-image": "catalog:",
     "@tiptap/extension-table": "catalog:",

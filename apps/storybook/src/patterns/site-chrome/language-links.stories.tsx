@@ -1,4 +1,4 @@
-import { LanguageLinks } from '@kvirn-ui/patterns'
+import { LanguageLinks } from '@kvirn/patterns'
 import type { Meta, StoryObj } from '@storybook/react-vite'
 import { expect } from 'storybook/test'
 import contract from '../../../../../packages/patterns/src/site-chrome/language-links/language-links.a11y.md?raw'

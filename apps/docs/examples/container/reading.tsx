@@ -1,5 +1,5 @@
 'use client'
-import { Container, Prose } from '@kvirn-ui/react'
+import { Container, Prose } from '@kvirn/ui'
 import { useContainerTexts } from './texts.ts'
 
 export function ReadingColumn() {

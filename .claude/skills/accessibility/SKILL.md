@@ -50,7 +50,7 @@ The bar is WCAG 2.2 AA with real assistive technology, not just a clean axe run.
 
 ## Screen reader approximation
 
-`readAloud(container)` and `readAnnouncements(container, act)` from `@kvirn-ui/testing/read-aloud` return the phrases a virtual screen reader speaks ("button, Menu, not expanded", "polite: Saved"). Use them for the contract's Read aloud table: reading order, name, state and live text.
+`readAloud(container)` and `readAnnouncements(container, act)` from `@kvirn/testing/read-aloud` return the phrases a virtual screen reader speaks ("button, Menu, not expanded", "polite: Saved"). Use them for the contract's Read aloud table: reading order, name, state and live text.
 
 - `toMatchAriaSnapshot`: role, name and state of the tree, no dependency. Use it for structure.
 - axe: rule violations only. It doesn't say what is read.

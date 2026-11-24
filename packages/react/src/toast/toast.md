@@ -9,12 +9,12 @@ A short status message after something worked, that does not move focus, is hear
 - Info and success only. No warning or danger toast.
 - Items are built from the Alert's parts (`kv-alert kv-toast`): the status word, an icon, the Title as a `<p>`, an optional Body, an optional action and an always-present Close.
 - No role and no `aria-live` in the region. The provider announces once, politely, through the Announcer.
-- Headless: no CSS. With `@kvirn-ui/theme/theme.css` it is styled and placed at the block-end, inline-end edge in the top layer.
+- Headless: no CSS. With `@kvirn/theme/theme.css` it is styled and placed at the block-end, inline-end edge in the top layer.
 
 ## API
 
 ```tsx
-import { KvirnProvider, useToast } from '@kvirn-ui/react'
+import { KvirnProvider, useToast } from '@kvirn/ui'
 ;<KvirnProvider locale="en" toast={{ limit: 5, autoDismiss: false }}>
   <App />
 </KvirnProvider>

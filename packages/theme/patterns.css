@@ -1,7 +1,7 @@
 /*
- * Pattern classes: @kvirn-ui/theme (imported by theme.css, so one import styles everything).
+ * Pattern classes: @kvirn/theme (imported by theme.css, so one import styles everything).
  *
- * The compositions of @kvirn-ui/patterns render these classes and ship no CSS. The file follows
+ * The compositions of @kvirn/patterns render these classes and ship no CSS. The file follows
  * theme.css: semantic tokens only, logical properties, rem breakpoints (40rem, 64rem), nothing
  * sticky, nothing reordered, no fixed height on text. It is imported into `@layer kv` after the
  * layer order statement, so every rule here sits before the component rules of theme.css in the

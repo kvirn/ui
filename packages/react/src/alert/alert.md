@@ -8,7 +8,7 @@ A status message in the content: something people need to know now, or the resul
 - Four parts inside them: `Alert.Title` (required, an `h2` by default), `Alert.Body`, `Alert.Actions` and `Alert.Close` (all three optional).
 - No role, no `aria-live` and no `aria-atomic` on the box. A screen reader reads it in reading order, and finds the Title in the heading list.
 - Status is a class, not a prop: you choose it by choosing the component. There is no `variant` prop.
-- Headless: no CSS. Every part renders its stable class, and your `className` joins it. With `@kvirn-ui/theme/theme.css` imported, it's styled.
+- Headless: no CSS. Every part renders its stable class, and your `className` joins it. With `@kvirn/theme/theme.css` imported, it's styled.
 - Dismissing is optional: add `Alert.Close`, an icon button, and remove the alert yourself when it is pressed. The alert owns no state. Never on a timer. A Toast (transient) is a later component.
 
 ## API
@@ -35,7 +35,7 @@ A status message in the content: something people need to know now, or the resul
 ## Component
 
 ```tsx
-import { Button, Alert } from '@kvirn-ui/react'
+import { Button, Alert } from '@kvirn/ui'
 
 // Present when the page loads: no announce, no role, no focus. It's content.
 ;<Alert.Warning>
@@ -86,8 +86,8 @@ Pick the status by what happened, not by the colour you want. If no status fits,
 For a status that comes from data, keep the choice visible in your code with a typed map:
 
 ```tsx
-import { Alert } from '@kvirn-ui/react'
-import type { AlertVariant } from '@kvirn-ui/react'
+import { Alert } from '@kvirn/ui'
+import type { AlertVariant } from '@kvirn/ui'
 
 const alertFor = {
   info: Alert.Info,
@@ -192,7 +192,7 @@ Never for messages about a part of the page.
 ## Hook
 
 ```tsx
-import { Icon, useAlert } from '@kvirn-ui/react'
+import { Icon, useAlert } from '@kvirn/ui'
 
 function PermitNotice() {
   const alert = useAlert({ variant: 'warning', announce: 'polite' })

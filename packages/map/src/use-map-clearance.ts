@@ -1,5 +1,5 @@
-import { panBy } from '@kvirn-ui/core'
-import type { MapHandle, MapView } from '@kvirn-ui/core'
+import { panBy } from '@kvirn/core'
+import type { MapHandle, MapView } from '@kvirn/core'
 import { useCallback, useEffect, useRef, useState } from 'react'
 import { readMoveAnimation } from './use-map-popup.ts'
 

@@ -22,7 +22,7 @@ export interface ReadAloudOptions {
   engine: ReadAloudEngine
   /**
    * The language when `play` isn't given one: the content's own declared `lang`, never the UI's
-   * (3.1.2). `@kvirn-ui/read-aloud` resolves it as content's `lang` → the provider's `locale` →
+   * (3.1.2). `@kvirn/read-aloud` resolves it as content's `lang` → the provider's `locale` →
    * `'en'`; `core` applies only the final `'en'`, for a caller with no locale of its own.
    */
   getLanguage?: (() => string) | undefined

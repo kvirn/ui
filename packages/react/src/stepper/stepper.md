@@ -5,7 +5,7 @@ Stepper says where the user is in a multi-page form, in one line of text: "Step 
 Put it directly after the page heading, as its own element. Never inside the `h1`, a `label` or a `legend`: its text would join that name (a development warning says so). The Stepper adds no focus move and no announcement: the new page is carried by focus (`useRouteFocus` moves it to the heading), and the Stepper is the next thing a screen reader reads.
 
 ```tsx
-import { Heading, Stack, Stepper } from '@kvirn-ui/react'
+import { Heading, Stack, Stepper } from '@kvirn/ui'
 
 ;<Stack className="kv-stack--gap-2">
   <Heading as="h1">Which vehicle does the application apply to?</Heading>

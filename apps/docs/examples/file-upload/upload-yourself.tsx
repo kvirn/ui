@@ -1,6 +1,6 @@
 'use client'
-import { Field, FileUpload } from '@kvirn-ui/react'
-import type { FileUploadContext } from '@kvirn-ui/react'
+import { Field, FileUpload } from '@kvirn/ui'
+import type { FileUploadContext } from '@kvirn/ui'
 import { useFileUploadTexts } from './texts.ts'
 
 // Stands in for your own request to your own server: KvirnUI sends nothing anywhere.

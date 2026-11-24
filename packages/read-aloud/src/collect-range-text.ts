@@ -1,4 +1,4 @@
-import type { CollectedText } from '@kvirn-ui/core'
+import type { CollectedText } from '@kvirn/core'
 
 type LanguageRun = CollectedText['languageRuns'][number]
 

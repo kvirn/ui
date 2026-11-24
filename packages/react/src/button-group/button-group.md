@@ -8,7 +8,7 @@ A row of related [Button](../button/button.md)s: the footer of a [Card](../card/
 - **A group in a Toolbar must have a name.** A development warning says so.
 - **Add `kv-button-group--attached` to join the buttons into one strip,** like a segmented control: they touch, share borders and only the outer corners are rounded (flipped in right-to-left text). A pressed `Toggle` is the filled segment. The default is a spaced row. It changes the look only: the role, the name and the Tab stops are the same.
 - It holds no state and handles no keys.
-- With `@kvirn-ui/theme/theme.css` imported, the group is a row that wraps, with 12px between buttons, and stacks at full width below 40rem. An attached group never stacks or wraps, and a button may wrap its own label. In a Toolbar it never stacks, and has 4px between buttons and a hairline before it from 40rem. Put the one primary button first: it is the main next step, and comes first in focus order.
+- With `@kvirn/theme/theme.css` imported, the group is a row that wraps, with 12px between buttons, and stacks at full width below 40rem. An attached group never stacks or wraps, and a button may wrap its own label. In a Toolbar it never stacks, and has 4px between buttons and a hairline before it from 40rem. Put the one primary button first: it is the main next step, and comes first in focus order.
 
 ## API
 
@@ -40,7 +40,7 @@ Keyed `button-group-*`, English, for the developer only: a group in a Toolbar wi
 ## Component
 
 ```tsx
-import { Button, ButtonGroup } from '@kvirn-ui/react'
+import { Button, ButtonGroup } from '@kvirn/ui'
 
 ;<ButtonGroup aria-label="Case actions">
   <Button className="kv-button--primary">Send</Button>
@@ -73,7 +73,7 @@ A name should say what the buttons are, not "Group". With several groups on a pa
 ## Hook
 
 ```tsx
-import { useButtonGroup } from '@kvirn-ui/react'
+import { useButtonGroup } from '@kvirn/ui'
 
 function Actions() {
   const group = useButtonGroup({ isNamed: true })

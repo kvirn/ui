@@ -1,5 +1,5 @@
 // kv-lang-ok-file: this page is about locales, so its code samples show Swedish message text.
-import { localeCodes } from '@kvirn-ui/i18n'
+import { localeCodes } from '@kvirn/i18n'
 import {
   Heading,
   Link,
@@ -11,7 +11,7 @@ import {
   TableRow,
   TableRowHeader,
   TableScrollRegion,
-} from '@kvirn-ui/react'
+} from '@kvirn/ui'
 import { CodeBlock } from './code-block.tsx'
 import { ExampleFrame } from './example-frame.tsx'
 import { Note } from './note.tsx'
@@ -22,13 +22,13 @@ import { messages } from '../messages/en.ts'
 
 const languageNames = messages.docs.example.languages
 
-const catalogImport = `import { KvirnProvider } from '@kvirn-ui/react'
-import { sv } from '@kvirn-ui/i18n/sv'
+const catalogImport = `import { KvirnProvider } from '@kvirn/ui'
+import { sv } from '@kvirn/i18n/sv'
 
 <KvirnProvider locale="sv-SE" messages={sv}>`
 
-const adjustCatalog = `import { defineMessages } from '@kvirn-ui/i18n'
-import { sv } from '@kvirn-ui/i18n/sv'
+const adjustCatalog = `import { defineMessages } from '@kvirn/i18n'
+import { sv } from '@kvirn/i18n/sv'
 
 const messages = defineMessages(sv, {
   link: { newTabNotice: '(öppnas i nytt fönster)' }, // Swedish for "(opens in a new window)"
@@ -53,13 +53,13 @@ const localeProps = `const { localeProps } = useLocale() // { lang: 'fi-FI', dir
 
 <section {...localeProps}>…</section>`
 
-const hookUse = `import { useFormat } from '@kvirn-ui/react'
+const hookUse = `import { useFormat } from '@kvirn/ui'
 
 const format = useFormat()
 format.date(date, { dateStyle: 'long' })
 format.number(amount, { style: 'currency', currency: 'SEK' })`
 
-const serverFormat = `import { createMessageFormat } from '@kvirn-ui/react/server'
+const serverFormat = `import { createMessageFormat } from '@kvirn/ui/server'
 
 const format = createMessageFormat({ locale: 'sv-SE', timeZone: 'Europe/Stockholm' })`
 
@@ -122,7 +122,7 @@ export function LocalesPage({
                         </TableRowHeader>
                         <TableCell lang={code}>{languageNames[code]}</TableCell>
                         <TableCell>
-                          <code>{`@kvirn-ui/i18n/${code}`}</code>
+                          <code>{`@kvirn/i18n/${code}`}</code>
                         </TableCell>
                       </TableRow>
                     ))}
@@ -294,7 +294,7 @@ export function LocalesPage({
               </ul>
               <p>
                 In a server component a hook can&apos;t run. Build the same object with{' '}
-                <code>createMessageFormat</code> from <code>@kvirn-ui/react/server</code>. See{' '}
+                <code>createMessageFormat</code> from <code>@kvirn/ui/server</code>. See{' '}
                 <Link href="/foundation/rendering">Rendering: server and client</Link>.
               </p>
               <CodeBlock code={serverFormat} />

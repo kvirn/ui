@@ -32,7 +32,7 @@ export interface UseTextareaOptions extends FieldControlOptions<TextareaChangeDe
 
 /** Spread on the `<textarea>`. */
 export interface TextareaPartProps extends InputControlPartProps {
-  /** The part's class, for `@kvirn-ui/theme` and your own CSS: `.kv-textarea`. */
+  /** The part's class, for `@kvirn/theme` and your own CSS: `.kv-textarea`. */
   className: 'kv-textarea'
   rows: number
   onChange: ChangeEventHandler<HTMLTextAreaElement>

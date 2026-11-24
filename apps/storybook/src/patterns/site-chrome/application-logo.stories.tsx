@@ -1,5 +1,5 @@
-import { ApplicationLogo, SiteHeader } from '@kvirn-ui/patterns'
-import { kvirnbyMark } from '@kvirn-ui/patterns/fixtures'
+import { ApplicationLogo, SiteHeader } from '@kvirn/patterns'
+import { kvirnbyMark } from '@kvirn/patterns/fixtures'
 import type { Meta, StoryObj } from '@storybook/react-vite'
 import { expect, userEvent } from 'storybook/test'
 import contract from '../../../../../packages/patterns/src/site-chrome/application-logo/application-logo.a11y.md?raw'

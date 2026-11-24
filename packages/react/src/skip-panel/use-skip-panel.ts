@@ -1,6 +1,6 @@
-import { getRovingTarget, matchShortcut, shortcutKeys, toAriaKeyShortcuts } from '@kvirn-ui/core'
-import type { Env, Shortcut, ShortcutKey } from '@kvirn-ui/core'
-import type { KvirnMessages } from '@kvirn-ui/i18n'
+import { getRovingTarget, matchShortcut, shortcutKeys, toAriaKeyShortcuts } from '@kvirn/core'
+import type { Env, Shortcut, ShortcutKey } from '@kvirn/core'
+import type { KvirnMessages } from '@kvirn/i18n'
 import {
   useCallback,
   useContext,
@@ -28,7 +28,7 @@ export interface UseSkipPanelOptions {
 
 /** Spread on the Root's `<div>`. */
 export interface SkipPanelRootPartProps {
-  /** The part's class, for `@kvirn-ui/theme` and your own CSS: `.kv-skip-panel`. */
+  /** The part's class, for `@kvirn/theme` and your own CSS: `.kv-skip-panel`. */
   className: 'kv-skip-panel'
   /** Set after Escape on the floating list: only the focused item stays visible. */
   'data-collapsed'?: ''

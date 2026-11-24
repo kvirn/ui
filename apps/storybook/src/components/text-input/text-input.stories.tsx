@@ -1,4 +1,4 @@
-import { Button, Card, Field, KvirnProvider, masks, TextInput } from '@kvirn-ui/react'
+import { Button, Card, Field, KvirnProvider, masks, TextInput } from '@kvirn/ui'
 import contract from '../../../../../packages/react/src/text-input/text-input.a11y.md?raw'
 import guide from '../../../../../packages/react/src/text-input/text-input.md?raw'
 import type { Meta, StoryObj } from '@storybook/react-vite'
@@ -21,7 +21,7 @@ import {
   StartDateField,
 } from './text-input.fixture.tsx'
 
-// Components/Form/TextInput: the native text <input>, styled by @kvirn-ui/theme/theme.css (design
+// Components/Form/TextInput: the native text <input>, styled by @kvirn/theme/theme.css (design
 // spec docs/design/form-fields.md §6.3). It lives in a Field, which gives it its name, help text and
 // error. A quantity or an amount is a NumberInput, never `type="number"`: see
 // Components/Form/NumberInput. KvirnUI holds no form state: an uncontrolled TextInput keeps its

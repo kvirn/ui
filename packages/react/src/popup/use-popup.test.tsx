@@ -1,4 +1,4 @@
-import { expectNoA11yViolations } from '@kvirn-ui/testing'
+import { expectNoA11yViolations } from '@kvirn/testing'
 import { useRef, useState } from 'react'
 import type { CSSProperties } from 'react'
 import { renderToString } from 'react-dom/server'

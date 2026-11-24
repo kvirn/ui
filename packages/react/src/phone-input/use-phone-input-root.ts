@@ -1,4 +1,4 @@
-import { callingCodeFor } from '@kvirn-ui/core'
+import { callingCodeFor } from '@kvirn/core'
 import { useCallback, useState } from 'react'
 import type { ChangeEvent } from 'react'
 import { useLocale } from '../provider/use-locale.ts'
@@ -26,7 +26,7 @@ export interface UsePhoneInputRootOptions {
 /** Spread on the `<div>` that holds the parts. */
 export interface PhoneInputRootPartProps {
   /**
-   * The part's class, for `@kvirn-ui/theme` and your own CSS: `.kv-phone-input-group`. Add your
+   * The part's class, for `@kvirn/theme` and your own CSS: `.kv-phone-input-group`. Add your
    * own class next to it with `mergeProps`: class names join.
    */
   className: 'kv-phone-input-group'

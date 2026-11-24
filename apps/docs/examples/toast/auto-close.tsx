@@ -1,5 +1,5 @@
 'use client'
-import { Button, ButtonGroup, Field, Switch, useToast } from '@kvirn-ui/react'
+import { Button, ButtonGroup, Field, Switch, useToast } from '@kvirn/ui'
 import { useEffect } from 'react'
 import { useDocsAutoDismiss } from '../../app/(docs)/providers.tsx'
 import { useToastTexts } from './texts.ts'

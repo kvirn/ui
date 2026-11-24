@@ -1,6 +1,6 @@
 'use client'
 
-import { Address, Grid, Heading, Link, List, Stack, DefinitionList, TopBar } from '@kvirn-ui/react'
+import { Address, Grid, Heading, Link, List, Stack, DefinitionList, TopBar } from '@kvirn/ui'
 import type { ReactNode } from 'react'
 import { kvirnbyMark } from '../../fixtures/images.ts'
 import { ApplicationLogo } from '../../site-chrome/application-logo/application-logo.tsx'

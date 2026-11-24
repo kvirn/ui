@@ -8,16 +8,16 @@ A code sample with a label and a [CopyButton](../copy-button/copy-button.md). No
 - The Label is your text, so it has no message key. The copy messages are `copyButton.*`: override them with `messages` on `CodeBlock.Copy`.
 - Wrap the app in `KvirnProvider`: the result is announced through it.
 - Every part takes `ref` and a `className` that joins the part's class. No part takes `as`: the Root is a named group, the Label a `<p>` and the Code a `<pre>`.
-- Headless: no CSS. With `@kvirn-ui/theme/theme.css` the Code is `text` on `surface`, in the mono family. It sits outside prose styling, so it looks the same in an article.
+- Headless: no CSS. With `@kvirn/theme/theme.css` the Code is `text` on `surface`, in the mono family. It sits outside prose styling, so it looks the same in an article.
 
 ## Component
 
 ```tsx
-import { CodeBlock } from '@kvirn-ui/react'
+import { CodeBlock } from '@kvirn/ui'
 
 ;<CodeBlock.Root>
   <CodeBlock.Label>Installera</CodeBlock.Label>
-  <CodeBlock.Code>pnpm add @kvirn-ui/react</CodeBlock.Code>
+  <CodeBlock.Code>pnpm add @kvirn/ui</CodeBlock.Code>
   <CodeBlock.Copy />
 </CodeBlock.Root>
 ```

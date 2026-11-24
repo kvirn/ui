@@ -1,12 +1,12 @@
-import { dateInputOrder } from '@kvirn-ui/core'
-import type { DateInputPart } from '@kvirn-ui/core'
-import type { KvirnMessages } from '@kvirn-ui/i18n'
+import { dateInputOrder } from '@kvirn/core'
+import type { DateInputPart } from '@kvirn/core'
+import type { KvirnMessages } from '@kvirn/i18n'
 import { useMemo, useRef } from 'react'
 import type { ChangeEvent, ChangeEventHandler, RefCallback } from 'react'
 import { useLocale } from '../provider/use-locale.ts'
 import { useMessages } from '../provider/use-messages.ts'
 
-export type { DateInputPart } from '@kvirn-ui/core'
+export type { DateInputPart } from '@kvirn/core'
 
 /** The date as the three boxes show it: strings, exactly as typed. Never parsed. */
 export interface DateInputValue {
@@ -57,7 +57,7 @@ export interface UseDateInputOptions {
 /** Spread on the row that holds the three boxes. */
 export interface DateInputRootPartProps {
   /**
-   * The part's class, for `@kvirn-ui/theme` and your own CSS: `.kv-date-input`. Add your own
+   * The part's class, for `@kvirn/theme` and your own CSS: `.kv-date-input`. Add your own
    * class next to it with `mergeProps`: class names join.
    */
   className: 'kv-date-input'

@@ -1,4 +1,4 @@
-import type { KvirnMessages } from '@kvirn-ui/i18n'
+import type { KvirnMessages } from '@kvirn/i18n'
 import { createContext, useCallback, useLayoutEffect, useRef, useState } from 'react'
 import type { RefObject } from 'react'
 import { warnOnce } from '../dev/dev-warning.ts'

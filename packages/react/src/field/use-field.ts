@@ -1,4 +1,4 @@
-import type { KvirnMessages } from '@kvirn-ui/i18n'
+import type { KvirnMessages } from '@kvirn/i18n'
 import { useContext, useId, useMemo } from 'react'
 import { useMessages } from '../provider/use-messages.ts'
 import { FieldGroupContext } from './field-context.ts'
@@ -55,7 +55,7 @@ export interface UseFieldOptions {
 /** Spread on the field's container. */
 export interface FieldRootPartProps extends FieldStateAttributes {
   /**
-   * The part's class, for `@kvirn-ui/theme` and your own CSS: `.kv-field`. Add your own class
+   * The part's class, for `@kvirn/theme` and your own CSS: `.kv-field`. Add your own class
    * next to it with `mergeProps`: class names join.
    */
   className: 'kv-field'

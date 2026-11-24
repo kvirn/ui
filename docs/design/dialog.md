@@ -43,7 +43,7 @@ flowchart TD
 
 ## 4. Content
 
-Component strings (`@kvirn-ui/i18n`, all six locales, overridable per provider and instance):
+Component strings (`@kvirn/i18n`, all six locales, overridable per provider and instance):
 
 | Key            | en    | sv    | fi                                                                                       |
 | -------------- | ----- | ----- | ---------------------------------------------------------------------------------------- |

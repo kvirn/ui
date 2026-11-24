@@ -1,5 +1,5 @@
 'use client'
-import { Address, Stack } from '@kvirn-ui/react'
+import { Address, Stack } from '@kvirn/ui'
 import { useAddressTexts } from './texts.ts'
 
 export function TwoAddresses() {

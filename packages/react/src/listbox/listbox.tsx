@@ -1,5 +1,5 @@
 'use client'
-import type { ListboxEntry, ListboxSection } from '@kvirn-ui/core'
+import type { ListboxEntry, ListboxSection } from '@kvirn/core'
 import {
   createElement,
   Fragment,

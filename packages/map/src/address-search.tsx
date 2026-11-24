@@ -1,6 +1,6 @@
-import type { AddressSuggestion } from '@kvirn-ui/core'
-import { error as errorIcon, info as infoIcon } from '@kvirn-ui/icons'
-import { Autocomplete, Field, Icon } from '@kvirn-ui/react'
+import type { AddressSuggestion } from '@kvirn/core'
+import { error as errorIcon, info as infoIcon } from '@kvirn/icons'
+import { Autocomplete, Field, Icon } from '@kvirn/ui'
 import type {
   AutocompleteClearProps,
   AutocompleteControlProps,
@@ -11,13 +11,13 @@ import type {
   FieldHelpTextProps,
   FieldLabelProps,
   FieldRootProps,
-} from '@kvirn-ui/react'
+} from '@kvirn/ui'
 import {
   ComboboxProviders,
   useAddressLookupEngine,
   useAddressLookupField,
-} from '@kvirn-ui/react/internal'
-import type { AddressLookupEngine } from '@kvirn-ui/react/internal'
+} from '@kvirn/ui/internal'
+import type { AddressLookupEngine } from '@kvirn/ui/internal'
 import { createContext, useContext } from 'react'
 import type { ComponentPropsWithRef, ReactElement, ReactNode } from 'react'
 import { joinClassNames } from './class-names.ts'

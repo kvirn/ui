@@ -1,5 +1,5 @@
 'use client'
-import { Heading, Popover, VisuallyHidden } from '@kvirn-ui/react'
+import { Heading, Popover, VisuallyHidden } from '@kvirn/ui'
 import { useId } from 'react'
 import { usePopoverTexts } from './texts.ts'
 

@@ -9,7 +9,7 @@ A short label for a control, shown when the pointer rests on it or it has keyboa
 - **The name is heard once.** The popup is always in the DOM, hidden while closed. `Tooltip.Name` repeats the trigger's name and is `aria-hidden`. `Tooltip.Shortcut` is the trigger's description, so a screen reader says "Bold, toggle button, not pressed, Ctrl+B". Plain text in the popup, with neither part, is the description as a whole. A tooltip with only a name adds nothing for assistive technology, so the whole popup is `aria-hidden` (its role stays) and the trigger gets no description.
 - **Never the only name.** Give the trigger an `aria-label` from your translations (or visible text), and start the tooltip with the same text, so a voice-control user can say what they see (2.5.3). Don't use the `title` attribute next to it: it isn't shown on keyboard focus or touch, can't be hovered or dismissed, and is announced twice. A development warning fires for a trigger with no name of its own.
 - **Text and keys only.** No link, button or field in a tooltip: a development warning fires. A tooltip on a natively `disabled` button never shows (no pointer events, no focus): use `aria-disabled` (toolbar items always do).
-- No strings of its own: the text is yours. Headless: no CSS. With `@kvirn-ui/theme/theme.css` it is a level 3 popup with the `md` radius, 20rem at most, in the top layer, above its trigger and flipping below when there is no room.
+- No strings of its own: the text is yours. Headless: no CSS. With `@kvirn/theme/theme.css` it is a level 3 popup with the `md` radius, 20rem at most, in the top layer, above its trigger and flipping below when there is no room.
 
 ## API
 
@@ -57,7 +57,7 @@ Keyed `tooltip-*`, English, for the developer only: a trigger with no accessible
 ## Component
 
 ```tsx
-import { Icon, Kbd, Toolbar, Tooltip } from '@kvirn-ui/react'
+import { Icon, Kbd, Toolbar, Tooltip } from '@kvirn/ui'
 
 ;<Tooltip.Root>
   <Tooltip.Trigger as={Toolbar.Toggle} aria-label="Bold" aria-keyshortcuts="Control+B">
@@ -112,7 +112,7 @@ A trigger that opens a Popover or a Listbox (`aria-expanded="true"`) closes its 
 ## Hook
 
 ```tsx
-import { useTooltip } from '@kvirn-ui/react'
+import { useTooltip } from '@kvirn/ui'
 
 function BoldButton() {
   const tooltip = useTooltip({ description: 'shortcut' })
@@ -130,7 +130,7 @@ function BoldButton() {
 }
 ```
 
-It returns `isOpen`, `placement` (the one in use, after a flip), `triggerProps`, `popupProps`, `nameProps` and `shortcutProps`. `description` says what `aria-describedby` points at: `'popup'` (default), `'shortcut'` or `'none'`. The trigger's ref is a callback ref, so it fits any element: `mergeProps(yourProps, tooltip.triggerProps)` merges yours, but join your own `aria-describedby` with `triggerProps['aria-describedby']` instead of replacing it. The timing is `createTooltipMachine` in `@kvirn-ui/core`, which holds no DOM.
+It returns `isOpen`, `placement` (the one in use, after a flip), `triggerProps`, `popupProps`, `nameProps` and `shortcutProps`. `description` says what `aria-describedby` points at: `'popup'` (default), `'shortcut'` or `'none'`. The trigger's ref is a callback ref, so it fits any element: `mergeProps(yourProps, tooltip.triggerProps)` merges yours, but join your own `aria-describedby` with `triggerProps['aria-describedby']` instead of replacing it. The timing is `createTooltipMachine` in `@kvirn/core`, which holds no DOM.
 
 ## Accessibility
 

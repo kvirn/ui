@@ -1,6 +1,6 @@
 // kv-lang-ok-file: per-locale story texts: the toolbar locale selects the sv, fi, nb, nn or en table
-import { Button, Listbox, Popover, Toolbar } from '@kvirn-ui/react'
-import type { ToolbarRootProps } from '@kvirn-ui/react'
+import { Button, Listbox, Popover, Toolbar } from '@kvirn/ui'
+import type { ToolbarRootProps } from '@kvirn/ui'
 import { useId, useState } from 'react'
 import type { CSSProperties } from 'react'
 

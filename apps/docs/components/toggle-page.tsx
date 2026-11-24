@@ -1,4 +1,4 @@
-import { Link } from '@kvirn-ui/react'
+import { Link } from '@kvirn/ui'
 import { ApiBlock } from './api-block.tsx'
 import type { ApiPart } from './api-block.tsx'
 import { apiHookPart } from './api-ids.ts'
@@ -227,7 +227,7 @@ export function TogglePage({
       contractSections={contractSectionList(contract)}
       api={
         <ApiBlock
-          importLine="import { Toggle, useToggle } from '@kvirn-ui/react'"
+          importLine="import { Toggle, useToggle } from '@kvirn/ui'"
           parts={parts}
           hook={useToggleHook}
         />

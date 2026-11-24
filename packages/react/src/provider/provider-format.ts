@@ -1,5 +1,5 @@
-import { createMessageFormat } from '@kvirn-ui/core'
-import type { MessageFormatter } from '@kvirn-ui/core'
+import { createMessageFormat } from '@kvirn/core'
+import type { MessageFormatter } from '@kvirn/core'
 import { warnOnce } from '../dev/dev-warning.ts'
 
 /**

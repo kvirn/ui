@@ -1,5 +1,5 @@
 'use client'
-import { Field, RadioGroup, TextInput } from '@kvirn-ui/react'
+import { Field, RadioGroup, TextInput } from '@kvirn/ui'
 import { useRadioGroupTexts } from './texts.ts'
 
 export function OtherOptionRadioGroup() {

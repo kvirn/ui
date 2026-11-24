@@ -1,6 +1,6 @@
 // kv-lang-ok-file: per-locale story texts: the toolbar locale selects the sv, fi, nb, nn or en table
-import { fi } from '@kvirn-ui/i18n/fi'
-import { KvirnProvider, Link, Navigation } from '@kvirn-ui/react'
+import { fi } from '@kvirn/i18n/fi'
+import { KvirnProvider, Link, Navigation } from '@kvirn/ui'
 import { InLanguage } from '../../fixture-language.tsx'
 import type { ReactNode } from 'react'
 // Package-internal fixture, shared with link.test.tsx. It stands in for a router: not part of
@@ -52,7 +52,7 @@ const texts = {
  * provider, and every Link renders it. `mockRouterLinkComponent` stands in for your router's own
  * link (such as `NextLink`), and `MockRouterProvider` for its provider. In a TypeScript app,
  * augment `Register` so `LinkProps` follow the router's link:
- * `declare module '@kvirn-ui/react' { interface Register { linkComponent: typeof NextLink } }`.
+ * `declare module '@kvirn/ui' { interface Register { linkComponent: typeof NextLink } }`.
  */
 export function AppRoot({ children }: { children: ReactNode }) {
   return (

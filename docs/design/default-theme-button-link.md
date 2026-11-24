@@ -90,15 +90,15 @@ The recipes add no strings. The example labels are in [storybook-presentation.md
 
 ### Delivery
 
-**Tokens in `tokens.ts` generate `tokens.css`, and `tokens.ts` also generates `tailwind.css`. Opt-in recipes ship from `@kvirn-ui/theme`. Nothing is loaded automatically.**
+**Tokens in `tokens.ts` generate `tokens.css`, and `tokens.ts` also generates `tailwind.css`. Opt-in recipes ship from `@kvirn/theme`. Nothing is loaded automatically.**
 
-| Export                               | Contents                                                                                                                                             |
-| ------------------------------------ | ---------------------------------------------------------------------------------------------------------------------------------------------------- |
-| `@kvirn-ui/theme/tokens.css`         | `@layer kv.tokens`: custom properties for the four themes, `color-scheme` per theme, and the `.kv-compact` overrides. No element selectors           |
-| `@kvirn-ui/theme/recipes/button.css` | `@layer kv.recipes`: `.kv-button`, `.kv-button-primary`, `.kv-button-danger`, `.kv-button-group`                                                     |
-| `@kvirn-ui/theme/recipes/link.css`   | `@layer kv.recipes`: `.kv-link`, `.kv-nav-list`, `.kv-nav-item`                                                                                      |
-| `@kvirn-ui/theme/tailwind.css`       | `@theme inline { … }`. Every Tailwind variable maps to `var(--kv-*)` (`--color-kv-primary`, `--radius-kv-md`, `--spacing-kv-4`, `--font-kv-sans`, …) |
-| `@kvirn-ui/theme` (JS)               | `colorTokens`, `contrastRequirements`, `checkTheme` and the other token objects                                                                      |
+| Export                            | Contents                                                                                                                                             |
+| --------------------------------- | ---------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `@kvirn/theme/tokens.css`         | `@layer kv.tokens`: custom properties for the four themes, `color-scheme` per theme, and the `.kv-compact` overrides. No element selectors           |
+| `@kvirn/theme/recipes/button.css` | `@layer kv.recipes`: `.kv-button`, `.kv-button-primary`, `.kv-button-danger`, `.kv-button-group`                                                     |
+| `@kvirn/theme/recipes/link.css`   | `@layer kv.recipes`: `.kv-link`, `.kv-nav-list`, `.kv-nav-item`                                                                                      |
+| `@kvirn/theme/tailwind.css`       | `@theme inline { … }`. Every Tailwind variable maps to `var(--kv-*)` (`--color-kv-primary`, `--radius-kv-md`, `--spacing-kv-4`, `--font-kv-sans`, …) |
+| `@kvirn/theme` (JS)               | `colorTokens`, `contrastRequirements`, `checkTheme` and the other token objects                                                                      |
 
 Rules:
 

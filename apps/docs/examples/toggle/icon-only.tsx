@@ -1,5 +1,5 @@
 'use client'
-import { Icon, Toggle } from '@kvirn-ui/react'
+import { Icon, Toggle } from '@kvirn/ui'
 import { useId, useState } from 'react'
 import { useToggleTexts } from './texts.ts'
 

@@ -1,4 +1,4 @@
-import { Link } from '@kvirn-ui/react'
+import { Link } from '@kvirn/ui'
 import { apiHookPart } from './api-ids.ts'
 import { ApiBlock } from './api-block.tsx'
 import type { ApiPart } from './api-block.tsx'
@@ -260,7 +260,7 @@ export function ToastPage({
           <CodeBlock code={provide} />
           <CodeBlock code={use} />
           <ApiBlock
-            importLine="import { KvirnProvider, useToast } from '@kvirn-ui/react'"
+            importLine="import { KvirnProvider, useToast } from '@kvirn/ui'"
             parts={[providerPart]}
             hooks={[
               {

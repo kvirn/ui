@@ -1,7 +1,7 @@
 'use client'
-import type { AnnouncerPoliteness } from '@kvirn-ui/core'
-import type { KvirnMessages } from '@kvirn-ui/i18n'
-import { close } from '@kvirn-ui/icons'
+import type { AnnouncerPoliteness } from '@kvirn/core'
+import type { KvirnMessages } from '@kvirn/i18n'
+import { close } from '@kvirn/icons'
 import { useContext, useEffect } from 'react'
 import type { ComponentPropsWithRef, ReactElement, ReactNode } from 'react'
 import { useButton } from '../button/use-button.ts'
@@ -305,7 +305,7 @@ AlertClose.displayName = 'Alert.Close'
  * never with colour alone. It doesn't announce itself unless you set `announce`, adds no role
  * or `aria-live` to its box, and never takes focus on its own. Status is a class, not a prop:
  * you choose it by choosing the component. `Alert.Root` is the plain base for your own
- * design. With `@kvirn-ui/theme`, the look is only CSS on the status class.
+ * design. With `@kvirn/theme`, the look is only CSS on the status class.
  *
  * @example
  * <Alert.Warning>

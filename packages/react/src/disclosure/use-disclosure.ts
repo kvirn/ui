@@ -38,7 +38,7 @@ export interface UseDisclosureOptions extends Pick<
 /** Spread on the disclosure's button: a `<button>`. */
 export interface DisclosureTriggerPartProps extends Omit<ButtonPartProps, 'className'> {
   /**
-   * The part's class, for `@kvirn-ui/theme` and your own CSS: `.kv-disclosure-trigger`. Add a
+   * The part's class, for `@kvirn/theme` and your own CSS: `.kv-disclosure-trigger`. Add a
    * class of your own next to it with `mergeProps`: class names join.
    */
   className: 'kv-disclosure-trigger'

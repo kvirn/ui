@@ -1,4 +1,4 @@
-import { Link } from '@kvirn-ui/react'
+import { Link } from '@kvirn/ui'
 import type { ApiPart } from './api-block.tsx'
 import { ApiBlock } from './api-block.tsx'
 import { ComponentPage } from './component-page.tsx'
@@ -189,7 +189,7 @@ export function VisuallyHiddenPage({
       contractSections={contractSectionList(contract)}
       api={
         <ApiBlock
-          importLine="import { VisuallyHidden, useVisuallyHidden } from '@kvirn-ui/react'"
+          importLine="import { VisuallyHidden, useVisuallyHidden } from '@kvirn/ui'"
           parts={parts}
           hook={useVisuallyHiddenHook}
         />

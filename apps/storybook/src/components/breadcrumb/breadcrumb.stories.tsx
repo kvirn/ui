@@ -1,5 +1,5 @@
 // kv-lang-ok-file: Reflow320 is the long Finnish compound hard case under locale fi
-import { Breadcrumb, Icon } from '@kvirn-ui/react'
+import { Breadcrumb, Icon } from '@kvirn/ui'
 import contract from '../../../../../packages/react/src/breadcrumb/breadcrumb.a11y.md?raw'
 import guide from '../../../../../packages/react/src/breadcrumb/breadcrumb.md?raw'
 import type { Meta, StoryObj } from '@storybook/react-vite'
@@ -9,7 +9,7 @@ import { expectMinimumTargetSize, expectNoHorizontalOverflow } from '../theme-st
 import { withLocale } from './breadcrumb.fixture.tsx'
 import { withLibraryIcons } from '../../icons.tsx'
 
-// Components/Breadcrumb: the headless Breadcrumb, styled by @kvirn-ui/theme/theme.css (brief B4 in
+// Components/Breadcrumb: the headless Breadcrumb, styled by @kvirn/theme/theme.css (brief B4 in
 // docs/design/municipality-reference-site.md). The landmark's name is the library's own string and
 // follows the locale toolbar: `You are here` in en. The links go nowhere (#), so a play function
 // that presses Enter stays on the page.

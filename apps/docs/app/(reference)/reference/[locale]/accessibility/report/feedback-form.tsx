@@ -1,5 +1,5 @@
 'use client'
-import { PageFrame } from '@kvirn-ui/patterns'
+import { PageFrame } from '@kvirn/patterns'
 import {
   Button,
   ErrorSummary,
@@ -10,7 +10,7 @@ import {
   Stack,
   TextInput,
   Textarea,
-} from '@kvirn-ui/react'
+} from '@kvirn/ui'
 import { useRouter } from 'next/navigation'
 import { useState } from 'react'
 import type { FormEvent } from 'react'

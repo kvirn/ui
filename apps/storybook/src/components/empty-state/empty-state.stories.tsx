@@ -1,5 +1,5 @@
 // kv-lang-ok-file: per-locale fixture text sets, picked by the locale toolbar
-import { Button, Heading } from '@kvirn-ui/react'
+import { Button, Heading } from '@kvirn/ui'
 import contract from '../../../../../packages/react/src/empty-state/empty-state.a11y.md?raw'
 import type { Meta, StoryObj } from '@storybook/react-vite'
 import { expect } from 'storybook/test'
@@ -7,7 +7,7 @@ import { localeOf } from '../form/form.fixture.tsx'
 import type { FormLocale } from '../form/form.fixture.tsx'
 
 // Components/EmptyState: classes only (kv-empty-state, kv-empty-state-title, kv-empty-state-body)
-// on your own markup, styled by @kvirn-ui/theme/theme.css (design spec
+// on your own markup, styled by @kvirn/theme/theme.css (design spec
 // docs/design/status-patterns.md). It has no role, no strings, no live region and no focus: a
 // page that is empty on arrival is read in reading order, and a filter that empties a list
 // announces through the component that filtered. It is never centred and has no illustration.

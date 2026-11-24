@@ -1,4 +1,4 @@
-import type { KvirnProviderProps, ToastShowOptions, UseToastResult } from '@kvirn-ui/react'
+import type { KvirnProviderProps, ToastShowOptions, UseToastResult } from '@kvirn/ui'
 import { propRows } from '../components/api-block.tsx'
 
 export const toastProviderRows = propRows<NonNullable<KvirnProviderProps['toast']>>({

@@ -1,5 +1,5 @@
 'use client'
-import type { KvirnMessages } from '@kvirn-ui/i18n'
+import type { KvirnMessages } from '@kvirn/i18n'
 import { createContext, useContext, useEffect, useMemo, useRef } from 'react'
 import type { ElementType, ReactElement, ReactNode } from 'react'
 import { warnOnce } from '../dev/dev-warning.ts'
@@ -144,7 +144,7 @@ LinkNewTabNotice.displayName = 'Link.NewTabNotice'
 /**
  * A decorative slot for an icon, first in the link: `<span class="kv-link-icon" aria-hidden="true">`.
  * The link's name is its text, so the icon is never part of it (WCAG 2.5.3). With
- * `@kvirn-ui/theme`, it is a plain inline icon in a link, and the filled block of a
+ * `@kvirn/theme`, it is a plain inline icon in a link, and the filled block of a
  * `kv-link--service` link.
  */
 export function LinkIcon({ as, children, ...otherProps }: LinkIconProps): ReactElement {

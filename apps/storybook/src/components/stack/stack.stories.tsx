@@ -1,4 +1,4 @@
-import { Card, Heading, Stack } from '@kvirn-ui/react'
+import { Card, Heading, Stack } from '@kvirn/ui'
 import contract from '../../../../../packages/react/src/stack/stack.a11y.md?raw'
 import guide from '../../../../../packages/react/src/stack/stack.md?raw'
 import type { Meta, StoryObj } from '@storybook/react-vite'
@@ -6,7 +6,7 @@ import { expect } from 'storybook/test'
 import { usageGuide } from '../../docs-source.ts'
 import { expectNoHorizontalOverflow } from '../theme-story-assertions.ts'
 
-// Components/Stack: the headless Stack, styled by @kvirn-ui/theme/theme.css (DESIGN.md, Layout).
+// Components/Stack: the headless Stack, styled by @kvirn/theme/theme.css (DESIGN.md, Layout).
 
 const description = usageGuide(guide)
 

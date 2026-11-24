@@ -1,6 +1,6 @@
 // kv-lang-ok-file: the statement names the national terms of each country (tillgänglighetsredogörelse, tilgjengelighetserklæring)
-import { PageFrame } from '@kvirn-ui/patterns'
-import { AccessibilityStatement } from '@kvirn-ui/patterns/content-types'
+import { PageFrame } from '@kvirn/patterns'
+import { AccessibilityStatement } from '@kvirn/patterns/content-types'
 import type { Meta, StoryObj } from '@storybook/react-vite'
 import { expect } from 'storybook/test'
 import source from '../../../../packages/patterns/src/content-types/accessibility-statement/accessibility-statement.tsx?raw'
@@ -9,7 +9,7 @@ import { chromeViewports, narrowGlobals, wideGlobals } from '../patterns/pattern
 import { expectPageOutline } from './page-outline.ts'
 import { withShell } from './shell.tsx'
 // Content types/Accessibility statement: SE, FI, NO and EU variants (docs/design/storybook-patterns-t5.md S7).
-// The page is a component in `@kvirn-ui/patterns/content-types`; the source panel shows its module text, which an adopter copies.
+// The page is a component in `@kvirn/patterns/content-types`; the source panel shows its module text, which an adopter copies.
 
 const description = `Every public body must publish an accessibility statement and a way to report a problem. This is the page's structure and wording, in a reading column: how accessible the website is, what is not, how it was tested, how to report a problem (a link to the [Form page](?path=/docs/content-types-form-page--docs) and the contact centre), the supervisory authority, and when it was published and reviewed.
 

@@ -1,12 +1,12 @@
 // kv-lang-ok-file: per-locale fixture text sets (sv, fi, nb, nn), picked by the locale toolbar
-import { createMessageFormat } from '@kvirn-ui/core'
-import type { KvirnMessages, TextMessage } from '@kvirn-ui/i18n'
-import { en } from '@kvirn-ui/i18n/en'
-import { fi } from '@kvirn-ui/i18n/fi'
-import { nb } from '@kvirn-ui/i18n/nb'
-import { nn } from '@kvirn-ui/i18n/nn'
-import { sv } from '@kvirn-ui/i18n/sv'
-import { Field, KvirnProvider, TextInput } from '@kvirn-ui/react'
+import { createMessageFormat } from '@kvirn/core'
+import type { KvirnMessages, TextMessage } from '@kvirn/i18n'
+import { en } from '@kvirn/i18n/en'
+import { fi } from '@kvirn/i18n/fi'
+import { nb } from '@kvirn/i18n/nb'
+import { nn } from '@kvirn/i18n/nn'
+import { sv } from '@kvirn/i18n/sv'
+import { Field, KvirnProvider, TextInput } from '@kvirn/ui'
 import type { Decorator } from '@storybook/react-vite'
 
 // Story fixture for the Components/Form pages (docs/design/form-fields.md §4.2, §4.3).

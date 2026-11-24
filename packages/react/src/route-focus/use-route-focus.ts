@@ -1,4 +1,4 @@
-import type { KvirnMessages } from '@kvirn-ui/i18n'
+import type { KvirnMessages } from '@kvirn/i18n'
 import { useEffect, useRef } from 'react'
 import type { RefObject } from 'react'
 import { useQuietAnnouncer, warnAnnouncerMissing } from '../announcer/use-announcer.ts'

@@ -1,5 +1,5 @@
-import { parseIsoDate } from '@kvirn-ui/core'
-import type { IsoDate, YearMonth } from '@kvirn-ui/core'
+import { parseIsoDate } from '@kvirn/core'
+import type { IsoDate, YearMonth } from '@kvirn/core'
 
 /** A calendar date as midnight UTC on that day, for `Intl`. `setUTCFullYear`: `Date.UTC` reads years 0 to 99 as 19xx. */
 function toUtcDate({ year, month, day }: { year: number; month: number; day: number }): Date {

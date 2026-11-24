@@ -27,8 +27,8 @@ import {
   useFormat,
   useLocale,
   useTable,
-} from '@kvirn-ui/react'
-import type { UseFormatResult } from '@kvirn-ui/react'
+} from '@kvirn/ui'
+import type { UseFormatResult } from '@kvirn/ui'
 import type { Decorator } from '@storybook/react-vite'
 import { useEffect, useId, useMemo, useState } from 'react'
 import type { ReactNode } from 'react'

@@ -1,5 +1,5 @@
 // kv-lang-ok-file: Swedish municipality names prove Swedish collation (å, ä, ö), and the per-locale fixture text sets
-import { Button, Card, Combobox, Field, Icon } from '@kvirn-ui/react'
+import { Button, Card, Combobox, Field, Icon } from '@kvirn/ui'
 import { useState } from 'react'
 import { choiceTextsFor } from '../form/choice.fixture.tsx'
 import type { FormLocale } from '../form/form.fixture.tsx'

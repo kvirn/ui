@@ -4,7 +4,7 @@ import {
   DefinitionListRow,
   DefinitionListTerm,
   VisuallyHidden,
-} from '@kvirn-ui/react'
+} from '@kvirn/ui'
 import { Children, Fragment, isValidElement } from 'react'
 import type { ReactNode } from 'react'
 import { messages } from '../messages/en.ts'
@@ -30,7 +30,7 @@ export interface ComponentPageProps {
   title: string
   /** The rest of the lead: its first sentence is the page's `summary` in `site-sections.ts`. */
   lead?: string
-  /** The package to install and import from. Default: `@kvirn-ui/react`. */
+  /** The package to install and import from. Default: `@kvirn/ui`. */
   packageName?: string
   /** The `Pattern` fact, such as "APG Tabs". The row is left out when a page gives none. */
   pattern?: string
@@ -240,7 +240,7 @@ function Fact({ term, children }: { term: string; children: ReactNode }) {
  */
 export function ComponentPage(props: ComponentPageProps) {
   const parts = pageParts(props)
-  const { packageName = '@kvirn-ui/react', pattern } = props
+  const { packageName = '@kvirn/ui', pattern } = props
   const status = statusOf(props.contract)
   return (
     <DocsPage

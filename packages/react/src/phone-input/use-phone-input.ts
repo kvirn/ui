@@ -1,4 +1,4 @@
-import type { Mask, MaskInput } from '@kvirn-ui/core'
+import type { Mask, MaskInput } from '@kvirn/core'
 import { useMemo } from 'react'
 import type { FocusEvent } from 'react'
 import type { FieldControlOptions, FieldControlState } from '../field/use-field-control.ts'
@@ -33,7 +33,7 @@ export interface UsePhoneInputOptions
 /** Spread on the `<input>`. The attributes are suggestions: put yours after them. */
 export interface PhoneInputPartProps extends MaskedInputPartProps {
   /**
-   * The part's classes, for `@kvirn-ui/theme` and your own CSS: `.kv-input`, `.kv-input--numeric`
+   * The part's classes, for `@kvirn/theme` and your own CSS: `.kv-input`, `.kv-input--numeric`
    * (tabular figures) and `.kv-phone-input` (20 characters wide). A `kv-input--width-*` class of
    * yours wins: join it with `mergeProps`.
    */

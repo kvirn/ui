@@ -255,7 +255,7 @@ NavigationLabel.displayName = 'Navigation.Label'
  * isn't listed, `current` goes on the deepest item shown). It is a vertical list by default, and
  * a row that wraps with `className="kv-navigation--horizontal"` on the root. Orientation is a
  * class and not a prop, because links are plain Tab stops and the layout changes no keys. Flyouts
- * and a collapsing header are not covered: no NavigationMenu component is planned. With `@kvirn-ui/theme`, the links become
+ * and a collapsing header are not covered: no NavigationMenu component is planned. With `@kvirn/theme`, the links become
  * navigation items: the current page is a solid fill, and its ancestors are a quiet bold trail.
  *
  * @example

@@ -1,5 +1,5 @@
 'use client'
-import { Button, Icon, Tooltip, useAnnouncer } from '@kvirn-ui/react'
+import { Button, Icon, Tooltip, useAnnouncer } from '@kvirn/ui'
 import { useEffect, useId, useMemo, useRef, useState } from 'react'
 import type { RefObject } from 'react'
 import { highlight, splitLines } from '../lib/highlight.ts'

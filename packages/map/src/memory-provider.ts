@@ -1,4 +1,4 @@
-import { boundsOfView, panBy } from '@kvirn-ui/core'
+import { boundsOfView, panBy } from '@kvirn/core'
 import type {
   MapBaseMap,
   MapBounds,
@@ -8,7 +8,7 @@ import type {
   MapProviderEvents,
   MapSize,
   MapView,
-} from '@kvirn-ui/core'
+} from '@kvirn/core'
 
 export interface MemoryProvider extends MapProvider {
   /** The handle of the last `mount`, so a test can read the camera. */

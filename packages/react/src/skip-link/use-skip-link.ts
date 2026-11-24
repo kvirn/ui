@@ -1,4 +1,4 @@
-import type { KvirnMessages } from '@kvirn-ui/i18n'
+import type { KvirnMessages } from '@kvirn/i18n'
 import { useEffect } from 'react'
 import type { MouseEvent } from 'react'
 import { warnOnce } from '../dev/dev-warning.ts'
@@ -15,7 +15,7 @@ export interface UseSkipLinkOptions {
 /** Spread on the `<a>`. */
 export interface SkipLinkPartProps {
   /**
-   * The part's class, for `@kvirn-ui/theme` and your own CSS: `.kv-skip-link`. Add a class of
+   * The part's class, for `@kvirn/theme` and your own CSS: `.kv-skip-link`. Add a class of
    * your own next to it with `mergeProps`: class names join.
    */
   className: 'kv-skip-link'

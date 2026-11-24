@@ -8,7 +8,7 @@ A quantity or an amount in a form: how many children live with you, the monthly 
 - With the default number mask, a character it can't take is left out and announced politely, for example "Only digits can be entered here." With `mask={false}` nothing is left out and nothing is announced. Paste and autofill still work: "1 250,50", "1250.50" and " 2 " are all read.
 - **Reported, never enforced.** `min` and `max` become `details.isWithinRange` in `onValueChange`. The value is never clamped or corrected, and `min` and `max` aren't written as attributes, because they're invalid on a text input. Your form validates and writes the message.
 - **KvirnUI holds no form state; bring your own form logic.** It renders the `value` you give it and reports changes through `onValueChange`, or keeps the value in the native input for a plain form.
-- Headless: no CSS. With `@kvirn-ui/theme/theme.css` imported it is styled.
+- Headless: no CSS. With `@kvirn/theme/theme.css` imported it is styled.
 
 ## API
 
@@ -89,7 +89,7 @@ The number mask is the default, because a NumberInput that takes letters would b
 ## Component
 
 ```tsx
-import { Field, NumberInput } from '@kvirn-ui/react'
+import { Field, NumberInput } from '@kvirn/ui'
 
 ;<Field.Root required>
   <Field.Label>How many children live with you?</Field.Label>
@@ -186,7 +186,7 @@ Parse `details.unmaskedValue` (the machine form `1250.5`), never the shown value
 ## Hook
 
 ```tsx
-import { mergeProps, useNumberInput } from '@kvirn-ui/react'
+import { mergeProps, useNumberInput } from '@kvirn/ui'
 
 function RentInput() {
   const rent = useNumberInput({

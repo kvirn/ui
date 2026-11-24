@@ -1,4 +1,4 @@
-import type { KvirnMessages } from '@kvirn-ui/i18n'
+import type { KvirnMessages } from '@kvirn/i18n'
 import { useMemo } from 'react'
 import type { FocusEventHandler } from 'react'
 import { useFocusVisible } from '../focus-visible/use-focus-visible.ts'
@@ -21,7 +21,7 @@ export interface UseLinkOptions {
 /** Spread on an `<a href>` or your router's link. */
 export interface LinkPartProps {
   /**
-   * The part's class, for `@kvirn-ui/theme` and your own CSS: `.kv-link`. Add your own class
+   * The part's class, for `@kvirn/theme` and your own CSS: `.kv-link`. Add your own class
    * next to it with `mergeProps`: class names join.
    */
   className: 'kv-link'

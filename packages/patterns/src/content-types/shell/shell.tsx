@@ -1,6 +1,6 @@
 'use client'
 
-import { Container } from '@kvirn-ui/react'
+import { Container } from '@kvirn/ui'
 import type { ReactNode } from 'react'
 import { PageFrame } from '../../page-frame/page-frame.tsx'
 import { SiteAlert } from '../../site-chrome/site-alert/site-alert.tsx'

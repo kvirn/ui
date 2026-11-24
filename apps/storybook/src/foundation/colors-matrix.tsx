@@ -1,5 +1,5 @@
-import { colorTokenNames, contrastRequirements } from '@kvirn-ui/theme'
-import type { ColorTokenName, ThemeName } from '@kvirn-ui/theme'
+import { colorTokenNames, contrastRequirements } from '@kvirn/theme'
+import type { ColorTokenName, ThemeName } from '@kvirn/theme'
 import type { ReactNode } from 'react'
 import { expect, waitFor, within } from 'storybook/test'
 import {

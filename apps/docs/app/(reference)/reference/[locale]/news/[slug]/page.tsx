@@ -1,5 +1,5 @@
-import { PageFrameMain, PageToolsCopyLink, PageToolsPrint, PageToolsRoot } from '@kvirn-ui/patterns'
-import { Heading, Link, ListItem, ListRoot, Prose, Stack } from '@kvirn-ui/react'
+import { PageFrameMain, PageToolsCopyLink, PageToolsPrint, PageToolsRoot } from '@kvirn/patterns'
+import { Heading, Link, ListItem, ListRoot, Prose, Stack } from '@kvirn/ui'
 import type { Metadata } from 'next'
 import { notFound } from 'next/navigation'
 import { referenceNewsMessages } from '../../../../../../messages/reference-news.ts'

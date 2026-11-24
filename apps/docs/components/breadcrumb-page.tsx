@@ -1,4 +1,4 @@
-import { LinkRoot } from '@kvirn-ui/react'
+import { LinkRoot } from '@kvirn/ui'
 import { apiHookPart } from './api-ids.ts'
 import { ApiBlock } from './api-block.tsx'
 import type { ApiPart } from './api-block.tsx'
@@ -182,8 +182,8 @@ export function BreadcrumbPage({
                 <code>variant=&quot;slash&quot;</code> draws a slash. For anything else, such as an
                 icon or a component of yours, pass it as <code>separator</code> on the root. It goes
                 in every item, and the theme hides the first. The <code>chevronForward</code> icon
-                from <code>@kvirn-ui/icons</code> flips itself in right-to-left text; an icon of
-                your own needs <code>mirrorInRtl</code>.
+                from <code>@kvirn/icons</code> flips itself in right-to-left text; an icon of your
+                own needs <code>mirrorInRtl</code>.
               </>
             }
             code={sources['custom-separator']}
@@ -276,7 +276,7 @@ export function BreadcrumbPage({
       contractSections={contractSectionList(contract)}
       api={
         <ApiBlock
-          importLine="import { Breadcrumb, useBreadcrumb } from '@kvirn-ui/react'"
+          importLine="import { Breadcrumb, useBreadcrumb } from '@kvirn/ui'"
           parts={parts}
           hook={useBreadcrumbHook}
           strings={

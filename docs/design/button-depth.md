@@ -272,7 +272,7 @@ For C alone, that's six `--kv-shadow-button-*` values per theme, and only four o
 
 ## 10. Handoff to engineering (variation D)
 
-The decision is the button-depth decision (Proposed), and the rules are in `DESIGN.md`, "Elevation & Depth" → "Button depth". This section is what the plan needs. It's the default theme only: no change to `@kvirn-ui/react`, the a11y contract's behaviour rows, or i18n (no new strings).
+The decision is the button-depth decision (Proposed), and the rules are in `DESIGN.md`, "Elevation & Depth" → "Button depth". This section is what the plan needs. It's the default theme only: no change to `@kvirn/ui`, the a11y contract's behaviour rows, or i18n (no new strings).
 
 ### Scope
 
@@ -348,4 +348,4 @@ No ring-over-shadow pair is needed: the shadow is `none` on keyboard focus, so t
 - `theme.css` comments: section 6's header (depth, and the "only pressed, disabled and forced colours set `border-color`" rule), and section 2's comment next to the new tokens.
 - `packages/theme/README.md`: the four tokens, and how to turn depth off.
 - `DESIGN.md`, when it ships: drop "Not yet in `theme.css`" from "Button depth", and "not yet by `theme:check`" from Colors, and update the pair count.
-- A changeset for `@kvirn-ui/theme` (a visible change to every button).
+- A changeset for `@kvirn/theme` (a visible change to every button).

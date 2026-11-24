@@ -1,5 +1,5 @@
-import { createListVirtualizer, defaultListOverscan } from '@kvirn-ui/core'
-import type { ListboxEntry, VirtualListItem } from '@kvirn-ui/core'
+import { createListVirtualizer, defaultListOverscan } from '@kvirn/core'
+import type { ListboxEntry, VirtualListItem } from '@kvirn/core'
 import { useCallback, useEffect, useLayoutEffect, useMemo, useReducer, useRef } from 'react'
 import type { CSSProperties, RefObject } from 'react'
 import { warnOnce } from '../dev/dev-warning.ts'

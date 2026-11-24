@@ -1,5 +1,5 @@
-import { getRovingTarget } from '@kvirn-ui/core'
-import type { RovingOrientation } from '@kvirn-ui/core'
+import { getRovingTarget } from '@kvirn/core'
+import type { RovingOrientation } from '@kvirn/core'
 import { useCallback, useEffect, useRef, useState } from 'react'
 import type { FocusEventHandler, KeyboardEvent, RefCallback } from 'react'
 
@@ -16,7 +16,7 @@ export interface UseToolbarOptions {
 /** Spread on the toolbar's element: a `<div>`. */
 export interface ToolbarRootPartProps {
   /**
-   * The part's class, for `@kvirn-ui/theme` and your own CSS: `.kv-toolbar`. Add a class of your
+   * The part's class, for `@kvirn/theme` and your own CSS: `.kv-toolbar`. Add a class of your
    * own next to it with `mergeProps`: class names join.
    */
   className: 'kv-toolbar'

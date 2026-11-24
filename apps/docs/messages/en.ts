@@ -1,5 +1,5 @@
 // Docs site shell and template strings (docs/design/docs-site.md §4). The site copy is English
-// for now, keyed so it can be translated later. Library strings live in @kvirn-ui/i18n.
+// for now, keyed so it can be translated later. Library strings live in @kvirn/i18n.
 
 export const messages = {
   docs: {
@@ -42,7 +42,7 @@ export const messages = {
         purpose: 'What it is for',
         install: 'Install',
         withTheOthers: 'With the others',
-        comesWithReact: 'Comes with @kvirn-ui/react',
+        comesWithReact: 'Comes with @kvirn/ui',
         separate: 'Separate',
         andTiptap: 'and the Tiptap packages the page lists',
         andMapEngine: 'and a map engine',
@@ -549,7 +549,7 @@ export const messages = {
       options: 'Options',
       result: 'Result',
       strings: 'Strings',
-      stringsIntro: 'These are the default texts in @kvirn-ui/i18n.',
+      stringsIntro: 'These are the default texts in @kvirn/i18n.',
       language: 'Language',
       defaultText: 'Default text',
       messageKey: 'Message key',

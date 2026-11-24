@@ -1,5 +1,5 @@
-import { PageFrame } from '@kvirn-ui/patterns'
-import { CaseDetail } from '@kvirn-ui/patterns/content-types'
+import { PageFrame } from '@kvirn/patterns'
+import { CaseDetail } from '@kvirn/patterns/content-types'
 import type { Meta, StoryObj } from '@storybook/react-vite'
 import { expect } from 'storybook/test'
 import source from '../../../../packages/patterns/src/content-types/case-detail/case-detail.tsx?raw'
@@ -8,7 +8,7 @@ import { chromeViewports, narrowGlobals, wideGlobals } from '../patterns/pattern
 import { expectPageOutline } from './page-outline.ts'
 import { withShell } from './shell.tsx'
 // Content types/Case detail: a whole page in the site chrome (docs/design/storybook-patterns-t5.md S12).
-// The page is a component in `@kvirn-ui/patterns/content-types`; the source panel shows its module text, which an adopter copies.
+// The page is a component in `@kvirn/patterns/content-types`; the source panel shows its module text, which an adopter copies.
 
 const description = `One case: the breadcrumb (My pages, then the case), \`h1\` with the status in a Badge and the case number in a [Definition list](?path=/docs/components-content-definition-list--docs), \`h2\` "What happens next", \`h2\` "Documents" (a plain list of links) and the case officer as a contact card. When the resident must act, "What happens next" starts "Action needed:" and ends in a [Service link](?path=/docs/patterns-navigation-and-promotion-service-link--docs) to answer.
 

@@ -1,4 +1,4 @@
-import { Pagination } from '@kvirn-ui/react'
+import { Pagination } from '@kvirn/ui'
 import type { Meta, StoryObj } from '@storybook/react-vite'
 import contract from '../../../../../packages/patterns/src/navigation-and-promotion/previous-and-next/previous-and-next.a11y.md?raw'
 import { expect, userEvent } from 'storybook/test'

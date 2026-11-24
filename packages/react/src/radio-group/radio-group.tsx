@@ -1,7 +1,7 @@
 'use client'
 import { useContext, useEffect, useMemo, useRef } from 'react'
 import type { ReactElement } from 'react'
-import type { KvirnMessages } from '@kvirn-ui/i18n'
+import type { KvirnMessages } from '@kvirn/i18n'
 import { useAnnouncer } from '../announcer/use-announcer.ts'
 import { warnOnce } from '../dev/dev-warning.ts'
 import { FieldGroupContext, FieldTextHostContext } from '../field/field-context.ts'

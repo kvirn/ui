@@ -1,5 +1,5 @@
 'use client'
-import { Button, Dialog, ErrorSummary, Field, TextInput } from '@kvirn-ui/react'
+import { Button, Dialog, ErrorSummary, Field, TextInput } from '@kvirn/ui'
 import { useId, useState } from 'react'
 import { useErrorSummaryTexts } from './texts.ts'
 

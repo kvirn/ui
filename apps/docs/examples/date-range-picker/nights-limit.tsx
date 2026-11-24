@@ -10,7 +10,7 @@ import {
   masks,
   maskedDateToIsoDate,
   useLocale,
-} from '@kvirn-ui/react'
+} from '@kvirn/ui'
 import { useEffect, useRef, useState } from 'react'
 import { useDateRangePickerTexts } from './texts.ts'
 

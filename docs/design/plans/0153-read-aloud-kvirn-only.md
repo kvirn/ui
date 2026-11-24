@@ -52,7 +52,7 @@ source), later `src` swaps play without a gesture. So `unlock()` is the only cal
 ### API sketch
 
 ```ts
-// @kvirn-ui/core — the shipped shape is packages/core/src/read-aloud/read-aloud-engine.ts (the code is truth)
+// @kvirn/core — the shipped shape is packages/core/src/read-aloud/read-aloud-engine.ts (the code is truth)
 interface ReadAloudEngine {
   unlock: () => void                                  // synchronous, inside the gesture: the iOS unlock
   getDefaultVoiceId: (language: string) => string | undefined   // synchronous, no network (D14/D15)
@@ -64,7 +64,7 @@ kvirnSpeechEngine({ url, name?, store?, timeout?, voices? })
 // voices is the language→voice-id map, resolved over the engine's default map (D15)
 ```
 
-`@kvirn-ui/read-aloud`'s part names and `useReadAloud` options are unchanged except that `engine` is now
+`@kvirn/read-aloud`'s part names and `useReadAloud` options are unchanged except that `engine` is now
 required and `allowRemoteVoices` is gone (D4).
 
 ### State machine
@@ -193,7 +193,7 @@ existing tokens. No new token, no new colour pair. Reduced motion: no spinner an
   engine, so the single unlocked `<audio>` element is shared by every player in the tree. Resolution order is
   **hook option → provider `readAloud` → nothing** (no player, plus a dev warning). For standalone use the hook
   takes the same options directly (`useReadAloud({ contentRef, url })`) or a whole custom `engine` — so
-  `@kvirn-ui/read-aloud` needs no provider, which is what the Storybook fake and any non-KvirnUI consumer use.
+  `@kvirn/read-aloud` needs no provider, which is what the Storybook fake and any non-KvirnUI consumer use.
 - **D14 The default voice per language lives in `kvirnSpeechEngine` (maintainer, 2026-10-25).** The engine
   knows its own service, so `ReadAloudEngine` gains a **synchronous** `getDefaultVoiceId(language)` over the
   four known ids. **This retires D9's known limitation:** `hasVoice` now resolves on first render with no

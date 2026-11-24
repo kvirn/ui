@@ -1,4 +1,4 @@
-import { Button, Popover } from '@kvirn-ui/react'
+import { Button, Popover } from '@kvirn/ui'
 import contract from '../../../../../packages/react/src/popover/popover.a11y.md?raw'
 import guide from '../../../../../packages/react/src/popover/popover.md?raw'
 import type { Decorator, Meta, StoryObj } from '@storybook/react-vite'

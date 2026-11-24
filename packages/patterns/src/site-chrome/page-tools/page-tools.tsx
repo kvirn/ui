@@ -1,7 +1,7 @@
 'use client'
 
-import { Button, CopyButton, mergeProps } from '@kvirn-ui/react'
-import type { ButtonProps, CopyButtonProps } from '@kvirn-ui/react'
+import { Button, CopyButton, mergeProps } from '@kvirn/ui'
+import type { ButtonProps, CopyButtonProps } from '@kvirn/ui'
 import type { ComponentPropsWithRef, MouseEvent, ReactElement } from 'react'
 
 export type PageToolsRootProps = ComponentPropsWithRef<'div'>

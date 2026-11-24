@@ -4,7 +4,7 @@ import type { ComponentPropsWithRef, ElementType, ReactElement, ReactNode } from
 import { Announcer } from '../announcer/announcer.tsx'
 import { AnnouncerContext } from '../announcer/announcer-context.ts'
 import { warnOnce } from '../dev/dev-warning.ts'
-import { close } from '@kvirn-ui/icons'
+import { close } from '@kvirn/icons'
 import { Icon } from '../icon/icon.tsx'
 import { mergeProps } from '../merge-props/merge-props.ts'
 import { useMergedRef } from '../merge-props/use-merged-ref.ts'
@@ -16,7 +16,7 @@ import { ToolbarContext } from '../toolbar/toolbar-context.ts'
 import { DialogContext, ParentDialogContext, useDialogAnnouncer } from './dialog-context.ts'
 import { useModalDialog } from './use-dialog.ts'
 import type { UseDialogOptions } from './use-dialog.ts'
-import type { KvirnMessages } from '@kvirn-ui/i18n'
+import type { KvirnMessages } from '@kvirn/i18n'
 
 export type { DialogChangeDetails, DialogChangeReason } from './use-dialog.ts'
 

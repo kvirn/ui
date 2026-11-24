@@ -29,7 +29,7 @@ export interface UseButtonOptions {
 /** Spread on a `<button>`. */
 export interface ButtonPartProps {
   /**
-   * The part's class, for `@kvirn-ui/theme` and your own CSS: `.kv-button`. Add a variant class
+   * The part's class, for `@kvirn/theme` and your own CSS: `.kv-button`. Add a variant class
    * of your own next to it with `mergeProps`: class names join.
    */
   className: 'kv-button'

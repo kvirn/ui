@@ -1,6 +1,6 @@
 'use client'
-import { bold, image, italic, link, underline } from '@kvirn-ui/icons'
-import { Icon, Toolbar } from '@kvirn-ui/react'
+import { bold, image, italic, link, underline } from '@kvirn/icons'
+import { Icon, Toolbar } from '@kvirn/ui'
 import { useToolbarTexts } from './texts.ts'
 
 export function IconOnly() {

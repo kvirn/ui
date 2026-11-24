@@ -1,5 +1,5 @@
 'use client'
-import { ButtonGroup, Toggle } from '@kvirn-ui/react'
+import { ButtonGroup, Toggle } from '@kvirn/ui'
 import { useState } from 'react'
 import { useButtonGroupTexts } from './texts.ts'
 

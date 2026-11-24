@@ -1,5 +1,5 @@
 'use client'
-import { Field, OneTimeCode } from '@kvirn-ui/react'
+import { Field, OneTimeCode } from '@kvirn/ui'
 import { useState } from 'react'
 import { useOneTimeCodeTexts } from './texts.ts'
 

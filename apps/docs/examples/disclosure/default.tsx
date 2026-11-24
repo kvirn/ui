@@ -1,5 +1,5 @@
 'use client'
-import { Disclosure } from '@kvirn-ui/react'
+import { Disclosure } from '@kvirn/ui'
 import { useDisclosureTexts } from './texts.ts'
 
 export function DefaultDisclosure() {

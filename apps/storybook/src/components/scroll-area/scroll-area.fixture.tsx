@@ -1,5 +1,5 @@
 // kv-lang-ok-file: per-locale story texts: the toolbar locale selects the sv, fi, nb, nn or en table
-import { ScrollArea } from '@kvirn-ui/react'
+import { ScrollArea } from '@kvirn/ui'
 import type { FormLocale } from '../form/form.fixture.tsx'
 
 // Fixtures for Components/ScrollArea. Each function is one example, and the story's "Show code"

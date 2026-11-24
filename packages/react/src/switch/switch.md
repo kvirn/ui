@@ -15,7 +15,7 @@ A Switch is a setting that takes effect at once, with no Save button ("Get messa
 - **Space toggles. Enter does not**, and is never prevented: in a form the browser may submit it. APG makes Enter optional.
 - **Controlled:** pass `checked` and `onCheckedChange(checked, { reason: 'input', event })`. **Uncontrolled:** pass `defaultChecked` and `name`. Checked sends `name=value` (`on` by default); off sends nothing.
 - **Not required.** `required` is not a prop: off is a valid answer, and a consent is a Checkbox. A required Field gives no `aria-required` and warns once.
-- Headless: no CSS. It renders `kv-switch`, and your `className` joins it. With `@kvirn-ui/theme/theme.css` imported it is styled.
+- Headless: no CSS. It renders `kv-switch`, and your `className` joins it. With `@kvirn/theme/theme.css` imported it is styled.
 
 ## API
 
@@ -45,7 +45,7 @@ Switch is a single part, `<Switch>`. `type` and `role` are fixed. There are no s
 ## Component
 
 ```tsx
-import { Field, Switch } from '@kvirn-ui/react'
+import { Field, Switch } from '@kvirn/ui'
 
 ;<Field.Root>
   <Switch name="sms" checked={sms} onCheckedChange={setSms} />
@@ -67,7 +67,7 @@ Your part:
 ## Hook
 
 ```tsx
-import { useSwitch } from '@kvirn-ui/react'
+import { useSwitch } from '@kvirn/ui'
 
 function SmsSwitch({ sms, setSms }: { sms: boolean; setSms: (checked: boolean) => void }) {
   const switchControl = useSwitch({ checked: sms, onCheckedChange: setSms })

@@ -1,4 +1,4 @@
-import { Heading, Link } from '@kvirn-ui/react'
+import { Heading, Link } from '@kvirn/ui'
 import { apiHookPart } from './api-ids.ts'
 import { AnchoredHeading } from './anchored-heading.tsx'
 import { ApiBlock } from './api-block.tsx'
@@ -32,9 +32,9 @@ export type KvirnProviderExampleSources = Record<
 
 const nextProviders = `// app/kvirn-provider.tsx
 'use client'
-import { KvirnProvider } from '@kvirn-ui/react'
-import type { KvirnProviderProps } from '@kvirn-ui/react'
-import { sv } from '@kvirn-ui/i18n/sv'
+import { KvirnProvider } from '@kvirn/ui'
+import type { KvirnProviderProps } from '@kvirn/ui'
+import { sv } from '@kvirn/i18n/sv'
 import NextLink from 'next/link'
 import { icons } from './icons' // a 'use client' module that calls defineIcons for the extra icon names you want
 
@@ -52,7 +52,7 @@ export const theme = {
 } as const`
 
 const nextLayout = `// app/layout.tsx (a Server Component)
-import { KvirnThemeScript, getLocaleProps } from '@kvirn-ui/react/server'
+import { KvirnThemeScript, getLocaleProps } from '@kvirn/ui/server'
 import { headers } from 'next/headers'
 import type { ReactNode } from 'react'
 import { AppKvirnProvider } from './kvirn-provider'
@@ -79,8 +79,8 @@ export default async function RootLayout({ children }: { children: ReactNode }) 
 }`
 
 const tanstack = `// src/main.tsx
-import { KvirnProvider } from '@kvirn-ui/react'
-import { fi } from '@kvirn-ui/i18n/fi'
+import { KvirnProvider } from '@kvirn/ui'
+import { fi } from '@kvirn/i18n/fi'
 import { Link, RouterProvider } from '@tanstack/react-router'
 import { router } from './router' // the result of createRouter
 
@@ -96,14 +96,14 @@ const register = `// kvirn-ui.d.ts
 import type NextLink from 'next/link'
 import type { icons } from './icons'
 
-declare module '@kvirn-ui/react' {
+declare module '@kvirn/ui' {
   interface Register {
     linkComponent: typeof NextLink
     icons: typeof icons
   }
 }`
 
-const serverImport = `import { KvirnThemeScript, getLocaleProps, getMessages, createMessageFormat } from '@kvirn-ui/react/server'`
+const serverImport = `import { KvirnThemeScript, getLocaleProps, getMessages, createMessageFormat } from '@kvirn/ui/server'`
 
 const parts: ApiPart[] = [
   {
@@ -150,8 +150,8 @@ const parts: ApiPart[] = [
         the stored preference and the device settings, and sets the <code>data-kv-*</code>{' '}
         attributes on <code>&lt;html&gt;</code> before the first paint, so there is no flash of the
         wrong theme. Render it only in the server-rendered document, from{' '}
-        <code>@kvirn-ui/react/server</code> in a Server Component. It reads{' '}
-        <code>localStorage</code> only, so don’t use it with a custom storage adapter. See{' '}
+        <code>@kvirn/ui/server</code> in a Server Component. It reads <code>localStorage</code>{' '}
+        only, so don’t use it with a custom storage adapter. See{' '}
         <Link href="/foundation/rendering#first-paint">No flash of the wrong theme</Link>.
       </>
     ),
@@ -266,7 +266,7 @@ export function KvirnProviderPage({
           </AnchoredHeading>
           <p>
             The layout imports <code>KvirnThemeScript</code> and <code>getLocaleProps</code> from{' '}
-            <code>@kvirn-ui/react/server</code>, the entry that is safe in a Server Component.
+            <code>@kvirn/ui/server</code>, the entry that is safe in a Server Component.
           </p>
           <CodeBlock code={nextLayout} />
           <ul>
@@ -415,7 +415,7 @@ export function KvirnProviderPage({
       api={
         <>
           <ApiBlock
-            importLine="import { KvirnProvider, KvirnThemeScript, useLocale, useDateSettings, useFormat, useTheme } from '@kvirn-ui/react'"
+            importLine="import { KvirnProvider, KvirnThemeScript, useLocale, useDateSettings, useFormat, useTheme } from '@kvirn/ui'"
             parts={parts}
             hooks={[useLocaleHook, useDateSettingsHook, useFormatHook, useThemeHook]}
           />
@@ -423,8 +423,8 @@ export function KvirnProviderPage({
             The server entry
           </Heading>
           <p>
-            <code>@kvirn-ui/react/server</code> has no <code>&apos;use client&apos;</code> and is
-            safe in a Server Component.
+            <code>@kvirn/ui/server</code> has no <code>&apos;use client&apos;</code> and is safe in
+            a Server Component.
           </p>
           <CodeBlock code={serverImport} />
         </>

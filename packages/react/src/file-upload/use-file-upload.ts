@@ -1,4 +1,4 @@
-import { createFileUpload } from '@kvirn-ui/core'
+import { createFileUpload } from '@kvirn/core'
 import type {
   Env,
   FileUpload,
@@ -9,9 +9,9 @@ import type {
   FileUploadRejection,
   FileUploadState,
   FileUploadStatus,
-} from '@kvirn-ui/core'
-import type { KvirnMessages } from '@kvirn-ui/i18n'
-import { formatFileSize } from '@kvirn-ui/i18n'
+} from '@kvirn/core'
+import type { KvirnMessages } from '@kvirn/i18n'
+import { formatFileSize } from '@kvirn/i18n'
 import { useCallback, useContext, useEffect, useId, useLayoutEffect, useRef, useState } from 'react'
 import type {
   ChangeEventHandler,

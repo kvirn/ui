@@ -1,7 +1,7 @@
-import { en } from '@kvirn-ui/i18n/en'
-import { KvirnProvider } from '@kvirn-ui/react'
-import { Map } from '@kvirn-ui/map'
-import type { MapRootProps } from '@kvirn-ui/map'
+import { en } from '@kvirn/i18n/en'
+import { KvirnProvider } from '@kvirn/ui'
+import { Map } from '@kvirn/map'
+import type { MapRootProps } from '@kvirn/map'
 import contract from '../../../../../packages/map/src/map.a11y.md?raw'
 import guide from '../../../../../packages/map/src/map.md?raw'
 import type { Meta, StoryObj } from '@storybook/react-vite'
@@ -306,7 +306,7 @@ const manyArgTypes = {
     control: 'inline-radio',
     options: ['main', 'worker'],
     description:
-      'Where the cluster index is built: `main` in 8 ms slices, or `worker` with `createMapWorker()` from `@kvirn-ui/map/worker`.',
+      'Where the cluster index is built: `main` in 8 ms slices, or `worker` with `createMapWorker()` from `@kvirn/map/worker`.',
   },
   // The demo builds these itself from the generated source; `cluster={false}` would draw every place.
   ...Object.fromEntries(

@@ -1,6 +1,6 @@
 'use client'
-import { KvirnProvider, useRouteFocus } from '@kvirn-ui/react'
-import type { ThemeOptions } from '@kvirn-ui/react'
+import { KvirnProvider, useRouteFocus } from '@kvirn/ui'
+import type { ThemeOptions } from '@kvirn/ui'
 import NextLink from 'next/link'
 import { usePathname } from 'next/navigation'
 import type { ReactNode } from 'react'

@@ -1,5 +1,5 @@
 'use client'
-import type { KvirnMessages } from '@kvirn-ui/i18n'
+import type { KvirnMessages } from '@kvirn/i18n'
 import { createElement, useContext, useEffect } from 'react'
 import type { ComponentPropsWithRef, HTMLAttributes, ReactElement, Ref } from 'react'
 import { Alert } from '../alert/alert.tsx'

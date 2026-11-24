@@ -1,5 +1,5 @@
 'use client'
-import { Menu } from '@kvirn-ui/react'
+import { Menu } from '@kvirn/ui'
 import { useState } from 'react'
 import { useMenuTexts } from './texts.ts'
 

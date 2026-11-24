@@ -11,7 +11,7 @@ import {
   Link,
   List,
   Stack,
-} from '@kvirn-ui/react'
+} from '@kvirn/ui'
 import { PageFrame } from '../../page-frame/page-frame.tsx'
 import { ServiceLink } from '../../navigation-and-promotion/service-link/service-link.tsx'
 

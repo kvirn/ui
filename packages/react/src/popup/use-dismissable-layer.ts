@@ -1,5 +1,5 @@
-import { createDismissableLayerStack, isPointInsideRect } from '@kvirn-ui/core'
-import type { DismissableLayerStack, LayerTargetCheck, PointerPoint } from '@kvirn-ui/core'
+import { createDismissableLayerStack, isPointInsideRect } from '@kvirn/core'
+import type { DismissableLayerStack, LayerTargetCheck, PointerPoint } from '@kvirn/core'
 import { useEffect, useId, useLayoutEffect, useRef } from 'react'
 import type { RefObject } from 'react'
 import { useEnv } from '../provider/use-env.ts'

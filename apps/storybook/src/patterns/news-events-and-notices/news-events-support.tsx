@@ -1,5 +1,5 @@
-import { en } from '@kvirn-ui/i18n/en'
-import { KvirnProvider, useFormat } from '@kvirn-ui/react'
+import { en } from '@kvirn/i18n/en'
+import { KvirnProvider, useFormat } from '@kvirn/ui'
 import type { ReactNode } from 'react'
 
 // Shared by the S9 recipe stories. Story-only: dates go through the provider's `useFormat`, never hard-coded.

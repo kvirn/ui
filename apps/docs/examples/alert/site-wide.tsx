@@ -1,5 +1,5 @@
 'use client'
-import { Alert } from '@kvirn-ui/react'
+import { Alert } from '@kvirn/ui'
 import { useId } from 'react'
 import { useAlertTexts } from './texts.ts'
 

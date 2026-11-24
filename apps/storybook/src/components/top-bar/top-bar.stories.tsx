@@ -1,5 +1,5 @@
-import { SiteHeader } from '@kvirn-ui/patterns'
-import { DisplaySettings, Link, Navigation, TopBar } from '@kvirn-ui/react'
+import { SiteHeader } from '@kvirn/patterns'
+import { DisplaySettings, Link, Navigation, TopBar } from '@kvirn/ui'
 import type { Meta, StoryObj } from '@storybook/react-vite'
 import { expect, userEvent } from 'storybook/test'
 import contract from '../../../../../packages/react/src/top-bar/top-bar.a11y.md?raw'

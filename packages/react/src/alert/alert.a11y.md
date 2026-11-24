@@ -114,7 +114,7 @@ The rules for when to set `announce` are under Consumer responsibilities ("When 
 
 ## Visual / modes
 
-Headless: Alert ships no CSS. With the theme stylesheet (`@kvirn-ui/theme`):
+Headless: Alert ships no CSS. With the theme stylesheet (`@kvirn/theme`):
 
 - Focus indicator: the root has none of its own unless the consumer made it focusable (`tabIndex={-1}`): a focus ring with a gap, outside the box. The close button has the same ring on keyboard focus. Children keep their own rings, never clipped.
 - Target size: the close button is at least 24 by 24 CSS px (2.5.8 Target Size (Minimum), AA); the default theme makes it larger, and smaller than that only in its compact density. It is centred on the title's first line and reaches into the alert's padding, so the title keeps its height. Buttons and links in Actions keep their own sizes.

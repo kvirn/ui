@@ -1,4 +1,4 @@
-import { Link, VisuallyHidden } from '@kvirn-ui/react'
+import { Link, VisuallyHidden } from '@kvirn/ui'
 import { messages } from '../messages/en.ts'
 import { contentTypePreviews } from './gallery/previews/content-types.tsx'
 import { PageWithContents } from './page-contents.tsx'

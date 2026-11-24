@@ -1,5 +1,5 @@
-import { getRovingTarget } from '@kvirn-ui/core'
-import type { RovingOrientation } from '@kvirn-ui/core'
+import { getRovingTarget } from '@kvirn/core'
+import type { RovingOrientation } from '@kvirn/core'
 import { useEffect, useId, useState } from 'react'
 import type {
   FocusEvent,
@@ -76,7 +76,7 @@ export interface TabsStateOptions extends UseTabsBaseOptions {
 /** Spread on the root's element: a `<div>`. */
 export interface TabsRootPartProps {
   /**
-   * The part's class, for `@kvirn-ui/theme` and your own CSS: `.kv-tabs`. Add a class of your own
+   * The part's class, for `@kvirn/theme` and your own CSS: `.kv-tabs`. Add a class of your own
    * next to it with `mergeProps`: class names join.
    */
   className: 'kv-tabs'

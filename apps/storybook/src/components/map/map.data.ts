@@ -1,4 +1,4 @@
-import type { MapLayer, MapPlace } from '@kvirn-ui/core'
+import type { MapLayer, MapPlace } from '@kvirn/core'
 
 function mulberry32(seed: number) {
   let state = seed

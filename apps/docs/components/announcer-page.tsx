@@ -1,4 +1,4 @@
-import { Link } from '@kvirn-ui/react'
+import { Link } from '@kvirn/ui'
 import { apiHookPart } from './api-ids.ts'
 import { ApiBlock } from './api-block.tsx'
 import { CodeBlock } from './code-block.tsx'
@@ -174,7 +174,7 @@ export function AnnouncerPage({
       api={
         <>
           <ApiBlock
-            importLine="import { useAnnouncer } from '@kvirn-ui/react'"
+            importLine="import { useAnnouncer } from '@kvirn/ui'"
             parts={[]}
             hooks={[
               {

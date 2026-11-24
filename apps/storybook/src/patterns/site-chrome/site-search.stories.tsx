@@ -1,4 +1,4 @@
-import { SiteHeader, SiteSearch } from '@kvirn-ui/patterns'
+import { SiteHeader, SiteSearch } from '@kvirn/patterns'
 import type { Meta, StoryObj } from '@storybook/react-vite'
 import { expect, userEvent } from 'storybook/test'
 import contract from '../../../../../packages/patterns/src/site-chrome/site-search/site-search.a11y.md?raw'
@@ -22,7 +22,7 @@ The pattern has no strings of its own.
 
 ## Parts and gaps
 
-Parts used: \`Field\`, \`TextInput\`, \`ButtonGroup\`, \`Button\`. Gap in \`@kvirn-ui/react\`: a search block.
+Parts used: \`Field\`, \`TextInput\`, \`ButtonGroup\`, \`Button\`. Gap in \`@kvirn/ui\`: a search block.
 `
 
 const meta = {

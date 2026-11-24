@@ -10,7 +10,7 @@ const workerPack = {
   entry: ['src/worker.ts', 'src/cluster-worker.ts'],
   format: ['esm'],
   clean: false,
-  deps: { alwaysBundle: [/^@kvirn-ui\/core/], neverBundle: ['react', 'react-dom'] },
+  deps: { alwaysBundle: [/^@kvirn\/core/], neverBundle: ['react', 'react-dom'] },
   plugins: [
     {
       name: 'kvirn-worker-url',
@@ -36,7 +36,7 @@ export default defineConfig({
       ],
       // The engine is a peer: the adopter owns the one copy and chooses whether to load it at all.
       deps: {
-        neverBundle: ['react', 'react-dom', 'maplibre-gl', 'leaflet', /^@kvirn-ui\//],
+        neverBundle: ['react', 'react-dom', 'maplibre-gl', 'leaflet', /^@kvirn\//],
       },
       banner,
       inputOptions: {

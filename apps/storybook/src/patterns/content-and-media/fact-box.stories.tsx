@@ -1,5 +1,5 @@
-import { en } from '@kvirn-ui/i18n/en'
-import { DefinitionList, Heading, KvirnProvider, Link, List } from '@kvirn-ui/react'
+import { en } from '@kvirn/i18n/en'
+import { DefinitionList, Heading, KvirnProvider, Link, List } from '@kvirn/ui'
 import type { Meta, StoryObj } from '@storybook/react-vite'
 import contract from '../../../../../packages/patterns/src/content-and-media/fact-box/fact-box.a11y.md?raw'
 import { expect } from 'storybook/test'

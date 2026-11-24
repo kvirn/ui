@@ -9,7 +9,7 @@ import {
   globalFilteringFeature,
   tableFeatures,
   useTable,
-} from '@kvirn-ui/react'
+} from '@kvirn/ui'
 import { useMemo } from 'react'
 import { cases } from './cases.ts'
 import type { CaseRecord } from './cases.ts'

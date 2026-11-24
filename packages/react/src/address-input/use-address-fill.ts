@@ -1,4 +1,4 @@
-import type { AddressDetails } from '@kvirn-ui/core'
+import type { AddressDetails } from '@kvirn/core'
 import { useLayoutEffect, useMemo, useRef, useState } from 'react'
 
 export type AddressFillBox = 'line1' | 'postalCode' | 'city'

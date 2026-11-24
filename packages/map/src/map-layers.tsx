@@ -1,5 +1,5 @@
-import { Checkbox, Disclosure, Field, Fieldset } from '@kvirn-ui/react'
-import type { MapLayer } from '@kvirn-ui/core'
+import { Checkbox, Disclosure, Field, Fieldset } from '@kvirn/ui'
+import type { MapLayer } from '@kvirn/core'
 import { useState } from 'react'
 import type { ComponentPropsWithRef, ReactElement, ReactNode } from 'react'
 import { joinClassNames } from './class-names.ts'

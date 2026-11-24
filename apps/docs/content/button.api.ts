@@ -1,4 +1,4 @@
-import type { ButtonProps, UseButtonOptions, UseButtonResult } from '@kvirn-ui/react'
+import type { ButtonProps, UseButtonOptions, UseButtonResult } from '@kvirn/ui'
 import { propRows } from '../components/api-block.tsx'
 import type { ApiHook, AttributeRow } from '../components/api-block.tsx'
 

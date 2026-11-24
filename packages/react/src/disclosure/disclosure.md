@@ -7,12 +7,12 @@ A Disclosure is a button that shows and hides a panel of content (APG Disclosure
 - **Render the panel right after the trigger,** so the panel's content follows it in the Tab order.
 - **Enter and Space are the button's own.** Escape is not handled (APG doesn't require it).
 - **The open look** is the chevron: it points down while closed and up while open, at the inline end. Never colour alone.
-- No strings of its own. With `@kvirn-ui/theme` the parts are styled; without it they carry `kv-disclosure-trigger`, `kv-disclosure-panel`, `kv-disclosure-icon` and `data-open`.
+- No strings of its own. With `@kvirn/theme` the parts are styled; without it they carry `kv-disclosure-trigger`, `kv-disclosure-panel`, `kv-disclosure-icon` and `data-open`.
 
 ## API
 
 ```tsx
-import { Disclosure } from '@kvirn-ui/react'
+import { Disclosure } from '@kvirn/ui'
 
 ;<Disclosure.Root>
   <Disclosure.Trigger>Opening hours</Disclosure.Trigger>
@@ -37,7 +37,7 @@ Every part merges `className`, `style`, handlers and refs with its own. To build
 ## Hook
 
 ```tsx
-import { useDisclosure } from '@kvirn-ui/react'
+import { useDisclosure } from '@kvirn/ui'
 
 function Hours() {
   const disclosure = useDisclosure()

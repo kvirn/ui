@@ -1,4 +1,4 @@
-import { Button, Card, Checkbox, CheckboxGroup, Field } from '@kvirn-ui/react'
+import { Button, Card, Checkbox, CheckboxGroup, Field } from '@kvirn/ui'
 import contract from '../../../../../packages/react/src/checkbox-group/checkbox-group.a11y.md?raw'
 import guide from '../../../../../packages/react/src/checkbox-group/checkbox-group.md?raw'
 import type { Meta, StoryObj } from '@storybook/react-vite'

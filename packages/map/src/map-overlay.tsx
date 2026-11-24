@@ -1,4 +1,4 @@
-import { useMergedRef } from '@kvirn-ui/react/internal'
+import { useMergedRef } from '@kvirn/ui/internal'
 import { useCallback, useRef } from 'react'
 import type { ComponentPropsWithRef, ElementType, ReactElement, Ref } from 'react'
 import { joinClassNames } from './class-names.ts'

@@ -1,5 +1,5 @@
 'use client'
-import { Badge, Button, useAnnouncer } from '@kvirn-ui/react'
+import { Badge, Button, useAnnouncer } from '@kvirn/ui'
 import { useState } from 'react'
 import { useBadgeTexts } from './texts.ts'
 

@@ -1,6 +1,6 @@
 'use client'
-import { AddressSearch, Map, useMapState } from '@kvirn-ui/map'
-import { kvirnGeocoder } from '@kvirn-ui/map/kvirn'
+import { AddressSearch, Map, useMapState } from '@kvirn/map'
+import { kvirnGeocoder } from '@kvirn/map/kvirn'
 import { DocsMap } from '../map/use-docs-provider.tsx'
 import { useAddressSearchTexts } from './texts.ts'
 

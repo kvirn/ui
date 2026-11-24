@@ -1,5 +1,5 @@
 'use client'
-import { useSkipLink } from '@kvirn-ui/react'
+import { useSkipLink } from '@kvirn/ui'
 import { useSkipLinkTexts } from './texts.ts'
 
 export function OwnElement() {

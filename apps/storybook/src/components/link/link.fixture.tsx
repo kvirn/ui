@@ -1,4 +1,4 @@
-import { KvirnProvider, Link } from '@kvirn-ui/react'
+import { KvirnProvider, Link } from '@kvirn/ui'
 import type { ReactNode } from 'react'
 // Package-internal fixture, shared with link.test.tsx. It stands in for a router: not part of
 // the public API.
@@ -18,7 +18,7 @@ import {
  * provider, and every Link renders it. `mockRouterLinkComponent` stands in for your router's own
  * link (such as `NextLink`), and `MockRouterProvider` for its provider. In a TypeScript app,
  * augment `Register` so `LinkProps` follow the router's link:
- * `declare module '@kvirn-ui/react' { interface Register { linkComponent: typeof NextLink } }`.
+ * `declare module '@kvirn/ui' { interface Register { linkComponent: typeof NextLink } }`.
  */
 export function AppRoot({ children }: { children: ReactNode }) {
   return (

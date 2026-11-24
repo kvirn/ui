@@ -1,6 +1,6 @@
 # ReadAloud
 
-> **Private, in planning for 1.2.** This is the package `@kvirn-ui/read-aloud`; it is not published yet.
+> **Private, in planning for 1.2.** This is the package `@kvirn/read-aloud`; it is not published yet.
 
 > **In planning.** Plan 0153: ReadAloud speaks on Kvirn's own voice service only — no browser speech, no third-party voice. The accessibility contract is [read-aloud.a11y.md](read-aloud.a11y.md).
 
@@ -28,7 +28,7 @@ something to say (a wait, or an error); `Note` sits below it, set apart by its o
 there is no card to separate it from the buttons otherwise.
 
 ```tsx
-import { ReadAloud } from '@kvirn-ui/react'
+import { ReadAloud } from '@kvirn/ui'
 
 const articleRef = useRef<HTMLElement>(null)
 

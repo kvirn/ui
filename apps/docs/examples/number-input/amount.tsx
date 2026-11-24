@@ -1,5 +1,5 @@
 'use client'
-import { Field, NumberInput, useLocale } from '@kvirn-ui/react'
+import { Field, NumberInput, useLocale } from '@kvirn/ui'
 import { useState } from 'react'
 import { exampleHours, useNumberInputTexts } from './texts.ts'
 

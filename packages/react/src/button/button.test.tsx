@@ -1,4 +1,4 @@
-import { expectNoA11yViolations } from '@kvirn-ui/testing'
+import { expectNoA11yViolations } from '@kvirn/testing'
 import { createRef, useState } from 'react'
 import type { FormEvent, ReactElement, ReactNode } from 'react'
 import { afterEach, beforeEach, describe, expect, expectTypeOf, test, vi } from 'vite-plus/test'
@@ -7,7 +7,7 @@ import { page, userEvent } from 'vite-plus/test/browser'
 import { renderToString } from 'react-dom/server'
 import { render } from 'vitest-browser-react'
 import { resetDevWarnings } from '../dev/dev-warning.ts'
-import { close } from '@kvirn-ui/icons'
+import { close } from '@kvirn/icons'
 import { Icon } from '../icon/icon.tsx'
 import { mergeProps } from '../merge-props/merge-props.ts'
 import { Button } from './button.tsx'
@@ -619,7 +619,7 @@ describe('types', () => {
       'button' | 'submit' | 'reset' | undefined
     >()
     expectTypeOf<ButtonProps['focusableWhenDisabled']>().toEqualTypeOf<boolean | undefined>()
-    // The part's class that @kvirn-ui/theme and your own CSS select on.
+    // The part's class that @kvirn/theme and your own CSS select on.
     expectTypeOf<ButtonPartProps['className']>().toEqualTypeOf<'kv-button'>()
     expectTypeOf<ButtonPartProps>().not.toHaveProperty('data-kv')
     // aria-disabled comes only from disabled + focusableWhenDisabled, or from busy: both block activation.

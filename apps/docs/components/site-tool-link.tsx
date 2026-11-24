@@ -1,4 +1,4 @@
-import { Link } from '@kvirn-ui/react'
+import { Link } from '@kvirn/ui'
 import type { SiteTool } from './site-sections.ts'
 
 export function SiteToolLink({ tool, pathname }: { tool: SiteTool; pathname: string }) {

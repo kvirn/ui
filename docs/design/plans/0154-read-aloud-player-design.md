@@ -267,7 +267,7 @@ behaviour:
   200% zoom and forced colours — the two display modes we just amended binding rules for. Costs CI time and
   may surface failures, which is the point: the component was swept by nothing before this.
 
-- **D27 The story page frame is built from `@kvirn-ui/patterns`, not transcribed from the prototype (lead,
+- **D27 The story page frame is built from `@kvirn/patterns`, not transcribed from the prototype (lead,
   2026-10-26).** Storybook and `read-aloud-concepts.html` now match in **composition, not markup**: the
   prototype's `.site`, `.site-head` and `.crumbs` are throwaway CSS, while the library ships the real thing —
   `PageFrame.Root` (which brings the skip link the Bar's tab order is specified against), `SiteHeader`,

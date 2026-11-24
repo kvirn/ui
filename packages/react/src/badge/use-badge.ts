@@ -3,7 +3,7 @@ export type BadgeVariant = 'neutral' | 'primary' | 'info' | 'success' | 'warning
 /** Spread on the Badge's element. Only the part's class: Badge adds no role, ARIA or state. */
 export interface BadgePartProps {
   /**
-   * The part's class, for `@kvirn-ui/theme` and your own CSS: `kv-badge`, plus
+   * The part's class, for `@kvirn/theme` and your own CSS: `kv-badge`, plus
    * `kv-badge--<variant>` for every variant but `neutral`. Add a class of your own next to it with
    * `mergeProps`: class names join.
    */

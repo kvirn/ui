@@ -68,7 +68,7 @@ body {
 }
 
 /*
- * The header is the primary Site header of @kvirn-ui/patterns (docs/design/docs-shell-mega-menu.md):
+ * The header is the primary Site header of @kvirn/patterns (docs/design/docs-shell-mega-menu.md):
  * the bands, the menu in the masthead, their on-primary links, current bars and focus rings come
  * from theme.css. Here only the mark and name with its Badge, and the Display settings wrapper.
  */

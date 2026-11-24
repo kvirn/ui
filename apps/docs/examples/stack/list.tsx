@@ -1,5 +1,5 @@
 'use client'
-import { Link, Stack } from '@kvirn-ui/react'
+import { Link, Stack } from '@kvirn/ui'
 import { useStackTexts } from './texts.ts'
 
 export function StackAsList() {

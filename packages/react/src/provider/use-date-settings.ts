@@ -1,5 +1,5 @@
-import { resolveWeekStart } from '@kvirn-ui/core'
-import type { WeekStart } from '@kvirn-ui/core'
+import { resolveWeekStart } from '@kvirn/core'
+import type { WeekStart } from '@kvirn/core'
 import { useContext, useMemo } from 'react'
 import { KvirnConfigContext } from './provider-context.ts'
 

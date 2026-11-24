@@ -1,5 +1,5 @@
-import { createShiftSequence } from '@kvirn-ui/core'
-import type { KvirnMessages } from '@kvirn-ui/i18n'
+import { createShiftSequence } from '@kvirn/core'
+import type { KvirnMessages } from '@kvirn/i18n'
 import { useCallback, useEffect, useRef, useState } from 'react'
 import type { MouseEvent } from 'react'
 import { useAnnouncer } from '../announcer/use-announcer.ts'

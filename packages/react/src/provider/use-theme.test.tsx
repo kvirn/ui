@@ -3,10 +3,10 @@ import {
   contrastAttribute,
   motionAttribute,
   themeStorageKey,
-} from '@kvirn-ui/core'
-import type { Env } from '@kvirn-ui/core'
-import { fi } from '@kvirn-ui/i18n/fi'
-import { expectNoA11yViolations } from '@kvirn-ui/testing'
+} from '@kvirn/core'
+import type { Env } from '@kvirn/core'
+import { fi } from '@kvirn/i18n/fi'
+import { expectNoA11yViolations } from '@kvirn/testing'
 import { afterEach, beforeEach, describe, expect, test, vi } from 'vite-plus/test'
 import type { MockInstance } from 'vite-plus/test'
 import { cdp, page, userEvent } from 'vite-plus/test/browser'

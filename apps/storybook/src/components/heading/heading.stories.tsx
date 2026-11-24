@@ -1,4 +1,4 @@
-import { Heading } from '@kvirn-ui/react'
+import { Heading } from '@kvirn/ui'
 import contract from '../../../../../packages/react/src/heading/heading.a11y.md?raw'
 import guide from '../../../../../packages/react/src/heading/heading.md?raw'
 import type { Meta, StoryObj } from '@storybook/react-vite'

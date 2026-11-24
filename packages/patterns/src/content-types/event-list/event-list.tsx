@@ -1,6 +1,6 @@
 'use client'
 
-import { en } from '@kvirn-ui/i18n/en'
+import { en } from '@kvirn/i18n/en'
 import {
   Badge,
   Breadcrumb,
@@ -24,8 +24,8 @@ import {
   useAnnouncer,
   useFormat,
   useLocale,
-} from '@kvirn-ui/react'
-import type { TextMessage } from '@kvirn-ui/i18n'
+} from '@kvirn/ui'
+import type { TextMessage } from '@kvirn/i18n'
 import { useState } from 'react'
 import {
   kvirnbyEventCategories,

@@ -1,4 +1,4 @@
-import { LinkRoot } from '@kvirn-ui/react'
+import { LinkRoot } from '@kvirn/ui'
 import { ApiBlock } from './api-block.tsx'
 import type { ApiPart } from './api-block.tsx'
 import { CodeBlock } from './code-block.tsx'
@@ -232,7 +232,7 @@ export function NavigationPage({
       contractSections={contractSectionList(contract)}
       api={
         <ApiBlock
-          importLine="import { Navigation, useNavigation } from '@kvirn-ui/react'"
+          importLine="import { Navigation, useNavigation } from '@kvirn/ui'"
           parts={parts}
           hook={useNavigationHook}
         />

@@ -1,5 +1,5 @@
 'use client'
-import { Heading, KvirnProvider, Section, useLocale } from '@kvirn-ui/react'
+import { Heading, KvirnProvider, Section, useLocale } from '@kvirn/ui'
 import { useId } from 'react'
 import { swedishNotice } from './texts.ts'
 

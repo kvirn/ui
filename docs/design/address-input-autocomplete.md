@@ -3,7 +3,7 @@
 <!-- kv-lang-ok-file: a sample Swedish address (Storgatan, Malmö) and a Finnish town name in the examples -->
 
 - **Status:** Draft · **Designer:** ux-designer agent · **Date:** 2026-10-22 (revised the same day: model (a))
-- **Plan:** 0149 (done, deleted; see `git log`). The lookup lives in `AddressInput` (`@kvirn-ui/react`), opt-in with `geocoder` on `AddressInput.Root`; geocoders (`kvirnGeocoder`, …) come from `@kvirn-ui/map`; the decisions are in §9.
+- **Plan:** 0149 (done, deleted; see `git log`). The lookup lives in `AddressInput` (`@kvirn/ui`), opt-in with `geocoder` on `AddressInput.Root`; geocoders (`kvirnGeocoder`, …) come from `@kvirn/map`; the decisions are in §9.
 - **Type:** component flow, content and default styling (`theme.css`)
 - **Builds on:** [address-search.md](address-search.md) (states, strings, Enter deviation D1, privacy notice), [phone-and-address-inputs.md](phone-and-address-inputs.md), [geocoder-providers.md](geocoder-providers.md), `address-input.a11y.md`, `address-search.a11y.md`.
 
@@ -175,7 +175,7 @@ Decided (maintainer, 2026-10-22, unless noted; plan 0149 §Decisions):
 1. **Model (a):** Line1 is the combobox and stays free text; (b), the separate Lookup, is superseded. Pick fills the street (number when known), focus stays in Line1, caret at the end.
 2. **Accessibility trade-off:** Line1 keeps `autocomplete="address-line1"` as a combobox; a browser may show its own list beside ours.
 3. **D1 Enter deviation** in Line1 with a geocoder: approved; the `keyboard` skill names it.
-4. **D2** the lookup lives in `@kvirn-ui/react` (`useAddressLookup`); AddressSearch builds on it.
+4. **D2** the lookup lives in `@kvirn/ui` (`useAddressLookup`); AddressSearch builds on it.
 5. **D3** `precision` and the `country` search option: approved.
 6. **D4** no country props on the Root; the optional `AddressInput.Country` part instead.
 7. **D6** (lead): without Country, only the Root's country is offered; with it, every country, the selected one first, and a pick switches the select. `otherCountry` is dropped.

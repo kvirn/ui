@@ -1,5 +1,5 @@
 'use client'
-import { Autocomplete, Button, Field } from '@kvirn-ui/react'
+import { Autocomplete, Button, Field } from '@kvirn/ui'
 import { useState } from 'react'
 import { streets } from './data.ts'
 import { useAutocompleteTexts } from './texts.ts'

@@ -1,4 +1,4 @@
-import { Disclosure } from '@kvirn-ui/react'
+import { Disclosure } from '@kvirn/ui'
 import contract from '../../../../../packages/react/src/disclosure/disclosure.a11y.md?raw'
 import guide from '../../../../../packages/react/src/disclosure/disclosure.md?raw'
 import type { Meta, StoryObj } from '@storybook/react-vite'
@@ -20,7 +20,7 @@ import {
 } from './disclosure.fixture.tsx'
 
 // Components/Disclosure: a button that shows and hides a panel (APG Disclosure, contract:
-// disclosure.a11y.md), styled by @kvirn-ui/theme/theme.css. Disclosure has no library strings:
+// disclosure.a11y.md), styled by @kvirn/theme/theme.css. Disclosure has no library strings:
 // the trigger's text and the panel are the story's own, in sv by default.
 
 const description = usageGuide(guide)

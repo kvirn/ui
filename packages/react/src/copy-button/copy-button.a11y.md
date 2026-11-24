@@ -69,7 +69,7 @@ The label key is `copyButton.label`. Nothing is announced on render. Pressing th
 
 ## Visual / modes
 
-Headless: CopyButton ships no CSS. With `@kvirn-ui/theme/theme.css` it is a Button (`kv-button`): see the Button page. The result text (`kv-copy-status`) uses the normal text size and colour with an icon in the same colour, so no colour carries it (1.4.1) and no new colour pair is needed.
+Headless: CopyButton ships no CSS. With `@kvirn/theme/theme.css` it is a Button (`kv-button`): see the Button page. The result text (`kv-copy-status`) uses the normal text size and colour with an icon in the same colour, so no colour carries it (1.4.1) and no new colour pair is needed.
 
 - Focus indicator, target size, contrast, forced colours: the Button's.
 - Reduced motion: no motion.

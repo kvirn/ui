@@ -1,4 +1,4 @@
-# Plan 0155: Kvirn AI (ai.kvirn.com) and `@kvirn-ui/ai`: Klarspråk, Chat and Search
+# Plan 0155: Kvirn AI (ai.kvirn.com) and `@kvirn/ai`: Klarspråk, Chat and Search
 
 - **Status:** Draft
 - **Owner:** lead (orchestrator) → component-engineer, ux-designer, accessibility-reviewer; user for the service repo, the server and the model choice
@@ -68,10 +68,10 @@ That repo owns the architecture. This plan relies on:
 - Every answer cites at least one source. If retrieval finds nothing above a threshold, the assistant says it doesn't know and shows the handoff. It never answers from the model's own knowledge.
 - Queries with no results are logged (query text only, masked), so editors can see which content is missing.
 
-### Library (`@kvirn-ui/ai`, private until approved)
+### Library (`@kvirn/ai`, private until approved)
 
 ```tsx
-import { kvirnAi } from '@kvirn-ui/ai'
+import { kvirnAi } from '@kvirn/ai'
 
 const ai = kvirnAi({ url: 'https://ai.kvirn.com', siteKey, name: 'Kvirn' })
 
@@ -96,10 +96,15 @@ const { rewrite } = useKlarsprak()  // for CMS editor plugins and the rich-text 
 ### Embed (separate distribution, §D1)
 
 ```html
-<script src="https://ai.kvirn.com/embed.js" data-site="<site-key>" data-profile="kontaktcenter" async></script>
+<script
+  src="https://ai.kvirn.com/embed.js"
+  data-site="<site-key>"
+  data-profile="kontaktcenter"
+  async
+></script>
 ```
 
-A prebuilt Web Component wrapping the React package, with a default theme from `@kvirn-ui/theme`. It is for sites that can't install npm packages (Sitevision, older CMSs). It's served from `ai.kvirn.com`, so no other third party is involved.
+A prebuilt Web Component wrapping the React package, with a default theme from `@kvirn/theme`. It is for sites that can't install npm packages (Sitevision, older CMSs). It's served from `ai.kvirn.com`, so no other third party is involved.
 
 ### Privacy
 
@@ -109,12 +114,12 @@ A prebuilt Web Component wrapping the React package, with a default theme from `
 
 ### Accessibility contract (draft, Chat)
 
-| Key                  | Action                                                        |
-| -------------------- | ------------------------------------------------------------- |
-| Tab / Shift+Tab      | Composer → Send → Sources → Handoff; the log is not a tab stop |
-| Enter (in composer)  | Sends                                                         |
-| Shift+Enter          | New line                                                      |
-| Escape               | Stops a streaming answer (embed: then closes the launcher)    |
+| Key                 | Action                                                         |
+| ------------------- | -------------------------------------------------------------- |
+| Tab / Shift+Tab     | Composer → Send → Sources → Handoff; the log is not a tab stop |
+| Enter (in composer) | Sends                                                          |
+| Shift+Enter         | New line                                                       |
+| Escape              | Stops a streaming answer (embed: then closes the launcher)     |
 
 - Roles/ARIA: the log is `role="log"`. A streamed answer is announced **once, when it's complete** (not token by token) through a polite live region. "Assistant is writing…" is announced once after 1 s.
 - Focus stays in the composer after sending. A source link opens in the same tab.
@@ -122,15 +127,15 @@ A prebuilt Web Component wrapping the React package, with a default theme from `
 
 ### i18n strings (first cut)
 
-| Key                     | en                                   | sv                                      |
-| ----------------------- | ------------------------------------ | --------------------------------------- |
-| `ai.chat.disclosure`    | You are chatting with an AI assistant | Du chattar med en AI-assistent          |
-| `ai.chat.send`          | Send                                 | Skicka                                  |
-| `ai.chat.stop`          | Stop                                 | Stoppa                                  |
-| `ai.chat.writing`       | The assistant is writing…            | Assistenten skriver…                    |
-| `ai.chat.noAnswer`      | I can't find that on this website.   | Jag hittar inte det på den här webbplatsen. |
-| `ai.chat.sources`       | Sources                              | Källor                                  |
-| `ai.search.synonymHint` | Also showing results for {term}      | Visar även resultat för {term}          |
+| Key                     | en                                    | sv                                          |
+| ----------------------- | ------------------------------------- | ------------------------------------------- |
+| `ai.chat.disclosure`    | You are chatting with an AI assistant | Du chattar med en AI-assistent              |
+| `ai.chat.send`          | Send                                  | Skicka                                      |
+| `ai.chat.stop`          | Stop                                  | Stoppa                                      |
+| `ai.chat.writing`       | The assistant is writing…             | Assistenten skriver…                        |
+| `ai.chat.noAnswer`      | I can't find that on this website.    | Jag hittar inte det på den här webbplatsen. |
+| `ai.chat.sources`       | Sources                               | Källor                                      |
+| `ai.search.synonymHint` | Also showing results for {term}       | Visar även resultat för {term}              |
 
 ## Tasks
 
@@ -146,7 +151,7 @@ A prebuilt Web Component wrapping the React package, with a default theme from `
 
 ## Decisions
 
-- **D1 (maintainer):** the script-tag embed ships styled, React-bundled code. That breaks "headless, React only" (vision principles 2 and Non-goals), so it would ship as a separate product (`kvirn-ai-embed`), not as part of `@kvirn-ui/*`. **Open.**
+- **D1 (maintainer):** the script-tag embed ships styled, React-bundled code. That breaks "headless, React only" (vision principles 2 and Non-goals), so it would ship as a separate product (`kvirn-ai-embed`), not as part of `@kvirn/*`. **Open.**
 - **D2:** one service, three features over one index. Search and chat share retrieval, so search can ship first and chat follows.
 - **D3:** profiles live on the server and the browser only names one, so a page can't jailbreak the scope through props.
 - **D4 (maintainer):** model licence and hosting decide whether an on-prem image is possible later. **Open until T1.**
@@ -168,7 +173,7 @@ A prebuilt Web Component wrapping the React package, with a default theme from `
 
 ## Rollout
 
-Private `@kvirn-ui/ai` until T6 and accessibility review pass. Search first, then Klarspråk, then Chat. The embed comes after D1.
+Private `@kvirn/ai` until T6 and accessibility review pass. Search first, then Klarspråk, then Chat. The embed comes after D1.
 
 ## Done when
 

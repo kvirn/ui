@@ -7,7 +7,7 @@ A button that is on or off, and says which: "Show only unread", bold text in an 
 - Controlled with `pressed` and `onPressedChange`, or uncontrolled with `defaultPressed`, the same way a Popover is controlled with `open`.
 - Disabled like a Button: natively, or with `focusableWhenDisabled` so it stays in the Tab order with `aria-disabled`. A disabled toggle still says whether it is on, and switching is blocked.
 - Icon-only toggles need an `aria-label` from your translations. A development warning says so, as for Button.
-- Headless: no CSS. With `@kvirn-ui/theme/theme.css` imported it is styled: pressed is a solid `primary` fill with a light label or icon, which differs from an unpressed button by more than colour.
+- Headless: no CSS. With `@kvirn/theme/theme.css` imported it is styled: pressed is a solid `primary` fill with a light label or icon, which differs from an unpressed button by more than colour.
 
 ## API
 
@@ -57,7 +57,7 @@ Keyed `toggle-*`, English, for the developer only: no accessible name (`toggle-w
 ## Component
 
 ```tsx
-import { Toggle } from '@kvirn-ui/react'
+import { Toggle } from '@kvirn/ui'
 
 function UnreadFilter() {
   const [isOn, setIsOn] = useState(false)
@@ -82,7 +82,7 @@ Prefer a toggle for something the user sees change at once. If turning it on nee
 ## Hook
 
 ```tsx
-import { useToggle } from '@kvirn-ui/react'
+import { useToggle } from '@kvirn/ui'
 
 function Bold() {
   const toggle = useToggle({ defaultPressed: false })

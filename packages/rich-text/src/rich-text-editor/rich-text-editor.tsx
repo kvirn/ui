@@ -1,7 +1,7 @@
 'use client'
-import { getCharacterCount } from '@kvirn-ui/core'
-import type { KvirnMessages } from '@kvirn-ui/i18n'
-import { CharacterCount, mergeProps } from '@kvirn-ui/react'
+import { getCharacterCount } from '@kvirn/core'
+import type { KvirnMessages } from '@kvirn/i18n'
+import { CharacterCount, mergeProps } from '@kvirn/ui'
 import {
   FieldContext,
   joinIds,
@@ -9,7 +9,7 @@ import {
   useQuietAnnouncer,
   warnAnnouncerMissing,
   warnOnce,
-} from '@kvirn-ui/react/internal'
+} from '@kvirn/ui/internal'
 import { EditorContent } from '@tiptap/react'
 import {
   useCallback,

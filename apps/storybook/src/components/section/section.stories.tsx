@@ -1,4 +1,4 @@
-import { Card, Link, Prose, Section } from '@kvirn-ui/react'
+import { Card, Link, Prose, Section } from '@kvirn/ui'
 import contract from '../../../../../packages/react/src/section/section.a11y.md?raw'
 import guide from '../../../../../packages/react/src/section/section.md?raw'
 import type { Meta, StoryObj } from '@storybook/react-vite'
@@ -24,7 +24,7 @@ import {
 } from './section.fixture.tsx'
 import type { SectionFixtureLocale } from './section.fixture.tsx'
 
-// Components/Section: the headless Section, styled by @kvirn-ui/theme/theme.css (design spec docs/design/section.md). Section has no focusable part, so there's no Keyboard story.
+// Components/Section: the headless Section, styled by @kvirn/theme/theme.css (design spec docs/design/section.md). Section has no focusable part, so there's no Keyboard story.
 
 const localeOf = (globals: Record<string, unknown>): SectionFixtureLocale => {
   const locale = globals['locale']

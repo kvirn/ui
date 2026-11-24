@@ -1,4 +1,4 @@
-import { Tooltip } from '@kvirn-ui/react'
+import { Tooltip } from '@kvirn/ui'
 import contract from '../../../../../packages/react/src/tooltip/tooltip.a11y.md?raw'
 import guide from '../../../../../packages/react/src/tooltip/tooltip.md?raw'
 import type { Meta, StoryObj } from '@storybook/react-vite'
@@ -18,7 +18,7 @@ import {
 import { withLibraryIcons } from '../../icons.tsx'
 
 // Components/Tooltip: a name and a shortcut for a control, shown on hover and keyboard focus
-// (APG Tooltip, contract: tooltip.a11y.md), styled by @kvirn-ui/theme/theme.css.
+// (APG Tooltip, contract: tooltip.a11y.md), styled by @kvirn/theme/theme.css.
 
 /** An open tooltip fades in: wait for it, so the checks that follow see it fully drawn. */
 const waitForFade = () =>

@@ -1,5 +1,5 @@
 import { useRef, useSyncExternalStore } from 'react'
-import type { ReadableStore } from '@kvirn-ui/core'
+import type { ReadableStore } from '@kvirn/core'
 
 interface SelectionCache<State, Selected> {
   state: State

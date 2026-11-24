@@ -1,5 +1,5 @@
 'use client'
-import { SkipPanel } from '@kvirn-ui/react'
+import { SkipPanel } from '@kvirn/ui'
 import { useSkipPanelTexts } from './texts.ts'
 
 export function DefaultSkipPanel() {

@@ -1,5 +1,5 @@
-import { allIcons } from '@kvirn-ui/icons/all'
-import { KvirnProvider } from '@kvirn-ui/react'
+import { allIcons } from '@kvirn/icons/all'
+import { KvirnProvider } from '@kvirn/ui'
 import type { Decorator } from '@storybook/react-vite'
 
 export { allIcons }

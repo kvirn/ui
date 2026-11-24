@@ -46,7 +46,7 @@ export interface IconDefaults {
 export interface UseIconOptions extends IconDefaults {
   /** An icon registered in `KvirnProvider`. */
   name?: IconName | undefined
-  /** A drawing from `@kvirn-ui/icons` or a component. It needs no registration, and a registered `name` wins over it. */
+  /** A drawing from `@kvirn/icons` or a component. It needs no registration, and a registered `name` wins over it. */
   icon?: IconRegistryEntry | undefined
   /**
    * Makes the icon an image with this name, from your own translations. Leave it
@@ -68,7 +68,7 @@ export interface UseIconOptions extends IconDefaults {
 
 /** Spread on the root `<svg>`, or pass to an icon component. Attributes only, never `style`. */
 export interface IconPartProps {
-  /** The part's class, for `@kvirn-ui/theme` and your own CSS. */
+  /** The part's class, for `@kvirn/theme` and your own CSS. */
   className:
     | `kv-icon kv-icon--size-${IconSize}`
     | `kv-icon kv-icon--size-${IconSize} kv-icon--${IconVariant}`

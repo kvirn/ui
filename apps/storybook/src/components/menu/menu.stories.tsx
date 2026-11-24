@@ -1,4 +1,4 @@
-import { Menu } from '@kvirn-ui/react'
+import { Menu } from '@kvirn/ui'
 import contract from '../../../../../packages/react/src/menu/menu.a11y.md?raw'
 import guide from '../../../../../packages/react/src/menu/menu.md?raw'
 import type { Meta, StoryObj } from '@storybook/react-vite'
@@ -24,7 +24,7 @@ import {
 } from './menu.fixture.tsx'
 
 // Components/Menu: a button that opens a short list of actions (APG Menu Button, contract:
-// menu.a11y.md), styled by @kvirn-ui/theme/theme.css. Actions, not navigation: links to pages are
+// menu.a11y.md), styled by @kvirn/theme/theme.css. Actions, not navigation: links to pages are
 // a Navigation.
 
 const description = usageGuide(guide)

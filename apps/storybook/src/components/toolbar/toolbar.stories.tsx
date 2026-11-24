@@ -1,4 +1,4 @@
-import { Toolbar } from '@kvirn-ui/react'
+import { Toolbar } from '@kvirn/ui'
 import contract from '../../../../../packages/react/src/toolbar/toolbar.a11y.md?raw'
 import guide from '../../../../../packages/react/src/toolbar/toolbar.md?raw'
 import type { Meta, StoryObj } from '@storybook/react-vite'
@@ -13,7 +13,7 @@ import {
 } from './toolbar.fixture.tsx'
 
 // Components/Toolbar: one Tab stop for a row of related controls, with the arrow keys between
-// them (APG Toolbar, contract: toolbar.a11y.md), styled by @kvirn-ui/theme/theme.css.
+// them (APG Toolbar, contract: toolbar.a11y.md), styled by @kvirn/theme/theme.css.
 
 const meta = {
   title: 'Components/Actions/Toolbar',

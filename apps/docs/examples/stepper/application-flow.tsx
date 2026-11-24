@@ -1,5 +1,5 @@
 'use client'
-import { Button, Field, Heading, Stack, Stepper, TextInput, useRouteFocus } from '@kvirn-ui/react'
+import { Button, Field, Heading, Stack, Stepper, TextInput, useRouteFocus } from '@kvirn/ui'
 import { useRef, useState } from 'react'
 import { useStepperTexts } from './texts.ts'
 

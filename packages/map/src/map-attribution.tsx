@@ -1,4 +1,4 @@
-import type { MapBaseMap } from '@kvirn-ui/core'
+import type { MapBaseMap } from '@kvirn/core'
 import type { ComponentPropsWithRef, ReactElement, ReactNode } from 'react'
 import { joinClassNames } from './class-names.ts'
 import { useMapContext } from './map-context.ts'

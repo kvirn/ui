@@ -3,7 +3,7 @@
  * for typed link props and icon names everywhere:
  *
  * ```ts
- * declare module '@kvirn-ui/react' {
+ * declare module '@kvirn/ui' {
  *   interface Register {
  *     linkComponent: typeof NextLink
  *     icons: typeof icons

@@ -1,5 +1,5 @@
-import { PageFrame } from '@kvirn-ui/patterns'
-import { ContentPage } from '@kvirn-ui/patterns/content-types'
+import { PageFrame } from '@kvirn/patterns'
+import { ContentPage } from '@kvirn/patterns/content-types'
 import type { Meta, StoryObj } from '@storybook/react-vite'
 import source from '../../../../packages/patterns/src/content-types/content-page/content-page.tsx?raw'
 import { expectNoHorizontalOverflow } from '../components/theme-story-assertions.ts'
@@ -7,7 +7,7 @@ import { chromeViewports, narrowGlobals, wideGlobals } from '../patterns/pattern
 import { expectPageOutline } from './page-outline.ts'
 import { withShell } from './shell.tsx'
 // Content types/Content page: a whole page in the site chrome (docs/design/storybook-patterns.md section 7).
-// The page is a component in `@kvirn-ui/patterns/content-types`; the source panel shows its module text, which an adopter copies.
+// The page is a component in `@kvirn/patterns/content-types`; the source panel shows its module text, which an adopter copies.
 
 const description = `A page that answers one question: what it is, who it is for, how to do it, what it costs and who to ask. The section navigation sits beside \`main\` from \`64rem\` and above it, collapsed behind a button, below it. The \`h1\` is followed by read aloud, the preamble and a contents list; the prose has \`h2\` sections, with the FAQ as an Accordion of \`h3\` triggers.
 

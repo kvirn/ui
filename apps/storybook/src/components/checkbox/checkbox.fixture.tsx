@@ -1,4 +1,4 @@
-import { Button, Checkbox, Field } from '@kvirn-ui/react'
+import { Button, Checkbox, Field } from '@kvirn/ui'
 import { useState } from 'react'
 import { choiceTextsFor } from '../form/choice.fixture.tsx'
 import type { FormLocale } from '../form/form.fixture.tsx'

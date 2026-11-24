@@ -1,5 +1,5 @@
-import { Field } from '@kvirn-ui/react'
-import { RichTextEditor } from '@kvirn-ui/rich-text'
+import { Field } from '@kvirn/ui'
+import { RichTextEditor } from '@kvirn/rich-text'
 import contract from '../../../../../packages/rich-text/src/rich-text-editor.a11y.md?raw'
 import guide from '../../../../../packages/rich-text/src/rich-text-editor.md?raw'
 import type { Meta, StoryObj } from '@storybook/react-vite'
@@ -25,7 +25,7 @@ import {
 } from './rich-text-editor.fixture.tsx'
 
 // Rich text editor/Rich text editor: a formatted-text field on Tiptap (design spec
-// docs/design/rich-text-editor.md, Plan 0036), styled by @kvirn-ui/theme/theme.css. It lives in a
+// docs/design/rich-text-editor.md, Plan 0036), styled by @kvirn/theme/theme.css. It lives in a
 // Field, which names, describes and validates it like any control. The output is never
 // sanitized: a real app sanitizes it on the server.
 

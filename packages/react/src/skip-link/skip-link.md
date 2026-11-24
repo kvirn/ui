@@ -8,12 +8,12 @@ A bypass link: the first Tab stop on every page, hidden until it has focus, that
 - Activation moves focus to the target and gives it `tabindex="-1"` until it loses focus when it isn't focusable, so the next Tab continues inside it. The native jump still happens. A target you made focusable is left alone.
 - A missing target warns in development (`skip-link-target-missing:<id>`).
 - Attributes and the `ref` reach the element. A `className` joins `kv-skip-link`. `as` takes a component that renders an `<a href>`, such as a router link, and passes it the other props and the ref.
-- Headless: no CSS. With `@kvirn-ui/theme/theme.css` it is clipped until `:focus`, then in the flow of the page with the focus ring, and never overlaps the header.
+- Headless: no CSS. With `@kvirn/theme/theme.css` it is clipped until `:focus`, then in the flow of the page with the focus ring, and never overlaps the header.
 
 ## Component
 
 ```tsx
-import { SkipLink } from '@kvirn-ui/react'
+import { SkipLink } from '@kvirn/ui'
 
 ;<>
   <SkipLink href="#main" />
@@ -25,7 +25,7 @@ import { SkipLink } from '@kvirn-ui/react'
 ## Hook
 
 ```tsx
-import { useSkipLink } from '@kvirn-ui/react'
+import { useSkipLink } from '@kvirn/ui'
 
 const { skipLinkProps, label } = useSkipLink({ href: '#main' })
 <a {...skipLinkProps}>{label}</a>

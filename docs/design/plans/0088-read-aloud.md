@@ -4,10 +4,10 @@
   `speechSynthesis` is removed and Kvirn's voice service is the only engine. **D4 is retired** (pause now
   really pauses mid-sentence) and **D14 is retired** (`allowRemoteVoices` is gone; passing the service URL
   is the opt-in). The player's parts, roles, keyboard contract and copy stand.
-- **Status:** Draft. Deferred to the 1.2 release (maintainer, 2026-10-20): the React parts live in the private `@kvirn-ui/read-aloud`, with one story and one docs example (Plan 0144). Before that: blocked (2026-10-09) on an npm package update and a re-test; open: the highlight, gates, reviewer, D6 and Q1.
+- **Status:** Draft. Deferred to the 1.2 release (maintainer, 2026-10-20): the React parts live in the private `@kvirn/read-aloud`, with one story and one docs example (Plan 0144). Before that: blocked (2026-10-09) on an npm package update and a re-test; open: the highlight, gates, reviewer, D6 and Q1.
 - **Owner:** lead (orchestrator) → component-engineer, ux-designer, accessibility-reviewer
 - **Created:** 2026-10-07 · **Target:** 1.2
-- **Related:** inspiration [ReadSpeaker webReader](https://www.readspeaker.com/products/webreader/); skills `api-conventions`, `accessibility`, `keyboard`, `testing`, `theme-css`, `overlays-and-lists` (selection popup); `core/announcer`; `@kvirn-ui/testing/read-aloud` is an unrelated test helper (a virtual screen reader), don't confuse the two
+- **Related:** inspiration [ReadSpeaker webReader](https://www.readspeaker.com/products/webreader/); skills `api-conventions`, `accessibility`, `keyboard`, `testing`, `theme-css`, `overlays-and-lists` (selection popup); `core/announcer`; `@kvirn/testing/read-aloud` is an unrelated test helper (a virtual screen reader), don't confuse the two
 
 ## Goal
 
@@ -129,7 +129,7 @@ No custom shortcuts in v1 (Space is not hijacked outside the controls). `Selecti
 - [x] T6 (11 stories incl. Keyboard, RTL, ForcedColors, Narrow, a fake-engine fixture; passes axe in all 4 storybook projects) `component-engineer`: stories, fixture (fake engine), `Keyboard` story, RTL, forced colours, Docs page (storybook-docs skill)
 - [x] T7 (theme.css §9k; `theme:check` green, 646 pairs, no new pairs or tokens; native-select rules extended with `.kv-read-aloud-select`; popup max width is a literal `20rem`) `component-engineer`: theme classes + `::highlight`, after T1; `vp run theme:check`
 - [x] T10 `component-engineer`: docs note (read-aloud.md and the RealVoices story): how to get local voices on Linux (`speech-dispatcher`, `espeak-ng`), macOS and Windows, and that Chrome's network voices are off by default
-- [ ] T8 `lead`: gates, `accessibility-reviewer`, changeset (`@kvirn-ui/core`, `react`, `i18n` minor), `docs/roadmap.md`, README row, `docs/architecture.md` mention that `speechSynthesis` is a browser API and Chrome network voices are filtered
+- [ ] T8 `lead`: gates, `accessibility-reviewer`, changeset (`@kvirn/core`, `react`, `i18n` minor), `docs/roadmap.md`, README row, `docs/architecture.md` mention that `speechSynthesis` is a browser API and Chrome network voices are filtered
 - [ ] T9 AT matrix row (`pending`, never claimed): NVDA/JAWS/VoiceOver with the player present; TalkBack/VoiceOver iOS speech behaviour
 
 Order: T1 ∥ T2 → T3 → T4 ∥ T5 (needs T3, T4) → T6 → T7 → T8. Parallel briefs never share a file: T2/T3 own `core/src/read-aloud/*` and the index line (T3 only); T4 owns `i18n`; T5 owns `react/src/read-aloud/*`.

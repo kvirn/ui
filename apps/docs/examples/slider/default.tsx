@@ -1,5 +1,5 @@
 'use client'
-import { Field, Slider } from '@kvirn-ui/react'
+import { Field, Slider } from '@kvirn/ui'
 import { useSliderTexts } from './texts.ts'
 
 export function DefaultSlider() {

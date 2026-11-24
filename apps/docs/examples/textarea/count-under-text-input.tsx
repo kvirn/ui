@@ -1,5 +1,5 @@
 'use client'
-import { CharacterCount, Field, TextInput } from '@kvirn-ui/react'
+import { CharacterCount, Field, TextInput } from '@kvirn/ui'
 import { useState } from 'react'
 import { useTextareaTexts } from './texts.ts'
 

@@ -1,4 +1,4 @@
-import { Card, Container, Heading } from '@kvirn-ui/react'
+import { Card, Container, Heading } from '@kvirn/ui'
 import contract from '../../../../../packages/react/src/container/container.a11y.md?raw'
 import guide from '../../../../../packages/react/src/container/container.md?raw'
 import type { Meta, StoryObj } from '@storybook/react-vite'
@@ -6,7 +6,7 @@ import { expect } from 'storybook/test'
 import { usageGuide } from '../../docs-source.ts'
 import { expectNoHorizontalOverflow } from '../theme-story-assertions.ts'
 
-// Components/Container: the headless Container, styled by @kvirn-ui/theme/theme.css (DESIGN.md,
+// Components/Container: the headless Container, styled by @kvirn/theme/theme.css (DESIGN.md,
 // Layout). It draws nothing, so each story outlines it with a Card.
 
 const description = usageGuide(guide)

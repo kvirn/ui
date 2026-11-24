@@ -1,4 +1,4 @@
-import { Heading, Link } from '@kvirn-ui/react'
+import { Heading, Link } from '@kvirn/ui'
 import type { Metadata } from 'next'
 import { DocsPage } from '../../../components/docs-page.tsx'
 import {

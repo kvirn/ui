@@ -1,5 +1,5 @@
-import { sv } from '@kvirn-ui/i18n/sv'
-import { expectNoA11yViolations } from '@kvirn-ui/testing'
+import { sv } from '@kvirn/i18n/sv'
+import { expectNoA11yViolations } from '@kvirn/testing'
 import { useEffect } from 'react'
 import { afterEach, describe, expect, test } from 'vite-plus/test'
 import { page, userEvent } from 'vite-plus/test/browser'

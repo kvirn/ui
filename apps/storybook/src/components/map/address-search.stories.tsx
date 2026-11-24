@@ -1,5 +1,5 @@
-import { en } from '@kvirn-ui/i18n/en'
-import { KvirnProvider } from '@kvirn-ui/react'
+import { en } from '@kvirn/i18n/en'
+import { KvirnProvider } from '@kvirn/ui'
 import contract from '../../../../../packages/map/src/address-search.a11y.md?raw'
 import guide from '../../../../../packages/map/src/address-search.md?raw'
 import type { Meta, StoryObj } from '@storybook/react-vite'

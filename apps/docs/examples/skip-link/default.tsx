@@ -1,5 +1,5 @@
 'use client'
-import { SkipLink } from '@kvirn-ui/react'
+import { SkipLink } from '@kvirn/ui'
 import { useSkipLinkTexts } from './texts.ts'
 
 export function DefaultSkipLink() {

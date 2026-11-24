@@ -1,5 +1,5 @@
-import { buildClusterTree, clusterTreeTransferables } from '@kvirn-ui/core'
-import type { ClusterTreeOptions } from '@kvirn-ui/core'
+import { buildClusterTree, clusterTreeTransferables } from '@kvirn/core'
+import type { ClusterTreeOptions } from '@kvirn/core'
 
 interface BuildRequest {
   id: number

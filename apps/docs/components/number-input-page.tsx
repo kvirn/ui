@@ -1,4 +1,4 @@
-import { Link } from '@kvirn-ui/react'
+import { Link } from '@kvirn/ui'
 import { ApiBlock } from './api-block.tsx'
 import type { ApiPart } from './api-block.tsx'
 import { ComponentPage } from './component-page.tsx'
@@ -223,7 +223,7 @@ export function NumberInputPage({
       contractSections={contractSectionList(contract)}
       api={
         <ApiBlock
-          importLine="import { NumberInput, useNumberInput } from '@kvirn-ui/react'"
+          importLine="import { NumberInput, useNumberInput } from '@kvirn/ui'"
           parts={parts}
           hook={useNumberInputHook}
           strings={

@@ -1,5 +1,5 @@
 'use client'
-import { Field, Textarea } from '@kvirn-ui/react'
+import { Field, Textarea } from '@kvirn/ui'
 import { useTextareaTexts } from './texts.ts'
 
 // The server stores a line break as two characters, so the count adds one for each.

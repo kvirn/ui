@@ -1,4 +1,4 @@
-import { expectNoA11yViolations } from '@kvirn-ui/testing'
+import { expectNoA11yViolations } from '@kvirn/testing'
 import { StrictMode, createRef, useEffect, useState } from 'react'
 import type { CSSProperties, MouseEvent, ReactNode } from 'react'
 import { renderToString } from 'react-dom/server'

@@ -1,4 +1,4 @@
-import type { MapPlace } from '@kvirn-ui/map'
+import type { MapPlace } from '@kvirn/map'
 import { defineExampleTexts } from '../../components/local-example-texts.ts'
 
 const stations: MapPlace[] = [

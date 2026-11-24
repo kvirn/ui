@@ -1,5 +1,5 @@
 'use client'
-import { Link } from '@kvirn-ui/react'
+import { Link } from '@kvirn/ui'
 import { useLocalesTexts } from './texts.ts'
 
 export function InstanceMessages() {

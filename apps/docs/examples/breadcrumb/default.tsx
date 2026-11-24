@@ -1,5 +1,5 @@
 'use client'
-import { Breadcrumb } from '@kvirn-ui/react'
+import { Breadcrumb } from '@kvirn/ui'
 import { useBreadcrumbTexts } from './texts.ts'
 
 export function DefaultBreadcrumb() {

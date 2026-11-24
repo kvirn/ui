@@ -1,5 +1,5 @@
 'use client'
-import { Dialog, VisuallyHidden } from '@kvirn-ui/react'
+import { Dialog, VisuallyHidden } from '@kvirn/ui'
 import { useId, useState } from 'react'
 import { useDialogTexts } from './texts.ts'
 

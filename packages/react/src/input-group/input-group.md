@@ -10,7 +10,7 @@ An InputGroup puts a unit, a symbol, a decorative icon or a Button **inside the 
 - **Start and end follow DOM order and reading direction.** An Addon before the Input is at the start, and it moves to the right in right-to-left. There's no `side` prop.
 - Clicking an Addon, or the box's padding, focuses the Input, so the whole box is one target.
 - **Interactive add-ons are real Buttons,** placed directly in the Root, never inside an Addon.
-- Headless: no CSS. They render `kv-input-group` and `kv-input-group-addon`, and your `className` joins them. With `@kvirn-ui/theme/theme.css` imported they are styled.
+- Headless: no CSS. They render `kv-input-group` and `kv-input-group-addon`, and your `className` joins them. With `@kvirn/theme/theme.css` imported they are styled.
 
 ## API
 
@@ -29,7 +29,7 @@ An InputGroup puts a unit, a symbol, a decorative icon or a Button **inside the 
 ## Component
 
 ```tsx
-import { Field, InputGroup } from '@kvirn-ui/react'
+import { Field, InputGroup } from '@kvirn/ui'
 
 ;<Field.Root invalid={errors.rent !== undefined} required>
   <Field.Label>Monthly rent in kronor</Field.Label>
@@ -88,7 +88,7 @@ const inputRef = useRef<HTMLInputElement>(null)
 
 ### A search bar: a field and a submit Button
 
-A submit Button doesn't go in the box: the box holds an in-field action such as Clear. For the site's search bar, put the `TextInput` and the submit `Button` side by side in an attached `ButtonGroup` (`className="kv-button-group--attached"`, unnamed, so it adds no group role): one strip, each control with its own edge and focus ring. The [Site search](?path=/docs/patterns-site-chrome-site-search--docs) pattern (`@kvirn-ui/patterns`) renders exactly this inside a `<search>` landmark and a GET form; the Search story shows the code.
+A submit Button doesn't go in the box: the box holds an in-field action such as Clear. For the site's search bar, put the `TextInput` and the submit `Button` side by side in an attached `ButtonGroup` (`className="kv-button-group--attached"`, unnamed, so it adds no group role): one strip, each control with its own edge and focus ring. The [Site search](?path=/docs/patterns-site-chrome-site-search--docs) pattern (`@kvirn/patterns`) renders exactly this inside a `<search>` landmark and a GET form; the Search story shows the code.
 
 ### Your part
 
@@ -117,7 +117,7 @@ A `kv-button` directly in the Root is a flat segment of the box, as tall as the 
 For your own elements, `useInputGroup` returns the props:
 
 ```tsx
-import { useInputGroup } from '@kvirn-ui/react'
+import { useInputGroup } from '@kvirn/ui'
 
 function Rent() {
   const group = useInputGroup()

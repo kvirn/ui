@@ -1,4 +1,4 @@
-import type { Env } from '@kvirn-ui/core'
+import type { Env } from '@kvirn/core'
 import { useEffect, useState } from 'react'
 
 /**

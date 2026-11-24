@@ -1,4 +1,4 @@
-import { Link } from '@kvirn-ui/react'
+import { Link } from '@kvirn/ui'
 import type { ApiPart } from './api-block.tsx'
 import { ApiBlock } from './api-block.tsx'
 import { ComponentPage } from './component-page.tsx'
@@ -336,7 +336,7 @@ export function SkipPanelPage({
       contractSections={contractSectionList(contract)}
       api={
         <ApiBlock
-          importLine="import { SkipPanel, useSkipPanel } from '@kvirn-ui/react'"
+          importLine="import { SkipPanel, useSkipPanel } from '@kvirn/ui'"
           parts={parts}
           hooks={[
             useSkipPanelHook,

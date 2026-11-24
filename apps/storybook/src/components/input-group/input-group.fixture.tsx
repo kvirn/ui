@@ -1,4 +1,4 @@
-import { Button, Field, Icon, InputGroup } from '@kvirn-ui/react'
+import { Button, Field, Icon, InputGroup } from '@kvirn/ui'
 import { useRef, useState } from 'react'
 import { textsFor } from '../form/form.fixture.tsx'
 import type { FormLocale } from '../form/form.fixture.tsx'

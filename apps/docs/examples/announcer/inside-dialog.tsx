@@ -1,5 +1,5 @@
 'use client'
-import { Button, Dialog, useAnnouncer } from '@kvirn-ui/react'
+import { Button, Dialog, useAnnouncer } from '@kvirn/ui'
 import { useState } from 'react'
 import { useAnnouncerTexts } from './texts.ts'
 

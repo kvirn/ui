@@ -1,4 +1,4 @@
-import { Link } from '@kvirn-ui/react'
+import { Link } from '@kvirn/ui'
 import type { Metadata } from 'next'
 import { CodeBlock } from '../../../../components/code-block.tsx'
 import { PageWithContents } from '../../../../components/page-contents.tsx'
@@ -18,10 +18,10 @@ export default function ThemingPage() {
           content: (
             <>
               <p>
-                Import <code>@kvirn-ui/theme/theme.css</code> once. Every component of{' '}
-                <code>@kvirn-ui/react</code> is then styled. The map and the rich text editor have
-                their own opt-in files, <code>@kvirn-ui/theme/map.css</code> and{' '}
-                <code>@kvirn-ui/theme/rich-text.css</code>, so a site without them does not pay for
+                Import <code>@kvirn/theme/theme.css</code> once. Every component of{' '}
+                <code>@kvirn/ui</code> is then styled. The map and the rich text editor have their
+                own opt-in files, <code>@kvirn/theme/map.css</code> and{' '}
+                <code>@kvirn/theme/rich-text.css</code>, so a site without them does not pay for
                 them. A Button is secondary by default. Add{' '}
                 <code>className=&quot;kv-button--primary&quot;</code> for the one main action on the
                 page, or <code>className=&quot;kv-button--danger&quot;</code> for an action that
@@ -73,7 +73,7 @@ export default function ThemingPage() {
               </p>
               <p>
                 Each theme uses different steps, so a swapped scale can break contrast. Check your
-                colours with <code>checkThemeCss()</code> from <code>@kvirn-ui/theme</code> on your
+                colours with <code>checkThemeCss()</code> from <code>@kvirn/theme</code> on your
                 customised copy. It measures every text, control and focus pair in all four themes.
               </p>
             </>
@@ -86,7 +86,7 @@ export default function ThemingPage() {
             <>
               <p>
                 <code>theme.css</code> is one readable file. Copy it from{' '}
-                <code>node_modules/@kvirn-ui/theme/theme.css</code> into your project, edit it, and
+                <code>node_modules/@kvirn/theme/theme.css</code> into your project, edit it, and
                 import your copy instead. Or skip it, and style the part classes (such as{' '}
                 <code>kv-button</code>) and the state attributes with Tailwind or your own CSS.
                 Remove the import and every component is unstyled again: KvirnUI never loads CSS for

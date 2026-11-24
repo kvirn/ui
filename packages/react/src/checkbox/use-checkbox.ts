@@ -41,7 +41,7 @@ export interface UseCheckboxOptions {
 /** Spread on the `<input type="checkbox">`. */
 export interface CheckboxPartProps extends FieldStateAttributes {
   /**
-   * The part's class, for `@kvirn-ui/theme` and your own CSS: `.kv-checkbox`. Add your own class
+   * The part's class, for `@kvirn/theme` and your own CSS: `.kv-checkbox`. Add your own class
    * next to it with `mergeProps`: class names join.
    */
   className: 'kv-checkbox'

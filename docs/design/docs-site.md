@@ -24,7 +24,7 @@
   - Never claim compliance. Say "designed and tested to meet WCAG 2.2 AA".
   - The site copy is English (brief). Examples show the Nordic locales.
   - `apps/docs` is a bare Next.js App Router skeleton with no content system.
-  - Headless packages ship zero CSS. Styling comes from `@kvirn-ui/theme`.
+  - Headless packages ship zero CSS. Styling comes from `@kvirn/theme`.
   - Any new dependency (MDX, syntax highlighting) needs the maintainer's approval.
 - **Success criteria**, to be measured in the usability plan (§8):
   - At least 80% of evaluators correctly state a component's status, including that manual AT testing is pending, within 2 minutes of landing on its page.
@@ -119,9 +119,9 @@ The site copy is English (en-GB spelling, as elsewhere in the repo: "colour", "l
 
 **Where strings live:**
 
-- **Shell and template strings** (skip link, navigation, buttons, template headings, status texts, notices, footer, 404) are keys in an app-local catalog, `apps/docs/messages/en.ts`, namespace `docs.*`. They aren't in `@kvirn-ui/i18n`, which holds library strings only. The catalog is English-only for now, keyed so the site can be translated later (Open question 7).
+- **Shell and template strings** (skip link, navigation, buttons, template headings, status texts, notices, footer, 404) are keys in an app-local catalog, `apps/docs/messages/en.ts`, namespace `docs.*`. They aren't in `@kvirn/i18n`, which holds library strings only. The catalog is English-only for now, keyed so the site can be translated later (Open question 7).
 - **Page prose** lives in the page content files, English only.
-- **Example strings** shown inside live examples exist in all six locales: the library strings come from `@kvirn-ui/i18n`, and the example labels from the example fixture catalog. The example keys are the same as the Storybook fixture keys in [storybook-presentation.md §4](storybook-presentation.md#4-content), so one fixture module serves both. Agents write the nb, nn and fi strings, and `se` is English, marked `lang="en"`.
+- **Example strings** shown inside live examples exist in all six locales: the library strings come from `@kvirn/i18n`, and the example labels from the example fixture catalog. The example keys are the same as the Storybook fixture keys in [storybook-presentation.md §4](storybook-presentation.md#4-content), so one fixture module serves both. Agents write the nb, nn and fi strings, and `se` is English, marked `lang="en"`.
 
 ### Shell and template keys (en)
 
@@ -228,7 +228,7 @@ The headings below are the real headings. The sentences are first drafts in plai
   - Example 2, "Theme switcher": the recipe live, with `docs.example.wholeSiteTheme` above it.
 - `h2` **When to use it**: "Put one KvirnProvider at the root of your app. It's optional. Without it, components use English, left-to-right text, weeks starting on Monday and a plain `<a>`, and the theme follows the device. Add a nested provider for a part of the page in another language."
   - `h3` When not to use it: "Don't nest providers only to change the theme. There is one theme per page."
-- `h2` **Installation**: `pnpm add @kvirn-ui/react @kvirn-ui/i18n`, plus optionally `@kvirn-ui/theme`.
+- `h2` **Installation**: `pnpm add @kvirn/ui @kvirn/i18n`, plus optionally `@kvirn/theme`.
 - `h2` **Usage**
   - `h3` Next.js (App Router)
   - `h3` TanStack Router
@@ -286,9 +286,9 @@ The headings below are the real headings. The sentences are first drafts in plai
 - `h2` **Strings**: `docs.template.noStrings`.
 - `h2` **Styling**:
   - `h3` State attributes: `data-disabled`, `data-focus-visible`.
-  - `h3` Default theme: "Import `@kvirn-ui/theme/tokens.css` and `@kvirn-ui/theme/recipes/button.css`. `kv-button` gives a secondary button. Add `kv-button-primary` for the one main action, or `kv-button-danger` for a destructive action. Wrap several buttons in `kv-button-group`." Then a list of the tokens used.
+  - `h3` Default theme: "Import `@kvirn/theme/tokens.css` and `@kvirn/theme/recipes/button.css`. `kv-button` gives a secondary button. Add `kv-button-primary` for the one main action, or `kv-button-danger` for a destructive action. Wrap several buttons in `kv-button-group`." Then a list of the tokens used.
   - `h3` Density: "Buttons are 44px by default. Inside `class=\"kv-compact\"` they are 32px with 14px labels, for staff tools. Keep primary actions for residents at the default."
-  - `h3` Your own look: "Override the `--kv-*` variables. KvirnUI's CSS sits in `@layer kv`, so your own CSS always wins. With Tailwind v4, import `@kvirn-ui/theme/tailwind.css` and use utilities such as `bg-kv-primary`." Plus a code example of an override, and a reminder to run `checkTheme()`.
+  - `h3` Your own look: "Override the `--kv-*` variables. KvirnUI's CSS sits in `@layer kv`, so your own CSS always wins. With Tailwind v4, import `@kvirn/theme/tailwind.css` and use utilities such as `bg-kv-primary`." Plus a code example of an override, and a reminder to run `checkTheme()`.
 - `h2` **API reference**: `h3` Button · `h3` useButton.
 - `h2` **Related**: Link · KvirnProvider.
 
@@ -469,7 +469,7 @@ Only DESIGN.md tokens, the theme-delivery decision recipes and the three `--docs
 **Derived content** (single source of truth, build time):
 
 - The Accessibility section is generated from `packages/react/src/<name>/<name>.a11y.md`: the guarantee bullets, the Roles table, the Keyboard table, Focus, Announcements, Consumer responsibilities, WCAG SCs, the AT record and Known issues.
-- The Strings tables come from the `@kvirn-ui/i18n` locale catalogs.
+- The Strings tables come from the `@kvirn/i18n` locale catalogs.
 - The API tables come from a typed props description kept next to the component, or are hand-written in the page with a type test. That choice is left to the plan.
 - The "Test" column shows test names as `code`. It doesn't link to files, because the docs site isn't a code browser. Open question 9 covers a repository link.
 - A section that can't be derived fails the build (§3).
@@ -643,7 +643,7 @@ All pass.
 >   - compact 14px/32px chrome for staff tools and the docs sidebar, while resident-facing controls stay 44px
 >     Every failing target value is adjusted and measured (168 pairs, 0 failures): hover darkens instead of lightening, `link` is a separate token, controls use `border-control` instead of hairlines, and the focus ring is 2px with a 2px offset. DESIGN.md is updated, and the decision waits for this prototype.
 > - **Delivery (Proposed):**
->   - `@kvirn-ui/theme` generates `tokens.css` (four themes, fallbacks, `color-scheme`, compact density) and `tailwind.css` (Tailwind v4 `@theme inline`, mapped to `--kv-*`) from `tokens.ts`.
+>   - `@kvirn/theme` generates `tokens.css` (four themes, fallbacks, `color-scheme`, compact density) and `tailwind.css` (Tailwind v4 `@theme inline`, mapped to `--kv-*`) from `tokens.ts`.
 >   - Opt-in recipes: `recipes/button.css` (`kv-button` = secondary, `kv-button-primary`, `kv-button-danger`, `kv-button-group`) and `recipes/link.css` (`kv-link`, `kv-nav-list`, `kv-nav-item`).
 >   - Everything sits in `@layer kv`, so consumer CSS always wins. Theming overrides `--kv-*`.
 >   - The provider loads no CSS. Headless packages stay CSS-free.
@@ -665,7 +665,7 @@ The maintainer decides the theme delivery and visual direction decisions **after
 
 #### Phase 1: visible prototype (for the maintainer's decision)
 
-**A. `@kvirn-ui/theme`: tokens, CSS and recipes**
+**A. `@kvirn/theme`: tokens, CSS and recipes**
 
 - [ ] A1. `tokens.ts`:
   - The DESIGN.md colour tokens for four themes, including `link`, `link-hover`, `on-danger` and `danger-hover`.

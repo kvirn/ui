@@ -27,14 +27,14 @@ Ordered so the reference site's slices (Plan 0053 R4–R10) are unblocked first 
 
 ### S4 Content types become components (decision 2026-10-13; first)
 
-- **Move** Start page, Subpage, Content page and Documentation page to `packages/patterns/src/content-types/<name>/<name>.tsx`, and the shells (`kvirnby-chrome.tsx`, `shell.tsx`: Kvirnby and KvirnUI docs) to `content-types/shell/`. Export from the sub-entry `@kvirn-ui/patterns/content-types` (Q11).
+- **Move** Start page, Subpage, Content page and Documentation page to `packages/patterns/src/content-types/<name>/<name>.tsx`, and the shells (`kvirnby-chrome.tsx`, `shell.tsx`: Kvirnby and KvirnUI docs) to `content-types/shell/`. Export from the sub-entry `@kvirn/patterns/content-types` (Q11).
 - **Shape.** One component per page type, literal English JSX, rendering the slot only (D12: breadcrumb, sidebar, `main#main`; never header, alert or footer). Props are state only, one per story state that changes content (`eService: 'open' | 'closed'`, `children: 3 | 7` on Subpage); no content props, no data objects. A client module (`'use client'`), so a docs server page can import it (Plan 0100 risk: compound parts are `undefined` across the boundary).
 - **Stories** render the component inside `withShell`, keep `expectPageOutline` and the shell story; story ids unchanged. The source panel shows the module text (`?raw` into `docs.source.code`), so the JSX stays copyable.
 
 ### S5 Full-page example route (Plan 0100 G6, moved here)
 
 - **Needs R0** (Plan 0053, [municipality-reference-site.md](municipality-reference-site.md)): R0 moves the docs routes into `app/(docs)/` with their own root layout, once; S5 adds a sibling route group on that.
-- The example route group has its own root layout: `<html lang="en">`, `theme.css` and `@kvirn-ui/*` only, no `docs.css`, **no docs shell**, so the page has one `banner`, `main` and `contentinfo`. `robots: noindex`; `<title>` "{Page type} example – Kvirnby (fictional municipality) – KvirnUI".
+- The example route group has its own root layout: `<html lang="en">`, `theme.css` and `@kvirn/*` only, no `docs.css`, **no docs shell**, so the page has one `banner`, `main` and `contentinfo`. `robots: noindex`; `<title>` "{Page type} example – Kvirnby (fictional municipality) – KvirnUI".
 - One route per content type, rendering shell + content type in the default state. `SiteHeader.Notice` first in the banner: "Kvirnby is a fictional municipality. This page is a KvirnUI example." with a link back to the type's docs page (reference §6). The content-type gallery page links to it ("Open the full page").
 - Each content type added in a later slice gets its route in that slice.
 
@@ -149,13 +149,13 @@ The back link is the library plan's (B19), not a pattern. Type **Status pages** 
 
 | Pattern       | Purpose                           | Parts                                                                                                   | Content (children)                                                  | States                                                                                                                                        | Rules        | Gap  |
 | ------------- | --------------------------------- | ------------------------------------------------------------------------------------------------------- | ------------------------------------------------------------------- | --------------------------------------------------------------------------------------------------------------------------------------------- | ------------ | ---- |
-| Document list | Download the right document       | `Heading`, `List`, `Link`, `<time>`; size from `formatFileSize` (`@kvirn-ui/i18n`)                      | name and "(PDF, 240 kB)" in the link text, date                     | 3; 12 grouped by year (h3); one in another language (`hrefLang`, `lang`); one not accessible (text plus "Ask for it in another format")       | R3 R4 R7 R11 | none |
+| Document list | Download the right document       | `Heading`, `List`, `Link`, `<time>`; size from `formatFileSize` (`@kvirn/i18n`)                         | name and "(PDF, 240 kB)" in the link text, date                     | 3; 12 grouped by year (h3); one in another language (`hrefLang`, `lang`); one not accessible (text plus "Ask for it in another format")       | R3 R4 R7 R11 | none |
 | Fact box      | Key facts set apart from the text | `kv-inset`, `Heading`, `DefinitionList` or `List`                                                       | a stating heading ("Facts: preschool fees"), facts                  | list; definition list; with a link. Not an `aside` (no landmark noise)                                                                        | R1 R2        | none |
 | Video         | Watch, or read instead            | native `video controls preload="none" poster`, `track kind="captions"`, `Disclosure` for the transcript | captions, transcript, links to described and sign-language versions | with transcript; poster, captions track and transcript, no video file in the repo (Q14). No autoplay, no loop, no embed (2.2.2, 1.2.2, 1.2.5) | R8           | none |
 
 ## 4. Decisions (maintainer, 2026-10-13)
 
-- **Q11** Content types are components in the sub-entry `@kvirn-ui/patterns/content-types`, with the Kvirnby text inside and state-only props; the main entry stays text-free.
+- **Q11** Content types are components in the sub-entry `@kvirn/patterns/content-types`, with the Kvirnby text inside and state-only props; the main entry stays text-free.
 - **Q12** Resolved: Filter's sort and Unit finder's area are `Listbox.Root native="always"` (the browser's `<select>`, wired to its Field, `kv-listbox-native`); no new component.
 - **Q13** The example accessibility statement shows a fill-in box, never a conformance status.
 - **Q14** Video: poster, captions and transcript; no video file in the repo.

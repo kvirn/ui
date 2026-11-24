@@ -1,14 +1,9 @@
 // kv-lang-ok-file: the provider stories demonstrate locale and message catalogs (sv, fi), so their texts are Swedish and Finnish
-import {
-  colorSchemeAttribute,
-  contrastAttribute,
-  getDefaultEnv,
-  getThemeStore,
-} from '@kvirn-ui/core'
-import { en } from '@kvirn-ui/i18n/en'
-import { fi } from '@kvirn-ui/i18n/fi'
-import { sv } from '@kvirn-ui/i18n/sv'
-import { KvirnProvider } from '@kvirn-ui/react'
+import { colorSchemeAttribute, contrastAttribute, getDefaultEnv, getThemeStore } from '@kvirn/core'
+import { en } from '@kvirn/i18n/en'
+import { fi } from '@kvirn/i18n/fi'
+import { sv } from '@kvirn/i18n/sv'
+import { KvirnProvider } from '@kvirn/ui'
 import contract from '../../../../../packages/react/src/provider/kvirn-provider.a11y.md?raw'
 import guide from '../../../../../packages/react/src/provider/kvirn-provider.md?raw'
 import type { Meta, StoryObj } from '@storybook/react-vite'
@@ -79,7 +74,7 @@ export const Default: Story = {
   },
 }
 
-/** Swedish strings from `@kvirn-ui/i18n/sv`. */
+/** Swedish strings from `@kvirn/i18n/sv`. */
 export const Swedish: Story = {
   play: async ({ canvas }) => {
     const settings = canvas.getByRole('region', { name: 'Inställningar' })

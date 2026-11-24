@@ -8,7 +8,7 @@ import {
   masks,
   maskedDateToIsoDate,
   useLocale,
-} from '@kvirn-ui/react'
+} from '@kvirn/ui'
 import { useState } from 'react'
 import { useDatePickerTexts } from './texts.ts'
 

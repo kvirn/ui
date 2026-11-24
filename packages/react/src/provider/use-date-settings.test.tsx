@@ -1,4 +1,4 @@
-import type { WeekStart } from '@kvirn-ui/core'
+import type { WeekStart } from '@kvirn/core'
 import { afterEach, beforeEach, describe, expect, test, vi } from 'vite-plus/test'
 import type { MockInstance } from 'vite-plus/test'
 import { page } from 'vite-plus/test/browser'

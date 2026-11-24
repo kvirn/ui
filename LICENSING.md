@@ -20,7 +20,7 @@ Production use by or for an organisation of any kind (companies, non-profits, go
 
 The code is published under the **Business Source License 1.1** ([LICENSE](LICENSE), SPDX `BUSL-1.1`). It is a source-available licence, **not an open-source licence**. The terms and the personal-use grant above are in the LICENSE file, and that file is what applies. Each version of KvirnUI becomes available under the **GNU Affero General Public License, version 3** (`AGPL-3.0-only`) four years after it is first published.
 
-**One exception:** `@kvirn-ui/icons` is published under the MIT License ([packages/icons/LICENSE](packages/icons/LICENSE)) and is free for any use, commercial and public-sector use included.
+**One exception:** `@kvirn/icons` is published under the MIT License ([packages/icons/LICENSE](packages/icons/LICENSE)) and is free for any use, commercial and public-sector use included.
 
 Contact: magnus@vike.se · https://ui.kvirn.com
 

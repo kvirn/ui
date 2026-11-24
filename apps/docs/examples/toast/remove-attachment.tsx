@@ -1,5 +1,5 @@
 'use client'
-import { Button, Heading, Stack, useToast } from '@kvirn-ui/react'
+import { Button, Heading, Stack, useToast } from '@kvirn/ui'
 import { useRef, useState } from 'react'
 import { useToastTexts } from './texts.ts'
 

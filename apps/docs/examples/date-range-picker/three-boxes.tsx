@@ -6,8 +6,8 @@ import {
   dateInputValueToIsoDate,
   isoDateToDateInputValue,
   useDateInput,
-} from '@kvirn-ui/react'
-import type { DateInputValue } from '@kvirn-ui/react'
+} from '@kvirn/ui'
+import type { DateInputValue } from '@kvirn/ui'
 import { useState } from 'react'
 import { useDateRangePickerTexts } from './texts.ts'
 

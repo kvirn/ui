@@ -1,8 +1,8 @@
 // kv-lang-ok-file: the tests run in sv because the decimal comma, the grouping space and the mask announcements are locale behaviour
-import type { MaskInput } from '@kvirn-ui/core'
-import { en } from '@kvirn-ui/i18n/en'
-import { sv } from '@kvirn-ui/i18n/sv'
-import { expectNoA11yViolations } from '@kvirn-ui/testing'
+import type { MaskInput } from '@kvirn/core'
+import { en } from '@kvirn/i18n/en'
+import { sv } from '@kvirn/i18n/sv'
+import { expectNoA11yViolations } from '@kvirn/testing'
 import { createRef, useEffect } from 'react'
 import { afterEach, beforeEach, describe, expect, expectTypeOf, test, vi } from 'vite-plus/test'
 import type { MockInstance } from 'vite-plus/test'

@@ -1,4 +1,4 @@
-import { LinkRoot } from '@kvirn-ui/react'
+import { LinkRoot } from '@kvirn/ui'
 import { ApiBlock } from './api-block.tsx'
 import type { ApiPart } from './api-block.tsx'
 import { CodeBlock } from './code-block.tsx'
@@ -248,7 +248,7 @@ export function TabsPage({
       contractSections={contractSectionList(contract)}
       api={
         <ApiBlock
-          importLine="import { Tabs, useTabs } from '@kvirn-ui/react'"
+          importLine="import { Tabs, useTabs } from '@kvirn/ui'"
           parts={parts}
           hook={useTabsHook}
         />

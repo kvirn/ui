@@ -1,6 +1,6 @@
 'use client'
 
-import { Heading, Link, List, Stack } from '@kvirn-ui/react'
+import { Heading, Link, List, Stack } from '@kvirn/ui'
 import { PageFrame } from '../../page-frame/page-frame.tsx'
 import { SiteSearch } from '../../site-chrome/site-search/site-search.tsx'
 

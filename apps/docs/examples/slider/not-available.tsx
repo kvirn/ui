@@ -1,5 +1,5 @@
 'use client'
-import { Checkbox, Field, Slider, Stack } from '@kvirn-ui/react'
+import { Checkbox, Field, Slider, Stack } from '@kvirn/ui'
 import { useState } from 'react'
 import { useSliderTexts } from './texts.ts'
 

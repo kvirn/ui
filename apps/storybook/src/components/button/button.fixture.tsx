@@ -1,4 +1,4 @@
-import { Button, ButtonGroup } from '@kvirn-ui/react'
+import { Button, ButtonGroup } from '@kvirn/ui'
 import { useState } from 'react'
 
 // Fixture for Components/Button. The story's "Show code" prints this function (`showSource`), so

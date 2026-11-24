@@ -1,5 +1,5 @@
-import { en } from '@kvirn-ui/i18n/en'
-import { Heading, KvirnProvider, TableOfContents } from '@kvirn-ui/react'
+import { en } from '@kvirn/i18n/en'
+import { Heading, KvirnProvider, TableOfContents } from '@kvirn/ui'
 import type { Meta, StoryObj } from '@storybook/react-vite'
 import contract from '../../../../../packages/patterns/src/content-and-media/contents/contents.a11y.md?raw'
 import { expect, userEvent } from 'storybook/test'

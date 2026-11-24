@@ -1,5 +1,5 @@
-import { createAnnouncer } from '@kvirn-ui/core'
-import type { Announcer } from '@kvirn-ui/core'
+import { createAnnouncer } from '@kvirn/core'
+import type { Announcer } from '@kvirn/core'
 import { createContext, useEffect, useMemo } from 'react'
 import { useEnv } from '../provider/use-env.ts'
 import type { UseDialogResult } from './use-dialog.ts'

@@ -1,5 +1,5 @@
-import type { FileUploadEntry, FileUploadRejection, ResolvedMessages } from '@kvirn-ui/core'
-import type { KvirnMessages } from '@kvirn-ui/i18n'
+import type { FileUploadEntry, FileUploadRejection, ResolvedMessages } from '@kvirn/core'
+import type { KvirnMessages } from '@kvirn/i18n'
 
 // Internal. The pure helpers behind FileUpload's text: no React, no DOM.
 

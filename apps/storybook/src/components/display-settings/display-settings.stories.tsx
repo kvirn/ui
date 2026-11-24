@@ -1,4 +1,4 @@
-import { Alert, Button, Card, DisplaySettings, Heading, Popover } from '@kvirn-ui/react'
+import { Alert, Button, Card, DisplaySettings, Heading, Popover } from '@kvirn/ui'
 import type { Meta, StoryObj } from '@storybook/react-vite'
 import { expect, userEvent } from 'storybook/test'
 import contract from '../../../../../packages/react/src/display-settings/display-settings.a11y.md?raw'

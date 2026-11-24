@@ -1,5 +1,5 @@
-import type { KvirnMessages } from '@kvirn-ui/i18n'
-import { KvirnProvider, useLocale } from '@kvirn-ui/react'
+import type { KvirnMessages } from '@kvirn/i18n'
+import { KvirnProvider, useLocale } from '@kvirn/ui'
 import type { ReactNode } from 'react'
 
 // Without its own `dir`, the scope leaves `dir` to `<html>`: the story decorator sets the toolbar's

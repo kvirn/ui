@@ -10,7 +10,7 @@ import {
   RadioGroup,
   TextInput,
   useDateInput,
-} from '@kvirn-ui/react'
+} from '@kvirn/ui'
 import { useId, useState } from 'react'
 import { dateTextsFor } from '../date-input/date-input.fixture.tsx'
 import { choiceTextsFor } from './choice.fixture.tsx'

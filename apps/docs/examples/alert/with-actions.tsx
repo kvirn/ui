@@ -1,5 +1,5 @@
 'use client'
-import { Alert, Button, Link } from '@kvirn-ui/react'
+import { Alert, Button, Link } from '@kvirn/ui'
 import { useAlertTexts } from './texts.ts'
 
 export function WithActions() {

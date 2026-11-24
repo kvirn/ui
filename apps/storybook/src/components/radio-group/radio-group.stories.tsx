@@ -1,4 +1,4 @@
-import { Button, Card, Field, RadioGroup, TextInput } from '@kvirn-ui/react'
+import { Button, Card, Field, RadioGroup, TextInput } from '@kvirn/ui'
 import contract from '../../../../../packages/react/src/radio-group/radio-group.a11y.md?raw'
 import guide from '../../../../../packages/react/src/radio-group/radio-group.md?raw'
 import type { Meta, StoryObj } from '@storybook/react-vite'

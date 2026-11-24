@@ -73,7 +73,7 @@ Card renders no text, so it has no message keys.
 
 ## Visual / modes
 
-Headless: Card ships no CSS. With `@kvirn-ui/theme/theme.css`:
+Headless: Card ships no CSS. With `@kvirn/theme/theme.css`:
 
 - Focus indicator: none of its own, because a card is never focused. Children keep their own rings, and the card doesn't clip them.
 - Target size: not applicable. Footer buttons keep their own sizes (2.5.8 Target Size (Minimum), AA).

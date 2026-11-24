@@ -1,6 +1,6 @@
-import type { TextMessage } from '@kvirn-ui/i18n'
-import type { SearchResult, SearchResultKind } from '@kvirn-ui/patterns/fixtures'
-import { Heading, Link, List, Stack } from '@kvirn-ui/react'
+import type { TextMessage } from '@kvirn/i18n'
+import type { SearchResult, SearchResultKind } from '@kvirn/patterns/fixtures'
+import { Heading, Link, List, Stack } from '@kvirn/ui'
 import { DateText } from '../news-events-and-notices/news-events-support.tsx'
 
 // Shared by the S10 recipe stories. Story-only: the filter words are the `filters.*` keys, never typed here.

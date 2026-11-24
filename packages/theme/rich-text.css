@@ -1,5 +1,5 @@
 /*
- * Rich text editor classes: @kvirn-ui/theme/rich-text.css, an opt-in file next to theme.css.
+ * Rich text editor classes: @kvirn/theme/rich-text.css, an opt-in file next to theme.css.
  *
  * Import it after theme.css wherever a RichTextEditor renders: a site without one does not pay for
  * them. It uses theme.css's tokens, so it needs theme.css, and puts its rules in `@layer kv`, which

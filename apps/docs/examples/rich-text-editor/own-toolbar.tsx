@@ -1,6 +1,6 @@
 'use client'
-import { Field } from '@kvirn-ui/react'
-import { RichTextEditor } from '@kvirn-ui/rich-text'
+import { Field } from '@kvirn/ui'
+import { RichTextEditor } from '@kvirn/rich-text'
 import { useRichTextEditorTexts } from './texts.ts'
 
 export function OwnToolbar() {

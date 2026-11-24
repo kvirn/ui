@@ -69,7 +69,7 @@ The `.md`'s other `##` sections (`## Component`, `## \`render\``, `## Strings`, 
 ### Skeleton
 
 ```tsx
-import { Example } from '@kvirn-ui/react'
+import { Example } from '@kvirn/ui'
 import contract from '../../../../../packages/react/src/example/example.a11y.md?raw'
 import guide from '../../../../../packages/react/src/example/example.md?raw'
 import type { Meta, StoryObj } from '@storybook/react-vite'
@@ -158,7 +158,7 @@ Notes in prose: choices, pitfalls, combinations. Code blocks here are for packag
 - **Storybook's source printer can't show function props or function children.** `Combobox.List`, `Listbox.List` (a render function child), `itemToString`, `onValueChange={(value) => …}` and the like print as `{function noRefCheck() {}}`. A story that has one is not rendered inline: it uses a `showSource` fixture whose function contains the real parts. So `meta.args` never holds a logging handler such as `fn()` or `logChange(…)` on a story that is shown inline (it prints as `() => {}`): drop it, or use a fixture.
 - So write fixtures to be read: one exported function per example, the component usage visible, localisation plumbing at the top and nothing else clever. Name the function after the example. A state matrix (RTL, ForcedColors, Keyboard) is such a function too: its body is the real parts in each state, shown with `showSource`.
 - Never hand-write a code string for a story. It will drift.
-- **Pattern stories (`@kvirn-ui/patterns`) are literal JSX with literal English text:** the whole composition is written in the story's `render`, with no fixture object, no data arrays and no wrapper component, so "Show code" is the adopter's copy-paste and the documentation (see "Patterns" in the `api-conventions` skill). Shared story chrome is a small JSX component in `patterns-story-support.tsx`.
+- **Pattern stories (`@kvirn/patterns`) are literal JSX with literal English text:** the whole composition is written in the story's `render`, with no fixture object, no data arrays and no wrapper component, so "Show code" is the adopter's copy-paste and the documentation (see "Patterns" in the `api-conventions` skill). Shared story chrome is a small JSX component in `patterns-story-support.tsx`.
 
 ## Stories fill gaps
 

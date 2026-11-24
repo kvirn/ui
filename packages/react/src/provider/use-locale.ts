@@ -1,5 +1,5 @@
-import { maskCountryFromLocale } from '@kvirn-ui/core'
-import type { Direction, MaskCountry } from '@kvirn-ui/core'
+import { maskCountryFromLocale } from '@kvirn/core'
+import type { Direction, MaskCountry } from '@kvirn/core'
 import { useContext, useMemo } from 'react'
 import { KvirnConfigContext } from './provider-context.ts'
 

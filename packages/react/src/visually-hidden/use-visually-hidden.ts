@@ -1,7 +1,7 @@
 /** Spread on the element. Only the part's class: VisuallyHidden adds no role, ARIA or state. */
 export interface VisuallyHiddenPartProps {
   /**
-   * The part's class, for `@kvirn-ui/theme` and your own CSS: `.kv-visually-hidden`. Add a class
+   * The part's class, for `@kvirn/theme` and your own CSS: `.kv-visually-hidden`. Add a class
    * of your own next to it with `mergeProps`: class names join.
    */
   className: 'kv-visually-hidden'

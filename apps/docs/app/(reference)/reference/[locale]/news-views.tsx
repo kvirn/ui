@@ -1,4 +1,4 @@
-import { PageFrameMain } from '@kvirn-ui/patterns'
+import { PageFrameMain } from '@kvirn/patterns'
 import {
   Heading,
   Link,
@@ -12,7 +12,7 @@ import {
   PaginationRoot,
   PaginationStatus,
   Stack,
-} from '@kvirn-ui/react'
+} from '@kvirn/ui'
 import { referenceNewsMessages } from '../../../../messages/reference-news.ts'
 import type { ReferenceLocale } from '../../../../messages/reference.ts'
 import { PageBreadcrumb } from './contact-parts.tsx'

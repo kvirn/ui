@@ -1,5 +1,5 @@
 'use client'
-import { Button, FocusScope } from '@kvirn-ui/react'
+import { Button, FocusScope } from '@kvirn/ui'
 import { useState } from 'react'
 import { useFocusTexts } from './texts.ts'
 

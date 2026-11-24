@@ -1,5 +1,5 @@
 'use client'
-import { Button, Combobox, Field } from '@kvirn-ui/react'
+import { Button, Combobox, Field } from '@kvirn/ui'
 import { useState } from 'react'
 import { municipalities } from '../listbox/data.ts'
 import type { Municipality } from '../listbox/data.ts'

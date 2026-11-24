@@ -5,7 +5,7 @@ import type {
   TooltipTriggerProps,
   UseTooltipOptions,
   UseTooltipResult,
-} from '@kvirn-ui/react'
+} from '@kvirn/ui'
 import { propRows } from '../components/api-block.tsx'
 import type { ApiHook, AttributeRow } from '../components/api-block.tsx'
 
@@ -57,7 +57,7 @@ const tooltipOptionRows = {
     type: 'TooltipGroup',
     default: 'one group for the page',
     description:
-      'Where tooltips share their delay: once one has opened, the next opens at once. Make a separate group with createTooltipGroup() from @kvirn-ui/core.',
+      'Where tooltips share their delay: once one has opened, the next opens at once. Make a separate group with createTooltipGroup() from @kvirn/core.',
   },
 } as const
 

@@ -1,5 +1,5 @@
 'use client'
-import type { KvirnMessages } from '@kvirn-ui/i18n'
+import type { KvirnMessages } from '@kvirn/i18n'
 import {
   createContext,
   createElement,

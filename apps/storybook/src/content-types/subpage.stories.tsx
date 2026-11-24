@@ -1,5 +1,5 @@
-import { PageFrame } from '@kvirn-ui/patterns'
-import { Subpage } from '@kvirn-ui/patterns/content-types'
+import { PageFrame } from '@kvirn/patterns'
+import { Subpage } from '@kvirn/patterns/content-types'
 import type { Meta, StoryObj } from '@storybook/react-vite'
 import source from '../../../../packages/patterns/src/content-types/subpage/subpage.tsx?raw'
 import { expectNoHorizontalOverflow } from '../components/theme-story-assertions.ts'
@@ -7,7 +7,7 @@ import { chromeViewports, narrowGlobals, wideGlobals } from '../patterns/pattern
 import { expectPageOutline } from './page-outline.ts'
 import { withShell } from './shell.tsx'
 // Content types/Subpage: a whole page in the site chrome (docs/design/storybook-patterns.md section 7).
-// The page is a component in `@kvirn-ui/patterns/content-types`; the source panel shows its module text, which an adopter copies.
+// The page is a component in `@kvirn/patterns/content-types`; the source panel shows its module text, which an adopter copies.
 
 const description = `A topic page that sends the visitor on: a title, a short preamble and a tile for each child page. Below the tiles come shortcuts, one piece of news and who to ask. It has no section navigation, because the tiles are the navigation. There is no sidebar, so the page is one column at every width.
 

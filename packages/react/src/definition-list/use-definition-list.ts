@@ -1,4 +1,4 @@
-import type { KvirnMessages } from '@kvirn-ui/i18n'
+import type { KvirnMessages } from '@kvirn/i18n'
 import { useMemo } from 'react'
 import { useMessages } from '../provider/use-messages.ts'
 
@@ -22,7 +22,7 @@ export interface DefinitionListPartProps<
     | 'definition-list-actions',
 > {
   /**
-   * The part's class, for `@kvirn-ui/theme` and your own CSS: `.kv-definition-list`. Add a class of
+   * The part's class, for `@kvirn/theme` and your own CSS: `.kv-definition-list`. Add a class of
    * your own next to it with `mergeProps`: class names join.
    */
   className: `kv-${Name}`

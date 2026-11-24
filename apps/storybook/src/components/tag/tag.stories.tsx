@@ -1,4 +1,4 @@
-import { TagGroup } from '@kvirn-ui/react'
+import { TagGroup } from '@kvirn/ui'
 import contract from '../../../../../packages/react/src/tag/tag.a11y.md?raw'
 import guide from '../../../../../packages/react/src/tag/tag.md?raw'
 import type { Meta, StoryObj } from '@storybook/react-vite'

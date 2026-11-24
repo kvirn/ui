@@ -1,4 +1,4 @@
-// Public API of @kvirn-ui/patterns. The sample images are in `./fixtures`.
+// Public API of @kvirn/patterns. The sample images are in `./fixtures`.
 export {
   ApplicationLogo,
   ApplicationLogoLogo,

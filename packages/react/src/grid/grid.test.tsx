@@ -1,5 +1,5 @@
-import { expectNoA11yViolations } from '@kvirn-ui/testing'
-import { readAloud } from '@kvirn-ui/testing/read-aloud'
+import { expectNoA11yViolations } from '@kvirn/testing'
+import { readAloud } from '@kvirn/testing/read-aloud'
 import { createRef } from 'react'
 import { afterEach, beforeEach, describe, expect, expectTypeOf, test, vi } from 'vite-plus/test'
 import type { MockInstance } from 'vite-plus/test'

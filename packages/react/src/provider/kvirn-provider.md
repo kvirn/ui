@@ -28,9 +28,9 @@ Put the ones in the second group in one `'use client'` wrapper, and let the layo
 ```tsx
 // app/kvirn-provider.tsx
 'use client'
-import { KvirnProvider } from '@kvirn-ui/react'
-import type { KvirnProviderProps } from '@kvirn-ui/react'
-import { sv } from '@kvirn-ui/i18n/sv'
+import { KvirnProvider } from '@kvirn/ui'
+import type { KvirnProviderProps } from '@kvirn/ui'
+import { sv } from '@kvirn/i18n/sv'
 import NextLink from 'next/link'
 import { icons } from './icons' // a 'use client' module that calls defineIcons for your extra icon names
 
@@ -52,7 +52,7 @@ export const theme = {
 
 ```tsx
 // app/layout.tsx (a Server Component)
-import { KvirnThemeScript, getLocaleProps } from '@kvirn-ui/react/server'
+import { KvirnThemeScript, getLocaleProps } from '@kvirn/ui/server'
 import { headers } from 'next/headers'
 import type { ReactNode } from 'react'
 import { AppKvirnProvider } from './kvirn-provider'
@@ -81,7 +81,7 @@ export default async function RootLayout({ children }: { children: ReactNode }) 
 
 For several languages, let the wrapper take a `catalog` string (`'sv'`, `'fi'`) and pick the catalog itself.
 
-- **`<html lang dir>`:** `getLocaleProps(locale)` from `@kvirn-ui/react/server` gives both, the pair `KvirnProvider` derives for the same locale (WCAG 3.1.1). The provider renders no element that could hold them, so it can't set the page language.
+- **`<html lang dir>`:** `getLocaleProps(locale)` from `@kvirn/ui/server` gives both, the pair `KvirnProvider` derives for the same locale (WCAG 3.1.1). The provider renders no element that could hold them, so it can't set the page language.
 - **Nested languages:** a nested provider that changes the language needs that language's catalog, for example `<KvirnProvider locale="fi-FI" messages={fi}>`. Also spread `useLocale().localeProps` on its section (3.1.2).
 - **`timeZone`:** set it explicitly, the same on the server and in the browser. Without one, instants are shown in UTC (never the runtime's zone, so the two renders agree), and the first instant formatted without a zone warns in development (`date-without-time-zone`). A date-only instant (no time fields) then shows no zone label and can show the neighbouring day late in the evening or early in the morning; for a calendar date use the `YYYY-MM-DD` string form. A Calendar's "today" is the UTC date on first paint and the browser's date after mount.
 - **`suppressHydrationWarning` on `<html>`:** `KvirnThemeScript` adds `data-kv-color-scheme`, `data-kv-contrast` and `data-kv-motion` before React hydrates, so the server markup and the page differ on purpose. The flag only affects `<html>`'s own attributes.
@@ -121,8 +121,8 @@ Reading `headers()` makes every page dynamic: a nonce is per request, so a stati
 
 ```tsx
 // src/main.tsx
-import { KvirnProvider } from '@kvirn-ui/react'
-import { fi } from '@kvirn-ui/i18n/fi'
+import { KvirnProvider } from '@kvirn/ui'
+import { fi } from '@kvirn/i18n/fi'
 import { Link, RouterProvider } from '@tanstack/react-router'
 
 export function App() {
@@ -145,7 +145,7 @@ Register your router's link component once, and every KvirnUI component that ren
 import type NextLink from 'next/link'
 import type { icons } from './icons'
 
-declare module '@kvirn-ui/react' {
+declare module '@kvirn/ui' {
   interface Register {
     linkComponent: typeof NextLink
     icons: typeof icons
@@ -157,7 +157,7 @@ Without the augmentation, `linkComponent` only accepts `'a'`, and link props are
 
 ## Icons: `icons` and `iconDefaults`
 
-There are no default icons. Register the icons you use once, so `<Icon name>` finds them everywhere and names are checked. A name such as `close` or `chevron-down` also replaces the icon KvirnUI's own components draw. The registry can hold icons from `@kvirn-ui/icons`, or from Lucide or another set. It can hold components, so it lives in a client module next to this setup. See [Icon](../icon/icon.md#registering-icons).
+There are no default icons. Register the icons you use once, so `<Icon name>` finds them everywhere and names are checked. A name such as `close` or `chevron-down` also replaces the icon KvirnUI's own components draw. The registry can hold icons from `@kvirn/icons`, or from Lucide or another set. It can hold components, so it lives in a client module next to this setup. See [Icon](../icon/icon.md#registering-icons).
 
 ```tsx
 <KvirnProvider icons={icons} iconDefaults={{ size: '24' }}>
@@ -173,7 +173,7 @@ const dateSettings = useDateSettings() // { timeZone, weekStart }
 - `locale` is a BCP 47 tag, such as `sv-SE`, `fi-FI` or `nn-NO`. It drives `Intl.*` formatting and `lang`. `sv`, `fi`, `nb` and `nn` need no region, but `Intl` reads a bare `en` as US English (`10/14/26`, `October 14, 2026`). Pass `en-GB` for English written the way the rest of Europe writes it (`14/10/2026`, `14 October 2026`).
 - `dir` comes from the locale. Use the `dir` prop to override it. `getLocaleProps` knows nothing of the override, so on the server write `<html dir>` yourself (WCAG 1.3.2).
 - `country` is `SE`, `FI` or `NO`, for the masks that differ by country (`mask="postal-code"`, `"personal-identity-number"`, `"organisation-number"` on a TextInput). It is the `country` prop, else the region of the locale (`sv-FI` is `FI`), else its language (`sv` is `SE`, `fi` is `FI`, `nb`, `nn` and `no` are `NO`), else `undefined` (`en`): then a country mask only takes digits and warns once. Set the prop where the locale doesn't say, such as `se` (Northern Sami) in Finland. A nested provider inherits the parent's `country` prop, so set it again when a section changes country.
-- `weekStart` is the first day of the week in Calendar and DatePicker: `1` (Monday) to `7` (Sunday), the ISO weekday. It is the Calendar's own `weekStart`, else the provider's, else the locale's when the locale names a region (`en-US` is Sunday, `en-GB` Monday), else Monday. A bare `en` stays Monday, as in every Nordic country and the EU, though `Intl` alone would say Sunday. Week numbers are ISO 8601 and only show with a Monday start. `useDateSettings().weekStart` is the resolved provider-level value; outside React use `resolveWeekStart({ instance, provider, locale })` from `@kvirn-ui/core`. Set `weekStart` explicitly for server rendering, like `timeZone`: a runtime without `Intl` week data answers Monday where another answers Sunday, so the server and the browser could differ. A value that isn't a whole number from 1 to 7 is ignored with a development warning.
+- `weekStart` is the first day of the week in Calendar and DatePicker: `1` (Monday) to `7` (Sunday), the ISO weekday. It is the Calendar's own `weekStart`, else the provider's, else the locale's when the locale names a region (`en-US` is Sunday, `en-GB` Monday), else Monday. A bare `en` stays Monday, as in every Nordic country and the EU, though `Intl` alone would say Sunday. Week numbers are ISO 8601 and only show with a Monday start. `useDateSettings().weekStart` is the resolved provider-level value; outside React use `resolveWeekStart({ instance, provider, locale })` from `@kvirn/core`. Set `weekStart` explicitly for server rendering, like `timeZone`: a runtime without `Intl` week data answers Monday where another answers Sunday, so the server and the browser could differ. A value that isn't a whole number from 1 to 7 is ignored with a development warning.
 
 ### A section in another language
 
@@ -199,7 +199,7 @@ function FinnishSection({ children }: { children: ReactNode }) {
 `useFormat()` writes numbers, dates, lists and plurals the way the nearest provider's `locale` does. It is the same `format` that [messages](#strings-messages) receive, so a number reads the same in a message and in a table cell. You build no `Intl.*` object, keep no locale map and set no time zone by hand:
 
 ```tsx
-import { useFormat } from '@kvirn-ui/react'
+import { useFormat } from '@kvirn/ui'
 
 function Payment({ date, amount }: { date: string; amount: number }) {
   const format = useFormat()
@@ -222,14 +222,14 @@ function Payment({ date, amount }: { date: string; amount: number }) {
 - **A calendar date** is a string written `YYYY-MM-DD`: a day with no time of day and no time zone, such as a date of birth or a decision date from an API. It is shown on that day in every zone, because it is read as UTC and shown in UTC, so it never moves to the day before or after. Any other string (a time, `2026-02-30`, an empty one) throws a `RangeError`, as an invalid `Date` does. Check a missing value yourself.
 - **`Intl` objects are reused**, so a table can call `format.number(amount)` in every cell. The `format` object stays the same until the locale or the time zone changes, so it is safe in a dependency list.
 - **Without a provider** it is `en` and UTC.
-- **Outside React**, such as in a server component, build the same thing with `createMessageFormat({ locale, timeZone })` from `@kvirn-ui/react/server`, or `getMessages` for strings. A hook can't run in a server component.
+- **Outside React**, such as in a server component, build the same thing with `createMessageFormat({ locale, timeZone })` from `@kvirn/ui/server`, or `getMessages` for strings. A hook can't run in a server component.
 
 ## Strings: `messages`
 
 Every visible or announced string has a default and can be replaced. Import the catalog for your locale and pass it as `messages`. English is built in and is the fallback:
 
 ```tsx
-import { sv } from '@kvirn-ui/i18n/sv'
+import { sv } from '@kvirn/i18n/sv'
 ;<KvirnProvider locale="sv-SE" messages={sv}>
 ```
 
@@ -247,8 +247,8 @@ Resolution order, first match wins:
 `defineMessages` builds an adjusted catalog once, with typed keys:
 
 ```tsx
-import { defineMessages } from '@kvirn-ui/i18n'
-import { en } from '@kvirn-ui/i18n/en'
+import { defineMessages } from '@kvirn/i18n'
+import { en } from '@kvirn/i18n/en'
 
 const messages = defineMessages(en, {
   link: { newTabNotice: '(opens in a new window)' },
@@ -294,9 +294,9 @@ The default theme has three independent axes: colour scheme (`light`, `dark`), c
 <html data-kv-color-scheme="dark" data-kv-contrast="more" data-kv-motion="reduce"></html>
 ```
 
-`data-kv-motion="reduce"` stops every transition and animation in `@kvirn-ui/theme`, exactly as `prefers-reduced-motion: reduce` does, so a site can offer "less motion" to people whose device setting is out of their reach (a managed computer, a shared one, a setting they never found). `full` is the other explicit choice.
+`data-kv-motion="reduce"` stops every transition and animation in `@kvirn/theme`, exactly as `prefers-reduced-motion: reduce` does, so a site can offer "less motion" to people whose device setting is out of their reach (a managed computer, a shared one, a setting they never found). `full` is the other explicit choice.
 
-`@kvirn-ui/theme` maps these attributes to `--kv-*` tokens, and, when JavaScript is off, the page is the light, standard theme. Under `forced-colors: active`, the operating system's palette always wins.
+`@kvirn/theme` maps these attributes to `--kv-*` tokens, and, when JavaScript is off, the page is the light, standard theme. Under `forced-colors: active`, the operating system's palette always wins.
 
 There is one theme store per document. The outermost provider's `theme` options configure it, and nested providers share it.
 
@@ -312,8 +312,8 @@ There is one theme store per document. The outermost provider's `theme` options 
 `useTheme()` works with or without a provider. Build the switcher from native controls with visible labels. Radio groups give you arrow-key navigation, one Tab stop per group and correct screen-reader semantics for free:
 
 ```tsx
-import { useTheme } from '@kvirn-ui/react'
-import type { ColorSchemePreference } from '@kvirn-ui/react'
+import { useTheme } from '@kvirn/ui'
+import type { ColorSchemePreference } from '@kvirn/ui'
 
 const colorSchemeOptions: { value: ColorSchemePreference; label: string }[] = [
   { value: 'light', label: 'Light' },
@@ -365,7 +365,7 @@ With a first-party cookie, the server can read the preference and render the att
 
 ```ts
 // theme-cookie.ts
-import type { StoredThemePreference, ThemeStorageAdapter } from '@kvirn-ui/react'
+import type { StoredThemePreference, ThemeStorageAdapter } from '@kvirn/ui'
 
 export const themeCookieName = 'theme-preference'
 const oneYearInSeconds = 60 * 60 * 24 * 365
@@ -418,9 +418,9 @@ Without JavaScript no attribute is set and the page is the light, standard theme
 <KvirnThemeScript nonce={nonce} theme={theme} />
 ```
 
-## Server entry: `@kvirn-ui/react/server`
+## Server entry: `@kvirn/ui/server`
 
-`@kvirn-ui/react` is a client entry. `@kvirn-ui/react/server` has no `'use client'`, depends only on `@kvirn-ui/core` and `@kvirn-ui/i18n`, and is safe to import in a Server Component such as `app/layout.tsx`:
+`@kvirn/ui` is a client entry. `@kvirn/ui/server` has no `'use client'`, depends only on `@kvirn/core` and `@kvirn/i18n`, and is safe to import in a Server Component such as `app/layout.tsx`:
 
 - `KvirnThemeScript({ nonce, theme })`: the same script as the client one, with no hook.
 - `getLocaleProps(locale)`: `{ lang, dir }` for `<html>`, the pair `KvirnProvider` derives for the same locale (WCAG 3.1.1).

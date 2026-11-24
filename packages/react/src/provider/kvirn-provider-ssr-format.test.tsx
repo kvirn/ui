@@ -1,5 +1,5 @@
-import { fi } from '@kvirn-ui/i18n/fi'
-import { sv } from '@kvirn-ui/i18n/sv'
+import { fi } from '@kvirn/i18n/fi'
+import { sv } from '@kvirn/i18n/sv'
 import { afterEach, expect, test, vi } from 'vite-plus/test'
 import { page, userEvent } from 'vite-plus/test/browser'
 import { Calendar } from '../calendar/calendar.tsx'

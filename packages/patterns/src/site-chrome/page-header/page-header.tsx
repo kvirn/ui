@@ -1,5 +1,5 @@
-import { Container, DefinitionList, Heading, mergeProps } from '@kvirn-ui/react'
-import type { DefinitionListRootProps, HeadingProps } from '@kvirn-ui/react'
+import { Container, DefinitionList, Heading, mergeProps } from '@kvirn/ui'
+import type { DefinitionListRootProps, HeadingProps } from '@kvirn/ui'
 import type { ComponentPropsWithRef, ReactElement } from 'react'
 
 export type PageHeaderRootProps = ComponentPropsWithRef<'div'>

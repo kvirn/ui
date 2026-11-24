@@ -1,5 +1,5 @@
 'use client'
-import { Button, Field, RadioGroup } from '@kvirn-ui/react'
+import { Button, Field, RadioGroup } from '@kvirn/ui'
 import { useRadioGroupTexts } from './texts.ts'
 
 export function PageHeadingRadioGroup() {

@@ -1,5 +1,5 @@
 'use client'
-import { Heading, Stepper } from '@kvirn-ui/react'
+import { Heading, Stepper } from '@kvirn/ui'
 import { useStepperTexts } from './texts.ts'
 
 export function DefaultStepper() {

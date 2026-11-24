@@ -19,7 +19,7 @@ There are three levels of theming. Each one keeps the components' accessibility:
 Import it once, and every KvirnUI component on the page gets the default look, in all four themes: light, dark, and their high-contrast versions. Remove the import, and the components are unstyled again. Nothing loads CSS for you, and `KvirnProvider` never does.
 
 ```js
-import '@kvirn-ui/theme/theme.css'
+import '@kvirn/theme/theme.css'
 ```
 
 ## 2. Override the variables
@@ -44,7 +44,7 @@ The palette is role scales, named for what they do and not for their hue: neutra
 
 Each theme uses different steps of the scale: 500 for the primary button in light and dark, 400 for links in dark, 800 in light high contrast and 200 in dark high contrast. Your scale has to work in every one of those roles. The teal above passes in all four themes.
 
-**Swapping a scale can break contrast.** The accent scale in `theme.css` (teal by default, unused by the default theme) isn't a drop-in: white text on its 500 is 4.37:1, below 4.5:1, so the scale above has a darker 500. Always run `checkThemeCss()` from `@kvirn-ui/theme` on your customised copy, or `vp run theme:check`.
+**Swapping a scale can break contrast.** The accent scale in `theme.css` (teal by default, unused by the default theme) isn't a drop-in: white text on its 500 is 4.37:1, below 4.5:1, so the scale above has a darker 500. Always run `checkThemeCss()` from `@kvirn/theme` on your customised copy, or `vp run theme:check`.
 
 You can also point one semantic token at another step, such as `--kv-color-link: var(--kv-primary-700)`, or give `--kv-secondary-*` a hue for the secondary button's edge. To change one theme only, target the selectors `theme.css` uses, such as `:root[data-kv-color-scheme='dark']`.
 

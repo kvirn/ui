@@ -5,13 +5,13 @@ A plain container for a region of the page, such as a sidebar or a band of conte
 - One part: `Section` (also exported as `SectionRoot`; `Section.Root` still works but is deprecated), one `<div class="kv-section">`. No Header, Body or Footer, no title and no behaviour.
 - No role, no ARIA, no text and no strings. Children are whatever you pass, with their own semantics and focus order.
 - `as` changes the element: `div` (default), `section`, `aside`, `nav`, `footer`, `header`, `article` or `li`.
-- Headless: no CSS. The part renders its stable class `kv-section`, and your `className` joins it. With `@kvirn-ui/theme/theme.css` imported, it's styled, and you choose with modifier classes such as `kv-section--canvas` and `kv-section--padding-sm`.
+- Headless: no CSS. The part renders its stable class `kv-section`, and your `className` joins it. With `@kvirn/theme/theme.css` imported, it's styled, and you choose with modifier classes such as `kv-section--canvas` and `kv-section--padding-sm`.
 - Section is elevation level 1 (a region of the page). A [Card](../card/card.md) is level 2 (an object on the page). This `Section` is not the `Section` part of `Disclosure` or `Tabs`, which belongs to those components.
 
 ## Component
 
 ```tsx
-import { Link, Section } from '@kvirn-ui/react'
+import { Link, Section } from '@kvirn/ui'
 
 // A sidebar: a named complementary landmark.
 <Section as="aside" aria-labelledby="contact" className="kv-section--padding-lg kv-prose">
@@ -65,7 +65,7 @@ Without a modifier class, a section is `surface`, square, with `md` padding and 
 ## Hook
 
 ```tsx
-import { useSection } from '@kvirn-ui/react'
+import { useSection } from '@kvirn/ui'
 
 function CaseNavigation() {
   const section = useSection()

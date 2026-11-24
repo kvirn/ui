@@ -1,6 +1,6 @@
 'use client'
-import { sv } from '@kvirn-ui/i18n/sv'
-import { Breadcrumb, KvirnProvider, useLocale } from '@kvirn-ui/react'
+import { sv } from '@kvirn/i18n/sv'
+import { Breadcrumb, KvirnProvider, useLocale } from '@kvirn/ui'
 import { useBreadcrumbTexts } from './texts.ts'
 
 function SwedishTrail() {

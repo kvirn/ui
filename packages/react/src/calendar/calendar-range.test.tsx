@@ -1,10 +1,10 @@
 // kv-lang-ok-file: the day names, range hints and announcements are asserted in the sv locale (Intl dates and the sv catalog)
-import { sv } from '@kvirn-ui/i18n/sv'
+import { sv } from '@kvirn/i18n/sv'
 import { useEffect, useState } from 'react'
 import { afterEach, beforeEach, describe, expect, test, vi } from 'vite-plus/test'
 import type { MockInstance } from 'vite-plus/test'
 import { page, userEvent } from 'vite-plus/test/browser'
-import { readAloud, readAnnouncements } from '@kvirn-ui/testing/read-aloud'
+import { readAloud, readAnnouncements } from '@kvirn/testing/read-aloud'
 import { render } from 'vitest-browser-react'
 import { resetDevWarnings } from '../dev/dev-warning.ts'
 import { KvirnProvider } from '../provider/kvirn-provider.tsx'

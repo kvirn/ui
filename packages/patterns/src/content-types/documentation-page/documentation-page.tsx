@@ -11,7 +11,7 @@ import {
   Stack,
   Table,
   TableOfContents,
-} from '@kvirn-ui/react'
+} from '@kvirn/ui'
 import { PageFrame } from '../../page-frame/page-frame.tsx'
 import { SectionNav } from '../../navigation-and-promotion/section-nav/section-nav.tsx'
 

@@ -5,12 +5,12 @@ A plain container for one thing on the page: an image, a heading, some text and 
 - Four parts, each one `<div>`: `Card.Root`, `Card.Header`, `Card.Body` and `Card.Footer` (also exported as `CardRoot`, `CardHeader`, `CardBody` and `CardFooter`). Header and Footer are never `<header>` or `<footer>`, which would become page landmarks.
 - No role, no ARIA, no text and no behaviour. Children are whatever you pass, with their own semantics and focus order.
 - `Card.Root` takes `as`: `div` (default), `li`, `article`, `figure` or `section`. Header, Body and Footer are always a `<div>`.
-- Headless: no CSS. Each part renders its stable class: `kv-card`, `kv-card-header`, `kv-card-body` and `kv-card-footer`, and your `className` joins it. With `@kvirn-ui/theme/theme.css` imported, it's styled, and you choose with modifier classes: `kv-card--radius-md`, `kv-card--padding-sm`, `kv-card--dividers` and so on.
+- Headless: no CSS. Each part renders its stable class: `kv-card`, `kv-card-header`, `kv-card-body` and `kv-card-footer`, and your `className` joins it. With `@kvirn/theme/theme.css` imported, it's styled, and you choose with modifier classes: `kv-card--radius-md`, `kv-card--padding-sm`, `kv-card--dividers` and so on.
 
 ## Component
 
 ```tsx
-import { Button, Card, Link } from '@kvirn-ui/react'
+import { Button, Card, Link } from '@kvirn/ui'
 
 // A card without parts: the Root pads itself. A sidebar text block is a Section, not a Card.
 <Card.Root as="article" className="kv-prose">
@@ -68,7 +68,7 @@ Without a modifier class, a card gets the default: `surface-raised`, the `lg` ra
 | `kv-card-footer--padding-none`, `-sm`, `-md`, `-lg` | Footer | its own padding, overriding the Root's |
 | `kv-card--dividers`                                 | Root   | a border-subtle line between parts     |
 
-`md` padding is 24px, and 16px below `40rem` and in compact density (`kv-compact`). All four steps are allowed on a part, but mixed steps misalign the parts' edges, so per-part values are normally `none`, for full-bleed media. A site can change the default for every card with `--kv-card-padding-default` and `--kv-card-radius-default` (`@kvirn-ui/theme` README, Site-wide defaults), and then `kv-card--padding-md` and `kv-card--radius-lg` take one card back to the theme's step. Prose stops at a card: put `kv-prose` on `Card.Body` (or the Root of a card without parts) to style the text inside.
+`md` padding is 24px, and 16px below `40rem` and in compact density (`kv-compact`). All four steps are allowed on a part, but mixed steps misalign the parts' edges, so per-part values are normally `none`, for full-bleed media. A site can change the default for every card with `--kv-card-padding-default` and `--kv-card-radius-default` (`@kvirn/theme` README, Site-wide defaults), and then `kv-card--padding-md` and `kv-card--radius-lg` take one card back to the theme's step. Prose stops at a card: put `kv-prose` on `Card.Body` (or the Root of a card without parts) to style the text inside.
 
 ### `as`
 
@@ -82,7 +82,7 @@ Without a modifier class, a card gets the default: `surface-raised`, the `lg` ra
 ## Hook
 
 ```tsx
-import { useCard } from '@kvirn-ui/react'
+import { useCard } from '@kvirn/ui'
 
 function ContactCard() {
   const card = useCard()

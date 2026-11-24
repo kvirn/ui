@@ -1,5 +1,5 @@
 'use client'
-import { Button, Fieldset, Grid, Icon, Stack } from '@kvirn-ui/react'
+import { Button, Fieldset, Grid, Icon, Stack } from '@kvirn/ui'
 import { useButtonTexts } from './texts.ts'
 
 const kinds = [

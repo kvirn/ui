@@ -1,8 +1,8 @@
 // kv-lang-ok-file: the fake geocoder holds Swedish and Finnish addresses
-import type { AddressResult, GeocoderProvider } from '@kvirn-ui/core'
-import { en } from '@kvirn-ui/i18n/en'
-import { kvirnGeocoder } from '@kvirn-ui/map/kvirn'
-import { AddressInput, Button, Field, Fieldset } from '@kvirn-ui/react'
+import type { AddressResult, GeocoderProvider } from '@kvirn/core'
+import { en } from '@kvirn/i18n/en'
+import { kvirnGeocoder } from '@kvirn/map/kvirn'
+import { AddressInput, Button, Field, Fieldset } from '@kvirn/ui'
 import { useState } from 'react'
 import { InLanguage } from '../../fixture-language.tsx'
 

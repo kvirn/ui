@@ -2,7 +2,7 @@
 // Strings of the reference municipality site (docs/design/municipality-reference-site.md §7):
 // Kvirnby Municipality, a fictional municipality, in Swedish and English. The sv file is typed by the en
 // shape, so a missing key is a type error. Visible copy only: strings a shipped component owns
-// come from @kvirn-ui/i18n.
+// come from @kvirn/i18n.
 
 export const referenceLocales = ['sv', 'en'] as const
 export type ReferenceLocale = (typeof referenceLocales)[number]
@@ -332,7 +332,7 @@ export const referenceDocsMessages = {
   meta: { title: 'Reference site', how: 'How it’s built' },
   index: {
     heading: 'Reference site',
-    lead: 'Kvirnby Municipality is a fictional municipality site built only from @kvirn-ui/* and theme.css, the way an adopter builds theirs. Each page links to how it is built.',
+    lead: 'Kvirnby Municipality is a fictional municipality site built only from @kvirn/* and theme.css, the way an adopter builds theirs. Each page links to how it is built.',
     notice:
       'No service on the reference site is real and nothing you enter is sent. It is an example, not a municipality’s site.',
     pagesHeading: 'Pages',
@@ -343,7 +343,7 @@ export const referenceDocsMessages = {
   },
   how: {
     heading: ({ page }: { page: string }) => `How ${page} is built`,
-    lead: 'The parts this page uses, each with its documentation. The page imports only theme.css, the self-hosted font CSS and @kvirn-ui/*.',
+    lead: 'The parts this page uses, each with its documentation. The page imports only theme.css, the self-hosted font CSS and @kvirn/*.',
     partsHeading: 'Parts',
     openHeading: 'See the page',
     back: 'Back to the reference site',

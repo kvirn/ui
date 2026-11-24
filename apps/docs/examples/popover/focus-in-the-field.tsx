@@ -1,5 +1,5 @@
 'use client'
-import { Button, Field, Popover, TextInput } from '@kvirn-ui/react'
+import { Button, Field, Popover, TextInput } from '@kvirn/ui'
 import { useEffect, useRef, useState } from 'react'
 import { usePopoverTexts } from './texts.ts'
 

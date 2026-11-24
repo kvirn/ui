@@ -1,4 +1,4 @@
-import { Field, KvirnProvider, PhoneInput } from '@kvirn-ui/react'
+import { Field, KvirnProvider, PhoneInput } from '@kvirn/ui'
 import type { Decorator } from '@storybook/react-vite'
 import contract from '../../../../../packages/react/src/phone-input/phone-input.a11y.md?raw'
 import guide from '../../../../../packages/react/src/phone-input/phone-input.md?raw'

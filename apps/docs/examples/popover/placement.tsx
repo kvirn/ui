@@ -1,5 +1,5 @@
 'use client'
-import { Popover } from '@kvirn-ui/react'
+import { Popover } from '@kvirn/ui'
 import { usePopoverTexts } from './texts.ts'
 
 export function Placement() {

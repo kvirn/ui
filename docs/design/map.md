@@ -2,7 +2,7 @@
 
 - **Status:** Accepted
 - **Plan:** [0117](plans/0117-map-and-address-search.md)
-- **Type:** component default styling and flow (`@kvirn-ui/map`; CSS in `@kvirn-ui/theme/map.css`)
+- **Type:** component default styling and flow (`@kvirn/map`; CSS in `@kvirn/theme/map.css`)
 - **Contract:** [map.a11y.md](../../packages/map/src/map.a11y.md). API: [map.md](../../packages/map/src/map.md). The code is the truth; this file describes what ships.
 
 The package draws with a provider the consumer chooses, ships no tile or geocoder URL (rule 7) and no CSS (rule 5). `map.css` holds the default look of the parts the library renders and the documented override hooks, nothing else. Examples of custom markers, layer colours and popups live in Storybook.

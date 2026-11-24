@@ -34,7 +34,7 @@ export interface SystemTheme {
   colorScheme: ResolvedColorScheme
   contrast: ResolvedContrast
   motion: ResolvedMotion
-  /** `forced-colors: active`. The OS palette wins; `@kvirn-ui/theme` never overrides it. */
+  /** `forced-colors: active`. The OS palette wins; `@kvirn/theme` never overrides it. */
   isForcedColors: boolean
 }
 

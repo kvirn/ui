@@ -1,5 +1,5 @@
 'use client'
-import { Badge, Stack, VisuallyHidden } from '@kvirn-ui/react'
+import { Badge, Stack, VisuallyHidden } from '@kvirn/ui'
 import { useBadgeTexts } from './texts.ts'
 
 export function StatusInList() {

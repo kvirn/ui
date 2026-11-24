@@ -1,4 +1,4 @@
-import type { AddressResult, GeocoderProvider, LngLat, MapBounds } from '@kvirn-ui/core'
+import type { AddressResult, GeocoderProvider, LngLat, MapBounds } from '@kvirn/core'
 import type { MapLibreBaseMap } from './maplibre.ts'
 
 const DEFAULT_LIMIT = 6

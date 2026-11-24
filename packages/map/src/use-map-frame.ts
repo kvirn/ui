@@ -1,4 +1,4 @@
-import type { MapHandle } from '@kvirn-ui/core'
+import type { MapHandle } from '@kvirn/core'
 import { useEffect, useLayoutEffect, useRef } from 'react'
 
 /**

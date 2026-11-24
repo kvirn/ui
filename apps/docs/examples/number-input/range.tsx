@@ -1,5 +1,5 @@
 'use client'
-import { Button, Field, NumberInput } from '@kvirn-ui/react'
+import { Button, Field, NumberInput } from '@kvirn/ui'
 import { useEffect, useRef, useState } from 'react'
 import { useNumberInputTexts } from './texts.ts'
 

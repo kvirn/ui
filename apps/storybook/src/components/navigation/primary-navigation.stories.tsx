@@ -1,7 +1,7 @@
-import { en } from '@kvirn-ui/i18n/en'
-import { KvirnProvider } from '@kvirn-ui/react'
-import { ApplicationLogo, MainMenu, PageFrame, SiteHeader } from '@kvirn-ui/patterns'
-import { kvirnbyMark } from '@kvirn-ui/patterns/fixtures'
+import { en } from '@kvirn/i18n/en'
+import { KvirnProvider } from '@kvirn/ui'
+import { ApplicationLogo, MainMenu, PageFrame, SiteHeader } from '@kvirn/patterns'
+import { kvirnbyMark } from '@kvirn/patterns/fixtures'
 import type { Meta, StoryObj } from '@storybook/react-vite'
 import { expect, userEvent } from 'storybook/test'
 import contract from '../../../../../packages/patterns/src/site-chrome/main-menu/main-menu.a11y.md?raw'
@@ -39,7 +39,7 @@ The pattern has no strings of its own. A \`current\` link in a closed panel is n
 
 ## Parts and gaps
 
-Parts used: \`Navigation\`, \`Disclosure\`, \`Link\`. Gap: the library plans no NavigationMenu component ("not planned", roadmap), so this stays a composition in \`@kvirn-ui/patterns\`.
+Parts used: \`Navigation\`, \`Disclosure\`, \`Link\`. Gap: the library plans no NavigationMenu component ("not planned", roadmap), so this stays a composition in \`@kvirn/patterns\`.
 `
 
 const meta = {

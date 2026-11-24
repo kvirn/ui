@@ -1,6 +1,6 @@
 'use client'
-import { PageFrame } from '@kvirn-ui/patterns'
-import { Badge, Card, DefinitionList, Grid, Heading, Link, Stack, useFormat } from '@kvirn-ui/react'
+import { PageFrame } from '@kvirn/patterns'
+import { Badge, Card, DefinitionList, Grid, Heading, Link, Stack, useFormat } from '@kvirn/ui'
 import { referenceEserviceMessages } from '../../../../messages/reference-eservice.ts'
 import type { ReferenceLocale } from '../../../../messages/reference.ts'
 import { PageBreadcrumb } from './contact-parts.tsx'

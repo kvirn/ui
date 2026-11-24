@@ -1,4 +1,4 @@
-import { Field, InputGroup, NumberInput } from '@kvirn-ui/react'
+import { Field, InputGroup, NumberInput } from '@kvirn/ui'
 import contract from '../../../../../packages/react/src/number-input/number-input.a11y.md?raw'
 import guide from '../../../../../packages/react/src/number-input/number-input.md?raw'
 import type { Meta, StoryObj } from '@storybook/react-vite'

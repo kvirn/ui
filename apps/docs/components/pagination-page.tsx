@@ -1,4 +1,4 @@
-import { LinkRoot } from '@kvirn-ui/react'
+import { LinkRoot } from '@kvirn/ui'
 import { ApiBlock } from './api-block.tsx'
 import type { ApiPart } from './api-block.tsx'
 import { ComponentPage } from './component-page.tsx'
@@ -321,7 +321,7 @@ export function PaginationPage({
       contractSections={contractSectionList(contract)}
       api={
         <ApiBlock
-          importLine="import { Pagination, usePagination } from '@kvirn-ui/react'"
+          importLine="import { Pagination, usePagination } from '@kvirn/ui'"
           parts={parts}
           hook={usePaginationHook}
           strings={

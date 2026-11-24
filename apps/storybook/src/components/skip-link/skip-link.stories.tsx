@@ -1,4 +1,4 @@
-import { Link, SkipLink } from '@kvirn-ui/react'
+import { Link, SkipLink } from '@kvirn/ui'
 import contract from '../../../../../packages/react/src/skip-link/skip-link.a11y.md?raw'
 import guide from '../../../../../packages/react/src/skip-link/skip-link.md?raw'
 import type { Meta, StoryObj } from '@storybook/react-vite'
@@ -6,7 +6,7 @@ import type { ReactNode } from 'react'
 import { expect, userEvent } from 'storybook/test'
 import { usageGuide } from '../../docs-source.ts'
 
-// Components/SkipLink: the headless SkipLink, styled by @kvirn-ui/theme. It is hidden until it has
+// Components/SkipLink: the headless SkipLink, styled by @kvirn/theme. It is hidden until it has
 // focus, so every story is a fixture: a skip link, a header with a wordmark link and the main
 // content. Press Tab in the canvas to reveal it. The ids start with the story's name: an id is
 // unique on a page, and a Docs page shows every story in one document. The library's own string

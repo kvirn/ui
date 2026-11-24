@@ -11,7 +11,7 @@ An Accordion is a list of questions or sections, each a heading with a button th
 ## API
 
 ```tsx
-import { Accordion } from '@kvirn-ui/react'
+import { Accordion } from '@kvirn/ui'
 
 ;<Accordion.Root>
   <Accordion.Item>

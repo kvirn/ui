@@ -1,5 +1,5 @@
 'use client'
-import { Field, TextInput, masks, useLocale } from '@kvirn-ui/react'
+import { Field, TextInput, masks, useLocale } from '@kvirn/ui'
 import { useState } from 'react'
 import { useDateInputTexts } from './texts.ts'
 

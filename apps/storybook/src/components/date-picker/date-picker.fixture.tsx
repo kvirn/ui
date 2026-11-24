@@ -1,5 +1,5 @@
 // kv-lang-ok-file: per-locale fixture text sets (sv, fi, nb, nn), picked by the locale toolbar
-import { createMessageFormat } from '@kvirn-ui/core'
+import { createMessageFormat } from '@kvirn/core'
 import {
   DateInput,
   DatePicker,
@@ -14,8 +14,8 @@ import {
   maskedDateToIsoDate,
   useDateInput,
   useLocale,
-} from '@kvirn-ui/react'
-import type { DateInputPart, DateInputValue, DatePickerRootProps } from '@kvirn-ui/react'
+} from '@kvirn/ui'
+import type { DateInputPart, DateInputValue, DatePickerRootProps } from '@kvirn/ui'
 import { useState } from 'react'
 import { dateTextsFor } from '../date-input/date-input.fixture.tsx'
 import { messagesFor, providerLocaleOf } from '../form/form.fixture.tsx'

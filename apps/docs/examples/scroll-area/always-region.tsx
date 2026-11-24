@@ -1,5 +1,5 @@
 'use client'
-import { ScrollArea } from '@kvirn-ui/react'
+import { ScrollArea } from '@kvirn/ui'
 import { useScrollAreaTexts } from './texts.ts'
 
 export function AlwaysRegion() {

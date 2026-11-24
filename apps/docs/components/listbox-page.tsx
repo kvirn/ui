@@ -1,4 +1,4 @@
-import { Link } from '@kvirn-ui/react'
+import { Link } from '@kvirn/ui'
 import { ApiBlock } from './api-block.tsx'
 import type { ApiPart } from './api-block.tsx'
 import { ComponentPage } from './component-page.tsx'
@@ -438,7 +438,7 @@ export function ListboxPage({
       contractSections={contractSectionList(contract)}
       api={
         <ApiBlock
-          importLine="import { Listbox, useListbox } from '@kvirn-ui/react'"
+          importLine="import { Listbox, useListbox } from '@kvirn/ui'"
           parts={parts}
           hook={useListboxHook}
           strings={

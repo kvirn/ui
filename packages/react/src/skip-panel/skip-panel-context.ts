@@ -1,6 +1,6 @@
 import { createContext } from 'react'
 import type { RefObject } from 'react'
-import type { Shortcut } from '@kvirn-ui/core'
+import type { Shortcut } from '@kvirn/core'
 
 export interface SkipPanelContextValue {
   /** `false` turns the chords, the key caps and `aria-keyshortcuts` off. */

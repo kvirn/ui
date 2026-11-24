@@ -1,5 +1,5 @@
 'use client'
-import { Card, Heading, Section } from '@kvirn-ui/react'
+import { Card, Heading, Section } from '@kvirn/ui'
 import { useSectionTexts } from './texts.ts'
 
 export function Band() {

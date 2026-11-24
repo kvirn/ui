@@ -1,5 +1,5 @@
 'use client'
-import { Address, Heading, Link } from '@kvirn-ui/react'
+import { Address, Heading, Link } from '@kvirn/ui'
 import { useId } from 'react'
 import { useAddressTexts } from './texts.ts'
 

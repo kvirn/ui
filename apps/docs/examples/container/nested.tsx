@@ -1,5 +1,5 @@
 'use client'
-import { Container, Heading } from '@kvirn-ui/react'
+import { Container, Heading } from '@kvirn/ui'
 import { useContainerTexts } from './texts.ts'
 
 export function NestedContainers() {

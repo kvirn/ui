@@ -3,7 +3,7 @@ import {
   contrastAttribute,
   motionAttribute,
   themeStorageKey,
-} from '@kvirn-ui/core'
+} from '@kvirn/core'
 import { afterEach, expect, test } from 'vite-plus/test'
 import { page } from 'vite-plus/test/browser'
 import { KvirnProvider } from './kvirn-provider.tsx'

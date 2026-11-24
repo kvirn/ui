@@ -1,5 +1,5 @@
 'use client'
-import { Field, PhoneInput } from '@kvirn-ui/react'
+import { Field, PhoneInput } from '@kvirn/ui'
 import { usePhoneInputTexts } from './texts.ts'
 
 export function OnlyPhoneCharacters() {

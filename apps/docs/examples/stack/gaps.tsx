@@ -1,5 +1,5 @@
 'use client'
-import { Stack } from '@kvirn-ui/react'
+import { Stack } from '@kvirn/ui'
 import { useStackTexts } from './texts.ts'
 
 export function Gaps() {

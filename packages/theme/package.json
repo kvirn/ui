@@ -1,5 +1,5 @@
 {
-  "name": "@kvirn-ui/theme",
+  "name": "@kvirn/theme",
   "version": "0.0.0",
   "description": "Optional default theme for KvirnUI: one readable theme.css with --kv-* tokens and component styles.",
   "homepage": "https://ui.kvirn.com",

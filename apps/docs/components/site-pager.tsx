@@ -1,4 +1,4 @@
-import { Link } from '@kvirn-ui/react'
+import { Link } from '@kvirn/ui'
 import { messages } from '../messages/en.ts'
 import type { SitePage } from './site-sections.ts'
 

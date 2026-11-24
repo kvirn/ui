@@ -1,4 +1,4 @@
-import { PageFrameMain, ServiceLinkLink, ServiceLinkRoot } from '@kvirn-ui/patterns'
+import { PageFrameMain, ServiceLinkLink, ServiceLinkRoot } from '@kvirn/patterns'
 import {
   AlertBody,
   AlertInfo,
@@ -14,7 +14,7 @@ import {
   ListItem,
   ListRoot,
   Stack,
-} from '@kvirn-ui/react'
+} from '@kvirn/ui'
 import type { Metadata } from 'next'
 import { notFound } from 'next/navigation'
 import { referenceContactMessages } from '../../../../../messages/reference-contact.ts'

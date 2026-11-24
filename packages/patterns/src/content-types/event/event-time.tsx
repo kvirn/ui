@@ -1,6 +1,6 @@
 'use client'
 
-import { useFormat } from '@kvirn-ui/react'
+import { useFormat } from '@kvirn/ui'
 import { NewsDate } from '../news-list/news-date.tsx'
 
 /** "17 October 2026, 10:00 to 10:45", each part a `<time>` the machine can read, written with the provider's locale. */

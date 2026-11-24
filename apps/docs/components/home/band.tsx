@@ -1,7 +1,7 @@
 'use client'
 // A client component like SiteShell: a `render` element passed from a Server Component
 // is dropped on the client, so the server's <section> hydrated against a <div>.
-import { Container, Section, Stack } from '@kvirn-ui/react'
+import { Container, Section, Stack } from '@kvirn/ui'
 import type { ReactNode } from 'react'
 
 /** A full-width band of the landing page. Unnamed on purpose: its heading carries the outline. */

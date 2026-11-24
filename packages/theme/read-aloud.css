@@ -1,5 +1,5 @@
 /*
- * Read aloud classes: @kvirn-ui/theme/read-aloud.css, an opt-in file next to theme.css; ReadAloud is
+ * Read aloud classes: @kvirn/theme/read-aloud.css, an opt-in file next to theme.css; ReadAloud is
  * in planning for 1.2.
  *
  * Import it after theme.css wherever a ReadAloud renders: a site without it does not pay for it. It

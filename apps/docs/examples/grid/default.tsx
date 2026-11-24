@@ -1,5 +1,5 @@
 'use client'
-import { Card, Grid, Heading, Link } from '@kvirn-ui/react'
+import { Card, Grid, Heading, Link } from '@kvirn/ui'
 import { useGridTexts } from './texts.ts'
 
 export function DefaultGrid() {

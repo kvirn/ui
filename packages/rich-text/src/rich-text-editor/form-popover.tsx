@@ -1,6 +1,6 @@
 'use client'
-import { Popover } from '@kvirn-ui/react'
-import type { PopoverChangeDetails } from '@kvirn-ui/react'
+import { Popover } from '@kvirn/ui'
+import type { PopoverChangeDetails } from '@kvirn/ui'
 import { useId } from 'react'
 import { createPortal } from 'react-dom'
 import type { ReactElement, ReactNode } from 'react'

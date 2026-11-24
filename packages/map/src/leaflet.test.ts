@@ -1,5 +1,5 @@
 import { afterEach, describe, expect, test, vi } from 'vite-plus/test'
-import type { MapHandle, MapProvider } from '@kvirn-ui/core'
+import type { MapHandle, MapProvider } from '@kvirn/core'
 import { leaflet } from './leaflet.ts'
 
 // Contract: the provider contract in map.md. The real engine runs; the tile URL is an inline

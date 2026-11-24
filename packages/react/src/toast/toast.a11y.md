@@ -3,7 +3,7 @@
 - **APG pattern:** none for a toast. The announcement is APG's [Alert pattern](https://www.w3.org/WAI/ARIA/apg/patterns/alert/) in the Announcer's polite region, which already exists; the region of toasts is never a live region. The items are the Alert component's parts.
 - **Deviations:** none from APG. Two defaults to know: toasts are **persistent by default** (`autoDismiss: false`), and a toast is only info or success, never a warning or an error.
 - **Native elements used:** `<section>` (the region, a `popover="manual"` in the top layer), `<ul role="list">` and `<li>`, the Alert's `<div>` root, `<p>` (the Title), `<span>` (the status word), `<button type="button">` (the action and Close).
-- **Tests:** `toast.test.tsx` next to this file, `@kvirn-ui/core` `toast-queue.test.ts` (the timing rules). `toast.stories.tsx` in `apps/storybook/src/components/toast/`. Design spec: `docs/design/toast.md`.
+- **Tests:** `toast.test.tsx` next to this file, `@kvirn/core` `toast-queue.test.ts` (the timing rules). `toast.stories.tsx` in `apps/storybook/src/components/toast/`. Design spec: `docs/design/toast.md`.
 
 A toast is a short status message after something worked: "The draft was saved". It looks like an Alert, is heard through the Announcer, never moves focus on its own and stays until dismissed by default. With `autoDismiss` a toast goes after the app's chosen time and pauses on hover, focus, a hidden tab and a blurred window. **Nothing needed to finish a task lives only in a toast**: the result is also shown in place, and an action (Undo) has a persistent alternative on the page. `Alert` with `announce` stays the default for a message in the content, and for every error.
 
@@ -96,7 +96,7 @@ Always polite: no toast needs to interrupt. The region has no `aria-live`, so no
 
 ## Visual / modes
 
-Headless: no CSS. With the default theme (`@kvirn-ui/theme/theme.css`):
+Headless: no CSS. With the default theme (`@kvirn/theme/theme.css`):
 
 - Focus indicator: Close and the action keep their own focus rings. The Title has none: only script focuses it, and it shows a ring only when the keyboard put the focus there.
 - Target size: Close is at least 24 by 24 CSS px, in the compact density too (2.5.8 Target Size (Minimum), AA).

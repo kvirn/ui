@@ -1,5 +1,5 @@
 'use client'
-import { DefinitionList, useFormat } from '@kvirn-ui/react'
+import { DefinitionList, useFormat } from '@kvirn/ui'
 import { useLocalesTexts } from './texts.ts'
 
 export function Formatting() {

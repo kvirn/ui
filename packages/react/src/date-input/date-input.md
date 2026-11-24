@@ -13,7 +13,7 @@ A DateInput asks for a date in three text boxes: day, month and year, in the ord
 - **The order follows the region.** `sv-SE` is year, month, day. `sv-FI`, `fi`, `nb`, `nn` and `en-GB` are day, month, year. A result that starts with the month (`en`, `en-US`) becomes day first, because month first reads as day first for the EU readers this library serves. The order comes from `Intl`, so we keep no data of our own.
 - **Three Tab stops, in that order, and typing a full box moves on.** When the user's typing fills a box (two digits for day and month, four for year), focus moves to the next box with its text selected, so a date is typed without Tab. It is on by default, with a visible hint under the boxes that is part of the group's description, and `autoAdvance={false}` turns both off. The arrow keys never step a value: numbers are text. See "Auto-advance" below.
 - **Every value is a string, as typed.** `007`, `13` and letters stay as they are. You validate the date and write the error.
-- Headless: no CSS. The parts render `kv-date-input`, `kv-date-input-day`, `kv-date-input-month` and `kv-date-input-year`, and your `className` joins them. With `@kvirn-ui/theme/theme.css` imported they are styled.
+- Headless: no CSS. The parts render `kv-date-input`, `kv-date-input-day`, `kv-date-input-month` and `kv-date-input-year`, and your `className` joins them. With `@kvirn/theme/theme.css` imported they are styled.
 
 ## API
 
@@ -69,7 +69,7 @@ Override them with `messages` on the Root, per provider, or in your catalog.
 ## Component
 
 ```tsx
-import { DateInput, Fieldset } from '@kvirn-ui/react'
+import { DateInput, Fieldset } from '@kvirn/ui'
 
 ;<Fieldset.Root group required invalid={error !== undefined}>
   <Fieldset.Legend>Date of birth</Fieldset.Legend>
@@ -122,7 +122,7 @@ A service that must match a paper form writes the parts itself. The help text th
 Three boxes suit a date people know by heart. Ask in one field when people read the date off a document, are used to typing `19850412`, or when you need a text field for another component. Use a `TextInput` with `masks.date()` inside a `Field`, not a DateInput:
 
 ```tsx
-import { Field, TextInput, masks, checks } from '@kvirn-ui/react'
+import { Field, TextInput, masks, checks } from '@kvirn/ui'
 
 ;<Field.Root required>
   <Field.Label>Start date</Field.Label>
@@ -188,7 +188,7 @@ Nothing is padded, cut or checked: `3` stays `3`, and `31` in the month box stay
 For your own markup, `useDateInput` returns the props:
 
 ```tsx
-import { Field, Fieldset, TextInput, useDateInput } from '@kvirn-ui/react'
+import { Field, Fieldset, TextInput, useDateInput } from '@kvirn/ui'
 
 function Birth() {
   const dateInput = useDateInput({ name: 'birth', autoComplete: 'bday' })

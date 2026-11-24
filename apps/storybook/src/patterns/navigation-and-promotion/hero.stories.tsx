@@ -1,5 +1,5 @@
-import { Hero } from '@kvirn-ui/patterns'
-import { kvirnbyHills } from '@kvirn-ui/patterns/fixtures'
+import { Hero } from '@kvirn/patterns'
+import { kvirnbyHills } from '@kvirn/patterns/fixtures'
 import type { Meta, StoryObj } from '@storybook/react-vite'
 import { expect } from 'storybook/test'
 import contract from '../../../../../packages/patterns/src/navigation-and-promotion/hero/hero.a11y.md?raw'

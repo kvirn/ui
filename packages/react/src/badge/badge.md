@@ -6,13 +6,13 @@ A short status or category in words: `Granted`, `Draft`, `News`. It renders a `<
 - `variant`: `neutral` (default), `primary`, `info`, `success`, `warning` or `danger`. The class is `kv-badge--<variant>`. Always say the status in words: the colour is only a second cue.
 - Attributes and the `ref` reach the element. A `className` joins `kv-badge`.
 - `as` changes the element to `strong` or `em`. Its own semantics apply.
-- Headless: no CSS. With `@kvirn-ui/theme/theme.css` imported, `kv-badge` draws a pill in measured colour pairs, with a `CanvasText` edge in forced colours.
+- Headless: no CSS. With `@kvirn/theme/theme.css` imported, `kv-badge` draws a pill in measured colour pairs, with a `CanvasText` edge in forced colours.
 - A badge is text and not a control: it isn't a Tab stop and announces nothing. If it should do something, use a Button.
 
 ## Component
 
 ```tsx
-import { Badge } from '@kvirn-ui/react'
+import { Badge } from '@kvirn/ui'
 
 ;<h3>
   Building permit Storgatan 4 <Badge variant="success">Granted</Badge>
@@ -22,7 +22,7 @@ import { Badge } from '@kvirn-ui/react'
 ## Hook
 
 ```tsx
-import { useBadge } from '@kvirn-ui/react'
+import { useBadge } from '@kvirn/ui'
 
 const badge = useBadge({ variant: 'warning' })
 <span {...badge.rootProps}>Pending</span>

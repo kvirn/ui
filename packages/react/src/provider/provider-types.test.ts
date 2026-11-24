@@ -1,6 +1,6 @@
-import { createMessageFormat } from '@kvirn-ui/core'
-import type { MessageFormatter, ResolvedMessages } from '@kvirn-ui/core'
-import type { KvirnMessages, MessageFormat, MessageFunction } from '@kvirn-ui/i18n'
+import { createMessageFormat } from '@kvirn/core'
+import type { MessageFormatter, ResolvedMessages } from '@kvirn/core'
+import type { KvirnMessages, MessageFormat, MessageFunction } from '@kvirn/i18n'
 import type { ComponentType } from 'react'
 import { describe, expectTypeOf, it } from 'vite-plus/test'
 import type {

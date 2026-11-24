@@ -1,5 +1,5 @@
 'use client'
-import { Map } from '@kvirn-ui/map'
+import { Map } from '@kvirn/map'
 import { useMapTexts } from './texts.ts'
 import { DocsMap } from './use-docs-provider.tsx'
 

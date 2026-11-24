@@ -1,4 +1,4 @@
-import { en } from '@kvirn-ui/i18n/en'
+import { en } from '@kvirn/i18n/en'
 import {
   ApplicationLogo,
   LanguageLinks,
@@ -6,10 +6,10 @@ import {
   PageFrame,
   SiteHeader,
   SiteSearch,
-} from '@kvirn-ui/patterns'
-import type { PageFrameSidebarProps } from '@kvirn-ui/patterns'
-import { kvirnbyMark } from '@kvirn-ui/patterns/fixtures'
-import { KvirnProvider, Link, Navigation } from '@kvirn-ui/react'
+} from '@kvirn/patterns'
+import type { PageFrameSidebarProps } from '@kvirn/patterns'
+import { kvirnbyMark } from '@kvirn/patterns/fixtures'
+import { KvirnProvider, Link, Navigation } from '@kvirn/ui'
 import type { Meta, StoryObj } from '@storybook/react-vite'
 import { expect } from 'storybook/test'
 import { expectTypeOf } from 'vite-plus/test'

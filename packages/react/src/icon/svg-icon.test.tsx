@@ -1,7 +1,7 @@
-import { add } from '@kvirn-ui/icons'
-import { SvgIcon } from '@kvirn-ui/icons/react'
-import { expectNoA11yViolations } from '@kvirn-ui/testing'
-import { readAloud } from '@kvirn-ui/testing/read-aloud'
+import { add } from '@kvirn/icons'
+import { SvgIcon } from '@kvirn/icons/react'
+import { expectNoA11yViolations } from '@kvirn/testing'
+import { readAloud } from '@kvirn/testing/read-aloud'
 import { describe, expect, test } from 'vite-plus/test'
 import { render } from 'vitest-browser-react'
 

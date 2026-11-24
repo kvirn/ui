@@ -1,5 +1,5 @@
 import type { ElementType, ReactElement, ReactNode } from 'react'
-import type { KvirnMessages } from '@kvirn-ui/i18n'
+import type { KvirnMessages } from '@kvirn/i18n'
 import { mergeProps } from '../merge-props/merge-props.ts'
 import { useMergedRef } from '../merge-props/use-merged-ref.ts'
 import type { AsComponent } from '../render/as-prop.ts'

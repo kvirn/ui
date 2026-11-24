@@ -34,7 +34,7 @@ SectionRoot.displayName = 'Section'
 /**
  * A plain container for a region of the page, such as a sidebar or a band of content (contract: section.a11y.md). It renders a `<div>` with no role, ARIA, text or behaviour, and
  * `as` changes the element. To make it a landmark, use `as="section"`, `"aside"` or
- * `"nav"` with a name. With `@kvirn-ui/theme`, add modifier classes: `kv-section--canvas` and
+ * `"nav"` with a name. With `@kvirn/theme`, add modifier classes: `kv-section--canvas` and
  * `kv-section--padding-none|sm|md|lg`. A Section is one element, so it is written `<Section>`.
  *
  * @example

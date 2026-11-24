@@ -1,5 +1,5 @@
 'use client'
-import { Field, TextInput, useFieldset } from '@kvirn-ui/react'
+import { Field, TextInput, useFieldset } from '@kvirn/ui'
 import { useFieldsetTexts } from './texts.ts'
 
 export function OwnElements() {

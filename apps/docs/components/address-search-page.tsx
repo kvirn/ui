@@ -1,4 +1,4 @@
-import { Link } from '@kvirn-ui/react'
+import { Link } from '@kvirn/ui'
 import { ApiBlock } from './api-block.tsx'
 import type { ApiPart } from './api-block.tsx'
 import { CodeBlock } from './code-block.tsx'
@@ -34,14 +34,14 @@ export type AddressSearchExampleSources = Record<
   string
 >
 
-const installLines = `pnpm add @kvirn-ui/map`
+const installLines = `pnpm add @kvirn/map`
 
-const styleLines = `import '@kvirn-ui/theme/theme.css'
+const styleLines = `import '@kvirn/theme/theme.css'
 // Only when the search sits beside a map:
-import '@kvirn-ui/theme/map.css'`
+import '@kvirn/theme/map.css'`
 
-const importLines = `import { AddressSearch, useAddressSearch } from '@kvirn-ui/map'
-import { kvirnGeocoder } from '@kvirn-ui/map/kvirn' // or /nominatim, /google-places`
+const importLines = `import { AddressSearch, useAddressSearch } from '@kvirn/map'
+import { kvirnGeocoder } from '@kvirn/map/kvirn' // or /nominatim, /google-places`
 
 const partsLines = `<AddressSearch.Root geocoder={geocoder} onResult={onResult}>
   <AddressSearch.Label>Find your address</AddressSearch.Label>
@@ -241,7 +241,7 @@ export function AddressSearchPage({
     <ComponentPage
       title="AddressSearch"
       lead="You get the address the visitor picks, with its position, and decide what happens next. You choose the geocoder (the service that finds addresses), and nothing is sent to it until the visitor types."
-      packageName="@kvirn-ui/map"
+      packageName="@kvirn/map"
       pattern="APG Combobox (editable, list autocomplete)"
       whenToUse={
         <ul>

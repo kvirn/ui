@@ -8,7 +8,7 @@ The site's search: a `<search>` landmark around a GET form, with a `Field`, a `T
 - To build the same strip yourself, see [InputGroup › Search](?path=/story/components-forms-inputgroup--search).
 
 ```tsx
-import { SiteSearch } from '@kvirn-ui/patterns'
+import { SiteSearch } from '@kvirn/patterns'
 
 ;<SiteSearch action="/search" label="Search the site">
   Search

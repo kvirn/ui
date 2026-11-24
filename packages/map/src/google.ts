@@ -11,7 +11,7 @@ import {
   type MapProviderEventName,
   type MapProviderEvents,
   type MapView,
-} from '@kvirn-ui/core'
+} from '@kvirn/core'
 
 export type GoogleMapTypeId = 'roadmap' | 'satellite' | 'terrain' | 'hybrid'
 

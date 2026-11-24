@@ -1,5 +1,5 @@
 'use client'
-import type { AddressResult, GeocoderProvider, MaskInput } from '@kvirn-ui/core'
+import type { AddressResult, GeocoderProvider, MaskInput } from '@kvirn/core'
 import { useCallback, useContext, useEffect, useRef, useState } from 'react'
 import type { ComponentPropsWithRef, ReactElement } from 'react'
 import { warnOnce } from '../dev/dev-warning.ts'
@@ -39,7 +39,7 @@ export interface AddressInputRootProps extends ComponentPropsWithRef<'div'> {
   /**
    * Turns on the address lookup: `AddressInput.Line1` becomes a combobox that suggests addresses
    * from this geocoder as the visitor types, and stays free text. What is typed in Line 1 is sent
-   * to it. Geocoders live in `@kvirn-ui/map` (`kvirnGeocoder`, `nominatim`, `googlePlaces`).
+   * to it. Geocoders live in `@kvirn/map` (`kvirnGeocoder`, `nominatim`, `googlePlaces`).
    */
   geocoder?: GeocoderProvider | undefined
   /** A pick that filled the boxes, with its position and id. Nothing is called when the text is cleared. */

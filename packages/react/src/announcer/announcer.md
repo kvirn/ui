@@ -9,7 +9,7 @@ The shared way to tell a screen reader that something changed, without moving fo
 ## Component
 
 ```tsx
-import { useAnnouncer } from '@kvirn-ui/react'
+import { useAnnouncer } from '@kvirn/ui'
 
 function SaveButton() {
   const { announce } = useAnnouncer()
@@ -51,7 +51,7 @@ announce(messages.sessionExpired, { politeness: 'assertive' })
 
 ## Core
 
-`createAnnouncer(env)` in `@kvirn-ui/core` is the state behind it: a store of `{ polite, assertive }` text with `announce` and `clear` actions, and no DOM. `env` only needs `window.setTimeout`, `window.clearTimeout` and `window.performance.now`, and is `undefined` while server rendering, when `announce` does nothing.
+`createAnnouncer(env)` in `@kvirn/core` is the state behind it: a store of `{ polite, assertive }` text with `announce` and `clear` actions, and no DOM. `env` only needs `window.setTimeout`, `window.clearTimeout` and `window.performance.now`, and is `undefined` while server rendering, when `announce` does nothing.
 
 ## Known limits
 

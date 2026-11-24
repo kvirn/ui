@@ -1,5 +1,5 @@
 'use client'
-import { QuickExit, SkipLink } from '@kvirn-ui/react'
+import { QuickExit, SkipLink } from '@kvirn/ui'
 import { useDemoLeave } from './demo-leave.tsx'
 import { useQuickExitTexts } from './texts.ts'
 

@@ -1,4 +1,4 @@
-import { Calendar } from '@kvirn-ui/react'
+import { Calendar } from '@kvirn/ui'
 import contract from '../../../../../packages/react/src/calendar/calendar.a11y.md?raw'
 import guide from '../../../../../packages/react/src/calendar/calendar.md?raw'
 import type { Meta, StoryObj } from '@storybook/react-vite'
@@ -20,7 +20,7 @@ import {
   withCalendarProvider,
 } from './calendar.fixture.tsx'
 
-// Components/Calendar: a month as a grid of days, styled by @kvirn-ui/theme/theme.css (design spec
+// Components/Calendar: a month as a grid of days, styled by @kvirn/theme/theme.css (design spec
 // docs/design/date-picker-and-calendar.md). It is a companion to typed entry (DateInput), never
 // the only way to give a date. Every story fixes `today` to 14 October 2026.
 

@@ -1,5 +1,5 @@
 'use client'
-import { Prose } from '@kvirn-ui/react'
+import { Prose } from '@kvirn/ui'
 import { useProseTexts } from './texts.ts'
 
 export function InsetTextProse() {

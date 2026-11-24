@@ -1,5 +1,5 @@
 'use client'
-import { Button, ButtonGroup, Card } from '@kvirn-ui/react'
+import { Button, ButtonGroup, Card } from '@kvirn/ui'
 import { useButtonGroupTexts } from './texts.ts'
 
 export function CardFooter() {

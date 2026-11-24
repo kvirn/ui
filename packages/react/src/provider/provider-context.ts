@@ -6,8 +6,8 @@ import type {
   ReadAloudEngine,
   ThemeStore,
   WeekStart,
-} from '@kvirn-ui/core'
-import type { PartialMessages } from '@kvirn-ui/i18n'
+} from '@kvirn/core'
+import type { PartialMessages } from '@kvirn/i18n'
 import { createContext } from 'react'
 import type { IconRegistry } from '../icon/icon-registry.ts'
 import type { IconDefaults } from '../icon/use-icon.ts'

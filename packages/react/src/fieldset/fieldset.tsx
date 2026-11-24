@@ -1,5 +1,5 @@
 'use client'
-import type { KvirnMessages } from '@kvirn-ui/i18n'
+import type { KvirnMessages } from '@kvirn/i18n'
 import { createContext, createElement, useContext, useEffect, useMemo } from 'react'
 import type { ComponentPropsWithRef, ReactElement } from 'react'
 import { warnOnce } from '../dev/dev-warning.ts'

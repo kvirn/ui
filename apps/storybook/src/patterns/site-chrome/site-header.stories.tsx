@@ -1,4 +1,4 @@
-import { en } from '@kvirn-ui/i18n/en'
+import { en } from '@kvirn/i18n/en'
 import {
   ApplicationLogo,
   LanguageLinks,
@@ -6,9 +6,9 @@ import {
   PageFrame,
   SiteHeader,
   SiteSearch,
-} from '@kvirn-ui/patterns'
-import { kvirnbyMark } from '@kvirn-ui/patterns/fixtures'
-import { DisplaySettings, KvirnProvider, Link, Navigation, TopBar } from '@kvirn-ui/react'
+} from '@kvirn/patterns'
+import { kvirnbyMark } from '@kvirn/patterns/fixtures'
+import { DisplaySettings, KvirnProvider, Link, Navigation, TopBar } from '@kvirn/ui'
 import type { Meta, StoryObj } from '@storybook/react-vite'
 import { expect, userEvent } from 'storybook/test'
 import contract from '../../../../../packages/patterns/src/site-chrome/site-header/site-header.a11y.md?raw'
@@ -49,7 +49,7 @@ The pattern has no strings of its own. Each part is also a flat export (\`SiteHe
 
 ## Parts and gaps
 
-Parts used: \`Section as="header"\`, \`Container\`, \`Link\`, \`Navigation\`, \`Disclosure\`, and the \`ApplicationLogo\` and \`SiteSearch\` patterns. Gap in \`@kvirn-ui/react\`: a Site header block.
+Parts used: \`Section as="header"\`, \`Container\`, \`Link\`, \`Navigation\`, \`Disclosure\`, and the \`ApplicationLogo\` and \`SiteSearch\` patterns. Gap in \`@kvirn/ui\`: a Site header block.
 `
 
 const meta = {

@@ -16,18 +16,18 @@ A typed headless core with thin React bindings, built the TanStack way: behaviou
 
 ## Packages
 
-| Package               | Purpose                                                                       |
-| --------------------- | ----------------------------------------------------------------------------- |
-| `@kvirn-ui/core`      | Framework-agnostic state machines, focus and keyboard logic (TypeScript)      |
-| `@kvirn-ui/react`     | Headless React hooks and components                                           |
-| `@kvirn-ui/rich-text` | Rich text editor on Tiptap (peer dependencies)                                |
-| `@kvirn-ui/i18n`      | Locale strings for sv, fi, nb, nn and en                                      |
-| `@kvirn-ui/theme`     | Optional default theme: one readable `theme.css` you import, override or copy |
+| Package            | Purpose                                                                       |
+| ------------------ | ----------------------------------------------------------------------------- |
+| `@kvirn/core`      | Framework-agnostic state machines, focus and keyboard logic (TypeScript)      |
+| `@kvirn/ui`        | Headless React hooks and components                                           |
+| `@kvirn/rich-text` | Rich text editor on Tiptap (peer dependencies)                                |
+| `@kvirn/i18n`      | Locale strings for sv, fi, nb, nn and en                                      |
+| `@kvirn/theme`     | Optional default theme: one readable `theme.css` you import, override or copy |
 
 ## Quick look
 
 ```tsx
-import { Disclosure } from '@kvirn-ui/react'
+import { Disclosure } from '@kvirn/ui'
 
 export function Faq() {
   return (
@@ -63,4 +63,4 @@ Project docs: [docs/](docs/README.md). Rules for humans and agents: [AGENTS.md](
 
 ## License
 
-Free for personal use. Any other production use needs a commercial licence. The source is open to read, test and try, under the [Business Source License 1.1](LICENSE) © Kvirn UI (source-available, not open source); each version becomes AGPL-3.0 four years after release. Read [LICENSING.md](LICENSING.md). The icon package `@kvirn-ui/icons` is the exception: it is [MIT](packages/icons/LICENSE) and free for any use. Contact: magnus@vike.se.
+Free for personal use. Any other production use needs a commercial licence. The source is open to read, test and try, under the [Business Source License 1.1](LICENSE) © Kvirn UI (source-available, not open source); each version becomes AGPL-3.0 four years after release. Read [LICENSING.md](LICENSING.md). The icon package `@kvirn/icons` is the exception: it is [MIT](packages/icons/LICENSE) and free for any use. Contact: magnus@vike.se.

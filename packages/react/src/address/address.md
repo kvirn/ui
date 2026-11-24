@@ -7,12 +7,12 @@ Contact details for the nearest article or for the page: a postal address, a vis
 - A visiting address and a postal address go in separate `Address` elements, or on separate lines with a label (`Visiting address:`). Use `<br />` for the line breaks inside one address.
 - Put links for `tel:` and `mailto:` inside, with the number or the email address as the link text.
 - Attributes and the `ref` reach the element. A `className` joins `kv-address`. There is no `as`.
-- Headless: no CSS. With `@kvirn-ui/theme/theme.css` imported, `kv-address` undoes the browser's italic and keeps the body text size and line height.
+- Headless: no CSS. With `@kvirn/theme/theme.css` imported, `kv-address` undoes the browser's italic and keeps the body text size and line height.
 
 ## Component
 
 ```tsx
-import { Address, Link } from '@kvirn-ui/react'
+import { Address, Link } from '@kvirn/ui'
 
 ;<Address>
   Kvirnby municipality

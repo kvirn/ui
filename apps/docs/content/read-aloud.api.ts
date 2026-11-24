@@ -10,8 +10,8 @@ import type {
   ReadAloudWhenStartedProps,
   UseReadAloudOptions,
   UseReadAloudResult,
-} from '@kvirn-ui/read-aloud'
-import type { KvirnSpeechEngineOptions } from '@kvirn-ui/core'
+} from '@kvirn/read-aloud'
+import type { KvirnSpeechEngineOptions } from '@kvirn/core'
 import { propRows } from '../components/api-block.tsx'
 import type { AttributeRow } from '../components/api-block.tsx'
 
@@ -29,7 +29,7 @@ export const useReadAloudRows = propRows<UseReadAloudOptions>({
   engine: {
     type: 'ReadAloudEngine',
     description:
-      'The speech engine: kvirnSpeechEngine({ url }) from @kvirn-ui/core, or a fake for tests.',
+      'The speech engine: kvirnSpeechEngine({ url }) from @kvirn/core, or a fake for tests.',
   },
   name: {
     type: 'string',

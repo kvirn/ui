@@ -1,5 +1,5 @@
 'use client'
-import { AddressInput, Field, Fieldset } from '@kvirn-ui/react'
+import { AddressInput, Field, Fieldset } from '@kvirn/ui'
 import { useAddressInputTexts } from './texts.ts'
 
 export function DefaultAddressInput() {

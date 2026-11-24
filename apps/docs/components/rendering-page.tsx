@@ -9,42 +9,42 @@ import {
   TableRow,
   TableRowHeader,
   TableScrollRegion,
-} from '@kvirn-ui/react'
+} from '@kvirn/ui'
 import { CodeBlock } from './code-block.tsx'
 import { Note } from './note.tsx'
 import { PageWithContents } from './page-contents.tsx'
 
 const whereRows = [
   {
-    entry: '@kvirn-ui/react',
+    entry: '@kvirn/ui',
     runs: "Client (a 'use client' entry). Server-rendered to HTML, then hydrated.",
     server:
       'Render parts and components by their flat names (AlertTitle, TabsList). Do not call hooks.',
   },
   {
-    entry: '@kvirn-ui/react/server',
+    entry: '@kvirn/ui/server',
     runs: "Server. No 'use client' and no client JavaScript.",
     server: 'Yes: KvirnThemeScript, getLocaleProps, getMessages, createMessageFormat.',
   },
   {
-    entry: '@kvirn-ui/core',
+    entry: '@kvirn/core',
     runs: 'Anywhere. No React, and no window or document when it is imported.',
     server: 'Yes.',
   },
   {
-    entry: '@kvirn-ui/i18n/<locale>',
+    entry: '@kvirn/i18n/<locale>',
     runs: 'Anywhere. A catalog is an object of functions.',
     server: 'Import it, but do not pass it as a prop to a client component.',
   },
   {
-    entry: '@kvirn-ui/theme',
+    entry: '@kvirn/theme',
     runs: 'CSS only.',
     server: 'Yes: import theme.css in the layout.',
   },
 ]
 
 const serverComponent = `// A Server Component: no 'use client', no hooks
-import { AlertInfo, AlertTitle } from '@kvirn-ui/react'
+import { AlertInfo, AlertTitle } from '@kvirn/ui'
 
 export function Notice() {
   return (
@@ -60,7 +60,7 @@ const asRules = `<AlertTitle as="p">Saved</AlertTitle>   // a tag string: fine
 <LinkRoot as={<a />} />   // an element: not accepted`
 
 const clientFile = `'use client'
-import { useLocale, useTheme } from '@kvirn-ui/react'
+import { useLocale, useTheme } from '@kvirn/ui'
 
 export function ThemeLabel() {
   const { locale } = useLocale()
@@ -70,9 +70,9 @@ export function ThemeLabel() {
 
 const nextProviders = `// app/kvirn-provider.tsx
 'use client'
-import { KvirnProvider } from '@kvirn-ui/react'
-import type { KvirnProviderProps } from '@kvirn-ui/react'
-import { sv } from '@kvirn-ui/i18n/sv'
+import { KvirnProvider } from '@kvirn/ui'
+import type { KvirnProviderProps } from '@kvirn/ui'
+import { sv } from '@kvirn/i18n/sv'
 import NextLink from 'next/link'
 import { icons } from './icons' // a 'use client' module that calls defineIcons
 
@@ -83,7 +83,7 @@ export function AppKvirnProvider(
 }`
 
 const nextLayout = `// app/layout.tsx (a Server Component)
-import { KvirnThemeScript, getLocaleProps } from '@kvirn-ui/react/server'
+import { KvirnThemeScript, getLocaleProps } from '@kvirn/ui/server'
 import { headers } from 'next/headers'
 import type { ReactNode } from 'react'
 import { AppKvirnProvider } from './kvirn-provider'
@@ -116,8 +116,8 @@ export const theme = {
   defaultMotion: 'system',
 } as const`
 
-const serverStrings = `import { getMessages, createMessageFormat } from '@kvirn-ui/react/server'
-import { sv } from '@kvirn-ui/i18n/sv'
+const serverStrings = `import { getMessages, createMessageFormat } from '@kvirn/ui/server'
+import { sv } from '@kvirn/i18n/sv'
 
 const texts = getMessages('alert', { locale: 'sv-SE', messages: sv, timeZone: 'Europe/Stockholm' })
 const format = createMessageFormat({ locale: 'sv-SE', timeZone: 'Europe/Stockholm' })`
@@ -159,7 +159,7 @@ export const config = {
 
 const plainSsr = `import { renderToString } from 'react-dom/server'
 import { hydrateRoot } from 'react-dom/client'
-import { KvirnProvider } from '@kvirn-ui/react'
+import { KvirnProvider } from '@kvirn/ui'
 
 const app = (
   <KvirnProvider locale="sv-SE" timeZone="Europe/Stockholm">
@@ -185,8 +185,8 @@ export function RenderingPage() {
           content: (
             <>
               <p>
-                The whole <code>@kvirn-ui/react</code> entry is a client entry. The server entry is
-                a separate import path.
+                The whole <code>@kvirn/ui</code> entry is a client entry. The server entry is a
+                separate import path.
               </p>
               <TableScrollRegion aria-labelledby="where-code-runs">
                 <TableRoot
@@ -222,9 +222,9 @@ export function RenderingPage() {
           content: (
             <>
               <p>
-                Every export of <code>@kvirn-ui/react</code> is a client reference when a Server
-                Component imports it. You can render it. It is server-rendered to HTML like any
-                other component, and it hydrates in the browser. The pages of this site are Server
+                Every export of <code>@kvirn/ui</code> is a client reference when a Server Component
+                imports it. You can render it. It is server-rendered to HTML like any other
+                component, and it hydrates in the browser. The pages of this site are Server
                 Components that render Heading, Link and Table this way.
               </p>
               <Heading as="h3" id="flat-exports">
@@ -267,7 +267,7 @@ export function RenderingPage() {
                 Texts and formats in a Server Component
               </Heading>
               <p>
-                <code>@kvirn-ui/react/server</code> has the server versions of what the hooks give.
+                <code>@kvirn/ui/server</code> has the server versions of what the hooks give.
                 <code>getMessages</code> is <code>useMessages</code> for one namespace.{' '}
                 <code>createMessageFormat</code> is the formatter behind <code>useFormat</code>.
               </p>

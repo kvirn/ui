@@ -3,7 +3,7 @@ import type { CodeBlockContextValue } from './code-block-context.ts'
 
 /** Spread on the Root's `<div>`. The group and its name appear while a Label is mounted. */
 export interface CodeBlockRootProps {
-  /** The part's class, for `@kvirn-ui/theme` and your own CSS: `.kv-code-block`. */
+  /** The part's class, for `@kvirn/theme` and your own CSS: `.kv-code-block`. */
   className: 'kv-code-block'
   role?: 'group'
   'aria-labelledby'?: string
@@ -38,7 +38,7 @@ export interface UseCodeBlockResult {
  * const codeBlock = useCodeBlock()
  * <div {...codeBlock.rootProps}>
  *   <p {...codeBlock.labelProps}>Installera</p>
- *   <pre {...codeBlock.codeProps} ref={codeBlock.context.codeRef}>pnpm add @kvirn-ui/react</pre>
+ *   <pre {...codeBlock.codeProps} ref={codeBlock.context.codeRef}>pnpm add @kvirn/ui</pre>
  * </div>
  */
 export function useCodeBlock(): UseCodeBlockResult {

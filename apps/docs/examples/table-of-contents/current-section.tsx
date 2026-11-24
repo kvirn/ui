@@ -1,5 +1,5 @@
 'use client'
-import { Disclosure, useTableOfContents } from '@kvirn-ui/react'
+import { Disclosure, useTableOfContents } from '@kvirn/ui'
 import { useId, useMemo } from 'react'
 import { useTableOfContentsTexts } from './texts.ts'
 

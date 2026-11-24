@@ -13,7 +13,7 @@ export interface UseInputGroupOptions {
 /** Spread on the box: a `<div>` that holds one input, and its addons or button. */
 export interface InputGroupRootPartProps {
   /**
-   * The part's class, for `@kvirn-ui/theme` and your own CSS: `.kv-input-group`. Add your own
+   * The part's class, for `@kvirn/theme` and your own CSS: `.kv-input-group`. Add your own
    * class next to it with `mergeProps`: class names join.
    */
   className: 'kv-input-group'

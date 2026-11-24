@@ -1,4 +1,4 @@
-import { expectNoA11yViolations } from '@kvirn-ui/testing'
+import { expectNoA11yViolations } from '@kvirn/testing'
 import { createRef } from 'react'
 import { afterEach, describe, expect, expectTypeOf, test, vi } from 'vite-plus/test'
 import { page, userEvent } from 'vite-plus/test/browser'
@@ -15,7 +15,7 @@ import { useCodeBlock } from './use-code-block.ts'
 // Contract: code-block.a11y.md.
 
 const failedText = 'Could not copy. Select the text and copy it yourself.'
-const command = 'pnpm add @kvirn-ui/react'
+const command = 'pnpm add @kvirn/ui'
 
 function stubClipboard(writeText: (text: string) => Promise<void>) {
   Object.defineProperty(navigator, 'clipboard', { value: { writeText }, configurable: true })

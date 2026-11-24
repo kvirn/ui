@@ -1,4 +1,4 @@
-import { Link } from '@kvirn-ui/react'
+import { Link } from '@kvirn/ui'
 import { ApiBlock } from './api-block.tsx'
 import type { ApiPart } from './api-block.tsx'
 import { apiHookPart } from './api-ids.ts'
@@ -426,7 +426,7 @@ export function TablePage({
       contractSections={contractSectionList(contract)}
       api={
         <ApiBlock
-          importLine="import { Table, useTable, tableFeatures, createColumnHelper } from '@kvirn-ui/react'"
+          importLine="import { Table, useTable, tableFeatures, createColumnHelper } from '@kvirn/ui'"
           parts={parts}
           hook={useTableHook}
           strings={<StringsBlock namespace="table" component="Table" keys={stringKeys} />}

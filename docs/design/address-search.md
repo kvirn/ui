@@ -4,7 +4,7 @@
 
 - **Status:** Draft · **Designer:** ux-designer agent · **Date:** 2026-10-19
 - **Plan:** [0117](plans/0117-map-and-address-search.md) (P4a; D12 "AddressSearch on Autocomplete", rule 7, the Nominatim risk)
-- **Type:** component flow, content and default styling (`@kvirn-ui/map`; CSS in `@kvirn-ui/theme/map.css`)
+- **Type:** component flow, content and default styling (`@kvirn/map`; CSS in `@kvirn/theme/map.css`)
 - **Builds on:** [combobox.md](combobox.md) and `autocomplete.a11y.md` (the field, popup and keys), [map.md](map.md) (the halo, `map.show`), [phone-and-address-inputs.md](phone-and-address-inputs.md) (AddressInput, 3.3.7)
 
 ## 1. Brief
@@ -200,5 +200,5 @@ Announcement timing: the Autocomplete Announcer, about 500 ms after the last cha
 4. **D4 Map API:** `show(result)` draws the result pin and announces `map.addressShown`; a new `clearResult()`. Recommend yes; today `show` only moves the camera.
 5. **D5 Pick announcement** may double with the screen reader's own reading of the new value. Recommend keep `picked` (silence is worse), verify in the AT run.
 6. **D6 Landmark:** Root renders a `div`; the standalone docs wrap it in `<search>`. Recommend yes (the consumer owns the markup; a search landmark is wrong inside a form).
-7. **D7 Package:** a form-only AddressInput hand-off imports `@kvirn-ui/map` without any engine. Recommend keep it there for now, and revisit if forms use it more than maps.
+7. **D7 Package:** a form-only AddressInput hand-off imports `@kvirn/map` without any engine. Recommend keep it there for now, and revisit if forms use it more than maps.
 8. **D8 Status only in the popup:** Escape hides "No address found" and error. Recommend accept; research question 2 checks it.

@@ -13,7 +13,7 @@ A link that takes a person off a sensitive page at once, to a neutral site you c
 - `data-state` is `idle`, `armed` or `leaving`.
 
 ```tsx
-import { QuickExit } from '@kvirn-ui/react'
+import { QuickExit } from '@kvirn/ui'
 
 ;<QuickExit.Root>
   <QuickExit.Link href="https://www.smhi.se" />

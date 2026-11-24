@@ -4,7 +4,7 @@ import type {
   ComboboxValueProps,
   UseComboboxOptions,
   UseComboboxResult,
-} from '@kvirn-ui/react'
+} from '@kvirn/ui'
 import { propRows } from '../components/api-block.tsx'
 import type { ApiHook, AttributeRow } from '../components/api-block.tsx'
 import { classRow, dataRow, rootRows as listboxRootRows } from './listbox.api.ts'

@@ -9,12 +9,12 @@ A OneTimeCode shows a code sent by text message or email, or made by an authenti
 - **Nothing moves or submits on its own** (3.2.2). Typing the last character leaves focus where it is. There's no auto-advance between boxes, and no auto-submit. `onComplete` is a callback only.
 - **A pasted `123 456`, `123-456` or "Your code is 123456" ends as `123456`** (for `999999`), **and `abcd1234`, `abcd-1234` or `abcd 1234` all end as `abcd-1234`** (for `****-****`). An SMS suggestion fills the whole code. There's no `maxlength`, and the field is never `type="password"`: the user has to see the code (3.3.8).
 - **It degrades to a plain input.** In forced colours, on a screen too narrow for 32px boxes, at large text sizes and before the script has run, the theme shows an ordinary numeric input with the same value and focus instead of the boxes.
-- Headless: no CSS. The parts render `kv-one-time-code`, `kv-one-time-code-input`, `kv-one-time-code-slot` and `kv-one-time-code-separator`, and your `className` joins them. With `@kvirn-ui/theme/theme.css` imported they are styled.
+- Headless: no CSS. The parts render `kv-one-time-code`, `kv-one-time-code-input`, `kv-one-time-code-slot` and `kv-one-time-code-separator`, and your `className` joins them. With `@kvirn/theme/theme.css` imported they are styled.
 
 ## Component
 
 ```tsx
-import { Field, OneTimeCode } from '@kvirn-ui/react'
+import { Field, OneTimeCode } from '@kvirn/ui'
 
 ;<Field.Root invalid={codeError !== undefined}>
   <Field.Label>Code from the text message</Field.Label>
@@ -107,7 +107,7 @@ The focus ring is the input's own, drawn around the whole row. The theme draws 4
 For your own elements, `useOneTimeCode` returns the props:
 
 ```tsx
-import { useOneTimeCode } from '@kvirn-ui/react'
+import { useOneTimeCode } from '@kvirn/ui'
 
 function Code() {
   const oneTimeCode = useOneTimeCode({ pattern: '999999', onComplete: verifyCode })

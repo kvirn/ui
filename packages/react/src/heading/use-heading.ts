@@ -3,7 +3,7 @@ export type HeadingLevel = 1 | 2 | 3 | 4 | 5 | 6
 
 /**
  * The look of a heading, apart from its level: the type roles of the same names (`display`,
- * `heading-1` to `heading-6`) in `@kvirn-ui/theme`.
+ * `heading-1` to `heading-6`) in `@kvirn/theme`.
  */
 export type HeadingSize =
   | 'display'
@@ -17,7 +17,7 @@ export type HeadingSize =
 /** Spread on the Heading's element. Only the part's classes: Heading adds no role or ARIA. */
 export interface HeadingPartProps {
   /**
-   * The part's classes, for `@kvirn-ui/theme` and your own CSS: `.kv-heading`, and the size's
+   * The part's classes, for `@kvirn/theme` and your own CSS: `.kv-heading`, and the size's
    * modifier (`.kv-heading--heading-2`): the level's own, or the `size` you give.
    */
   className: string

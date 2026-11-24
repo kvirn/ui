@@ -1,5 +1,5 @@
-import { PageFrame } from '@kvirn-ui/patterns'
-import { DocumentationPage } from '@kvirn-ui/patterns/content-types'
+import { PageFrame } from '@kvirn/patterns'
+import { DocumentationPage } from '@kvirn/patterns/content-types'
 import type { Meta, StoryObj } from '@storybook/react-vite'
 import source from '../../../../packages/patterns/src/content-types/documentation-page/documentation-page.tsx?raw'
 import { expectNoHorizontalOverflow } from '../components/theme-story-assertions.ts'
@@ -7,7 +7,7 @@ import { chromeViewports, narrowGlobals, wideGlobals } from '../patterns/pattern
 import { expectPageOutline } from './page-outline.ts'
 import { withShell } from './shell.tsx'
 // Content types/Documentation page: a whole page in the site chrome (docs/design/storybook-patterns.md section 7).
-// The page is a component in `@kvirn-ui/patterns/content-types`; the source panel shows its module text, which an adopter copies.
+// The page is a component in `@kvirn/patterns/content-types`; the source panel shows its module text, which an adopter copies.
 
 const description = `A page of a documentation site, in the frame of the reference site: the section navigation beside \`main\` (grouped, collapsed behind a button below \`64rem\`), a breadcrumb, an \`h1\` and a lead, the contents list, prose with an example and two tables, and previous and next links at the end. The page is English and \`lang="en"\` whatever the toolbar says.
 

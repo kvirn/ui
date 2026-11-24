@@ -1,5 +1,5 @@
-import { PageFrameMain } from '@kvirn-ui/patterns'
-import { AlertBody, AlertInfo, Heading, LinkRoot, Stack } from '@kvirn-ui/react'
+import { PageFrameMain } from '@kvirn/patterns'
+import { AlertBody, AlertInfo, Heading, LinkRoot, Stack } from '@kvirn/ui'
 import type { Metadata } from 'next'
 import { notFound } from 'next/navigation'
 import { referenceEserviceMessages } from '../../../../../../../../messages/reference-eservice.ts'

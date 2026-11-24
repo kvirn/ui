@@ -1,5 +1,5 @@
-import { MainMenu } from '@kvirn-ui/patterns'
-import { Navigation } from '@kvirn-ui/react'
+import { MainMenu } from '@kvirn/patterns'
+import { Navigation } from '@kvirn/ui'
 import { messages } from '../messages/en.ts'
 import { OwnPackageMark, OwnPackageNote } from './own-package-badge.tsx'
 import { pageCurrent, sectionCurrent } from './site-sections.ts'

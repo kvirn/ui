@@ -2,7 +2,7 @@
 
 - **Status:** Accepted (the maintainer, 2026-10-04)
 - **Designer:** ux-designer agent · **Date:** 2026-10-04
-- **Plan:** 0034 Textarea, 0035 Toggle, Toolbar and ButtonGroup, Plan 0036 (the new `@kvirn-ui/rich-text` package), and Plan 0037 (a prerequisite, spec: [tooltip.md](tooltip.md))
+- **Plan:** 0034 Textarea, 0035 Toggle, Toolbar and ButtonGroup, Plan 0036 (the new `@kvirn/rich-text` package), and Plan 0037 (a prerequisite, spec: [tooltip.md](tooltip.md))
 - **Type:** component default styling (+ two new components on the roadmap, + one new package, + DESIGN.md wording, see §6.10 and §9)
 - **Superseded 2026-10-05 (Plan 0045):** the Textarea and the editor take the page's direction from the provider, with no `dir` prop and no `dir="auto"` (§6.2, §6.7, §9 Q8), and there is no "Escape, then Tab" way out and no keyboard instruction under the box (§4.3, §6.6.6, §7.4): Tab leaves wherever it does not act. The sections below are the history.
 
@@ -34,7 +34,7 @@ The maintainer decided the main questions on 2026-10-04 (§9, "Decided"). Where 
 - **Context:** residents use a Textarea once, often on a phone, and it may hold the most important answer in the service. Staff write in the editor many times a day and expect Word and Google Docs conventions (Control+B, Control+Z, Tab to indent a list item and to move to the next table cell).
 - **Constraints:**
   - WCAG 2.2 AA. Hard rules 2 (APG and the keyboard practice), 4 (every string in six locales), 5 (headless packages ship no CSS) and 7 (no third-party network calls).
-  - Tiptap (MIT) is a new runtime dependency in the new `@kvirn-ui/rich-text` package. Approval for it, and the updates to `docs/architecture.md` and the `regulations` skill, go in the plan (hard rule 6). Only the open-source Tiptap extensions: no Tiptap Cloud, collaboration or AI services, which call third-party servers.
+  - Tiptap (MIT) is a new runtime dependency in the new `@kvirn/rich-text` package. Approval for it, and the updates to `docs/architecture.md` and the `regulations` skill, go in the plan (hard rule 6). Only the open-source Tiptap extensions: no Tiptap Cloud, collaboration or AI services, which call third-party servers.
   - An image inserted by URL makes the reader's browser fetch it from that server. That is the adopter's content, but the library should let them restrict it (§9, Q9).
   - The editor's HTML output must be sanitised on the server. That's not a design decision, but the docs must say it.
   - **Tooltip** is a prerequisite (Plan 0037, [tooltip.md](tooltip.md)). Menu is planned but not built, and isn't needed (D5). Popover and Listbox exist (alpha candidates).

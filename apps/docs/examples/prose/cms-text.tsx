@@ -1,5 +1,5 @@
 'use client'
-import { mergeProps, useProse } from '@kvirn-ui/react'
+import { mergeProps, useProse } from '@kvirn/ui'
 import type { CmsBlock } from './texts.ts'
 import { useProseTexts } from './texts.ts'
 

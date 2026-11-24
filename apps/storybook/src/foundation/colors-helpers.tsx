@@ -1,10 +1,5 @@
-import { contrastRequirements } from '@kvirn-ui/theme'
-import type {
-  ColorTokenName,
-  ContrastMinimum,
-  ContrastRequirement,
-  ThemeName,
-} from '@kvirn-ui/theme'
+import { contrastRequirements } from '@kvirn/theme'
+import type { ColorTokenName, ContrastMinimum, ContrastRequirement, ThemeName } from '@kvirn/theme'
 import type { ReactNode, Ref } from 'react'
 import { formatRatio } from './foundation-helpers.tsx'
 

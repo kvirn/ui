@@ -1,7 +1,7 @@
 'use client'
 
-import { Container, Disclosure, Link, Navigation, Section, mergeProps } from '@kvirn-ui/react'
-import type { DisclosureTriggerProps, LinkProps } from '@kvirn-ui/react'
+import { Container, Disclosure, Link, Navigation, Section, mergeProps } from '@kvirn/ui'
+import type { DisclosureTriggerProps, LinkProps } from '@kvirn/ui'
 import { createContext, useContext, useRef, useState } from 'react'
 import type {
   ComponentPropsWithRef,

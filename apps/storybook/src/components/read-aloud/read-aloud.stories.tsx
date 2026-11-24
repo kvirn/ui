@@ -1,4 +1,4 @@
-import { ReadAloud } from '@kvirn-ui/read-aloud'
+import { ReadAloud } from '@kvirn/read-aloud'
 import contract from '../../../../../packages/read-aloud/src/read-aloud.a11y.md?raw'
 import guide from '../../../../../packages/read-aloud/src/read-aloud.md?raw'
 import type { Meta, StoryObj } from '@storybook/react-vite'
@@ -46,7 +46,7 @@ const meta = {
     engine: {
       control: false,
       description:
-        'Your speech engine: `kvirnSpeechEngine({ url })` from `@kvirn-ui/core`, or a fake for tests. Required: there is no default engine. `url`, `store`, `timeout` and `voices` (also on `useReadAloud`) build one instead, and are ignored once `engine` is given.',
+        'Your speech engine: `kvirnSpeechEngine({ url })` from `@kvirn/core`, or a fake for tests. Required: there is no default engine. `url`, `store`, `timeout` and `voices` (also on `useReadAloud`) build one instead, and are ignored once `engine` is given.',
     },
     name: {
       control: 'text',

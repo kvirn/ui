@@ -1,4 +1,4 @@
-import { Link } from '@kvirn-ui/react'
+import { Link } from '@kvirn/ui'
 import { messages } from '../messages/en.ts'
 import { CodeBlock } from './code-block.tsx'
 import { iconCount } from './icon-library-page.tsx'
@@ -18,14 +18,14 @@ export function IconUsagePage() {
           content: (
             <>
               <p>
-                The icons are in the <code>@kvirn-ui/icons</code> package. KvirnUI has no icons of
-                its own to fall back on: you import the ones you use, so you ship only those (your
+                The icons are in the <code>@kvirn/icons</code> package. KvirnUI has no icons of its
+                own to fall back on: you import the ones you use, so you ship only those (your
                 bundle, the code you send to the browser). Pass an icon to the{' '}
                 <Link href="/components/icon">Icon</Link> component as <code>icon</code>, with or
                 without a <code>KvirnProvider</code>:
               </p>
               <CodeBlock
-                code={`import { search } from '@kvirn-ui/icons'
+                code={`import { search } from '@kvirn/icons'
 
 <Icon icon={search} />`}
               />
@@ -41,7 +41,7 @@ export function IconUsagePage() {
                 register icons from Lucide or another set there.
               </p>
               <CodeBlock
-                code={`import { bus, cityHall } from '@kvirn-ui/icons'
+                code={`import { bus, cityHall } from '@kvirn/icons'
 
 const icons = defineIcons({ bus, 'city-hall': cityHall })
 
@@ -50,7 +50,7 @@ const icons = defineIcons({ bus, 'city-hall': cityHall })
 </KvirnProvider>`}
               />
               <p>
-                <code>allIcons</code> from <code>@kvirn-ui/icons/all</code> registers the whole set,
+                <code>allIcons</code> from <code>@kvirn/icons/all</code> registers the whole set,
                 but it adds every icon to your bundle. Register only the ones you need.
               </p>
               <ul>
@@ -92,13 +92,13 @@ const icons = defineIcons({ bus, 'city-hall': cityHall })
               <p>
                 The icons are free for any use, commercial and public-sector use included, under the
                 MIT licence. The package depends on nothing else. Each icon is plain drawing data,
-                so any app can use it. For React, <code>@kvirn-ui/icons/react</code> has a small{' '}
+                so any app can use it. For React, <code>@kvirn/icons/react</code> has a small{' '}
                 <code>SvgIcon</code> component that works in a Server Component too (React is the
                 only thing it needs):
               </p>
               <CodeBlock
-                code={`import { search } from '@kvirn-ui/icons'
-import { SvgIcon } from '@kvirn-ui/icons/react'
+                code={`import { search } from '@kvirn/icons'
+import { SvgIcon } from '@kvirn/icons/react'
 
 <SvgIcon icon={search} />                  // decorative: hidden from screen readers
 <SvgIcon icon={search} title="Search" />   // named: an image with an accessible name`}

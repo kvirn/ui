@@ -74,7 +74,7 @@ export type {
   UseToolbarOptions,
   UseToolbarResult,
 } from './toolbar/use-toolbar.ts'
-export type { RovingOrientation } from '@kvirn-ui/core'
+export type { RovingOrientation } from '@kvirn/core'
 export { Tabs, TabsList, TabsPanel, TabsRoot, TabsTab } from './tabs/tabs.tsx'
 export type { TabsListProps, TabsPanelProps, TabsRootProps, TabsTabProps } from './tabs/tabs.tsx'
 export { useTabs } from './tabs/use-tabs.ts'
@@ -663,7 +663,7 @@ export type {
   IconRegistry,
   IconRegistryEntry,
 } from './icon/icon-registry.ts'
-export { checks, masks } from '@kvirn-ui/core'
+export { checks, masks } from '@kvirn/core'
 export type {
   CheckResult,
   Mask,
@@ -677,7 +677,7 @@ export type {
   MaskRejection,
   MaskRejectionReason,
   MaskResult,
-} from '@kvirn-ui/core'
+} from '@kvirn/core'
 export type {
   ColorSchemePreference,
   ContrastPreference,
@@ -691,7 +691,7 @@ export type {
   ThemeOptions,
   ThemeStorage,
   ThemeStorageAdapter,
-} from '@kvirn-ui/core'
+} from '@kvirn/core'
 export {
   InputGroup,
   InputGroupAddon,
@@ -1175,8 +1175,8 @@ export type {
   UseTooltipOptions,
   UseTooltipResult,
 } from './tooltip/use-tooltip.ts'
-export { createTooltipGroup } from '@kvirn-ui/core'
-export type { TooltipChangeReason, TooltipGroup } from '@kvirn-ui/core'
+export { createTooltipGroup } from '@kvirn/core'
+export type { TooltipChangeReason, TooltipGroup } from '@kvirn/core'
 export {
   FileUpload,
   FileUploadActions,
@@ -1226,7 +1226,7 @@ export type {
   FileUploadTypeProps,
 } from './file-upload/file-upload.tsx'
 export { useFileUpload } from './file-upload/use-file-upload.ts'
-export type { FileUploadContext, FileUploadFailure, FileUploadRejection } from '@kvirn-ui/core'
+export type { FileUploadContext, FileUploadFailure, FileUploadRejection } from '@kvirn/core'
 export type {
   FileUploadAddSource,
   FileUploadDropZonePartProps,
@@ -1351,7 +1351,7 @@ export {
   sortFn_text,
   sortFn_textCaseSensitive,
   tableFeatures,
-} from '@kvirn-ui/core'
+} from '@kvirn/core'
 export type {
   AccessorFn,
   Cell,
@@ -1383,7 +1383,7 @@ export type {
   TanStackTable,
   TanStackTableOptions,
   Updater,
-} from '@kvirn-ui/core'
+} from '@kvirn/core'
 export {
   Progress,
   ProgressBar,

@@ -1,5 +1,5 @@
 'use client'
-import { AddressInput, Button, ErrorSummary, Field, Fieldset, Stack } from '@kvirn-ui/react'
+import { AddressInput, Button, ErrorSummary, Field, Fieldset, Stack } from '@kvirn/ui'
 import { useId, useState } from 'react'
 import { useAddressInputTexts } from './texts.ts'
 

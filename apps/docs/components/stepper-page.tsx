@@ -1,4 +1,4 @@
-import { Link } from '@kvirn-ui/react'
+import { Link } from '@kvirn/ui'
 import { ApiBlock } from './api-block.tsx'
 import type { ApiPart } from './api-block.tsx'
 import { apiHookPart } from './api-ids.ts'
@@ -179,7 +179,7 @@ export function StepperPage({
       contractSections={contractSectionList(contract)}
       api={
         <ApiBlock
-          importLine="import { Stepper, useStepper } from '@kvirn-ui/react'"
+          importLine="import { Stepper, useStepper } from '@kvirn/ui'"
           parts={parts}
           hook={useStepperHook}
           strings={

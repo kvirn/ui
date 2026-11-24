@@ -1,5 +1,5 @@
 // kv-lang-ok-file: per-locale fixture text sets (sv, fi, nb, nn), picked by the locale toolbar
-import { Button, useAnnouncer } from '@kvirn-ui/react'
+import { Button, useAnnouncer } from '@kvirn/ui'
 import { useState } from 'react'
 import type { FormLocale } from '../form/form.fixture.tsx'
 

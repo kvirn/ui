@@ -1,5 +1,5 @@
 'use client'
-import { Kbd } from '@kvirn-ui/react'
+import { Kbd } from '@kvirn/ui'
 import { useId } from 'react'
 import { useKbdTexts } from './texts.ts'
 

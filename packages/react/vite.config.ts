@@ -10,9 +10,9 @@ const shared = {
     neverBundle: [
       'react',
       'react-dom',
-      '@kvirn-ui/core',
-      /^@kvirn-ui\/i18n(\/|$)/,
-      /^@kvirn-ui\/icons(\/|$)/,
+      '@kvirn/core',
+      /^@kvirn\/i18n(\/|$)/,
+      /^@kvirn\/icons(\/|$)/,
     ],
   },
   // A banner restores the directive on every output file, so rolldown's per-source-file warning is noise.

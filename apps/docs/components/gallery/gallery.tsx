@@ -1,4 +1,4 @@
-import { CardRoot, GridRoot, Heading, Link } from '@kvirn-ui/react'
+import { CardRoot, GridRoot, Heading, Link } from '@kvirn/ui'
 import { Fragment } from 'react'
 import type { ReactNode } from 'react'
 import { OwnPackageBadge } from '../own-package-badge.tsx'

@@ -90,7 +90,7 @@ Unhappy paths the field must support:
 
 ## 4. Content
 
-### 4.1 Component strings (`@kvirn-ui/i18n`)
+### 4.1 Component strings (`@kvirn/i18n`)
 
 **None.** The cells are `aria-hidden` and show only the value and the pattern's dashes. The label and help text belong to the consumer, because they name the channel ("text message", "email", "authenticator app"), the length and the groups. The rejection messages are the mask's, already shipped (`mask.characterNotAllowed` in its digits, letters and letters-and-digits variants, `mask.maximumLength`). `i18n:check` is unaffected.
 

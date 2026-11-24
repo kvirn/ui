@@ -1,6 +1,6 @@
-import { createProgressTimer } from '@kvirn-ui/core'
-import type { ProgressPhase } from '@kvirn-ui/core'
-import type { KvirnMessages } from '@kvirn-ui/i18n'
+import { createProgressTimer } from '@kvirn/core'
+import type { ProgressPhase } from '@kvirn/core'
+import type { KvirnMessages } from '@kvirn/i18n'
 import { useEffect, useId, useRef, useState } from 'react'
 import { useQuietAnnouncer, warnAnnouncerMissing } from '../announcer/use-announcer.ts'
 import { warnOnce } from '../dev/dev-warning.ts'
@@ -37,7 +37,7 @@ export interface UseProgressOptions {
 
 /** Spread on the Root's element. */
 export interface ProgressRootPartProps {
-  /** The part's class, for `@kvirn-ui/theme` and your own CSS: `.kv-progress`. */
+  /** The part's class, for `@kvirn/theme` and your own CSS: `.kv-progress`. */
   className: 'kv-progress'
   'data-state': 'busy' | 'slow'
   'data-determinate'?: ''

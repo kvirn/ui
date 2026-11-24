@@ -1,5 +1,5 @@
 {
-  "name": "@kvirn-ui/patterns",
+  "name": "@kvirn/patterns",
   "version": "0.0.0",
   "private": true,
   "description": "Site patterns, content types and fixtures built on KvirnUI.",
@@ -52,12 +52,12 @@
     "build": "vp pack"
   },
   "dependencies": {
-    "@kvirn-ui/i18n": "workspace:*",
-    "@kvirn-ui/icons": "workspace:*",
-    "@kvirn-ui/react": "workspace:*"
+    "@kvirn/i18n": "workspace:*",
+    "@kvirn/icons": "workspace:*",
+    "@kvirn/ui": "workspace:*"
   },
   "devDependencies": {
-    "@kvirn-ui/testing": "workspace:*",
+    "@kvirn/testing": "workspace:*",
     "@types/react": "catalog:",
     "react": "catalog:",
     "vite-plus": "catalog:",

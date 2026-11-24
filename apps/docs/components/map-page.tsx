@@ -1,4 +1,4 @@
-import { Link } from '@kvirn-ui/react'
+import { Link } from '@kvirn/ui'
 import { ApiBlock } from './api-block.tsx'
 import type { ApiPart } from './api-block.tsx'
 import { apiHookPart, apiPartId } from './api-ids.ts'
@@ -49,14 +49,14 @@ export type MapExampleSources = Record<
   string
 >
 
-const installLines = `pnpm add @kvirn-ui/map
+const installLines = `pnpm add @kvirn/map
 pnpm add maplibre-gl`
 
-const styleLines = `import '@kvirn-ui/theme/theme.css'
-import '@kvirn-ui/theme/map.css'
+const styleLines = `import '@kvirn/theme/theme.css'
+import '@kvirn/theme/map.css'
 import 'maplibre-gl/dist/maplibre-gl.css'`
 
-const providerLines = `import { maplibre, rasterStyle } from '@kvirn-ui/map/maplibre'
+const providerLines = `import { maplibre, rasterStyle } from '@kvirn/map/maplibre'
 
 // Create it once, outside your component. The tile address is yours.
 export const provider = maplibre({
@@ -66,8 +66,8 @@ export const provider = maplibre({
   }),
 })`
 
-const aerialMapLines = `import { maplibre, rasterStyle } from '@kvirn-ui/map/maplibre'
-import { kvirnBaseMap } from '@kvirn-ui/map/kvirn'
+const aerialMapLines = `import { maplibre, rasterStyle } from '@kvirn/map/maplibre'
+import { kvirnBaseMap } from '@kvirn/map/kvirn'
 
 export const provider = maplibre({
   baseMaps: [
@@ -84,9 +84,9 @@ export const provider = maplibre({
   ],
 })`
 
-const importLines = `import { Map, createMemoryProvider, useMap, useMapState } from '@kvirn-ui/map'
-import { maplibre, rasterStyle } from '@kvirn-ui/map/maplibre'
-import { createMapWorker } from '@kvirn-ui/map/worker'`
+const importLines = `import { Map, createMemoryProvider, useMap, useMapState } from '@kvirn/map'
+import { maplibre, rasterStyle } from '@kvirn/map/maplibre'
+import { createMapWorker } from '@kvirn/map/worker'`
 
 const rootAttributes = [
   {
@@ -317,7 +317,7 @@ const parts: ApiPart[] = [
     name: 'maplibre',
     renders: (
       <>
-        nothing: <code>maplibre(options)</code> from <code>@kvirn-ui/map/maplibre</code> returns the
+        nothing: <code>maplibre(options)</code> from <code>@kvirn/map/maplibre</code> returns the
         provider for MapLibre GL. MapLibre is an optional peer: install it only for this adapter.
         These are its options.
       </>
@@ -328,9 +328,9 @@ const parts: ApiPart[] = [
     name: 'rasterStyle',
     renders: (
       <>
-        nothing: <code>rasterStyle(options)</code> from <code>@kvirn-ui/map/maplibre</code> returns
-        a MapLibre style from your own tile addresses, for <code>maplibre({'{ style }'})</code>.
-        These are its options.
+        nothing: <code>rasterStyle(options)</code> from <code>@kvirn/map/maplibre</code> returns a
+        MapLibre style from your own tile addresses, for <code>maplibre({'{ style }'})</code>. These
+        are its options.
       </>
     ),
     props: rasterStyleRows,
@@ -350,7 +350,7 @@ const parts: ApiPart[] = [
     name: 'createMapWorker',
     renders: (
       <>
-        nothing: a function from <code>@kvirn-ui/map/worker</code> that you pass as{' '}
+        nothing: a function from <code>@kvirn/map/worker</code> that you pass as{' '}
         <code>indexIn</code>. The map creates the Web Worker when it builds the index of a large{' '}
         <code>source</code> and stops it afterwards, so you own nothing. The entry is ESM only.
       </>
@@ -363,7 +363,7 @@ export function MapPage({ contract, sources }: { contract: Contract; sources: Ma
     <ComponentPage
       title="Map"
       lead="You choose where the map pictures come from. Nothing is requested from anyone until a map with a provider is on the page."
-      packageName="@kvirn-ui/map"
+      packageName="@kvirn/map"
       pattern="None: there is no APG pattern for a map. The markers use the Toolbar’s arrow keys."
       whenToUse={
         <>
@@ -391,8 +391,8 @@ export function MapPage({ contract, sources }: { contract: Contract; sources: Ma
               <Link href="/components/address-search">AddressSearch</Link> beside the map.
             </li>
             <li>
-              It is its own package, <code>@kvirn-ui/map</code>. Its styles are an opt-in import,{' '}
-              <code>@kvirn-ui/theme/map.css</code>, after <code>theme.css</code>, so a site without
+              It is its own package, <code>@kvirn/map</code>. Its styles are an opt-in import,{' '}
+              <code>@kvirn/theme/map.css</code>, after <code>theme.css</code>, so a site without
               maps does not pay for them. MapLibre is an optional peer. The install lines are in the{' '}
               <Link href="#api">API reference</Link>.
             </li>

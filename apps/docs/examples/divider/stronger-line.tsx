@@ -1,5 +1,5 @@
 'use client'
-import { Divider, Heading } from '@kvirn-ui/react'
+import { Divider, Heading } from '@kvirn/ui'
 import type { CSSProperties } from 'react'
 import { useDividerTexts } from './texts.ts'
 

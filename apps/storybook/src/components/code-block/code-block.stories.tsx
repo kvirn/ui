@@ -1,4 +1,4 @@
-import { CodeBlock } from '@kvirn-ui/react'
+import { CodeBlock } from '@kvirn/ui'
 import contract from '../../../../../packages/react/src/code-block/code-block.a11y.md?raw'
 import guide from '../../../../../packages/react/src/code-block/code-block.md?raw'
 import type { Meta, StoryObj } from '@storybook/react-vite'
@@ -8,9 +8,9 @@ import { withCopyMessages } from '../copy-button/copy-button.fixture.tsx'
 import { expectNoHorizontalOverflow } from '../theme-story-assertions.ts'
 
 // Components/CodeBlock: a labelled code sample with a copy button, styled by
-// @kvirn-ui/theme/theme.css (contract: code-block.a11y.md). No highlighting, and the code wraps.
+// @kvirn/theme/theme.css (contract: code-block.a11y.md). No highlighting, and the code wraps.
 
-const command = 'pnpm add @kvirn-ui/react @kvirn-ui/theme'
+const command = 'pnpm add @kvirn/ui @kvirn/theme'
 const longLine =
   'curl --request POST https://api.examplemunicipality.example/e-services/parking-permits/applications --header "Content-Type: application/json" --data @application.json'
 

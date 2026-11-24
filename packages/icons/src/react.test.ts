@@ -19,22 +19,22 @@ const sourceFiles = (directory: string): string[] =>
 const render = (props: Record<string, unknown> = {}) =>
   renderToStaticMarkup(createElement(SvgIcon, { icon: add, ...props }))
 
-describe('@kvirn-ui/icons standalone', () => {
+describe('@kvirn/icons standalone', () => {
   it('imports no package but itself, and react only from react.ts', () => {
     const offenders = sourceFiles(import.meta.dirname).filter((file) => {
       const text = readFileSync(file, 'utf8')
       return (
-        /from ['"]@kvirn-ui\//.test(text) ||
+        /from ['"]@kvirn\//.test(text) ||
         (!file.endsWith('react.ts') && /from ['"]react/.test(text))
       )
     })
     expect(offenders).toEqual([])
   })
 
-  it('declares no dependencies and no @kvirn-ui package', () => {
+  it('declares no dependencies and no @kvirn package', () => {
     const manifest = JSON.parse(readFileSync(join(import.meta.dirname, '../package.json'), 'utf8'))
     expect(manifest.dependencies).toBeUndefined()
-    expect(JSON.stringify(manifest)).not.toMatch(/"@kvirn-ui\/(?!icons")/)
+    expect(JSON.stringify(manifest)).not.toMatch(/"@kvirn\/(?!icons")/)
     expect(manifest.peerDependenciesMeta.react.optional).toBe(true)
   })
 })

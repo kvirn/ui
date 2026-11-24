@@ -1,4 +1,4 @@
-import { AlertDialog } from '@kvirn-ui/react'
+import { AlertDialog } from '@kvirn/ui'
 import contract from '../../../../../packages/react/src/alert-dialog/alert-dialog.a11y.md?raw'
 import guide from '../../../../../packages/react/src/alert-dialog/alert-dialog.md?raw'
 import type { Meta, StoryObj } from '@storybook/react-vite'

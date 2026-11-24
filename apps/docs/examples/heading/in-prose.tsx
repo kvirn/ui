@@ -1,5 +1,5 @@
 'use client'
-import { Heading, Prose } from '@kvirn-ui/react'
+import { Heading, Prose } from '@kvirn/ui'
 import { useHeadingTexts } from './texts.ts'
 
 export function InProse() {

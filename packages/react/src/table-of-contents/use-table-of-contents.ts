@@ -1,6 +1,6 @@
-import { getActiveHeading, getTableOfContentsTree } from '@kvirn-ui/core'
-import type { HeadingPosition, TableOfContentsEntry, TableOfContentsNode } from '@kvirn-ui/core'
-import type { KvirnMessages } from '@kvirn-ui/i18n'
+import { getActiveHeading, getTableOfContentsTree } from '@kvirn/core'
+import type { HeadingPosition, TableOfContentsEntry, TableOfContentsNode } from '@kvirn/core'
+import type { KvirnMessages } from '@kvirn/i18n'
 import { useCallback, useEffect, useMemo, useState } from 'react'
 import { warnOnce } from '../dev/dev-warning.ts'
 import { useEnv } from '../provider/use-env.ts'
@@ -36,7 +36,7 @@ export interface UseTableOfContentsOptions {
 /** Spread on the `<nav>`. */
 export interface TableOfContentsRootPartProps {
   /**
-   * The part's class, for `@kvirn-ui/theme` and your own CSS: `.kv-table-of-contents`. Add your
+   * The part's class, for `@kvirn/theme` and your own CSS: `.kv-table-of-contents`. Add your
    * own class next to it with `mergeProps`: class names join.
    */
   className: 'kv-table-of-contents'

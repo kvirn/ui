@@ -1,5 +1,5 @@
 'use client'
-import { Field, Listbox } from '@kvirn-ui/react'
+import { Field, Listbox } from '@kvirn/ui'
 import { languages } from './data.ts'
 import type { Language } from './data.ts'
 import { useListboxTexts } from './texts.ts'

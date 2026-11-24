@@ -1,5 +1,5 @@
-import { getDefaultEnv, getThemeStore } from '@kvirn-ui/core'
-import { expectNoA11yViolations, expectNoA11yViolationsInEveryTheme } from '@kvirn-ui/testing'
+import { getDefaultEnv, getThemeStore } from '@kvirn/core'
+import { expectNoA11yViolations, expectNoA11yViolationsInEveryTheme } from '@kvirn/testing'
 import { afterEach, describe, expect, it } from 'vite-plus/test'
 import { render } from 'vitest-browser-react'
 import { useTheme } from './use-theme.ts'

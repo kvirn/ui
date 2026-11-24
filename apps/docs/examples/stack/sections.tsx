@@ -1,5 +1,5 @@
 'use client'
-import { Heading, Stack } from '@kvirn-ui/react'
+import { Heading, Stack } from '@kvirn/ui'
 import { useStackTexts } from './texts.ts'
 
 export function StackOfSections() {

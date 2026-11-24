@@ -1,7 +1,7 @@
 'use client'
-import { Map } from '@kvirn-ui/map'
-import { Field, Icon, Switch } from '@kvirn-ui/react'
-import type { IconName } from '@kvirn-ui/react'
+import { Map } from '@kvirn/map'
+import { Field, Icon, Switch } from '@kvirn/ui'
+import type { IconName } from '@kvirn/ui'
 import { useMapTexts } from './texts.ts'
 import { DocsMap } from './use-docs-provider.tsx'
 

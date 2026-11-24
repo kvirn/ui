@@ -1,6 +1,6 @@
 'use client'
-import { KvirnProvider } from '@kvirn-ui/react'
-import type { KvirnProviderProps } from '@kvirn-ui/react'
+import { KvirnProvider } from '@kvirn/ui'
+import type { KvirnProviderProps } from '@kvirn/ui'
 import NextLink from 'next/link'
 import { usePathname } from 'next/navigation'
 import { createContext, useContext, useState } from 'react'

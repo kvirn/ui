@@ -1,5 +1,5 @@
 'use client'
-import { Button, SkipPanel } from '@kvirn-ui/react'
+import { Button, SkipPanel } from '@kvirn/ui'
 import { useSkipPanelTexts } from './texts.ts'
 
 export function Reopen() {

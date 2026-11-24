@@ -1,8 +1,8 @@
 'use client'
 
-import { arrowForward } from '@kvirn-ui/icons'
-import { Icon, Link, mergeProps } from '@kvirn-ui/react'
-import type { LinkProps } from '@kvirn-ui/react'
+import { arrowForward } from '@kvirn/icons'
+import { Icon, Link, mergeProps } from '@kvirn/ui'
+import type { LinkProps } from '@kvirn/ui'
 import type { ComponentPropsWithRef, ElementType, ReactElement } from 'react'
 
 export type ServiceLinkRootProps = ComponentPropsWithRef<'div'>

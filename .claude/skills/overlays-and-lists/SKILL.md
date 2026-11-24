@@ -150,7 +150,7 @@ Arrows do not wrap. PageUp and PageDown move ten options and stop at the ends. H
 
 Opt-in and off by default. Docs recommend pagination or filtering first, because unrendered rows cannot be found with find in page, printed or reached in browse mode.
 
-- `@tanstack/virtual-core` is a runtime dependency of `@kvirn-ui/core` and `@tanstack/table-core` likewise, both pinned exactly in the catalog, upgraded deliberately. They are imported only in `core/src/virtual/` and `core/src/table/` (lint, subpaths included). Everything else uses core's wrappers and re-exports. `@kvirn-ui/react` adds no dependency.
+- `@tanstack/virtual-core` is a runtime dependency of `@kvirn/core` and `@tanstack/table-core` likewise, both pinned exactly in the catalog, upgraded deliberately. They are imported only in `core/src/virtual/` and `core/src/table/` (lint, subpaths included). Everything else uses core's wrappers and re-exports. `@kvirn/ui` adds no dependency.
 - `createListVirtualizer` wraps the library and owns the accessibility rules:
   - `getRequiredIndexes()` (the active, selected and focused rows) are always rendered. The core replaces the range extractor when that set changes.
   - A keyboard move calls `scrollToIndex(index, { align: 'auto' })`, and the target element exists in the same commit. Navigate the data, not the DOM.
@@ -188,7 +188,7 @@ Native `<table>` with TanStack Table behind `createTable` and the `useTable` hoo
 - Sort and locale: `createLocaleSortFn(locale)` sorts with `Intl.Collator` (numeric on), so å, ä and ö sort correctly. <!-- kv-lang-ok: letters are the subject of the collation rule -->
 - `createTable` returns `{ table, store, updateOptions }`. `store` is `table.store` as a structural `ReadableStore`, so `@tanstack/store` stays in `core/src/store/`. `useTable` calls `updateOptions` on every render before reading rows, with notifications suppressed (no "update while rendering" warning).
 - Feature-gated TanStack APIs are reached with type guards (`hasColumnSorting`, `hasRowSelection`, `hasRowExpanding`, `hasTableRowSelection`), not casts. Parts get types through an untyped context plus `useTableContext<TFeatures, TData>()`.
-- `@kvirn-ui/core` and `@kvirn-ui/react` re-export the tested TanStack features (sorting, selection, expansion, pagination, filtering, global filtering, column visibility, row models, `createColumnHelper`, `tableFeatures`, types). What is not re-exported is not supported. A TanStack Table major release forces a KvirnUI major release, and consumers cannot pass their own instance.
+- `@kvirn/core` and `@kvirn/ui` re-export the tested TanStack features (sorting, selection, expansion, pagination, filtering, global filtering, column visibility, row models, `createColumnHelper`, `tableFeatures`, types). What is not re-exported is not supported. A TanStack Table major release forces a KvirnUI major release, and consumers cannot pass their own instance.
 - The sort icon is drawn by the Table (`svg.kv-table-sort-icon`, three shapes) until a built-in `sort` icon exists. Numeric columns are consumer classes (`kv-table-*--numeric`). Row checkboxes are 24px with no extended hit area.
 
 ### Narrow screens and scroll containers

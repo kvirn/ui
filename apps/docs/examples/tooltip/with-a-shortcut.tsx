@@ -1,5 +1,5 @@
 'use client'
-import { Button, Icon, Kbd, Tooltip } from '@kvirn-ui/react'
+import { Button, Icon, Kbd, Tooltip } from '@kvirn/ui'
 import { useTooltipTexts } from './texts.ts'
 
 export function WithAShortcut() {

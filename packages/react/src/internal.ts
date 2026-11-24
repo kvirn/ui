@@ -1,7 +1,7 @@
 'use client'
 
-// `@kvirn-ui/react/internal`: for Kvirn packages only (Plan 0036). These are the pieces other
-// KvirnUI packages, such as `@kvirn-ui/rich-text`, need and the public API deliberately doesn't
+// `@kvirn/ui/internal`: for Kvirn packages only (Plan 0036). These are the pieces other
+// KvirnUI packages, such as `@kvirn/rich-text`, need and the public API deliberately doesn't
 // offer: message resolution, the Field's wiring, focus modality and the shared announcer.
 //
 // It is unstable. A minor release may change or remove anything here, and it is not documented

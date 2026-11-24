@@ -1,5 +1,5 @@
-import { masks } from '@kvirn-ui/core'
-import type { Mask, MaskInput, NumberMaskOptions } from '@kvirn-ui/core'
+import { masks } from '@kvirn/core'
+import type { Mask, MaskInput, NumberMaskOptions } from '@kvirn/core'
 import { useMemo } from 'react'
 import type { FocusEvent } from 'react'
 import type { FieldControlOptions, FieldControlState } from '../field/use-field-control.ts'
@@ -45,7 +45,7 @@ export interface UseNumberInputOptions
 /** Spread on the `<input>`. The attributes are the mask's suggestions: put yours after them. */
 export interface NumberInputPartProps extends MaskedInputPartProps {
   /**
-   * The part's classes, for `@kvirn-ui/theme` and your own CSS: `.kv-input` and
+   * The part's classes, for `@kvirn/theme` and your own CSS: `.kv-input` and
    * `.kv-input--numeric` (tabular figures). Add a width class next to them, for example
    * `kv-input--width-10`, with `mergeProps`: class names join.
    */

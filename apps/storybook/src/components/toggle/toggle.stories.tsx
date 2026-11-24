@@ -1,4 +1,4 @@
-import { Card, Icon, Section, Toggle } from '@kvirn-ui/react'
+import { Card, Icon, Section, Toggle } from '@kvirn/ui'
 import contract from '../../../../../packages/react/src/toggle/toggle.a11y.md?raw'
 import guide from '../../../../../packages/react/src/toggle/toggle.md?raw'
 import type { Meta, StoryObj } from '@storybook/react-vite'
@@ -8,7 +8,7 @@ import { showSource, usageGuide } from '../../docs-source.ts'
 import { expectMinimumTargetSize, expectNoHorizontalOverflow } from '../theme-story-assertions.ts'
 import { withLibraryIcons } from '../../icons.tsx'
 
-// Components/Toggle: a button that is on or off, styled by @kvirn-ui/theme/theme.css (contract:
+// Components/Toggle: a button that is on or off, styled by @kvirn/theme/theme.css (contract:
 // toggle.a11y.md).
 
 /** Fixture text. Stories set `locale` to match it, so `lang` matches the content (3.1.2). */

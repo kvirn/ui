@@ -1,4 +1,4 @@
-import { TextInput } from '@kvirn-ui/react'
+import { TextInput } from '@kvirn/ui'
 import contract from '../../../../../packages/react/src/date-input/date-input.a11y.md?raw'
 import guide from '../../../../../packages/react/src/date-input/date-input.md?raw'
 import type { Meta, StoryObj } from '@storybook/react-vite'

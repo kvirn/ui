@@ -1,5 +1,5 @@
-import { fi } from '@kvirn-ui/i18n/fi'
-import { Icon, Link, Navigation } from '@kvirn-ui/react'
+import { fi } from '@kvirn/i18n/fi'
+import { Icon, Link, Navigation } from '@kvirn/ui'
 import { InLanguage } from '../../fixture-language.tsx'
 import contract from '../../../../../packages/react/src/navigation/navigation.a11y.md?raw'
 import guide from '../../../../../packages/react/src/navigation/navigation.md?raw'
@@ -21,7 +21,7 @@ import {
 } from './navigation.fixture.tsx'
 import { withLibraryIcons } from '../../icons.tsx'
 
-// Components/Navigation: the headless Navigation, styled by @kvirn-ui/theme/theme.css (design
+// Components/Navigation: the headless Navigation, styled by @kvirn/theme/theme.css (design
 // specs docs/design/navigation.md and docs/design/navigation-link-options.md). Their play
 // functions only read (FocusVisible tabs onto the link to check the ring). Navigation has no library strings: the labels and links are the
 // story's own, in sv by default.

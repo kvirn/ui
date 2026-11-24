@@ -8,7 +8,7 @@ For a quantity or an amount, use [NumberInput](../number-input/number-input.md).
 - Inside a Field it takes its `id`, `aria-describedby`, `aria-invalid`, `aria-required` and `disabled` from it. Outside a Field it needs `aria-label` or `aria-labelledby`: a dev warning says so.
 - **Controlled:** pass `value` and `onValueChange(value, { reason: 'input', event })`. **Uncontrolled:** pass `defaultValue` and `name`, and the browser keeps the value until a form submit reads it. `onChange` and every other native prop, `name` and `ref` pass through.
 - **Masks:** `mask="personal-identity-number"` shapes what is typed, in the country the provider's locale implies. It stays a native `<input>`: paste, autofill and undo work, nothing is clamped or corrected, and a refused character is announced. See Masks below.
-- Headless: no CSS. It renders `kv-input`, and your `className` joins it. With `@kvirn-ui/theme/theme.css` imported it is styled.
+- Headless: no CSS. It renders `kv-input`, and your `className` joins it. With `@kvirn/theme/theme.css` imported it is styled.
 
 ## API
 
@@ -47,7 +47,7 @@ What TextInput does on its own: it takes the control's `id` and `aria-describedb
 ## Component
 
 ```tsx
-import { Field, TextInput } from '@kvirn-ui/react'
+import { Field, TextInput } from '@kvirn/ui'
 
 // Controlled by your own state. The value lives in your useState, not in TextInput.
 const [name, setName] = useState('')
@@ -154,7 +154,7 @@ A quantity or an amount is a [NumberInput](../number-input/number-input.md): it 
 A mask shapes what the user types: it drops characters that can't be valid, puts separators in as the user types past them, and limits the length. The control stays a native `<input>`, so paste, autofill, undo and dictation keep working.
 
 ```tsx
-import { Field, TextInput } from '@kvirn-ui/react'
+import { Field, TextInput } from '@kvirn/ui'
 
 ;<Field.Root invalid={errors.personalIdentityNumber !== undefined} required>
   <Field.Label>Personal identity number</Field.Label>
@@ -186,7 +186,7 @@ The names, the country rules, every preset, the checks (`checks.personalIdentity
 ## Hook
 
 ```tsx
-import { useTextInput } from '@kvirn-ui/react'
+import { useTextInput } from '@kvirn/ui'
 
 function PhoneInput() {
   const input = useTextInput({

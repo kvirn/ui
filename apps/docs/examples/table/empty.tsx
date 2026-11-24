@@ -1,5 +1,5 @@
 'use client'
-import { Table, createColumnHelper, tableFeatures, useTable } from '@kvirn-ui/react'
+import { Table, createColumnHelper, tableFeatures, useTable } from '@kvirn/ui'
 import { useMemo } from 'react'
 import type { CaseRecord } from './cases.ts'
 import { useTableTexts } from './texts.ts'

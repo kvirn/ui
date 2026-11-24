@@ -1,4 +1,4 @@
-import { Link } from '@kvirn-ui/react'
+import { Link } from '@kvirn/ui'
 import { ApiBlock } from './api-block.tsx'
 import type { ApiPart } from './api-block.tsx'
 import { CodeBlock } from './code-block.tsx'
@@ -38,8 +38,8 @@ import { PageHeadingRadioGroup } from '../examples/radio-group/page-heading.tsx'
 import { PlainFormRadioGroup } from '../examples/radio-group/plain-form.tsx'
 import type { Contract } from '../lib/contract-parser.ts'
 
-const providerWording = `import { defineMessages } from '@kvirn-ui/i18n'
-import { en } from '@kvirn-ui/i18n/en'
+const providerWording = `import { defineMessages } from '@kvirn/i18n'
+import { en } from '@kvirn/i18n/en'
 
 // The text it replaces: en.radioGroup.revealShown
 const messages = defineMessages(en, {
@@ -461,7 +461,7 @@ export function RadioGroupPage({
       contractSections={contractSectionList(contract)}
       api={
         <ApiBlock
-          importLine="import { Field, RadioGroup, useRadio, useRadioGroup } from '@kvirn-ui/react'"
+          importLine="import { Field, RadioGroup, useRadio, useRadioGroup } from '@kvirn/ui'"
           parts={parts}
           hooks={[
             useRadioGroupHook,

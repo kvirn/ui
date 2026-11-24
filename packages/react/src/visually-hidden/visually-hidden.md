@@ -6,12 +6,12 @@ Text for screen readers that is not drawn, such as `, 3 results` after a visible
 - The text stays in the accessibility tree: it is read and found. It is clipped, never `display: none`.
 - Never put a focusable element inside it. For a bypass link, use [SkipLink](../skip-link/skip-link.md).
 - Attributes and the `ref` reach the element. A `className` joins `kv-visually-hidden`. `as` changes the element: `as="h2"`.
-- Headless: no CSS. With `@kvirn-ui/theme/theme.css` imported, `kv-visually-hidden` is the standard clip rule.
+- Headless: no CSS. With `@kvirn/theme/theme.css` imported, `kv-visually-hidden` is the standard clip rule.
 
 ## Component
 
 ```tsx
-import { VisuallyHidden } from '@kvirn-ui/react'
+import { VisuallyHidden } from '@kvirn/ui'
 
 ;<p>
   Search results<VisuallyHidden>, 3 results</VisuallyHidden>
@@ -24,7 +24,7 @@ import { VisuallyHidden } from '@kvirn-ui/react'
 ## Hook
 
 ```tsx
-import { useVisuallyHidden } from '@kvirn-ui/react'
+import { useVisuallyHidden } from '@kvirn/ui'
 
 const { visuallyHiddenProps } = useVisuallyHidden()
 <span {...visuallyHiddenProps}>, 3 results</span>

@@ -10,8 +10,8 @@ import {
   LinkIcon,
   LinkRoot,
   Stack,
-} from '@kvirn-ui/react'
-import { PageFrameMain } from '@kvirn-ui/patterns'
+} from '@kvirn/ui'
+import { PageFrameMain } from '@kvirn/patterns'
 import type { Metadata } from 'next'
 import { notFound } from 'next/navigation'
 import { referenceEserviceMessages } from '../../../../../../../messages/reference-eservice.ts'

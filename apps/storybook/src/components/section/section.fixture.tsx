@@ -1,8 +1,8 @@
 // kv-lang-ok-file: per-locale story texts: the toolbar locale selects the sv, fi, nb, nn or en table
 import { useId } from 'react'
 import type { ReactNode } from 'react'
-import { Button, Card, Field, Fieldset, Link, Section, TextInput, useFormat } from '@kvirn-ui/react'
-import type { UseFormatResult } from '@kvirn-ui/react'
+import { Button, Card, Field, Fieldset, Link, Section, TextInput, useFormat } from '@kvirn/ui'
+import type { UseFormatResult } from '@kvirn/ui'
 import { NewsList, textsFor, withCardLocale } from '../card/card.fixture.tsx'
 import type { CardFixtureLocale } from '../card/card.fixture.tsx'
 

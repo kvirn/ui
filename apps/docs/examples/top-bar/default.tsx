@@ -1,5 +1,5 @@
 'use client'
-import { Link, Navigation, TopBar } from '@kvirn-ui/react'
+import { Link, Navigation, TopBar } from '@kvirn/ui'
 import { useTopBarTexts } from './texts.ts'
 
 export function DefaultTopBar() {

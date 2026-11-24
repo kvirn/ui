@@ -8,13 +8,13 @@ A [Button](../button/button.md) that writes a text to the clipboard: a case or p
 - The result is also drawn after the button in `span.kv-copy-status`: a decorative `check` or `warning` icon and the words `copyButton.copied` or `copyButton.failed`. It is not a live region (the announcement already speaks it). `copied` clears after five seconds or on the next press; `failed` stays until the next press. `status={false}` renders none, so you can draw your own.
 - `data-status` is `idle`, `copied` or `failed`, for your own cue.
 - `disabled`, `focusableWhenDisabled` and `ref` work as on Button. `onCopied(text)` and `onCopyError(text)` report the result.
-- Headless: no CSS. With `@kvirn-ui/theme/theme.css` it is a `kv-button`.
+- Headless: no CSS. With `@kvirn/theme/theme.css` it is a `kv-button`.
 - Copying needs a secure context and a user activation. A server render shows the label and does nothing else.
 
 ## Component
 
 ```tsx
-import { CopyButton } from '@kvirn-ui/react'
+import { CopyButton } from '@kvirn/ui'
 
 const numberRef = useRef<HTMLSpanElement>(null)
 
@@ -29,7 +29,7 @@ const numberRef = useRef<HTMLSpanElement>(null)
 ## Hook
 
 ```tsx
-import { useCopyButton } from '@kvirn-ui/react'
+import { useCopyButton } from '@kvirn/ui'
 
 const copy = useCopyButton({ text: 'PK-2026-004217', textRef })
 <button {...copy.buttonProps}>{copy.label}</button>

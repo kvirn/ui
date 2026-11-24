@@ -1,5 +1,5 @@
 'use client'
-import { Button, TopBar } from '@kvirn-ui/react'
+import { Button, TopBar } from '@kvirn/ui'
 import { useTopBarTexts } from './texts.ts'
 
 export function ButtonTool() {

@@ -1,4 +1,4 @@
-import { localeCodes } from '@kvirn-ui/i18n'
+import { localeCodes } from '@kvirn/i18n'
 import { Contact } from '../../components/home/contact.tsx'
 import { Evidence } from '../../components/home/evidence.tsx'
 import { Hero } from '../../components/home/hero.tsx'

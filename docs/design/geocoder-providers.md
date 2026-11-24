@@ -117,7 +117,7 @@ const cityAddresses: GeocoderProvider = {
 
 ## 4. Google geocoding and the Google map adapter
 
-- **Outside the EEA:** Places and Geocoding content "must not" be used "in conjunction with a non-Google map" [7]. So it goes only with `@kvirn-ui/map/google`, or with no map (a form).
+- **Outside the EEA:** Places and Geocoding content "must not" be used "in conjunction with a non-Google map" [7]. So it goes only with `@kvirn/map/google`, or with no map (a form).
 - **EEA billing address** (every Nordic municipality): the EEA terms forbid content "With any Map" other than latitude, longitude and place_id. "With any Map" includes "next to, or in a manner that is visually associated with any map, including a Google Map" [7]. So a pin from Google's lat/lng may go on MapLibre or Leaflet. Whether a suggestion list next to any map counts as "visually associated" is a legal question for the consumer: KvirnUI can't decide it. A form lookup with no map is Permitted Use (1) [9].
 - **What the terms force on an adapter:** no cache beyond place id and 30-day lat/lng; attribution in the Notice (logo or "Google Maps", G3); an origin-restricted key; session tokens for billing. Predictions need G1 (`resolve`) to get coordinates [8].
 

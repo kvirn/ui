@@ -9,7 +9,7 @@ import {
   TableRow,
   TableRowHeader,
   TableScrollRegion,
-} from '@kvirn-ui/react'
+} from '@kvirn/ui'
 import { messages } from '../messages/en.ts'
 import { apiPartId, apiRowId } from './api-ids.ts'
 import { ApiBlock } from './api-block.tsx'
@@ -279,7 +279,7 @@ export function ProsePage({
       contractSections={contractSectionList(contract)}
       api={
         <>
-          <ApiBlock importLine="import { Prose, useProse } from '@kvirn-ui/react'" parts={parts} />
+          <ApiBlock importLine="import { Prose, useProse } from '@kvirn/ui'" parts={parts} />
           <ProseHook />
         </>
       }

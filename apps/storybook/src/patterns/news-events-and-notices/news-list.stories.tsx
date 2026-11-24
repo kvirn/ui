@@ -1,5 +1,5 @@
-import { Container, Heading, Link, List, Pagination, Stack } from '@kvirn-ui/react'
-import { kvirnbyNews, kvirnbySquare } from '@kvirn-ui/patterns/fixtures'
+import { Container, Heading, Link, List, Pagination, Stack } from '@kvirn/ui'
+import { kvirnbyNews, kvirnbySquare } from '@kvirn/patterns/fixtures'
 import type { Meta, StoryObj } from '@storybook/react-vite'
 import { expect } from 'storybook/test'
 import { expectNoHorizontalOverflow } from '../../components/theme-story-assertions.ts'

@@ -8,7 +8,7 @@ import {
   TextInput,
   Textarea,
   useAnnouncer,
-} from '@kvirn-ui/react'
+} from '@kvirn/ui'
 import { useActionState, useEffect, useRef } from 'react'
 import type { FormEvent } from 'react'
 import { initialContactState, reasons } from '../app/(docs)/contact/contact-state.ts'

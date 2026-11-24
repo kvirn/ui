@@ -1,5 +1,5 @@
-import { PageFrameMain, ServiceLinkLink, ServiceLinkRoot } from '@kvirn-ui/patterns'
-import { Heading, Link, ListItem, ListRoot, Stack } from '@kvirn-ui/react'
+import { PageFrameMain, ServiceLinkLink, ServiceLinkRoot } from '@kvirn/patterns'
+import { Heading, Link, ListItem, ListRoot, Stack } from '@kvirn/ui'
 import type { Metadata } from 'next'
 import { notFound } from 'next/navigation'
 import { referenceEserviceMessages } from '../../../../../../messages/reference-eservice.ts'

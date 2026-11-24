@@ -1,6 +1,6 @@
 'use client'
-import { Button, ErrorSummary, Field, Stack } from '@kvirn-ui/react'
-import { RichTextEditor } from '@kvirn-ui/rich-text'
+import { Button, ErrorSummary, Field, Stack } from '@kvirn/ui'
+import { RichTextEditor } from '@kvirn/rich-text'
 import { useId, useState } from 'react'
 import { useRichTextEditorTexts } from './texts.ts'
 

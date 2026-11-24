@@ -1,5 +1,5 @@
 'use client'
-import { Button, Disclosure } from '@kvirn-ui/react'
+import { Button, Disclosure } from '@kvirn/ui'
 import { useState } from 'react'
 import { useDisclosureTexts } from './texts.ts'
 

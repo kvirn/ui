@@ -22,7 +22,7 @@ describe('disclosure machine', () => {
 import { expect, test } from 'vite-plus/test'
 import { page, userEvent } from 'vite-plus/test/browser'
 import { render } from 'vitest-browser-react'
-import { expectNoA11yViolations } from '@kvirn-ui/testing'
+import { expectNoA11yViolations } from '@kvirn/testing'
 import { Disclosure } from './disclosure'
 
 const Fixture = () => (
@@ -84,7 +84,7 @@ Press keys only after the element is in the page (`await expect.element(...).toB
 - Pass the contract as `parameters.a11yContract` (a `?raw` import), so the Docs page renders its Keyboard section. A component with a focusable part has a story named `Keyboard`, the fixture for trying the keys by hand (the `keyboard` skill).
 
 ```tsx
-import { Disclosure } from '@kvirn-ui/react'
+import { Disclosure } from '@kvirn/ui'
 import type { Meta, StoryObj } from '@storybook/react-vite'
 import { expect } from 'storybook/test'
 import contract from '../../../../../packages/react/src/disclosure/disclosure.a11y.md?raw'

@@ -1,4 +1,4 @@
-import { en } from '@kvirn-ui/i18n/en'
+import { en } from '@kvirn/i18n/en'
 import {
   Alert,
   Button,
@@ -12,7 +12,7 @@ import {
   Stack,
   TextInput,
   Textarea,
-} from '@kvirn-ui/react'
+} from '@kvirn/ui'
 import type { Meta, StoryObj } from '@storybook/react-vite'
 import { useEffect, useRef, useState } from 'react'
 import type { FormEvent } from 'react'

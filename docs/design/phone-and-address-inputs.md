@@ -3,7 +3,7 @@
 - **Status:** Draft
 - **Designer:** ux-designer agent · **Date:** 2026-10-10
 - **Plan:** to be written (one plan, two components; this spec is its Design section)
-- **Type:** component behaviour and default styling (two form controls in `@kvirn-ui/react`)
+- **Type:** component behaviour and default styling (two form controls in `@kvirn/ui`)
 
 ## 1. Brief
 

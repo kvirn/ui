@@ -1,5 +1,5 @@
 'use client'
-import { Button, Field, Textarea } from '@kvirn-ui/react'
+import { Button, Field, Textarea } from '@kvirn/ui'
 import { useState } from 'react'
 import { useTextareaTexts } from './texts.ts'
 

@@ -1,6 +1,6 @@
 'use client'
-import { Menu, Popover, Toolbar } from '@kvirn-ui/react'
-import { useMessages } from '@kvirn-ui/react/internal'
+import { Menu, Popover, Toolbar } from '@kvirn/ui'
+import { useMessages } from '@kvirn/ui/internal'
 import type { Editor } from '@tiptap/core'
 import { Fragment, useEffect, useId, useState } from 'react'
 import { createPortal } from 'react-dom'

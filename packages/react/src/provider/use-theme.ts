@@ -1,4 +1,4 @@
-import { getThemeStore } from '@kvirn-ui/core'
+import { getThemeStore } from '@kvirn/core'
 import type {
   ColorSchemePreference,
   ContrastPreference,
@@ -8,7 +8,7 @@ import type {
   ResolvedMotion,
   ThemeState,
   ThemeStore,
-} from '@kvirn-ui/core'
+} from '@kvirn/core'
 import { useContext, useEffect, useMemo } from 'react'
 import { useStoreSelector } from '../store/use-store-selector.ts'
 import { ThemeStoreContext } from './provider-context.ts'

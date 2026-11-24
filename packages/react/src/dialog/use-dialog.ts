@@ -1,5 +1,5 @@
-import { createScrollLock } from '@kvirn-ui/core'
-import type { KvirnMessages } from '@kvirn-ui/i18n'
+import { createScrollLock } from '@kvirn/core'
+import type { KvirnMessages } from '@kvirn/i18n'
 import { useCallback, useContext, useEffect, useId, useLayoutEffect, useRef, useState } from 'react'
 import type { MouseEvent, RefCallback, RefObject, SyntheticEvent } from 'react'
 import { warnOnce } from '../dev/dev-warning.ts'
@@ -431,7 +431,7 @@ export function useModalDialog(
  *   give the popup `aria-label`. A closed `<dialog>` is hidden by the browser, so its children can
  *   stay mounted: typed values are kept until it reopens.
  * - **Scroll lock** is `data-kv-scroll-locked` on `<html>`, ref-counted. The theme styles it: without
- *   `@kvirn-ui/theme`, add your own CSS (`overflow: hidden`).
+ *   `@kvirn/theme`, add your own CSS (`overflow: hidden`).
  * - **Nesting:** only `Dialog.Popup` tells a dialog inside it that its parent closed. With this hook
  *   alone, close an inner dialog yourself when the outer one closes.
  * - The provider's live regions are inert while a modal is open: for in-dialog announcements use

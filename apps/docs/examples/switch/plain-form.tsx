@@ -1,5 +1,5 @@
 'use client'
-import { Button, Field, Switch } from '@kvirn-ui/react'
+import { Button, Field, Switch } from '@kvirn/ui'
 import { useState } from 'react'
 import { useSwitchTexts } from './texts.ts'
 

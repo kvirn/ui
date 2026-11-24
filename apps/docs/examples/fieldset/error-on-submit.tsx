@@ -1,5 +1,5 @@
 'use client'
-import { Button, Field, Fieldset, Stack, TextInput } from '@kvirn-ui/react'
+import { Button, Field, Fieldset, Stack, TextInput } from '@kvirn/ui'
 import { useEffect, useRef, useState } from 'react'
 import { useFieldsetTexts } from './texts.ts'
 

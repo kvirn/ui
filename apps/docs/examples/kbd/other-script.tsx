@@ -1,5 +1,5 @@
 'use client'
-import { Kbd } from '@kvirn-ui/react'
+import { Kbd } from '@kvirn/ui'
 import { useKbdTexts } from './texts.ts'
 
 export function OtherScript() {

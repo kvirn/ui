@@ -1,6 +1,6 @@
 'use client'
-import { Kbd, Listbox, Popover, Toolbar, Tooltip } from '@kvirn-ui/react'
-import type { ToolbarButtonProps, ToolbarItemProps, ToolbarToggleProps } from '@kvirn-ui/react'
+import { Kbd, Listbox, Popover, Toolbar, Tooltip } from '@kvirn/ui'
+import type { ToolbarButtonProps, ToolbarItemProps, ToolbarToggleProps } from '@kvirn/ui'
 import { createElement, useContext } from 'react'
 import type { Editor } from '@tiptap/core'
 import type { ComponentPropsWithRef, ElementType, MouseEvent, ReactElement, ReactNode } from 'react'

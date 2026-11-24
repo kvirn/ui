@@ -1,5 +1,5 @@
 'use client'
-import { Badge } from '@kvirn-ui/react'
+import { Badge } from '@kvirn/ui'
 import { useBadgeTexts } from './texts.ts'
 
 export function DefaultBadge() {

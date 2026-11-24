@@ -1,5 +1,5 @@
 import { afterEach, describe, expect, test, vi } from 'vite-plus/test'
-import type { MapHandle } from '@kvirn-ui/core'
+import type { MapHandle } from '@kvirn/core'
 import { google, type GoogleMapsApi } from './google.ts'
 
 // Contract: the provider contract in map.md. `google.maps` is a fake at the engine boundary:

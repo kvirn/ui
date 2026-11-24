@@ -1,4 +1,4 @@
-import type { ThemeOptions } from '@kvirn-ui/react'
+import type { ThemeOptions } from '@kvirn/ui'
 
 // One object for KvirnThemeScript (layout.tsx) and AppKvirnProvider (layout.tsx), so the first
 // paint and the hydrated theme can't disagree. Every axis follows the device.

@@ -1,4 +1,4 @@
-import { createAnnouncer } from '@kvirn-ui/core'
+import { createAnnouncer } from '@kvirn/core'
 import { afterEach, beforeEach, describe, expect, test, vi } from 'vite-plus/test'
 import {
   announcementMaximumHoldMilliseconds,

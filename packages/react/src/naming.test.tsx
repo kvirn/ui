@@ -1,4 +1,4 @@
-import type { FileUploadEntry, FileUploadItem } from '@kvirn-ui/core'
+import type { FileUploadEntry, FileUploadItem } from '@kvirn/core'
 import type { ComponentProps } from 'react'
 import { describe, expect, expectTypeOf, test } from 'vite-plus/test'
 import * as api from './index.ts'

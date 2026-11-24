@@ -12,7 +12,7 @@ export interface UseNavigationOptions {
 /** Spread on the `<nav>`. */
 export interface NavigationRootPartProps {
   /**
-   * The part's class, for `@kvirn-ui/theme` and your own CSS: `.kv-navigation`. Add your own
+   * The part's class, for `@kvirn/theme` and your own CSS: `.kv-navigation`. Add your own
    * class next to it with `mergeProps`: class names join.
    */
   className: 'kv-navigation'

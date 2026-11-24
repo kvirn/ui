@@ -1,6 +1,6 @@
 'use client'
-import { ApplicationLogo, SiteHeader, SiteSearch } from '@kvirn-ui/patterns'
-import { Navigation, SkipPanel, TopBar, useRouteFocus } from '@kvirn-ui/react'
+import { ApplicationLogo, SiteHeader, SiteSearch } from '@kvirn/patterns'
+import { Navigation, SkipPanel, TopBar, useRouteFocus } from '@kvirn/ui'
 import { useRef, useState } from 'react'
 import type { ReactNode } from 'react'
 import { useShortcutsSetting } from '../lib/shortcuts-setting.ts'
@@ -34,7 +34,7 @@ const topBarTools = siteTools.filter((tool) => tool.id !== 'github')
 
 /**
  * The docs site shell (docs-shell-mega-menu.md §5): the skip panel, the primary Site header from
- * `@kvirn-ui/patterns` (a TopBar with Tools, and a masthead with the mark and name, the
+ * `@kvirn/patterns` (a TopBar with Tools, and a masthead with the mark and name, the
  * Site menu with its mega panels, and the search), main and the footer. The header is not sticky;
  * the contents list (from 64rem) and the Back to top button are. The root's `scroll-padding` keeps
  * focus clear of the button, and the contents list ends above it (2.4.11).

@@ -4,7 +4,7 @@ import {
   createClusterTree,
   createClusterTreeBuilder,
   placesToSource,
-} from '@kvirn-ui/core'
+} from '@kvirn/core'
 import type {
   ClusterTree,
   ClusterTreeData,
@@ -13,13 +13,13 @@ import type {
   MapLayer,
   MapPlace,
   MapPlaceSource,
-} from '@kvirn-ui/core'
+} from '@kvirn/core'
 import { useEffect, useMemo, useReducer, useState } from 'react'
 import { createPlaceResolver } from './place-resolver.ts'
 import { MAX_CLUSTER_ZOOM, createPlaceView, sourceIndexOf } from './place-view.ts'
 import type { PlaceGroup, VisibleTree } from './place-view.ts'
 
-/** Builds the cluster trees away from the page. `createMapWorker` from `@kvirn-ui/map/worker` makes one. */
+/** Builds the cluster trees away from the page. `createMapWorker` from `@kvirn/map/worker` makes one. */
 export interface MapIndexer {
   build: (positions: Float64Array, options: ClusterTreeOptions) => Promise<ClusterTreeData>
   terminate: () => void

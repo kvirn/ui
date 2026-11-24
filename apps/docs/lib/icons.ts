@@ -19,8 +19,8 @@ import {
   search,
   swimmingPool,
   warning,
-} from '@kvirn-ui/icons'
-import { defineIcons } from '@kvirn-ui/react'
+} from '@kvirn/icons'
+import { defineIcons } from '@kvirn/ui'
 
 /** Only the icons the site draws by name, so it bundles no more: the practice the Icon page teaches. */
 export const icons = defineIcons({
@@ -46,7 +46,7 @@ export const icons = defineIcons({
   warning,
 })
 
-declare module '@kvirn-ui/react' {
+declare module '@kvirn/ui' {
   interface Register {
     icons: typeof icons
   }

@@ -1,4 +1,4 @@
-import { Pagination } from '@kvirn-ui/react'
+import { Pagination } from '@kvirn/ui'
 import type { Meta, StoryObj } from '@storybook/react-vite'
 import { expect, userEvent } from 'storybook/test'
 import { expectNoHorizontalOverflow } from '../../components/theme-story-assertions.ts'

@@ -1,7 +1,7 @@
 'use client'
 
-import { Link, mergeProps } from '@kvirn-ui/react'
-import type { LinkProps } from '@kvirn-ui/react'
+import { Link, mergeProps } from '@kvirn/ui'
+import type { LinkProps } from '@kvirn/ui'
 import { createContext, useContext, useId, useLayoutEffect, useState } from 'react'
 import type { ComponentPropsWithRef, ElementType, ReactElement } from 'react'
 

@@ -1,5 +1,5 @@
 'use client'
-import { Card, Heading, Link, DefinitionList } from '@kvirn-ui/react'
+import { Card, Heading, Link, DefinitionList } from '@kvirn/ui'
 import { useDefinitionListTexts } from './texts.ts'
 
 export function CaseCard() {

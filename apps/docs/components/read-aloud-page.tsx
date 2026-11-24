@@ -1,4 +1,4 @@
-import { Link } from '@kvirn-ui/react'
+import { Link } from '@kvirn/ui'
 import { ApiBlock } from './api-block.tsx'
 import type { ApiPart } from './api-block.tsx'
 import { ComponentPage } from './component-page.tsx'
@@ -44,8 +44,8 @@ export type ReadAloudExampleSources = Record<
   string
 >
 
-const importLines = `import { ReadAloud, useReadAloud } from '@kvirn-ui/read-aloud'
-import { kvirnSpeechEngine } from '@kvirn-ui/core'`
+const importLines = `import { ReadAloud, useReadAloud } from '@kvirn/read-aloud'
+import { kvirnSpeechEngine } from '@kvirn/core'`
 
 const buttonRenders = (role: string) => (
   <>
@@ -245,8 +245,8 @@ const parts: ApiPart[] = [
     name: 'kvirnSpeechEngine',
     renders: (
       <>
-        nothing: <code>kvirnSpeechEngine(options)</code> from <code>@kvirn-ui/core</code> returns
-        the engine for Kvirn's voice service, for <code>useReadAloud</code>'s <code>engine</code>{' '}
+        nothing: <code>kvirnSpeechEngine(options)</code> from <code>@kvirn/core</code> returns the
+        engine for Kvirn's voice service, for <code>useReadAloud</code>'s <code>engine</code>{' '}
         option. These are its options.
       </>
     ),

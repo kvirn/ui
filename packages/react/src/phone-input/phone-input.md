@@ -7,7 +7,7 @@ A phone number in a form. A native `<input type="tel">` with the attributes a ph
 - **No mask by default**, so no correctly typed number is ever refused. `mask="telephone"` leaves out everything but digits, `+`, space, `-`, `(` and `)`, and says so politely. A custom `mask` replaces it.
 - No length limit, no `pattern`. Without a `PhoneInput.Country` one box takes `+358 …`: say so in the help text. With one, the country is a native select that is never turned into a prefix: the number is what the user typed.
 - **KvirnUI holds no form state; bring your own form logic.** Pass `value` and `onValueChange`, or `defaultValue` and `name` for a plain form.
-- Headless: no CSS. With `@kvirn-ui/theme/theme.css` imported it is styled.
+- Headless: no CSS. With `@kvirn/theme/theme.css` imported it is styled.
 
 ## API
 
@@ -21,7 +21,7 @@ A phone number in a form. A native `<input type="tel">` with the attributes a ph
 
 **Country.** `country` (controlled, ISO 3166-1 alpha-2, plus `XK` for Kosovo) wins, then `defaultCountry` and the user's choice, then the provider's `country`, then the country the locale implies: the same resolution the masks use. Without any, the select shows an empty option. `onCountryChange(country, { reason: 'input', event, callingCode })`. Changing the country never rewrites the typed number, and nothing prefixes it with the calling code: typing `+358` while Sweden is selected changes nothing.
 
-**Options.** `Sweden (+46)` on an English page: the country's name in the page's language (`Intl.DisplayNames`, the ISO code when unsupported) and its calling code, the resolved country first and the rest alphabetical. No flags. `callingCodeFor(country)` and `callingCodeCountries` are in `@kvirn-ui/core`.
+**Options.** `Sweden (+46)` on an English page: the country's name in the page's language (`Intl.DisplayNames`, the ISO code when unsupported) and its calling code, the resolved country first and the rest alphabetical. No flags. `callingCodeFor(country)` and `callingCodeCountries` are in `@kvirn/core`.
 
 **Name.** `PhoneInput.Country` has no text: put it in its own `Field.Root` with a `Field.Label` ("Country"), or give it `aria-label`. If it is in the same Field as the number (a `PhoneInput.Root` inside one Field), it takes only `aria-label` and the disabled state from it, never its id or error. A Fieldset legend around both names the pair.
 

@@ -1,13 +1,5 @@
 // kv-lang-ok-file: per-locale story texts: the toolbar locale selects the sv, fi, nb, nn or en table
-import {
-  Checkbox,
-  CheckboxGroup,
-  Field,
-  Tag,
-  TagGroup,
-  useAnnouncer,
-  useFormat,
-} from '@kvirn-ui/react'
+import { Checkbox, CheckboxGroup, Field, Tag, TagGroup, useAnnouncer, useFormat } from '@kvirn/ui'
 import { useState } from 'react'
 import { messagesFor } from '../form/form.fixture.tsx'
 import type { FormLocale } from '../form/form.fixture.tsx'

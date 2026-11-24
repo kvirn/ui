@@ -1,10 +1,10 @@
-import { computePlacement } from '@kvirn-ui/core'
-import type { Placement } from '@kvirn-ui/core'
+import { computePlacement } from '@kvirn/core'
+import type { Placement } from '@kvirn/core'
 import { useCallback, useEffect, useLayoutEffect, useRef, useState } from 'react'
 import type { RefObject } from 'react'
 import { useEnv } from '../provider/use-env.ts'
 
-export type { Placement } from '@kvirn-ui/core'
+export type { Placement } from '@kvirn/core'
 
 export interface UsePopupOptions {
   /** Whether the popup is showing. The popup element must stay rendered, so it can be shown and hidden. */
@@ -96,7 +96,7 @@ function setPopupShown(popup: HTMLElement, shown: boolean): void {
 /**
  * The shared mechanics of a floating popup: Popover, Menu, Select, Combobox. It puts
  * the popup in the top layer with the native `popover` attribute, shows and hides it when `open`
- * changes, and places it next to the anchor with `computePlacement` from `@kvirn-ui/core`.
+ * changes, and places it next to the anchor with `computePlacement` from `@kvirn/core`.
  *
  * - **Placement:** the popup flips to the other side when it doesn't fit, shifts to stay inside
  *   the viewport, and never covers the anchor. It is placed again on scroll (any scroller) and

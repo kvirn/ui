@@ -7,7 +7,7 @@ Progress says that something is working, and how far along when you know. It is 
 - Put it where the result will appear, or right after the busy button. Never a Toast, never an overlay.
 
 ```tsx
-import { Button, Progress } from '@kvirn-ui/react'
+import { Button, Progress } from '@kvirn/ui'
 
 ;<div className="kv-button-group">
   <Button type="submit" busy={isSending}>

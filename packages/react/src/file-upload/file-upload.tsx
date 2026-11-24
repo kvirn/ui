@@ -1,5 +1,5 @@
 'use client'
-import type { FileUploadEntry as FileUploadItemData } from '@kvirn-ui/core'
+import type { FileUploadEntry as FileUploadItemData } from '@kvirn/core'
 import {
   createElement,
   Fragment,
@@ -17,14 +17,7 @@ import { FieldContext } from '../field/field-context.ts'
 import { useDescriptionPart } from '../field/use-description-part.ts'
 import { joinIds } from '../field/field-state.ts'
 import { useFocusVisible } from '../focus-visible/use-focus-visible.ts'
-import {
-  deleteIcon,
-  document as documentIcon,
-  error,
-  success,
-  upload,
-  warning,
-} from '@kvirn-ui/icons'
+import { deleteIcon, document as documentIcon, error, success, upload, warning } from '@kvirn/icons'
 import { Icon } from '../icon/icon.tsx'
 import { mergeProps } from '../merge-props/merge-props.ts'
 import { useMergedRef } from '../merge-props/use-merged-ref.ts'

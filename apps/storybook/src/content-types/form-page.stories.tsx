@@ -1,5 +1,5 @@
-import { PageFrame } from '@kvirn-ui/patterns'
-import { FormPage } from '@kvirn-ui/patterns/content-types'
+import { PageFrame } from '@kvirn/patterns'
+import { FormPage } from '@kvirn/patterns/content-types'
 import type { Meta, StoryObj } from '@storybook/react-vite'
 import { expect, userEvent } from 'storybook/test'
 import source from '../../../../packages/patterns/src/content-types/form-page/form-page.tsx?raw'
@@ -9,7 +9,7 @@ import { chromeViewports, narrowGlobals, wideGlobals } from '../patterns/pattern
 import { expectPageOutline } from './page-outline.ts'
 import { withShell } from './shell.tsx'
 // Content types/Form page: report an accessibility problem, in the transaction header (docs/design/storybook-patterns-t5.md S7).
-// The page is a component in `@kvirn-ui/patterns/content-types`; the source panel shows its module text, which an adopter copies.
+// The page is a component in `@kvirn/patterns/content-types`; the source panel shows its module text, which an adopter copies.
 
 const description = `Every adopter must offer a way to report an accessibility problem (Web Accessibility Directive, Art. 7). This is that page: a back link, the title, three questions (which page, prefilled with the address the user came from and editable; what is wrong, with a character count; an optional email address) and Send, in a \`form\`-width column under the transaction header: the logo and the service's name, with no search and no menu, so there is nothing to wander off to. After Send, a confirmation with a reference number and a [CopyButton](?path=/docs/components-forms-copybutton--docs).
 

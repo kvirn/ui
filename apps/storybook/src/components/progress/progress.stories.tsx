@@ -1,4 +1,4 @@
-import { Progress } from '@kvirn-ui/react'
+import { Progress } from '@kvirn/ui'
 import contract from '../../../../../packages/react/src/progress/progress.a11y.md?raw'
 import guide from '../../../../../packages/react/src/progress/progress.md?raw'
 import type { Meta, StoryObj } from '@storybook/react-vite'
@@ -9,7 +9,7 @@ import { expectNoHorizontalOverflow } from '../theme-story-assertions.ts'
 import { progressTextsFor, SendApplication } from './progress.fixture.tsx'
 
 // Components/Progress: a wait shown as text with a decorative spinner, and a native bar when the
-// value is known, styled by @kvirn-ui/theme/theme.css (design specs docs/design/status-patterns.md and loading-indicators.md).
+// value is known, styled by @kvirn/theme/theme.css (design specs docs/design/status-patterns.md and loading-indicators.md).
 // The state stories set announce to false, so they do not speak in the story page; the timing is
 // proved in progress.test.tsx. Progress has no focusable part, so there is no Keyboard story.
 

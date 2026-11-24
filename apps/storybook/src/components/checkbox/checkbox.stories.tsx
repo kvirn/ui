@@ -1,4 +1,4 @@
-import { Card, Checkbox, Field } from '@kvirn-ui/react'
+import { Card, Checkbox, Field } from '@kvirn/ui'
 import contract from '../../../../../packages/react/src/checkbox/checkbox.a11y.md?raw'
 import guide from '../../../../../packages/react/src/checkbox/checkbox.md?raw'
 import type { Meta, StoryObj } from '@storybook/react-vite'
@@ -15,7 +15,7 @@ import {
 } from './checkbox.fixture.tsx'
 
 // Components/Form/Checkbox: the native <input type="checkbox">, styled by
-// @kvirn-ui/theme/theme.css (design spec docs/design/form-fields.md §6.5). It sits
+// @kvirn/theme/theme.css (design spec docs/design/form-fields.md §6.5). It sits
 // directly in a Field, before the label, which makes the whole row the click target.
 //
 // KvirnUI holds no form state. An uncontrolled Checkbox keeps its state in

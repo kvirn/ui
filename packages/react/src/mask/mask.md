@@ -16,15 +16,15 @@ Use a mask for a **code**: a personal identity number, a postcode, an organisati
 
 `mask` is a union. Use the first form that fits.
 
-| `mask`                                                                                 | Is                                                                                                                           |
-| -------------------------------------------------------------------------------------- | ---------------------------------------------------------------------------------------------------------------------------- |
-| A name: `"digits"`, `"letters"`, `"letters-and-digits"`                                | The filters of the same name                                                                                                 |
-| `"personal-identity-number"` (alias `"ssi"`), `"postal-code"`, `"organisation-number"` | The country mask for the country the provider implies (below)                                                                |
-| `"date"`, `"iban"`, `"email"`, `"telephone"`                                           | The presets of the same name                                                                                                 |
-| `{ preset, country? }`                                                                 | A named preset with the country set for this one input: `{ preset: 'postal-code', country: 'FI' }`                           |
-| `{ pattern, ...options }`                                                              | A custom pattern with the pattern options (`transform`, `completeLengths`, `attributes`): `{ pattern: '999 99' }`            |
-| A `RegExp`                                                                             | A custom filter that must accept partial values: `/^[A-Z]{0,2}\d{0,6}$/`                                                     |
-| A `Mask` from `masks`                                                                  | The explicit, typed form: `masks.postalCode({ country: 'SE' })`. It stays supported and is what `@kvirn-ui/core` users build |
+| `mask`                                                                                 | Is                                                                                                                        |
+| -------------------------------------------------------------------------------------- | ------------------------------------------------------------------------------------------------------------------------- |
+| A name: `"digits"`, `"letters"`, `"letters-and-digits"`                                | The filters of the same name                                                                                              |
+| `"personal-identity-number"` (alias `"ssi"`), `"postal-code"`, `"organisation-number"` | The country mask for the country the provider implies (below)                                                             |
+| `"date"`, `"iban"`, `"email"`, `"telephone"`                                           | The presets of the same name                                                                                              |
+| `{ preset, country? }`                                                                 | A named preset with the country set for this one input: `{ preset: 'postal-code', country: 'FI' }`                        |
+| `{ pattern, ...options }`                                                              | A custom pattern with the pattern options (`transform`, `completeLengths`, `attributes`): `{ pattern: '999 99' }`         |
+| A `RegExp`                                                                             | A custom filter that must accept partial values: `/^[A-Z]{0,2}\d{0,6}$/`                                                  |
+| A `Mask` from `masks`                                                                  | The explicit, typed form: `masks.postalCode({ country: 'SE' })`. It stays supported and is what `@kvirn/core` users build |
 
 `number` is not a name: a quantity or an amount is a NumberInput, which owns the number mask. A number mask from `masks.number` still works on a TextInput, for a stored amount that your form formats.
 
@@ -32,7 +32,7 @@ Use a mask for a **code**: a personal identity number, a postcode, an organisati
 
 ### The presets
 
-All from `masks`, re-exported by `@kvirn-ui/react`. Each preset has the kebab-case name above, such as `personalIdentityNumber` and `"personal-identity-number"`.
+All from `masks`, re-exported by `@kvirn/ui`. Each preset has the kebab-case name above, such as `personalIdentityNumber` and `"personal-identity-number"`.
 
 | Preset                                                                                                                                | Shapes                                                                                                                                                                                                                                                                                                                     |
 | ------------------------------------------------------------------------------------------------------------------------------------- | -------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
@@ -102,7 +102,7 @@ Rejected characters are announced (4.1.3) with a polite message from the shared 
 ## Hook
 
 ```tsx
-import { masks, mergeProps, useMask } from '@kvirn-ui/react'
+import { masks, mergeProps, useMask } from '@kvirn/ui'
 
 const caseNumber = useMask({
   mask: masks.pattern('aa-9999', { transform: { a: (letter) => letter.toUpperCase() } }),

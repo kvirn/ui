@@ -1,5 +1,5 @@
-import { PageFrame } from '@kvirn-ui/patterns'
-import { MyPages } from '@kvirn-ui/patterns/content-types'
+import { PageFrame } from '@kvirn/patterns'
+import { MyPages } from '@kvirn/patterns/content-types'
 import type { Meta, StoryObj } from '@storybook/react-vite'
 import { expect } from 'storybook/test'
 import source from '../../../../packages/patterns/src/content-types/my-pages/my-pages.tsx?raw'
@@ -8,7 +8,7 @@ import { chromeViewports, narrowGlobals, wideGlobals } from '../patterns/pattern
 import { expectPageOutline } from './page-outline.ts'
 import { withShell } from './shell.tsx'
 // Content types/My pages: a whole page in the site chrome (docs/design/storybook-patterns-t5.md S12).
-// The page is a component in `@kvirn-ui/patterns/content-types`; the source panel shows its module text, which an adopter copies.
+// The page is a component in `@kvirn/patterns/content-types`; the source panel shows its module text, which an adopter copies.
 
 const description = `The resident's case list, behind sign-in: \`h1\` "My pages", \`h2\` "Your cases", the count, one [Case card](?path=/docs/patterns-my-pages-case-card--docs) per case in one column, and [Pagination](?path=/docs/components-navigation-pagination--docs). With no cases it shows an empty state with a Service link; while the list is fetched it shows a [Progress](?path=/docs/components-status-progress--docs) label, announced once.
 

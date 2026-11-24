@@ -1,4 +1,4 @@
-import { Link } from '@kvirn-ui/react'
+import { Link } from '@kvirn/ui'
 import { ApiBlock } from './api-block.tsx'
 import type { ApiPart } from './api-block.tsx'
 import { ComponentPage } from './component-page.tsx'
@@ -291,7 +291,7 @@ export function CalendarPage({
       contractSections={contractSectionList(contract)}
       api={
         <ApiBlock
-          importLine="import { Calendar, useCalendar } from '@kvirn-ui/react'"
+          importLine="import { Calendar, useCalendar } from '@kvirn/ui'"
           parts={parts}
           hook={useCalendarHook}
           strings={

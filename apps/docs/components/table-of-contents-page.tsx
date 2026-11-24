@@ -1,4 +1,4 @@
-import { LinkRoot } from '@kvirn-ui/react'
+import { LinkRoot } from '@kvirn/ui'
 import { apiHookPart } from './api-ids.ts'
 import { ApiBlock } from './api-block.tsx'
 import type { ApiPart } from './api-block.tsx'
@@ -236,7 +236,7 @@ export function TableOfContentsPage({
       contractSections={contractSectionList(contract)}
       api={
         <ApiBlock
-          importLine="import { TableOfContents, useTableOfContents } from '@kvirn-ui/react'"
+          importLine="import { TableOfContents, useTableOfContents } from '@kvirn/ui'"
           parts={parts}
           hook={useTableOfContentsHook}
           strings={

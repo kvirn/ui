@@ -1,4 +1,4 @@
-import { createToastQueue } from '@kvirn-ui/core'
+import { createToastQueue } from '@kvirn/core'
 import type {
   Env,
   ToastInput,
@@ -6,13 +6,13 @@ import type {
   ToastQueueOptions,
   ToastShowResult,
   ToastVariant,
-} from '@kvirn-ui/core'
+} from '@kvirn/core'
 import { isValidElement } from 'react'
 import type { ReactNode } from 'react'
 import { isFocusTarget } from '../focus/focus-return.ts'
 import { warnOnce } from '../dev/dev-warning.ts'
 
-export type { ToastVariant } from '@kvirn-ui/core'
+export type { ToastVariant } from '@kvirn/core'
 
 export interface ToastShowOptions {
   /** `'info'` (default) or `'success'`. There is no warning or danger toast: an error is not a toast. */

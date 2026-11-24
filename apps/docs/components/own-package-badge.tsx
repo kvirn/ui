@@ -1,4 +1,4 @@
-import { Badge, Divider, Link, VisuallyHidden } from '@kvirn-ui/react'
+import { Badge, Divider, Link, VisuallyHidden } from '@kvirn/ui'
 import { messages } from '../messages/en.ts'
 
 const text = messages.docs.nav

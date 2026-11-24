@@ -1,5 +1,5 @@
 'use client'
-import { AlertDialog, Button, useAnnouncer } from '@kvirn-ui/react'
+import { AlertDialog, Button, useAnnouncer } from '@kvirn/ui'
 import { useRouter } from 'next/navigation'
 import { useCallback, useEffect, useRef, useState } from 'react'
 import { referenceEserviceMessages } from '../../../../messages/reference-eservice.ts'

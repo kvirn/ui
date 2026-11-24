@@ -1,4 +1,4 @@
-import { Link } from '@kvirn-ui/react'
+import { Link } from '@kvirn/ui'
 import { ApiBlock } from './api-block.tsx'
 import type { ApiPart } from './api-block.tsx'
 import { CodeBlock } from './code-block.tsx'
@@ -47,8 +47,8 @@ const parts: ApiPart[] = [
         pressed, and its name comes only from <code>label</code>: put focus and press on the Button
         or Link around it. Register the icons you use once with <code>defineIcons</code> and the{' '}
         <code>icons</code> prop of <code>KvirnProvider</code>, then draw them by name, or pass an
-        icon from <code>@kvirn-ui/icons</code> as <code>icon</code>. The default theme is described
-        on <Link href="/foundation/theming">Theming</Link>.
+        icon from <code>@kvirn/icons</code> as <code>icon</code>. The default theme is described on{' '}
+        <Link href="/foundation/theming">Theming</Link>.
       </>
     ),
     props: iconRows,
@@ -74,8 +74,8 @@ export function IconPage({
             warning.
           </li>
           <li>
-            Draw it from the icon library (<code>@kvirn-ui/icons</code>), from a component of
-            another icon set, or from your own shapes.
+            Draw it from the icon library (<code>@kvirn/icons</code>), from a component of another
+            icon set, or from your own shapes.
           </li>
           <li>
             Give it a name only when no text beside it says the same thing, and never let it be the
@@ -97,17 +97,17 @@ export function IconPage({
         <>
           <p>
             KvirnUI has no icons of its own to fall back on. The icon library is the package{' '}
-            <code>@kvirn-ui/icons</code>, and you bundle only the icons you import. Register the
-            ones you want to draw by name once, in <code>KvirnProvider</code>. Register their types
-            too, so a misspelt name is a type error:
+            <code>@kvirn/icons</code>, and you bundle only the icons you import. Register the ones
+            you want to draw by name once, in <code>KvirnProvider</code>. Register their types too,
+            so a misspelt name is a type error:
           </p>
           <CodeBlock
-            code={`import { close, search } from '@kvirn-ui/icons'
-import { defineIcons, KvirnProvider } from '@kvirn-ui/react'
+            code={`import { close, search } from '@kvirn/icons'
+import { defineIcons, KvirnProvider } from '@kvirn/ui'
 
 export const icons = defineIcons({ close, search })
 
-declare module '@kvirn-ui/react' {
+declare module '@kvirn/ui' {
   interface Register {
     icons: typeof icons
   }
@@ -137,8 +137,8 @@ declare module '@kvirn-ui/react' {
             propsUsed={[{ part: 'Icon', prop: 'name' }]}
             note={
               <Note kind="tip">
-                Registering the whole set from <code>@kvirn-ui/icons/all</code> adds every icon to
-                your bundle (the code you send to the browser). Register only the names you need.
+                Registering the whole set from <code>@kvirn/icons/all</code> adds every icon to your
+                bundle (the code you send to the browser). Register only the names you need.
               </Note>
             }
           >
@@ -160,7 +160,7 @@ declare module '@kvirn-ui/react' {
             once, such as a Toast, a Dialog or an Alert:
           </p>
           <CodeBlock
-            code={`import { defineIcons } from '@kvirn-ui/react'
+            code={`import { defineIcons } from '@kvirn/ui'
 import { Cross } from 'your-icon-library'
 
 export const icons = defineIcons({ close: Cross })`}
@@ -170,12 +170,12 @@ export const icons = defineIcons({ close: Cross })`}
             title="Use the icons of the Map and the rich text editor"
             why={
               <>
-                Both packages draw icons from <code>@kvirn-ui/icons</code>. The Map has the marker
-                pin and the control arrows. <code>mapIcons</code> in <code>@kvirn-ui/map</code>{' '}
-                lists them by name. Pass one with <code>icon</code>, or register them with{' '}
+                Both packages draw icons from <code>@kvirn/icons</code>. The Map has the marker pin
+                and the control arrows. <code>mapIcons</code> in <code>@kvirn/map</code> lists them
+                by name. Pass one with <code>icon</code>, or register them with{' '}
                 <code>defineIcons</code>. The editor draws its toolbar icons with{' '}
                 <code>RichTextEditor.Icon</code> (exported as <code>ToolbarIcon</code>), from the
-                names in <code>richTextIconNames</code> in <code>@kvirn-ui/rich-text</code>.
+                names in <code>richTextIconNames</code> in <code>@kvirn/rich-text</code>.
               </>
             }
             code={sources['package-sets']}
@@ -283,7 +283,7 @@ export const icons = defineIcons({ close: Cross })`}
       contractSections={contractSectionList(contract)}
       api={
         <ApiBlock
-          importLine="import { Icon, defineIcons, useIcon } from '@kvirn-ui/react'"
+          importLine="import { Icon, defineIcons, useIcon } from '@kvirn/ui'"
           parts={parts}
           hook={useIconHook}
         />

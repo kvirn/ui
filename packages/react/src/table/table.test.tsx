@@ -12,9 +12,9 @@ import {
   rowSelectionFeature,
   rowSortingFeature,
   tableFeatures,
-} from '@kvirn-ui/core'
-import { sv } from '@kvirn-ui/i18n/sv'
-import { expectNoA11yViolations } from '@kvirn-ui/testing'
+} from '@kvirn/core'
+import { sv } from '@kvirn/i18n/sv'
+import { expectNoA11yViolations } from '@kvirn/testing'
 import type { ReactNode } from 'react'
 import { afterEach, beforeEach, describe, expect, test, vi } from 'vite-plus/test'
 import type { MockInstance } from 'vite-plus/test'

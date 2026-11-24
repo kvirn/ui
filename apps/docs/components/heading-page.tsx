@@ -1,4 +1,4 @@
-import { Link } from '@kvirn-ui/react'
+import { Link } from '@kvirn/ui'
 import { ApiBlock } from './api-block.tsx'
 import { apiHookPart } from './api-ids.ts'
 import type { ApiPart } from './api-block.tsx'
@@ -162,7 +162,7 @@ export function HeadingPage({
       contractSections={contractSectionList(contract)}
       api={
         <ApiBlock
-          importLine="import { Heading, useHeading } from '@kvirn-ui/react'"
+          importLine="import { Heading, useHeading } from '@kvirn/ui'"
           parts={parts}
           hook={useHeadingHook}
         />

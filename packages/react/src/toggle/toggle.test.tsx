@@ -1,4 +1,4 @@
-import { expectNoA11yViolations } from '@kvirn-ui/testing'
+import { expectNoA11yViolations } from '@kvirn/testing'
 import { createRef, useState } from 'react'
 import type { ReactNode } from 'react'
 import { renderToString } from 'react-dom/server'
@@ -7,7 +7,7 @@ import type { MockInstance } from 'vite-plus/test'
 import { page, userEvent } from 'vite-plus/test/browser'
 import { render } from 'vitest-browser-react'
 import { resetDevWarnings } from '../dev/dev-warning.ts'
-import { close } from '@kvirn-ui/icons'
+import { close } from '@kvirn/icons'
 import { Icon } from '../icon/icon.tsx'
 import { mergeProps } from '../merge-props/merge-props.ts'
 import { Toggle } from './toggle.tsx'
@@ -339,7 +339,7 @@ describe('types', () => {
     expectTypeOf<UseToggleResult['isFocusVisible']>().toEqualTypeOf<boolean>()
     expectTypeOf<UseToggleOptions['pressed']>().toEqualTypeOf<boolean | undefined>()
     expectTypeOf<UseToggleOptions['defaultPressed']>().toEqualTypeOf<boolean | undefined>()
-    // The part's classes that @kvirn-ui/theme and your own CSS select on.
+    // The part's classes that @kvirn/theme and your own CSS select on.
     expectTypeOf<TogglePartProps['className']>().toEqualTypeOf<'kv-button kv-toggle'>()
     // Pressed is set by `pressed` or `defaultPressed`, never by hand, and a toggle is never a submit button.
     expectTypeOf<ToggleProps>().not.toHaveProperty('aria-pressed')

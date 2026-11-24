@@ -1,4 +1,4 @@
-import type { MaskRejection } from '@kvirn-ui/core'
+import type { MaskRejection } from '@kvirn/core'
 import { useEffect, useMemo } from 'react'
 import type { ChangeEvent, ChangeEventHandler, CompositionEvent } from 'react'
 import { warnOnce } from '../dev/dev-warning.ts'
@@ -46,7 +46,7 @@ export interface UseTextInputOptions extends FieldControlOptions<TextInputChange
 /** Spread on the `<input>`. */
 export interface TextInputPartProps extends InputControlPartProps {
   /**
-   * The part's class, for `@kvirn-ui/theme` and your own CSS: `.kv-input`. Add a width class
+   * The part's class, for `@kvirn/theme` and your own CSS: `.kv-input`. Add a width class
    * next to it, for example `kv-input--width-10`, with `mergeProps`: class names join.
    */
   className: 'kv-input'

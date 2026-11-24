@@ -9,8 +9,8 @@ import {
   masks,
   maskedDateToIsoDate,
   useLocale,
-} from '@kvirn-ui/react'
-import type { CalendarRootProps, DateRange } from '@kvirn-ui/react'
+} from '@kvirn/ui'
+import type { CalendarRootProps, DateRange } from '@kvirn/ui'
 import type { Decorator } from '@storybook/react-vite'
 import { useId, useState } from 'react'
 import { dateTextsFor } from '../date-input/date-input.fixture.tsx'

@@ -3,7 +3,7 @@ export interface GridPartProps<
   ClassName extends string = 'kv-grid-container' | 'kv-grid' | 'kv-grid-item',
 > {
   /**
-   * The part's class, for `@kvirn-ui/theme` and your own CSS: `.kv-grid-container`, `.kv-grid`,
+   * The part's class, for `@kvirn/theme` and your own CSS: `.kv-grid-container`, `.kv-grid`,
    * `.kv-grid-item`. Add a class of your own next to it with `mergeProps`: class names join.
    * `kv-grid--lg-cols-3` and `kv-grid-item--md-span-2` choose tracks and spans.
    */

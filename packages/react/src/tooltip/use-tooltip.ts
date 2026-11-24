@@ -1,5 +1,5 @@
-import { createTooltipMachine } from '@kvirn-ui/core'
-import type { TooltipChangeReason, TooltipGroup } from '@kvirn-ui/core'
+import { createTooltipMachine } from '@kvirn/core'
+import type { TooltipChangeReason, TooltipGroup } from '@kvirn/core'
 import { useCallback, useEffect, useId, useLayoutEffect, useReducer, useRef, useState } from 'react'
 import type { FocusEvent, PointerEvent, RefCallback, RefObject } from 'react'
 import { isKeyboardFocus, trackModality } from '../focus-visible/use-focus-visible.ts'
@@ -8,7 +8,7 @@ import { usePopup } from '../popup/use-popup.ts'
 import type { Placement, PopupPartProps } from '../popup/use-popup.ts'
 import { useEnv } from '../provider/use-env.ts'
 
-export type { TooltipChangeReason, TooltipGroup } from '@kvirn-ui/core'
+export type { TooltipChangeReason, TooltipGroup } from '@kvirn/core'
 
 export interface TooltipChangeDetails {
   reason: TooltipChangeReason
@@ -40,7 +40,7 @@ export interface UseTooltipOptions {
   closeDelay?: number | undefined
   /**
    * Where tooltips share their delay: once one has opened, the next opens at once. Default: one
-   * group for the page. Make one with `createTooltipGroup()` from `@kvirn-ui/core`.
+   * group for the page. Make one with `createTooltipGroup()` from `@kvirn/core`.
    */
   group?: TooltipGroup | undefined
   /**

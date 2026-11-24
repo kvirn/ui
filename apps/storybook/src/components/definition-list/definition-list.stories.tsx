@@ -1,5 +1,5 @@
 // kv-lang-ok-file: Reflow320 is the long Finnish word hard case under locale fi
-import { Card, Heading, DefinitionList } from '@kvirn-ui/react'
+import { Card, Heading, DefinitionList } from '@kvirn/ui'
 import contract from '../../../../../packages/react/src/definition-list/definition-list.a11y.md?raw'
 import guide from '../../../../../packages/react/src/definition-list/definition-list.md?raw'
 import type { Meta, StoryObj } from '@storybook/react-vite'
@@ -8,7 +8,7 @@ import { usageGuide } from '../../docs-source.ts'
 import { expectNoHorizontalOverflow } from '../theme-story-assertions.ts'
 import { withDefinitionListLocale } from './definition-list.fixture.tsx'
 
-// Components/DefinitionList: the headless DefinitionList, styled by @kvirn-ui/theme/theme.css. The rows
+// Components/DefinitionList: the headless DefinitionList, styled by @kvirn/theme/theme.css. The rows
 // are the answers of a parking-permit application, in English. The Change link's word is the
 // library's own string and follows the locale toolbar.
 

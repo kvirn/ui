@@ -1,4 +1,4 @@
-import type { DividerProps } from '@kvirn-ui/react'
+import type { DividerProps } from '@kvirn/ui'
 import { propRows } from '../components/api-block.tsx'
 import type { AttributeRow } from '../components/api-block.tsx'
 

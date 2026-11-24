@@ -28,7 +28,7 @@ This spec decides **what they look like in the default theme**: the class API, m
 - **Constraints:**
   - Headless packages ship no CSS (hard rule 5). Options are modifier classes, state is `data-*` (`docs/architecture.md#styling-contract`).
   - Only DESIGN.md tokens. No new colours (§6.9).
-  - Every visible or announced string from `@kvirn-ui/i18n` in all six locales (hard rule 4). The catalog's depth is fixed at `namespace.key`.
+  - Every visible or announced string from `@kvirn/i18n` in all six locales (hard rule 4). The catalog's depth is fixed at `namespace.key`.
   - No third-party network calls (hard rule 7).
   - WAD/EN 301 549: the components are "designed and tested to meet WCAG 2.2 AA", never "compliant".
 - **Success criteria:**
@@ -92,7 +92,7 @@ Unhappy paths the components must support:
 
 ## 4. Content
 
-### 4.1 Component strings (`@kvirn-ui/i18n`)
+### 4.1 Component strings (`@kvirn/i18n`)
 
 New namespaces `field` and `dateInput`, in all six locales. Agents write `fi`, `nb` and `nn`; `se` stays English, marked `lang="en"`, as `link.newTabNotice` does today.
 

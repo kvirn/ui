@@ -1,5 +1,5 @@
 'use client'
-import { Button, Container, Field, Heading, TextInput } from '@kvirn-ui/react'
+import { Button, Container, Field, Heading, TextInput } from '@kvirn/ui'
 import { useContainerTexts } from './texts.ts'
 
 export function FormColumn() {

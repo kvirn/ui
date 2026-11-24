@@ -7,7 +7,7 @@ The headings of a long page as a named `<nav>` of plain `#id` links, with the he
 - Every link is a plain `<a href="#id">`: the browser scrolls, below a sticky header by the page's `scroll-padding-top`, and the next Tab continues after the heading. It never uses your router's link.
 - The heading being read has `aria-current="location"`, and no other link has it. Before any heading has reached the top, the first one on screen is current.
 - It is never sticky, never scrolls by itself, never moves focus and announces nothing. Where it sits, and whether it sticks, is the page's layout.
-- Headless: no CSS. Each part renders its stable class, and your `className` joins it. With `@kvirn-ui/theme/theme.css` imported, the links become compact navigation items: the heading being read is underlined at weight 600, and the headings above it keep their weight with no fill.
+- Headless: no CSS. Each part renders its stable class, and your `className` joins it. With `@kvirn/theme/theme.css` imported, the links become compact navigation items: the heading being read is underlined at weight 600, and the headings above it keep their weight with no fill.
 
 ## API
 
@@ -44,7 +44,7 @@ Dev warnings (English, development only, never shown to users):
 ## Component
 
 ```tsx
-import { Heading, TableOfContents } from '@kvirn-ui/react'
+import { Heading, TableOfContents } from '@kvirn/ui'
 
 const items = [
   { id: 'fee', label: 'Fee', level: 2 },
@@ -124,7 +124,7 @@ In compact density (`kv-compact`) the rows are 32px, never below 24px (2.5.8).
 ## Hook
 
 ```tsx
-import { useTableOfContents } from '@kvirn-ui/react'
+import { useTableOfContents } from '@kvirn/ui'
 
 function Contents() {
   const contents = useTableOfContents({ items, offset: 64, labelledBy: 'contents-title' })

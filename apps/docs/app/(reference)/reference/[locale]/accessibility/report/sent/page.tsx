@@ -1,5 +1,5 @@
-import { PageFrameMain } from '@kvirn-ui/patterns'
-import { AlertBody, AlertSuccess, AlertTitle, Heading, Link, Stack } from '@kvirn-ui/react'
+import { PageFrameMain } from '@kvirn/patterns'
+import { AlertBody, AlertSuccess, AlertTitle, Heading, Link, Stack } from '@kvirn/ui'
 import type { Metadata } from 'next'
 import { notFound } from 'next/navigation'
 import { referenceStatementMessages } from '../../../../../../../messages/reference-statement.ts'

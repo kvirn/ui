@@ -2,7 +2,7 @@
 import { useContext, useEffect } from 'react'
 import type { ComponentPropsWithRef, MouseEvent, ReactElement, ReactNode } from 'react'
 import { warnOnce } from '../dev/dev-warning.ts'
-import { chevronDown, chevronUp } from '@kvirn-ui/icons'
+import { chevronDown, chevronUp } from '@kvirn/icons'
 import { Icon } from '../icon/icon.tsx'
 import { mergeProps } from '../merge-props/merge-props.ts'
 import { useMergedRef } from '../merge-props/use-merged-ref.ts'

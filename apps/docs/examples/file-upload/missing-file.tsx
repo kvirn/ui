@@ -1,5 +1,5 @@
 'use client'
-import { Button, Field, FileUpload } from '@kvirn-ui/react'
+import { Button, Field, FileUpload } from '@kvirn/ui'
 import { useEffect, useRef, useState } from 'react'
 import { useFileUploadTexts } from './texts.ts'
 

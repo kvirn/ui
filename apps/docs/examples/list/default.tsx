@@ -1,5 +1,5 @@
 'use client'
-import { Link, List } from '@kvirn-ui/react'
+import { Link, List } from '@kvirn/ui'
 import { useListTexts } from './texts.ts'
 
 export function DefaultList() {

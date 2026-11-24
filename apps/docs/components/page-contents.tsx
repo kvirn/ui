@@ -1,5 +1,5 @@
-import { Heading, TableOfContentsRoot } from '@kvirn-ui/react'
-import type { TableOfContentsEntry } from '@kvirn-ui/react'
+import { Heading, TableOfContentsRoot } from '@kvirn/ui'
+import type { TableOfContentsEntry } from '@kvirn/ui'
 import { Fragment } from 'react'
 import type { ReactNode } from 'react'
 import { messages } from '../messages/en.ts'

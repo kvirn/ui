@@ -1,5 +1,5 @@
 'use client'
-import { Field, SkipPanel, Switch } from '@kvirn-ui/react'
+import { Field, SkipPanel, Switch } from '@kvirn/ui'
 import { useState } from 'react'
 import { useSkipPanelTexts } from './texts.ts'
 

@@ -1,6 +1,6 @@
 'use client'
-import { allIcons } from '@kvirn-ui/icons/all'
-import { getMessages } from '@kvirn-ui/react/server'
+import { allIcons } from '@kvirn/icons/all'
+import { getMessages } from '@kvirn/ui/server'
 import {
   Badge,
   Button,
@@ -17,10 +17,10 @@ import {
   Tooltip,
   useAnnouncer,
   VisuallyHidden,
-} from '@kvirn-ui/react'
+} from '@kvirn/ui'
 import { useEffect, useRef, useState, useSyncExternalStore } from 'react'
 import type { FormEvent } from 'react'
-import type { IconSize, IconVariant } from '@kvirn-ui/react'
+import type { IconSize, IconVariant } from '@kvirn/ui'
 import { iconCamelName, iconImportName } from '../lib/icon-import-name.ts'
 import { messages } from '../messages/en.ts'
 
@@ -112,7 +112,7 @@ function IconTile({
   settings: PreviewSettings
 }) {
   const importName = iconImportName(icon.name)
-  const importLine = `import { ${importName} } from '@kvirn-ui/icons'`
+  const importLine = `import { ${importName} } from '@kvirn/icons'`
   const label = icon.hasLabel
     ? iconMessages[iconCamelName(icon.name) as keyof typeof iconMessages]
     : undefined

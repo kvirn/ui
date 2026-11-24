@@ -1,5 +1,5 @@
-import { Button, ButtonGroup, Card, Field, Icon, Section, TextInput } from '@kvirn-ui/react'
-import type { ButtonProps } from '@kvirn-ui/react'
+import { Button, ButtonGroup, Card, Field, Icon, Section, TextInput } from '@kvirn/ui'
+import type { ButtonProps } from '@kvirn/ui'
 import contract from '../../../../../packages/react/src/button/button.a11y.md?raw'
 import guide from '../../../../../packages/react/src/button/button.md?raw'
 import type { Decorator, Meta, StoryObj } from '@storybook/react-vite'
@@ -11,7 +11,7 @@ import { expectMinimumTargetSize, expectNoHorizontalOverflow } from '../theme-st
 import { ApplicationForm, ChangeAddressForm } from './button.fixture.tsx'
 import { withLibraryIcons } from '../../icons.tsx'
 
-// Components/Button: the headless Button, styled by @kvirn-ui/theme/theme.css.
+// Components/Button: the headless Button, styled by @kvirn/theme/theme.css.
 // The keyboard contract is proved in button.test.tsx, so the play functions only read.
 
 /** Fixture text. Stories set `locale` to match it, so `lang` matches the content (3.1.2). */

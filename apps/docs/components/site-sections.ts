@@ -8,7 +8,7 @@ const contentTypeGroupText = text.contentTypeGroups
 export interface SitePage {
   href: string
   label: string
-  /** The npm name of the separate package the component lives in, when it isn't `@kvirn-ui/react`. */
+  /** The npm name of the separate package the component lives in, when it isn't `@kvirn/ui`. */
   ownPackage?: string
 }
 
@@ -346,7 +346,7 @@ const componentGroupList: readonly SummarisedGroup[] = [
         'RichTextEditor',
         'rich-text-editor',
         'A formatted text box with a toolbar, for text that will be published or sent, such as a news item or a case description in a staff tool.',
-        '@kvirn-ui/rich-text',
+        '@kvirn/rich-text',
       ),
       component(
         'Slider',
@@ -439,13 +439,13 @@ const componentGroupList: readonly SummarisedGroup[] = [
         'AddressSearch',
         'address-search',
         'A search field that finds an address as you type or on Search, on its own or with a map.',
-        '@kvirn-ui/map',
+        '@kvirn/map',
       ),
       component(
         'Map',
         'map',
         'Places on a map and the same places as a list, with the keyboard and a button for every gesture.',
-        '@kvirn-ui/map',
+        '@kvirn/map',
       ),
     ],
   },
@@ -458,7 +458,7 @@ const componentGroupList: readonly SummarisedGroup[] = [
         'ReadAloud',
         'read-aloud',
         'A player that reads a region of the page aloud, one sentence at a time, with the browser’s own speech.',
-        '@kvirn-ui/read-aloud',
+        '@kvirn/read-aloud',
       ),
     ],
   },

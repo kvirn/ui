@@ -1,5 +1,5 @@
 // kv-lang-ok-file: per-locale story texts: the toolbar locale selects the sv, fi, nb, nn or en table
-import { Alert, Button, Progress } from '@kvirn-ui/react'
+import { Alert, Button, Progress } from '@kvirn/ui'
 import { useState } from 'react'
 import type { FormLocale } from '../form/form.fixture.tsx'
 

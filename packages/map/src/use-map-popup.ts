@@ -1,5 +1,5 @@
-import { MAX_ZOOM, viewWithPositionAt } from '@kvirn-ui/core'
-import type { LngLat, MapCluster, MapHandle, MapPlace, MapStore, MapView } from '@kvirn-ui/core'
+import { MAX_ZOOM, viewWithPositionAt } from '@kvirn/core'
+import type { LngLat, MapCluster, MapHandle, MapPlace, MapStore, MapView } from '@kvirn/core'
 import { useEffect, useRef, useState } from 'react'
 
 // Where an opened place or cluster sits in the viewport, so its popup has room above it (map.md, Details).

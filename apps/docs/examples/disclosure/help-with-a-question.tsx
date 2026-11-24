@@ -1,5 +1,5 @@
 'use client'
-import { Disclosure, Field, Stack, TextInput } from '@kvirn-ui/react'
+import { Disclosure, Field, Stack, TextInput } from '@kvirn/ui'
 import { useDisclosureTexts } from './texts.ts'
 
 export function HelpWithAQuestion() {

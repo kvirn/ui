@@ -1,4 +1,4 @@
-import type { KvirnMessages } from '@kvirn-ui/i18n'
+import type { KvirnMessages } from '@kvirn/i18n'
 import { useId, useMemo } from 'react'
 import { joinIds, stateAttributes } from '../field/field-state.ts'
 import type { FieldMarker, FieldState, FieldStateAttributes } from '../field/field-state.ts'
@@ -42,7 +42,7 @@ export interface UseFieldsetOptions {
 /** Spread on the `<fieldset>`. */
 export interface FieldsetRootPartProps extends FieldStateAttributes {
   /**
-   * The part's class, for `@kvirn-ui/theme` and your own CSS: `.kv-fieldset`. Add your own class
+   * The part's class, for `@kvirn/theme` and your own CSS: `.kv-fieldset`. Add your own class
    * next to it with `mergeProps`: class names join.
    */
   className: 'kv-fieldset'

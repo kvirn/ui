@@ -1,7 +1,7 @@
 'use client'
-import { kvirnSpeechEngine } from '@kvirn-ui/core'
-import { Heading, Link, Navigation } from '@kvirn-ui/react'
-import { ReadAloud } from '@kvirn-ui/read-aloud'
+import { kvirnSpeechEngine } from '@kvirn/core'
+import { Heading, Link, Navigation } from '@kvirn/ui'
+import { ReadAloud } from '@kvirn/read-aloud'
 import { voiceServiceUrl } from '../../lib/voice-service-url.ts'
 import { useReadAloudTexts } from './texts.ts'
 

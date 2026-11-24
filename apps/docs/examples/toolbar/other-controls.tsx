@@ -1,5 +1,5 @@
 'use client'
-import { Link, Popover, Toolbar } from '@kvirn-ui/react'
+import { Link, Popover, Toolbar } from '@kvirn/ui'
 import { useToolbarTexts } from './texts.ts'
 
 export function OtherControls() {

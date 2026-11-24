@@ -1,5 +1,5 @@
-import { PageFrame } from '@kvirn-ui/patterns'
-import { SearchResults } from '@kvirn-ui/patterns/content-types'
+import { PageFrame } from '@kvirn/patterns'
+import { SearchResults } from '@kvirn/patterns/content-types'
 import type { Meta, StoryObj } from '@storybook/react-vite'
 import { expect } from 'storybook/test'
 import source from '../../../../packages/patterns/src/content-types/search-results/search-results.tsx?raw'
@@ -8,7 +8,7 @@ import { chromeViewports, narrowGlobals, wideGlobals } from '../patterns/pattern
 import { expectPageOutline } from './page-outline.ts'
 import { withShell } from './shell.tsx'
 // Content types/Search results: a whole page in the site chrome (docs/design/storybook-patterns-t5.md S10).
-// The page is a component in `@kvirn-ui/patterns/content-types`; the source panel shows its module text, which an adopter copies.
+// The page is a component in `@kvirn/patterns/content-types`; the source panel shows its module text, which an adopter copies.
 
 const description = `The search page: the title, the search form, the result count, the filters, the results and Pagination. Results are an ordered list of \`h3\` titles under the count's \`h2\`, one link each, with the path as text and the searched word in a \`<mark>\`. The filters change the results in place and say the new count once, politely, through the provider's announcer. Built from the [Search and filter recipes](?path=/docs/patterns-search-and-forms-filter--docs), a [List](?path=/docs/components-content-list--docs) and [Pagination](?path=/docs/patterns-news-events-and-notices-pagination--docs).
 

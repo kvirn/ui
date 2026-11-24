@@ -1,4 +1,4 @@
-import { callingCodeCountries, callingCodeFor } from '@kvirn-ui/core'
+import { callingCodeCountries, callingCodeFor } from '@kvirn/core'
 
 export interface CountryOption {
   country: string

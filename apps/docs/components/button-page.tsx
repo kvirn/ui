@@ -1,4 +1,4 @@
-import { Link } from '@kvirn-ui/react'
+import { Link } from '@kvirn/ui'
 import { ApiBlock } from './api-block.tsx'
 import type { ApiPart } from './api-block.tsx'
 import { CodeBlock } from './code-block.tsx'
@@ -239,7 +239,7 @@ export function ButtonPage({
       contractSections={contractSectionList(contract)}
       api={
         <ApiBlock
-          importLine="import { Button, useButton } from '@kvirn-ui/react'"
+          importLine="import { Button, useButton } from '@kvirn/ui'"
           parts={parts}
           hook={useButtonHook}
         />

@@ -1,12 +1,12 @@
-import { announcementDebounceMilliseconds } from '@kvirn-ui/core'
+import { announcementDebounceMilliseconds } from '@kvirn/core'
 import type {
   ResolvedMessages,
   AddressResult,
   AddressSuggestion,
   GeocoderIntent,
   GeocoderProvider,
-} from '@kvirn-ui/core'
-import type { KvirnMessages } from '@kvirn-ui/i18n'
+} from '@kvirn/core'
+import type { KvirnMessages } from '@kvirn/i18n'
 import { useEffect, useLayoutEffect, useRef, useState } from 'react'
 import type { KeyboardEvent } from 'react'
 import { useQuietAnnouncer, warnAnnouncerMissing } from '../announcer/use-announcer.ts'

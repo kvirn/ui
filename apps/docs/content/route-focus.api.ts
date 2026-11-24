@@ -1,4 +1,4 @@
-import type { UseRouteFocusOptions } from '@kvirn-ui/react'
+import type { UseRouteFocusOptions } from '@kvirn/ui'
 import { propRows } from '../components/api-block.tsx'
 
 export const useRouteFocusRows = propRows<UseRouteFocusOptions>({

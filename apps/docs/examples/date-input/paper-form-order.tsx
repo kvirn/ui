@@ -1,5 +1,5 @@
 'use client'
-import { DateInput, Fieldset } from '@kvirn-ui/react'
+import { DateInput, Fieldset } from '@kvirn/ui'
 import { useDateInputTexts } from './texts.ts'
 
 export function PaperFormOrder() {

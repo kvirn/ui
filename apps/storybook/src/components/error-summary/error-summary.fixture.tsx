@@ -1,9 +1,9 @@
-import type { KvirnMessages } from '@kvirn-ui/i18n'
-import { en } from '@kvirn-ui/i18n/en'
-import { fi } from '@kvirn-ui/i18n/fi'
-import { nb } from '@kvirn-ui/i18n/nb'
-import { nn } from '@kvirn-ui/i18n/nn'
-import { sv } from '@kvirn-ui/i18n/sv'
+import type { KvirnMessages } from '@kvirn/i18n'
+import { en } from '@kvirn/i18n/en'
+import { fi } from '@kvirn/i18n/fi'
+import { nb } from '@kvirn/i18n/nb'
+import { nn } from '@kvirn/i18n/nn'
+import { sv } from '@kvirn/i18n/sv'
 import {
   Button,
   ErrorSummary,
@@ -12,7 +12,7 @@ import {
   KvirnProvider,
   RadioGroup,
   TextInput,
-} from '@kvirn-ui/react'
+} from '@kvirn/ui'
 import type { Decorator } from '@storybook/react-vite'
 
 // The library's own strings follow the locale toolbar, through a provider with the catalog like

@@ -1,5 +1,5 @@
 'use client'
-import type { KvirnMessages } from '@kvirn-ui/i18n'
+import type { KvirnMessages } from '@kvirn/i18n'
 import { createElement, useContext } from 'react'
 import type { ElementType, HTMLAttributes, ReactElement, ReactNode, Ref, RefCallback } from 'react'
 import { LinkRoot } from '../link/link.tsx'

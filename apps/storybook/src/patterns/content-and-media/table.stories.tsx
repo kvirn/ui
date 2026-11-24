@@ -1,5 +1,5 @@
-import { en } from '@kvirn-ui/i18n/en'
-import { KvirnProvider, Table } from '@kvirn-ui/react'
+import { en } from '@kvirn/i18n/en'
+import { KvirnProvider, Table } from '@kvirn/ui'
 import type { Meta, StoryObj } from '@storybook/react-vite'
 import contract from '../../../../../packages/patterns/src/content-and-media/table/table.a11y.md?raw'
 import { expect } from 'storybook/test'

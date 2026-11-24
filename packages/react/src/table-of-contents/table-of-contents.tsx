@@ -221,7 +221,7 @@ TableOfContentsRoot.displayName = 'TableOfContents.Root'
  * The headings of a long page as a named `<nav>` of plain `#id` links, with the one the reader is
  * in marked `aria-current="location"` (contract: table-of-contents.a11y.md). Give it the `items`
  * (the page's headings, in order, with their ids). It is never sticky, never scrolls by itself, and
- * never moves focus or announces a change. With `@kvirn-ui/theme`, the links are navigation items:
+ * never moves focus or announces a change. With `@kvirn/theme`, the links are navigation items:
  * the heading being read is underlined and bold with no fill, and the headings above it are the bold trail.
  *
  * @example

@@ -1,4 +1,4 @@
-import { en } from '@kvirn-ui/i18n/en'
+import { en } from '@kvirn/i18n/en'
 import {
   Alert,
   Button,
@@ -8,7 +8,7 @@ import {
   KvirnProvider,
   Link,
   TextInput,
-} from '@kvirn-ui/react'
+} from '@kvirn/ui'
 import type { Meta, StoryObj } from '@storybook/react-vite'
 import contract from '../../../../../packages/patterns/src/sign-in-and-subscribe/subscribe/subscribe.a11y.md?raw'
 import { useEffect, useRef, useState } from 'react'

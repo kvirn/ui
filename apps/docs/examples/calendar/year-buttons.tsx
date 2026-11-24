@@ -1,5 +1,5 @@
 'use client'
-import { Calendar } from '@kvirn-ui/react'
+import { Calendar } from '@kvirn/ui'
 
 export function YearButtons() {
   return (

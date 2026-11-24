@@ -13,13 +13,8 @@ import {
   maskedDateToIsoDate,
   useDateInput,
   useLocale,
-} from '@kvirn-ui/react'
-import type {
-  DateInputPart,
-  DateInputValue,
-  DateRange,
-  DateRangePickerRootProps,
-} from '@kvirn-ui/react'
+} from '@kvirn/ui'
+import type { DateInputPart, DateInputValue, DateRange, DateRangePickerRootProps } from '@kvirn/ui'
 import { useState } from 'react'
 import { dateTextsFor } from '../date-input/date-input.fixture.tsx'
 import { messagesFor } from '../form/form.fixture.tsx'

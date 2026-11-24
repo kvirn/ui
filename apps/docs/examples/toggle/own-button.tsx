@@ -1,5 +1,5 @@
 'use client'
-import { useToggle } from '@kvirn-ui/react'
+import { useToggle } from '@kvirn/ui'
 import { useToggleTexts } from './texts.ts'
 
 export function OwnButton() {

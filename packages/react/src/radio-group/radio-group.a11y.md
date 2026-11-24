@@ -75,7 +75,7 @@ One, only with a `RadioGroup.Reveal`: every time the user checks a radio and its
 
 ### Read aloud
 
-Approximated by `@kvirn-ui/testing`'s `readAloud` (English catalog); not NVDA or JAWS output.
+Approximated by `@kvirn/testing`'s `readAloud` (English catalog); not NVDA or JAWS output.
 
 | State or action                  | Expected phrase(s) as read aloud                                                                      | Live region politeness | Test                                                                                                                                                                                                                                                                                                        |
 | -------------------------------- | ----------------------------------------------------------------------------------------------------- | ---------------------- | ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |

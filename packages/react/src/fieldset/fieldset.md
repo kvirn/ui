@@ -11,7 +11,7 @@ A native `<fieldset>` with a `<legend>`: it groups related questions (an address
 - `disabled` is native `fieldset[disabled]`: every control inside is disabled and skipped by Tab.
 - `invalid` marks the fieldset's own parts (`data-invalid`) and renders its Fieldset.ErrorMessage. It does **not** pass down to the Fields inside, so one message for the group doesn't mark every control: set `invalid` on each Field that is wrong. There is no `aria-invalid` on a fieldset, because ARIA doesn't support it on `group`: the error reaches users through the description.
 - `group` is for one question answered with several controls. The legend then ends with "(optional)" (the text for `en`; each language has its own) when the group isn't `required`, and the Fields inside drop their own marker: an option or a date box is never "(optional)". A plain Fieldset only groups questions, so its legend has no marker, and its Fields mark themselves.
-- Headless: no CSS. It renders `kv-fieldset` and `kv-fieldset-legend`. With `@kvirn-ui/theme/theme.css` imported it is styled: no border, and a gap between the parts.
+- Headless: no CSS. It renders `kv-fieldset` and `kv-fieldset-legend`. With `@kvirn/theme/theme.css` imported it is styled: no border, and a gap between the parts.
 
 ## API
 
@@ -38,7 +38,7 @@ A native `<fieldset>` with a `<legend>`: it groups related questions (an address
 ## Component
 
 ```tsx
-import { Field, Fieldset, TextInput } from '@kvirn-ui/react'
+import { Field, Fieldset, TextInput } from '@kvirn/ui'
 
 ;<Fieldset.Root invalid={errors.address !== undefined}>
   <Fieldset.Legend>Where do you live?</Fieldset.Legend>
@@ -82,7 +82,7 @@ A Fieldset renders a `<fieldset>` and nothing else may replace it: a dev warning
 ## Hook
 
 ```tsx
-import { useFieldset } from '@kvirn-ui/react'
+import { useFieldset } from '@kvirn/ui'
 
 function Group({ invalid }: { invalid: boolean }) {
   const fieldset = useFieldset({ invalid, hasDescription: true })

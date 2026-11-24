@@ -8,9 +8,9 @@ import {
   NavTilesText,
   NavTilesTile,
   PageFrameMain,
-} from '@kvirn-ui/patterns'
-import { kvirnbyHills } from '@kvirn-ui/patterns/fixtures'
-import { Container, GridRoot, Heading, Link, Section, Stack } from '@kvirn-ui/react'
+} from '@kvirn/patterns'
+import { kvirnbyHills } from '@kvirn/patterns/fixtures'
+import { Container, GridRoot, Heading, Link, Section, Stack } from '@kvirn/ui'
 import type { Metadata } from 'next'
 import { notFound } from 'next/navigation'
 import { isReferenceLocale, referenceMessages } from '../../../../messages/reference.ts'

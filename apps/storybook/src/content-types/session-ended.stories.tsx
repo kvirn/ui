@@ -1,5 +1,5 @@
-import { PageFrame } from '@kvirn-ui/patterns'
-import { SessionEnded } from '@kvirn-ui/patterns/content-types'
+import { PageFrame } from '@kvirn/patterns'
+import { SessionEnded } from '@kvirn/patterns/content-types'
 import type { Meta, StoryObj } from '@storybook/react-vite'
 import { expect } from 'storybook/test'
 import source from '../../../../packages/patterns/src/content-types/session-ended/session-ended.tsx?raw'
@@ -8,7 +8,7 @@ import { chromeViewports, narrowGlobals, wideGlobals } from '../patterns/pattern
 import { expectPageOutline } from './page-outline.ts'
 import { withShell } from './shell.tsx'
 // Content types/Session ended: a whole page in the site chrome (docs/design/storybook-patterns-t5.md S12).
-// The page is a component in `@kvirn-ui/patterns/content-types`; the source panel shows its module text, which an adopter copies.
+// The page is a component in `@kvirn/patterns/content-types`; the source panel shows its module text, which an adopter copies.
 
 const description = `Where the resident lands when the session has ended, after the [Timeout warning](?path=/docs/patterns-my-pages-timeout-warning--docs) ran out: \`h1\` "You have been signed out", whether the answers were saved, and a [Service link](?path=/docs/patterns-navigation-and-promotion-service-link--docs) to sign in again. There is no breadcrumb. The page takes focus on the \`h1\` only if your router moves it on navigation; nothing is announced on load.
 

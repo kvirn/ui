@@ -1,5 +1,5 @@
 'use client'
-import { Field, Textarea } from '@kvirn-ui/react'
+import { Field, Textarea } from '@kvirn/ui'
 import { useTextareaTexts } from './texts.ts'
 
 export function DefaultTextarea() {

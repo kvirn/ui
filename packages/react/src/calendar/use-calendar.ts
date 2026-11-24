@@ -14,7 +14,7 @@ import {
   getWeekdayOrder,
   isValidIsoDate,
   parseIsoDate,
-} from '@kvirn-ui/core'
+} from '@kvirn/core'
 import type {
   CalendarRangeChange,
   CalendarStore,
@@ -26,8 +26,8 @@ import type {
   RangeStep,
   WeekStart,
   YearMonth,
-} from '@kvirn-ui/core'
-import type { KvirnMessages } from '@kvirn-ui/i18n'
+} from '@kvirn/core'
+import type { KvirnMessages } from '@kvirn/i18n'
 import {
   useCallback,
   useContext,
@@ -51,13 +51,7 @@ import { useStoreSelector } from '../store/use-store-selector.ts'
 import { createCalendarFormatters } from './calendar-intl.ts'
 import { useWideViewport } from './use-wide-viewport.ts'
 
-export type {
-  CalendarRangeChange,
-  DateRange,
-  IsoDate,
-  RangeSelects,
-  WeekStart,
-} from '@kvirn-ui/core'
+export type { CalendarRangeChange, DateRange, IsoDate, RangeSelects, WeekStart } from '@kvirn/core'
 
 export interface UseCalendarBaseOptions {
   /**
@@ -152,7 +146,7 @@ export type UseCalendarOptions = UseCalendarSingleOptions | UseCalendarRangeOpti
 
 /** Spread on the Root's element. */
 export interface CalendarRootPartProps {
-  /** The part's class, for `@kvirn-ui/theme` and your own CSS: `.kv-calendar`. */
+  /** The part's class, for `@kvirn/theme` and your own CSS: `.kv-calendar`. */
   className: 'kv-calendar'
 }
 

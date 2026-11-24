@@ -4,7 +4,7 @@ import type {
   AddressSuggestion,
   GeocoderProvider,
   MapBounds,
-} from '@kvirn-ui/core'
+} from '@kvirn/core'
 
 interface GooglePlacesLatLng {
   lat: () => number

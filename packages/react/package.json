@@ -1,5 +1,5 @@
 {
-  "name": "@kvirn-ui/react",
+  "name": "@kvirn/ui",
   "version": "0.0.0",
   "description": "Headless, accessible React hooks and components for KvirnUI.",
   "homepage": "https://ui.kvirn.com",
@@ -55,13 +55,13 @@
     "dev": "vp pack --watch --no-clean"
   },
   "dependencies": {
-    "@kvirn-ui/core": "workspace:*",
-    "@kvirn-ui/i18n": "workspace:*",
-    "@kvirn-ui/icons": "workspace:*"
+    "@kvirn/core": "workspace:*",
+    "@kvirn/i18n": "workspace:*",
+    "@kvirn/icons": "workspace:*"
   },
   "devDependencies": {
     "@heroicons/react": "catalog:",
-    "@kvirn-ui/testing": "workspace:*",
+    "@kvirn/testing": "workspace:*",
     "@phosphor-icons/react": "catalog:",
     "@types/react": "catalog:",
     "@types/react-dom": "catalog:",

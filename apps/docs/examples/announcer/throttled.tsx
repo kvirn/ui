@@ -1,5 +1,5 @@
 'use client'
-import { Field, TextInput, useAnnouncer } from '@kvirn-ui/react'
+import { Field, TextInput, useAnnouncer } from '@kvirn/ui'
 import { useAnnouncerTexts } from './texts.ts'
 
 export function ThrottledAnnouncer() {

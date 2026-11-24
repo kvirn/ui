@@ -1,5 +1,5 @@
 'use client'
-import { renderTemplate } from '@kvirn-ui/core'
+import { renderTemplate } from '@kvirn/core'
 import type {
   Cell,
   CellContext,
@@ -10,7 +10,7 @@ import type {
   Row,
   RowData,
   TableFeatures,
-} from '@kvirn-ui/core'
+} from '@kvirn/core'
 import {
   createElement,
   Fragment,
@@ -22,7 +22,7 @@ import {
 } from 'react'
 import type { ComponentPropsWithRef, ReactElement, ReactNode } from 'react'
 import { warnOnce } from '../dev/dev-warning.ts'
-import { chevronDown, chevronUp } from '@kvirn-ui/icons'
+import { chevronDown, chevronUp } from '@kvirn/icons'
 import { Icon } from '../icon/icon.tsx'
 import { mergeProps } from '../merge-props/merge-props.ts'
 import { useMergedRef } from '../merge-props/use-merged-ref.ts'

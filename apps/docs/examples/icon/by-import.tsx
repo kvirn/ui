@@ -1,6 +1,6 @@
 'use client'
-import { search } from '@kvirn-ui/icons'
-import { Button, Icon } from '@kvirn-ui/react'
+import { search } from '@kvirn/icons'
+import { Button, Icon } from '@kvirn/ui'
 import { useIconTexts } from './texts.ts'
 
 export function ByImport() {

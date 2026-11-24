@@ -19,9 +19,9 @@ import {
   table,
   undo,
   underline,
-} from '@kvirn-ui/icons'
-import type { IconData } from '@kvirn-ui/icons'
-import { SvgIcon } from '@kvirn-ui/icons/react'
+} from '@kvirn/icons'
+import type { IconData } from '@kvirn/icons'
+import { SvgIcon } from '@kvirn/icons/react'
 import type { ReactElement } from 'react'
 
 const icons = {
@@ -50,7 +50,7 @@ const icons = {
 /** The built-in editor icons by name. */
 export type RichTextIconName = keyof typeof icons
 
-/** The names of the built-in editor icons: all from `@kvirn-ui/icons`. */
+/** The names of the built-in editor icons: all from `@kvirn/icons`. */
 export const richTextIconNames = Object.freeze(Object.keys(icons) as RichTextIconName[])
 
 export interface ToolbarIconProps {

@@ -1,13 +1,13 @@
 // kv-lang-ok-file: the fixture holds Swedish, Finnish and Norwegian addresses and the Swedish catalog proves translated strings
-import { sv } from '@kvirn-ui/i18n/sv'
+import { sv } from '@kvirn/i18n/sv'
 import type {
   AddressResult,
   AddressSuggestion,
   GeocoderProvider,
   GeocoderSearchOptions,
-} from '@kvirn-ui/core'
-import { KvirnProvider } from '@kvirn-ui/react'
-import { readAloud, readAnnouncements } from '@kvirn-ui/testing/read-aloud'
+} from '@kvirn/core'
+import { KvirnProvider } from '@kvirn/ui'
+import { readAloud, readAnnouncements } from '@kvirn/testing/read-aloud'
 import { useState } from 'react'
 import { afterEach, beforeAll, describe, expect, test, vi } from 'vite-plus/test'
 import { page, userEvent } from 'vite-plus/test/browser'

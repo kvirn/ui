@@ -101,7 +101,7 @@ export const homeMessages = {
   <Disclosure.Panel>…</Disclosure.Panel>
 </Disclosure.Root>`,
     body: 'Headless: zero CSS in the packages, state as data attributes, your markup. One opt-in theme you can remove, override or copy. Three runtime dependencies, all from TanStack. Typed by inference.',
-    install: 'pnpm add @kvirn-ui/react @kvirn-ui/i18n',
+    install: 'pnpm add @kvirn/ui @kvirn/i18n',
     links: {
       getStarted: 'Get started',
       components: 'Every component',

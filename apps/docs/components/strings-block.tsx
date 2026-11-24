@@ -1,11 +1,11 @@
-import { createMessageFormat } from '@kvirn-ui/core'
-import { localeCodes } from '@kvirn-ui/i18n'
-import type { KvirnMessages, LocaleCode, MessageFormat } from '@kvirn-ui/i18n'
-import { en } from '@kvirn-ui/i18n/en'
-import { fi } from '@kvirn-ui/i18n/fi'
-import { nb } from '@kvirn-ui/i18n/nb'
-import { nn } from '@kvirn-ui/i18n/nn'
-import { sv } from '@kvirn-ui/i18n/sv'
+import { createMessageFormat } from '@kvirn/core'
+import { localeCodes } from '@kvirn/i18n'
+import type { KvirnMessages, LocaleCode, MessageFormat } from '@kvirn/i18n'
+import { en } from '@kvirn/i18n/en'
+import { fi } from '@kvirn/i18n/fi'
+import { nb } from '@kvirn/i18n/nb'
+import { nn } from '@kvirn/i18n/nn'
+import { sv } from '@kvirn/i18n/sv'
 import {
   Heading,
   TableBody,
@@ -16,7 +16,7 @@ import {
   TableRow,
   TableRowHeader,
   TableScrollRegion,
-} from '@kvirn-ui/react'
+} from '@kvirn/ui'
 import type { ReactNode } from 'react'
 import { messages } from '../messages/en.ts'
 import { apiStringsId } from './api-ids.ts'

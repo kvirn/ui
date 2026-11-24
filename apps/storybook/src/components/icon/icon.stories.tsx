@@ -1,13 +1,13 @@
-import { en } from '@kvirn-ui/i18n/en'
-import { fi } from '@kvirn-ui/i18n/fi'
-import { nb } from '@kvirn-ui/i18n/nb'
-import { nn } from '@kvirn-ui/i18n/nn'
-import { sv } from '@kvirn-ui/i18n/sv'
-import type { KvirnMessages } from '@kvirn-ui/i18n'
+import { en } from '@kvirn/i18n/en'
+import { fi } from '@kvirn/i18n/fi'
+import { nb } from '@kvirn/i18n/nb'
+import { nn } from '@kvirn/i18n/nn'
+import { sv } from '@kvirn/i18n/sv'
+import type { KvirnMessages } from '@kvirn/i18n'
 import { allIcons } from '../../icons.tsx'
-import { mapIcons } from '@kvirn-ui/map'
-import { Icon, KvirnProvider, useFormat } from '@kvirn-ui/react'
-import { richTextIconNames, ToolbarIcon } from '@kvirn-ui/rich-text'
+import { mapIcons } from '@kvirn/map'
+import { Icon, KvirnProvider, useFormat } from '@kvirn/ui'
+import { richTextIconNames, ToolbarIcon } from '@kvirn/rich-text'
 import contract from '../../../../../packages/react/src/icon/icon.a11y.md?raw'
 import guide from '../../../../../packages/react/src/icon/icon.md?raw'
 import type { Meta, StoryObj } from '@storybook/react-vite'
@@ -43,10 +43,10 @@ import {
   UnknownNameIcon,
   UnstyledIcons,
 } from './icon.fixture.tsx'
-import type { IconProps } from '@kvirn-ui/react'
+import type { IconProps } from '@kvirn/ui'
 import type { IconFixtureLocale } from './icon.fixture.tsx'
 
-// Components/Icon: the headless Icon and the registered library icons, styled by @kvirn-ui/theme/theme.css
+// Components/Icon: the headless Icon and the registered library icons, styled by @kvirn/theme/theme.css
 // (design spec docs/design/icon.md §6.6). The keyboard rows are proved in icon.test.tsx, so the
 // play functions only read. RTL mirroring is proven by the `data-mirror-in-rtl` plays of RTL and
 // LibraryIconsViaTheRegistry, and by icon.test.tsx.
@@ -81,12 +81,12 @@ const meta = {
       control: 'select',
       options: Object.keys(allIcons),
       description:
-        'The name of a registered icon from `@kvirn-ui/icons`. Without a registration, pass the drawing as `icon={search}` instead. Mirrors in RTL when the drawing is directional.',
+        'The name of a registered icon from `@kvirn/icons`. Without a registration, pass the drawing as `icon={search}` instead. Mirrors in RTL when the drawing is directional.',
     },
     icon: {
       control: false,
       description:
-        'A drawing from `@kvirn-ui/icons` or a component, with no registration: `icon={search}`. With `name` too, a registered `name` wins and `icon` is the fallback.',
+        'A drawing from `@kvirn/icons` or a component, with no registration: `icon={search}`. With `name` too, a registered `name` wins and `icon` is the fallback.',
       table: { type: { summary: 'IconRegistryEntry' } },
     },
     size: {
@@ -192,7 +192,7 @@ export const Default: Story = {
 }
 
 /**
- * No registration: pass the drawing from `@kvirn-ui/icons` as `icon`. Only this icon is bundled,
+ * No registration: pass the drawing from `@kvirn/icons` as `icon`. Only this icon is bundled,
  * which is the route for code that renders outside a provider.
  */
 export const WithoutRegistration: Story = {

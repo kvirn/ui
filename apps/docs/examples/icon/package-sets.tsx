@@ -1,7 +1,7 @@
 'use client'
-import { Grid, Heading, Icon } from '@kvirn-ui/react'
-import { mapIcons } from '@kvirn-ui/map'
-import { richTextIconNames, ToolbarIcon } from '@kvirn-ui/rich-text'
+import { Grid, Heading, Icon } from '@kvirn/ui'
+import { mapIcons } from '@kvirn/map'
+import { richTextIconNames, ToolbarIcon } from '@kvirn/rich-text'
 import { useIconTexts } from './texts.ts'
 
 export function PackageSets() {

@@ -1,7 +1,7 @@
 /*
- * Map classes: @kvirn-ui/theme/map.css, an opt-in file next to theme.css.
+ * Map classes: @kvirn/theme/map.css, an opt-in file next to theme.css.
  *
- * Import it after theme.css wherever a map from @kvirn-ui/map renders: a site without maps does not
+ * Import it after theme.css wherever a map from @kvirn/map renders: a site without maps does not
  * pay for them. It uses theme.css's tokens, so it needs theme.css, and puts its rules in
  * `@layer kv`, which theme.css's layer order statement declares.
  */

@@ -1,5 +1,5 @@
 'use client'
-import { DefinitionList } from '@kvirn-ui/react'
+import { DefinitionList } from '@kvirn/ui'
 import { useDefinitionListTexts } from './texts.ts'
 
 export function MissingAnswer() {

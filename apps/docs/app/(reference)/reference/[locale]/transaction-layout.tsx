@@ -1,5 +1,5 @@
 'use client'
-import { SiteHeader } from '@kvirn-ui/patterns'
+import { SiteHeader } from '@kvirn/patterns'
 import type { ReactNode } from 'react'
 import { referenceMessages } from '../../../../messages/reference.ts'
 import type { ReferenceLocale } from '../../../../messages/reference.ts'

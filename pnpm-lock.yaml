@@ -284,7 +284,7 @@ importers:
       '@changesets/cli':
         specifier: 'catalog:'
         version: 3.0.3
-      '@kvirn-ui/testing':
+      '@kvirn/testing':
         specifier: workspace:*
         version: link:packages/testing
       '@storybook/addon-vitest':
@@ -305,33 +305,33 @@ importers:
 
   apps/docs:
     dependencies:
-      '@kvirn-ui/core':
+      '@kvirn/core':
         specifier: workspace:*
         version: link:../../packages/core
-      '@kvirn-ui/i18n':
+      '@kvirn/i18n':
         specifier: workspace:*
         version: link:../../packages/i18n
-      '@kvirn-ui/icons':
+      '@kvirn/icons':
         specifier: workspace:*
         version: link:../../packages/icons
-      '@kvirn-ui/map':
+      '@kvirn/map':
         specifier: workspace:*
         version: link:../../packages/map
-      '@kvirn-ui/patterns':
+      '@kvirn/patterns':
         specifier: workspace:*
         version: link:../../packages/patterns
-      '@kvirn-ui/react':
-        specifier: workspace:*
-        version: link:../../packages/react
-      '@kvirn-ui/read-aloud':
+      '@kvirn/read-aloud':
         specifier: workspace:*
         version: link:../../packages/read-aloud
-      '@kvirn-ui/rich-text':
+      '@kvirn/rich-text':
         specifier: workspace:*
         version: link:../../packages/rich-text
-      '@kvirn-ui/theme':
+      '@kvirn/theme':
         specifier: workspace:*
         version: link:../../packages/theme
+      '@kvirn/ui':
+        specifier: workspace:*
+        version: link:../../packages/react
       '@tiptap/core':
         specifier: 'catalog:'
         version: 3.31.4(@tiptap/pm@3.31.4)
@@ -366,7 +366,7 @@ importers:
         specifier: 'catalog:'
         version: 19.3.1(react@19.3.1)
     devDependencies:
-      '@kvirn-ui/testing':
+      '@kvirn/testing':
         specifier: workspace:*
         version: link:../../packages/testing
       '@types/node':
@@ -396,36 +396,36 @@ importers:
       '@heroicons/react':
         specifier: 'catalog:'
         version: 2.2.0(react@19.3.1)
-      '@kvirn-ui/core':
+      '@kvirn/core':
         specifier: workspace:*
         version: link:../../packages/core
-      '@kvirn-ui/i18n':
+      '@kvirn/i18n':
         specifier: workspace:*
         version: link:../../packages/i18n
-      '@kvirn-ui/icons':
+      '@kvirn/icons':
         specifier: workspace:*
         version: link:../../packages/icons
-      '@kvirn-ui/map':
+      '@kvirn/map':
         specifier: workspace:*
         version: link:../../packages/map
-      '@kvirn-ui/patterns':
+      '@kvirn/patterns':
         specifier: workspace:*
         version: link:../../packages/patterns
-      '@kvirn-ui/react':
-        specifier: workspace:*
-        version: link:../../packages/react
-      '@kvirn-ui/read-aloud':
+      '@kvirn/read-aloud':
         specifier: workspace:*
         version: link:../../packages/read-aloud
-      '@kvirn-ui/rich-text':
+      '@kvirn/rich-text':
         specifier: workspace:*
         version: link:../../packages/rich-text
-      '@kvirn-ui/testing':
+      '@kvirn/testing':
         specifier: workspace:*
         version: link:../../packages/testing
-      '@kvirn-ui/theme':
+      '@kvirn/theme':
         specifier: workspace:*
         version: link:../../packages/theme
+      '@kvirn/ui':
+        specifier: workspace:*
+        version: link:../../packages/react
       '@phosphor-icons/react':
         specifier: 'catalog:'
         version: 2.1.10(react-dom@19.3.1)(react@19.3.1)
@@ -520,16 +520,16 @@ importers:
 
   packages/map:
     dependencies:
-      '@kvirn-ui/core':
+      '@kvirn/core':
         specifier: workspace:*
         version: link:../core
-      '@kvirn-ui/i18n':
+      '@kvirn/i18n':
         specifier: workspace:*
         version: link:../i18n
-      '@kvirn-ui/icons':
+      '@kvirn/icons':
         specifier: workspace:*
         version: link:../icons
-      '@kvirn-ui/react':
+      '@kvirn/ui':
         specifier: workspace:*
         version: link:../react
     devDependencies:
@@ -560,17 +560,17 @@ importers:
 
   packages/patterns:
     dependencies:
-      '@kvirn-ui/i18n':
+      '@kvirn/i18n':
         specifier: workspace:*
         version: link:../i18n
-      '@kvirn-ui/icons':
+      '@kvirn/icons':
         specifier: workspace:*
         version: link:../icons
-      '@kvirn-ui/react':
+      '@kvirn/ui':
         specifier: workspace:*
         version: link:../react
     devDependencies:
-      '@kvirn-ui/testing':
+      '@kvirn/testing':
         specifier: workspace:*
         version: link:../testing
       '@types/react':
@@ -588,20 +588,20 @@ importers:
 
   packages/react:
     dependencies:
-      '@kvirn-ui/core':
+      '@kvirn/core':
         specifier: workspace:*
         version: link:../core
-      '@kvirn-ui/i18n':
+      '@kvirn/i18n':
         specifier: workspace:*
         version: link:../i18n
-      '@kvirn-ui/icons':
+      '@kvirn/icons':
         specifier: workspace:*
         version: link:../icons
     devDependencies:
       '@heroicons/react':
         specifier: 'catalog:'
         version: 2.2.0(react@19.3.1)
-      '@kvirn-ui/testing':
+      '@kvirn/testing':
         specifier: workspace:*
         version: link:../testing
       '@phosphor-icons/react':
@@ -634,20 +634,20 @@ importers:
 
   packages/read-aloud:
     dependencies:
-      '@kvirn-ui/core':
+      '@kvirn/core':
         specifier: workspace:*
         version: link:../core
-      '@kvirn-ui/i18n':
+      '@kvirn/i18n':
         specifier: workspace:*
         version: link:../i18n
-      '@kvirn-ui/icons':
+      '@kvirn/icons':
         specifier: workspace:*
         version: link:../icons
-      '@kvirn-ui/react':
+      '@kvirn/ui':
         specifier: workspace:*
         version: link:../react
     devDependencies:
-      '@kvirn-ui/testing':
+      '@kvirn/testing':
         specifier: workspace:*
         version: link:../testing
       '@types/react':
@@ -671,20 +671,20 @@ importers:
 
   packages/rich-text:
     dependencies:
-      '@kvirn-ui/core':
+      '@kvirn/core':
         specifier: workspace:*
         version: link:../core
-      '@kvirn-ui/i18n':
+      '@kvirn/i18n':
         specifier: workspace:*
         version: link:../i18n
-      '@kvirn-ui/icons':
+      '@kvirn/icons':
         specifier: workspace:*
         version: link:../icons
-      '@kvirn-ui/react':
+      '@kvirn/ui':
         specifier: workspace:*
         version: link:../react
     devDependencies:
-      '@kvirn-ui/testing':
+      '@kvirn/testing':
         specifier: workspace:*
         version: link:../testing
       '@tiptap/core':

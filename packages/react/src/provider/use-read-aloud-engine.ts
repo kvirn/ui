@@ -1,4 +1,4 @@
-import type { ReadAloudEngine } from '@kvirn-ui/core'
+import type { ReadAloudEngine } from '@kvirn/core'
 import { useContext } from 'react'
 import { KvirnConfigContext } from './provider-context.ts'
 

@@ -1,5 +1,5 @@
 'use client'
-import { Button, Field, OneTimeCode } from '@kvirn-ui/react'
+import { Button, Field, OneTimeCode } from '@kvirn/ui'
 import { useEffect, useRef, useState } from 'react'
 import { useOneTimeCodeTexts } from './texts.ts'
 

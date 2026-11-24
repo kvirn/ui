@@ -4,7 +4,7 @@
 - **Plan:** Plan 0095 (T0, T5). Builds on [municipality-reference-site.md](municipality-reference-site.md) (inventory, T1–T6, B1–B29), [docs-site.md](docs-site.md), [docs-landing-and-header.md](docs-landing-and-header.md), [docs-component-page.md](docs-component-page.md)
 - **Type:** blocks, page templates and a fixture world. Neutral on the code home (plan D2): "the pattern" means the composition, wherever it lives.
 
-> **Composition rule (maintainer, 2026-10-10; Plan 0095 D9). It overrides every "props" and "fixture object" reading in this spec.** A pattern is a compound component that wraps shipped components into a feature. Its parts are children: `SiteHeader.Root` > `.Topbar` (`.Brand`, `.Service`, language links, utility links), `.Search`, `.Menu` > main menu > topics > links. Text and links are JSX children, not data props; props are for behaviour and state; DOM order is children order. Where this spec lists "props" for a pattern, read "parts and children". Fixed strings the pattern renders (names of landmarks, "Menu") stay in `@kvirn-ui/i18n`. The Kvirnby example is literal JSX in the stories.
+> **Composition rule (maintainer, 2026-10-10; Plan 0095 D9). It overrides every "props" and "fixture object" reading in this spec.** A pattern is a compound component that wraps shipped components into a feature. Its parts are children: `SiteHeader.Root` > `.Topbar` (`.Brand`, `.Service`, language links, utility links), `.Search`, `.Menu` > main menu > topics > links. Text and links are JSX children, not data props; props are for behaviour and state; DOM order is children order. Where this spec lists "props" for a pattern, read "parts and children". Fixed strings the pattern renders (names of landmarks, "Menu") stay in `@kvirn/i18n`. The Kvirnby example is literal JSX in the stories.
 >
 > **Amended 2026-10-10 (D10).** Example text is English ("Kvirnby municipality"); every Swedish copy line in this spec is a draft of the municipality's own content, not a library string. Patterns hold no text: visible text is a child, a landmark or control name is a `label` prop, and §9 "Strings the patterns render themselves" is void except what the shipped parts own. Tests only for behaviour a pattern adds.
 
@@ -295,7 +295,7 @@ Re-verified for T5 on 2026-10-13 in [storybook-patterns-t5.md](storybook-pattern
 ## 14. Decisions on the open questions
 
 - **Q1–Q10** (mega panel, site alert placement, docs chrome, IA changes, teasers, share, print, fixture phone, hover-open, the §12 asks): the lead's defaults in Plan 0095 D8, with D6, D7 and D9–D12.
-- **Q11** Content types are components in the sub-entry `@kvirn-ui/patterns/content-types` (maintainer, 2026-10-13).
+- **Q11** Content types are components in the sub-entry `@kvirn/patterns/content-types` (maintainer, 2026-10-13).
 - **Q12** Resolved: Filter's sort and Unit finder's area use `Listbox.Root native="always"`; no new component (2026-10-13).
 - **Q13** The example accessibility statement shows a fill-in box, never a status (maintainer, 2026-10-13).
 - **Q14** Video: poster, captions and transcript, no video file (maintainer, 2026-10-13).

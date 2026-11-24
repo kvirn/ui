@@ -1,5 +1,5 @@
 'use client'
-import { Field, InputGroup, NumberInput } from '@kvirn-ui/react'
+import { Field, InputGroup, NumberInput } from '@kvirn/ui'
 import { useInputGroupTexts } from './texts.ts'
 
 export function Invalid() {

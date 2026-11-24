@@ -1,5 +1,5 @@
 'use client'
-import { Heading, useStepper } from '@kvirn-ui/react'
+import { Heading, useStepper } from '@kvirn/ui'
 import { useStepperTexts } from './texts.ts'
 
 export function OwnMarkup() {

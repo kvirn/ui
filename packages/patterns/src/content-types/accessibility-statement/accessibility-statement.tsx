@@ -1,15 +1,6 @@
 'use client'
 
-import {
-  Breadcrumb,
-  Container,
-  Heading,
-  Link,
-  List,
-  Prose,
-  Stack,
-  useFormat,
-} from '@kvirn-ui/react'
+import { Breadcrumb, Container, Heading, Link, List, Prose, Stack, useFormat } from '@kvirn/ui'
 import { kvirnbyKnownProblems, kvirnbyStatementDates } from '../../fixtures/accessibility.ts'
 import { PageFrame } from '../../page-frame/page-frame.tsx'
 import { PageTools } from '../../site-chrome/page-tools/page-tools.tsx'

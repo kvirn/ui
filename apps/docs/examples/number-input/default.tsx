@@ -1,5 +1,5 @@
 'use client'
-import { Field, NumberInput } from '@kvirn-ui/react'
+import { Field, NumberInput } from '@kvirn/ui'
 import { useNumberInputTexts } from './texts.ts'
 
 export function DefaultNumberInput() {

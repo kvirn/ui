@@ -8,12 +8,12 @@ A native `<button>` for actions. For navigation, use [Link](../link/link.md).
 - `busy` marks a running action: `aria-disabled="true"` and `data-busy`, never native `disabled`, so focus stays and every press is blocked. While busy it renders a decorative `<span class="kv-spinner" aria-hidden="true">` as its first child (theme: shown at once, `currentColor`, no new prop); the name and `aria-disabled` are unchanged. Put a [Progress](../progress/progress.md) with the words beside it, without a `Progress.Indicator`: one indicator per wait. `disabled` wins when both are set.
 - Link look: add `className="kv-button--link"` for an action that changes something in place, in a row of links (Display settings in a top bar, a disclosure with its chevron, a toggle with `aria-expanded` or `aria-pressed`). It reads as a link: no fill, edge or depth, underlined on hover only, at least 24px tall. Never for submitting, going on a step or a destructive action: those stay buttons. In a `TopBar` it takes the bar's on-colour.
 - Compact: add `className="kv-button--compact"` for a button as tall as a compact input (32px, 14px label), so the two line up in a staff tool. From 64rem only: below it, where touch is likely, it stays 44px like the inputs beside it.
-- Headless: no CSS. It renders `class="kv-button"`, the part's stable class, and your `className` joins it. Style `.kv-button` and the state attributes `[data-disabled]`, `[data-busy]` (set only while `busy` and not `disabled`) and `[data-focus-visible]` (or `:focus-visible`). With `@kvirn-ui/theme/theme.css` imported, it is styled: add `className="kv-button--primary"` or `className="kv-button--danger"` for a variant.
+- Headless: no CSS. It renders `class="kv-button"`, the part's stable class, and your `className` joins it. Style `.kv-button` and the state attributes `[data-disabled]`, `[data-busy]` (set only while `busy` and not `disabled`) and `[data-focus-visible]` (or `:focus-visible`). With `@kvirn/theme/theme.css` imported, it is styled: add `className="kv-button--primary"` or `className="kv-button--danger"` for a variant.
 
 ## Component
 
 ```tsx
-import { Button } from '@kvirn-ui/react'
+import { Button } from '@kvirn/ui'
 
 <Button onClick={save}>Save</Button>
 <Button type="submit">Submit application</Button>
@@ -35,7 +35,7 @@ If a button can be disabled while it has focus, for example one that disables it
 ## Hook
 
 ```tsx
-import { useButton } from '@kvirn-ui/react'
+import { useButton } from '@kvirn/ui'
 
 function SaveButton({ isSaving }: { isSaving: boolean }) {
   const button = useButton({ disabled: isSaving, focusableWhenDisabled: true, onClick: save })

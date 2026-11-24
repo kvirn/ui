@@ -1,4 +1,4 @@
-import type { HeadingProps, UseHeadingOptions, UseHeadingResult } from '@kvirn-ui/react'
+import type { HeadingProps, UseHeadingOptions, UseHeadingResult } from '@kvirn/ui'
 import { propRows } from '../components/api-block.tsx'
 import type { ApiHook, AttributeRow } from '../components/api-block.tsx'
 

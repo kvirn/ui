@@ -1,4 +1,4 @@
-import { createMapStore } from '@kvirn-ui/core'
+import { createMapStore } from '@kvirn/core'
 import type {
   MapCluster,
   MapLayer,
@@ -11,14 +11,9 @@ import type {
   MapPlaceSource,
   MapProvider,
   MapView,
-} from '@kvirn-ui/core'
-import type { KvirnMessages } from '@kvirn-ui/i18n'
-import {
-  useQuietAnnouncer,
-  useMessages,
-  warnAnnouncerMissing,
-  warnOnce,
-} from '@kvirn-ui/react/internal'
+} from '@kvirn/core'
+import type { KvirnMessages } from '@kvirn/i18n'
+import { useQuietAnnouncer, useMessages, warnAnnouncerMissing, warnOnce } from '@kvirn/ui/internal'
 import {
   useCallback,
   useEffect,
@@ -59,7 +54,7 @@ export interface MapIconLayer extends MapLayer {
 }
 
 export interface UseMapOptions<Data = unknown> {
-  /** The engine adapter, for example `maplibre({ style })` from `@kvirn-ui/map/maplibre`. Keep it stable. */
+  /** The engine adapter, for example `maplibre({ style })` from `@kvirn/map/maplibre`. Keep it stable. */
   provider: MapProvider
   /** The map's accessible name: `Map of preschools`. Yours, so it is in your language. */
   label: string
@@ -72,7 +67,7 @@ export interface UseMapOptions<Data = unknown> {
   source?: MapPlaceSource<Data> | undefined
   /**
    * Where the cluster index is built for a large `source`: `'main'` (default) in 8 ms slices on the
-   * page, or `createMapWorker` from `@kvirn-ui/map/worker` to build it in a worker. The map creates the worker when it needs one and stops it when it is done.
+   * page, or `createMapWorker` from `@kvirn/map/worker` to build it in a worker. The map creates the worker when it needs one and stops it when it is done.
    */
   indexIn?: 'main' | (() => MapIndexer) | undefined
   /** Where the map starts, and where Reset returns to. */

@@ -1,6 +1,6 @@
 // kv-lang-ok-file: per-locale story texts: the toolbar locale selects the sv, fi, nb, nn or en table
-import { Button, Card, Link, Tabs } from '@kvirn-ui/react'
-import type { TabsChangeReason } from '@kvirn-ui/react'
+import { Button, Card, Link, Tabs } from '@kvirn/ui'
+import type { TabsChangeReason } from '@kvirn/ui'
 import { useId, useState } from 'react'
 
 // Fixtures for Components/Tabs. Each exported function is one example, written to be read: the

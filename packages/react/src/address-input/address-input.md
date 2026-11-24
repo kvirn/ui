@@ -10,7 +10,7 @@ An AddressInput asks for a postal address in separate boxes: street, line 2, pos
 - **Autofill fills every box in one action.** The tokens are `address-line1`, `address-line2`, `postal-code` and `address-level2`. The Root's `autoComplete` is `off` for someone else's address, or a prefix such as `section-postal` or `shipping` for a second address on the page. A part's own `autoComplete` wins.
 - **The country sets the postal code.** `country` (ISO alpha-2, default the provider's `country`, then the locale's) gives SE `123 45`, FI `00100` and NO `1234` through the `postal-code` mask, a numeric keypad and a box of 6, 6 or 4 characters. Any other country has no mask: the box takes what is typed, asks phone keyboards for capital letters and is ten characters wide. Changing `country` never rewrites what was typed.
 - **No auto-advance.** A full postal code never moves focus (3.2.2), and the city is never derived from the postal code (no bundled postal data). Without a `geocoder` the component makes no network call.
-- Headless: no CSS. The parts render `kv-address-input`, `kv-address-input-line1`, `-line2`, `-postal-code` and `-city`, and your `className` joins them. With `@kvirn-ui/theme/theme.css` imported they are styled.
+- Headless: no CSS. The parts render `kv-address-input`, `kv-address-input-line1`, `-line2`, `-postal-code` and `-city`, and your `className` joins them. With `@kvirn/theme/theme.css` imported they are styled.
 
 ## API
 
@@ -39,11 +39,11 @@ What the parts do on their own:
 
 ## Address lookup
 
-`geocoder` on the Root turns the lookup on: `AddressInput.Line1` becomes a combobox that suggests addresses as the visitor types. Geocoders come from `@kvirn-ui/map` (`kvirnGeocoder`, `nominatim`, `googlePlaces`); AddressInput imports none of them. Without a `geocoder` Line 1 is the plain text box.
+`geocoder` on the Root turns the lookup on: `AddressInput.Line1` becomes a combobox that suggests addresses as the visitor types. Geocoders come from `@kvirn/map` (`kvirnGeocoder`, `nominatim`, `googlePlaces`); AddressInput imports none of them. Without a `geocoder` Line 1 is the plain text box.
 
 ```tsx
-import { AddressInput, Field, Fieldset } from '@kvirn-ui/react'
-import { kvirnGeocoder } from '@kvirn-ui/map/kvirn'
+import { AddressInput, Field, Fieldset } from '@kvirn/ui'
+import { kvirnGeocoder } from '@kvirn/map/kvirn'
 
 ;<Fieldset.Root>
   <Fieldset.Legend>Your address</Fieldset.Legend>
@@ -74,7 +74,7 @@ import { kvirnGeocoder } from '@kvirn-ui/map/kvirn'
 ## Component
 
 ```tsx
-import { AddressInput, Field, Fieldset } from '@kvirn-ui/react'
+import { AddressInput, Field, Fieldset } from '@kvirn/ui'
 
 ;<Fieldset.Root invalid={errors.address !== undefined}>
   <Fieldset.Legend>Your address</Fieldset.Legend>
@@ -115,7 +115,7 @@ Your part:
 ## Hook
 
 ```tsx
-import { Field, Fieldset, TextInput, useAddressInput } from '@kvirn-ui/react'
+import { Field, Fieldset, TextInput, useAddressInput } from '@kvirn/ui'
 
 function Address() {
   const address = useAddressInput({ country: 'SE' })

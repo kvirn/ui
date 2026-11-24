@@ -7,7 +7,7 @@ export interface CardPartProps<
     | 'card-footer',
 > {
   /**
-   * The part's class, for `@kvirn-ui/theme` and your own CSS: `.kv-card`, `.kv-card-body`. Add
+   * The part's class, for `@kvirn/theme` and your own CSS: `.kv-card`, `.kv-card-body`. Add
    * a modifier class of your own next to it with `mergeProps`: class names join.
    */
   className: `kv-${Name}`

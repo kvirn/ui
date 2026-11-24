@@ -1,11 +1,11 @@
-import { useAddressLookup } from '@kvirn-ui/react/internal'
+import { useAddressLookup } from '@kvirn/ui/internal'
 import type {
   AddressLookupState,
   AddressLookupStatusPartProps,
   AddressLookupSubmitPartProps,
   UseAddressLookupOptions,
   UseAddressLookupResult,
-} from '@kvirn-ui/react/internal'
+} from '@kvirn/ui/internal'
 
 export type AddressSearchState = AddressLookupState
 export type UseAddressSearchOptions = UseAddressLookupOptions

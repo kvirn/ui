@@ -1,6 +1,6 @@
 'use client'
-import { Field } from '@kvirn-ui/react'
-import { defaultExtensions, RichTextEditor } from '@kvirn-ui/rich-text'
+import { Field } from '@kvirn/ui'
+import { defaultExtensions, RichTextEditor } from '@kvirn/rich-text'
 import { useRichTextEditorTexts } from './texts.ts'
 
 // Tiptap reads the extensions when it creates the editor, so keep them in a constant.

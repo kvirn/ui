@@ -228,7 +228,7 @@ Guidance: closed `details`/Disclosure content doesn't print; don't put the only 
 4. **Fixture and stories:** `articleFor` fields (§4) in all six locales; Prose stories gain the inset, steps and a complex figure, and show them in RTL, Text spacing and On surfaces.
 5. **Tests:** `prose.test.tsx`: `ol.kv-steps` exposes `list` with n `listitem`s; the inset adds no role or Tab stop. Axe runs on the stories. No CSS assertions (rule 13).
 6. **Docs:** Prose docs page and `prose.md`: alt table (§7.1), inset vs Alert, steps vs Stepper, video guidance (§8.1). `prose.a11y.md` rows.
-7. **Record:** changeset (`@kvirn-ui/theme` minor: two classes), theme-css skill boundary paragraph, roadmap row.
+7. **Record:** changeset (`@kvirn/theme` minor: two classes), theme-css skill boundary paragraph, roadmap row.
 
 ## 10. Validation
 

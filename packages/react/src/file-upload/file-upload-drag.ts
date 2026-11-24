@@ -1,4 +1,4 @@
-import type { Env, FileUploadInput } from '@kvirn-ui/core'
+import type { Env, FileUploadInput } from '@kvirn/core'
 import { useCallback, useEffect, useState, useSyncExternalStore } from 'react'
 
 // Internal. Drag-and-drop helpers for FileUpload (design spec D2 and §3). Drag

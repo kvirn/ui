@@ -1,5 +1,5 @@
 'use client'
-import { Combobox, Field } from '@kvirn-ui/react'
+import { Combobox, Field } from '@kvirn/ui'
 import { places } from '../listbox/data.ts'
 import type { Place } from '../listbox/data.ts'
 import { useComboboxTexts } from './texts.ts'

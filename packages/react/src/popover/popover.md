@@ -14,7 +14,7 @@ A Popover is a small floating panel that a button opens: a hint, a short form, a
 ## API
 
 ```tsx
-import { Popover } from '@kvirn-ui/react'
+import { Popover } from '@kvirn/ui'
 
 ;<Popover.Root>
   <Popover.Trigger>About the service</Popover.Trigger>
@@ -48,7 +48,7 @@ import { Popover } from '@kvirn-ui/react'
 ## Hook
 
 ```tsx
-import { usePopover } from '@kvirn-ui/react'
+import { usePopover } from '@kvirn/ui'
 
 function Help() {
   const popover = usePopover({ placement: 'bottom-end' })

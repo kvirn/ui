@@ -1,10 +1,10 @@
-import type { KvirnMessages } from '@kvirn-ui/i18n'
-import { en as enMessages } from '@kvirn-ui/i18n/en'
-import { fi as fiMessages } from '@kvirn-ui/i18n/fi'
-import { nb as nbMessages } from '@kvirn-ui/i18n/nb'
-import { nn as nnMessages } from '@kvirn-ui/i18n/nn'
-import { sv as svMessages } from '@kvirn-ui/i18n/sv'
-import { KvirnProvider } from '@kvirn-ui/react'
+import type { KvirnMessages } from '@kvirn/i18n'
+import { en as enMessages } from '@kvirn/i18n/en'
+import { fi as fiMessages } from '@kvirn/i18n/fi'
+import { nb as nbMessages } from '@kvirn/i18n/nb'
+import { nn as nnMessages } from '@kvirn/i18n/nn'
+import { sv as svMessages } from '@kvirn/i18n/sv'
+import { KvirnProvider } from '@kvirn/ui'
 import type { Decorator } from '@storybook/react-vite'
 
 // Story fixture for Components/Breadcrumb: the library's own strings follow the locale toolbar through a

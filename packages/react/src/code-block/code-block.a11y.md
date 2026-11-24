@@ -69,7 +69,7 @@ CodeBlock has no strings of its own: the Label is your text. The keys belong to 
 
 ## Visual / modes
 
-Headless: CodeBlock ships no CSS. With `@kvirn-ui/theme/theme.css`:
+Headless: CodeBlock ships no CSS. With `@kvirn/theme/theme.css`:
 
 - Focus indicator: Copy's, because it is a Button. The Code is never focused.
 - Target size: Copy is a Button (2.5.8 Target Size (Minimum), AA).

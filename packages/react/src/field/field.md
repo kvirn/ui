@@ -12,7 +12,7 @@ A Field joins one control to its label, an optional description (a `Prose`), an 
 - `invalid` puts `aria-invalid="true"` on the control and `data-invalid` on every part, and the Field.ErrorMessage renders. Without `invalid` the Field.ErrorMessage renders nothing, so a stale error is never referenced.
 - `required` puts `aria-required="true"` on the control, never native `required`: the browser shows no validation bubble of its own, in its own language. Required fields carry no visible marker. A field that isn't required ends its label with the `field.optional` text, "(optional)" in English, which is part of the accessible name. `<Field.Label marker="none">` leaves it out. If you also want the browser's native validation, put `required` on the control _and_ keep it on Field, or the label says "(optional)" while assistive technology announces "required".
 - The error starts with the `field.errorPrefix` text ("Error:") and an error icon. The theme hides the prefix visually, so screen-reader users hear "Error: Enter your name" without relying on the colour. Errors are not live regions: they are read when the user reaches the control. On submit, move focus to the first invalid field (until the error summary block ships).
-- Headless: no CSS. The parts render `kv-field`, `kv-field-label`, `kv-field-help-text`, `kv-field-error-message`, `kv-field-error-prefix` and `kv-field-optional`, and your `className` joins them. With `@kvirn-ui/theme/theme.css` imported they are styled.
+- Headless: no CSS. The parts render `kv-field`, `kv-field-label`, `kv-field-help-text`, `kv-field-error-message`, `kv-field-error-prefix` and `kv-field-optional`, and your `className` joins them. With `@kvirn/theme/theme.css` imported they are styled.
 
 ## API
 
@@ -33,13 +33,13 @@ A Field joins one control to its label, an optional description (a `Prose`), an 
 - **ARIA it sets on the control:** `id` (the `controlId`, else generated), `aria-describedby` (every description and help text in DOM order, then the error, then the ids you pass yourself), `aria-invalid="true"` and `aria-required="true"`, and native `disabled`. On the label: `for` and an `id` (`<controlId>-label`).
 - **Ids:** the label is `<controlId>-label`, the error `<controlId>-error` and each description `<controlId>-description-<generated>`. Don't give a control inside a Field its own `id`.
 - **Classes:** `kv-field`, `kv-field-label`, `kv-field-optional` (the optional text in the label), `kv-field-help-text`, `kv-field-error-message` and `kv-field-error-prefix`. Your `className` joins them.
-- **Messages (`messages`):** `optional` (the text after a label that isn't required: "(optional)") and `errorPrefix` (the hidden word before an error: "Error:"). Both are in `@kvirn-ui/i18n` in five languages.
+- **Messages (`messages`):** `optional` (the text after a label that isn't required: "(optional)") and `errorPrefix` (the hidden word before an error: "Error:"). Both are in `@kvirn/i18n` in five languages.
 - **Dev warnings (once):** a `Field.Label` outside a `Field.Root` (`field-label-outside-field`) renders a plain `<label>` that names nothing; a `Field.ErrorMessage` outside a Field or Fieldset (`field-error-message-outside-field`) always shows and describes nothing; a `Field.HelpText` outside one (`help-text-outside-field`) or before its control (`help-text-before-control`); two error messages in one Field; a control with an `id` of its own; a control with no label.
 
 ## Component
 
 ```tsx
-import { Field, TextInput } from '@kvirn-ui/react'
+import { Field, TextInput } from '@kvirn/ui'
 
 ;<Field.Root invalid={errors.phone !== undefined}>
   <Field.Label>Phone number</Field.Label>
@@ -98,7 +98,7 @@ Your part:
 - **Validate on submit, not on every key,** so content doesn't move under a magnifier. Keep what the user typed.
 - **`controlId`** gives the control the id you need to link to it, for example from an error summary. Don't pass an `id` to a control inside a Field: the Field's id wins, and a dev warning says so.
 - **A label whose text is in another language** goes in a nested `KvirnProvider` with `useLocale().localeProps` on your own element (3.1.2).
-- **Messages.** `field.optional` and `field.errorPrefix` come from `@kvirn-ui/i18n` in five languages, and can be overridden per provider and per instance: `<Field.Root messages={{ optional: '(voluntary)' }}>`.
+- **Messages.** `field.optional` and `field.errorPrefix` come from `@kvirn/i18n` in five languages, and can be overridden per provider and per instance: `<Field.Root messages={{ optional: '(voluntary)' }}>`.
 - **A checkbox or radio** must be a direct child of `Field.Root` (later phase): the default theme finds its layout from `.kv-field:has(> .kv-checkbox, > .kv-radio)`.
 
 ### Classes for the default theme
@@ -115,7 +115,7 @@ The default theme styles the parts as described in the design spec: labels 16px 
 For your own elements, `useField` returns the wiring:
 
 ```tsx
-import { useField } from '@kvirn-ui/react'
+import { useField } from '@kvirn/ui'
 
 function NameField({ invalid }: { invalid: boolean }) {
   const field = useField({ invalid, required: true, hasDescription: true })

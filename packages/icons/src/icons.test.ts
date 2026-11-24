@@ -30,7 +30,7 @@ const mirrorList: string[] = JSON.parse(
 const svgWith = (body: string, rootExtra = '') =>
   `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"${rootExtra}>${body}</svg>`
 
-describe('@kvirn-ui/icons', () => {
+describe('@kvirn/icons', () => {
   it('has generated files that match what the generator writes from the svg files', () => {
     for (const [path, text] of buildOutputs(join(packageRoot, 'svg'), readMirrorList())) {
       expect(readFileSync(join(packageRoot, path), 'utf8')).toBe(text)

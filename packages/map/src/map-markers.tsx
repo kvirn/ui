@@ -1,11 +1,11 @@
-import type { MapCluster as MapClusterData, MapLayer, MapPlace } from '@kvirn-ui/core'
-import { Icon } from '@kvirn-ui/react'
+import type { MapCluster as MapClusterData, MapLayer, MapPlace } from '@kvirn/core'
+import { Icon } from '@kvirn/ui'
 import { useLayoutEffect, useRef, useState } from 'react'
 import type { ComponentPropsWithRef, CSSProperties, KeyboardEvent, ReactNode } from 'react'
 import { joinClassNames } from './class-names.ts'
 import { hasModifier } from './has-modifier.ts'
 import { useMapContext } from './map-context.ts'
-import { pin } from '@kvirn-ui/icons'
+import { pin } from '@kvirn/icons'
 import { useMapFrame } from './use-map-frame.ts'
 
 export interface MapMarkerProps<Data = unknown> extends ComponentPropsWithRef<'button'> {

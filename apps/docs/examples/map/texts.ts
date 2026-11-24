@@ -1,4 +1,4 @@
-import type { MapLayer, MapPlace } from '@kvirn-ui/map'
+import type { MapLayer, MapPlace } from '@kvirn/map'
 import { defineExampleTexts } from '../../components/local-example-texts.ts'
 
 // The place pictures are inline SVG data. The map pictures (tiles) load only after the visitor opts in.

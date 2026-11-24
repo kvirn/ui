@@ -1,4 +1,4 @@
-import { Card, Grid, mergeProps } from '@kvirn-ui/react'
+import { Card, Grid, mergeProps } from '@kvirn/ui'
 import type { ComponentPropsWithRef, ReactElement, Ref } from 'react'
 import { LinkedHeading } from '../linked-heading.tsx'
 import type { LinkedHeadingProps } from '../linked-heading.tsx'

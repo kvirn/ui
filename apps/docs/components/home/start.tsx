@@ -1,5 +1,5 @@
 'use client'
-import { Grid, Heading, Icon, Link, LinkIcon, Stack } from '@kvirn-ui/react'
+import { Grid, Heading, Icon, Link, LinkIcon, Stack } from '@kvirn/ui'
 import { homeMessages } from '../../messages/home.ts'
 import { CodeBlock } from '../code-block.tsx'
 import { Band } from './band.tsx'

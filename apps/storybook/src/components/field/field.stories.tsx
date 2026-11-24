@@ -1,4 +1,4 @@
-import { Field, TextInput } from '@kvirn-ui/react'
+import { Field, TextInput } from '@kvirn/ui'
 import contract from '../../../../../packages/react/src/field/field.a11y.md?raw'
 import guide from '../../../../../packages/react/src/field/field.md?raw'
 import type { Meta, StoryObj } from '@storybook/react-vite'
@@ -14,7 +14,7 @@ import {
 } from '../form/form.fixture.tsx'
 import { expectMinimumTargetSize, expectNoHorizontalOverflow } from '../theme-story-assertions.ts'
 
-// Components/Form/Field: the headless Field, styled by @kvirn-ui/theme/theme.css (design
+// Components/Form/Field: the headless Field, styled by @kvirn/theme/theme.css (design
 // spec docs/design/form-fields.md). KvirnUI holds no form state: every story
 // passes `invalid`, `required` and `disabled` itself, and writes its own error text, as an
 // implementor's form logic would.

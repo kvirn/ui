@@ -16,9 +16,9 @@ import {
   TextInput,
   useAnnouncer,
   useFormat,
-} from '@kvirn-ui/react'
-import { en } from '@kvirn-ui/i18n/en'
-import type { TextMessage } from '@kvirn-ui/i18n'
+} from '@kvirn/ui'
+import { en } from '@kvirn/i18n/en'
+import type { TextMessage } from '@kvirn/i18n'
 import { useState } from 'react'
 import {
   kvirnbyPopularPages,

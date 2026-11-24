@@ -1,7 +1,7 @@
-import { createMessageFormat, resolveMessageNamespace } from '@kvirn-ui/core'
-import type { ResolvedMessages } from '@kvirn-ui/core'
-import type { KvirnMessages, PartialMessages } from '@kvirn-ui/i18n'
-import { en } from '@kvirn-ui/i18n/en'
+import { createMessageFormat, resolveMessageNamespace } from '@kvirn/core'
+import type { ResolvedMessages } from '@kvirn/core'
+import type { KvirnMessages, PartialMessages } from '@kvirn/i18n'
+import { en } from '@kvirn/i18n/en'
 
 export interface GetMessagesOptions {
   /** BCP 47 locale for number and date helpers in the messages. Default `'en'`. */

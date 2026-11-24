@@ -5,7 +5,7 @@ export interface A11yTheme {
   contrast: 'standard' | 'more'
 }
 
-/** The part of `@kvirn-ui/core`'s theme store the helper needs, so this package stays dependency-free. */
+/** The part of `@kvirn/core`'s theme store the helper needs, so this package stays dependency-free. */
 export interface A11yThemeStore {
   connect: () => () => void
   getState: () => {
@@ -21,7 +21,7 @@ export interface A11yThemeStore {
 }
 
 export interface ExpectNoA11yViolationsInEveryThemeOptions {
-  /** The document's theme store: `getThemeStore(getDefaultEnv())` from `@kvirn-ui/core`. */
+  /** The document's theme store: `getThemeStore(getDefaultEnv())` from `@kvirn/core`. */
   themeStore: A11yThemeStore
   /** Defaults to all four combinations. */
   themes?: readonly A11yTheme[]

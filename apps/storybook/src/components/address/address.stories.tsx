@@ -1,13 +1,13 @@
-import { Address, Card, Link } from '@kvirn-ui/react'
+import { Address, Card, Link } from '@kvirn/ui'
 import contract from '../../../../../packages/react/src/address/address.a11y.md?raw'
 import guide from '../../../../../packages/react/src/address/address.md?raw'
 import type { Meta, StoryObj } from '@storybook/react-vite'
 import { expect } from 'storybook/test'
-import { en } from '@kvirn-ui/i18n/en'
+import { en } from '@kvirn/i18n/en'
 import { InLanguage } from '../../fixture-language.tsx'
 import { usageGuide } from '../../docs-source.ts'
 
-// Components/Content/Address: the headless Address, styled by @kvirn-ui/theme. It is static
+// Components/Content/Address: the headless Address, styled by @kvirn/theme. It is static
 // content, so there's no focusable part of its own and no Keyboard story.
 
 const meta = {

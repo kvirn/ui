@@ -12,7 +12,7 @@ import {
   Stack,
   Table,
   TableOfContents,
-} from '@kvirn-ui/react'
+} from '@kvirn/ui'
 import { kvirnbyPersonalDataPurposes } from '../../fixtures/prose-pages.ts'
 import { PageFrame } from '../../page-frame/page-frame.tsx'
 import { PageTools } from '../../site-chrome/page-tools/page-tools.tsx'

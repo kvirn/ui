@@ -1,4 +1,4 @@
-import { createTypeahead, getRovingTarget } from '@kvirn-ui/core'
+import { createTypeahead, getRovingTarget } from '@kvirn/core'
 import { useEffect, useId, useLayoutEffect, useMemo, useRef, useState } from 'react'
 import type { FocusEvent, KeyboardEvent, MouseEvent, PointerEvent, RefObject } from 'react'
 import { useFocusReturn } from '../focus/focus-return.ts'

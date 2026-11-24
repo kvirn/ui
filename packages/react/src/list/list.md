@@ -6,10 +6,10 @@ The one native list: link lists, related links, footer link groups and any other
 - The list always gets `role="list"`, because WebKit and VoiceOver drop the list role under `list-style: none`. A role of your own wins.
 - `as`: `'ul'` (default) or `'ol'`. `kv-list--decimal` is for `ol`: numbers on a `ul` say nothing about order to assistive technology.
 - A list of links is a list, not a navigation. Wrap it in a `<nav>` with a name when it is navigation.
-- Headless: no CSS. No state, so no `data-*`, no hook and no client code (usable in a server component). Your `className` joins the class. `@kvirn-ui/theme/theme.css` styles `kv-list`.
+- Headless: no CSS. No state, so no `data-*`, no hook and no client code (usable in a server component). Your `className` joins the class. `@kvirn/theme/theme.css` styles `kv-list`.
 
 ```tsx
-import { Link, List } from '@kvirn-ui/react'
+import { Link, List } from '@kvirn/ui'
 
 ;<nav aria-label="Related links">
   <List.Root>

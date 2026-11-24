@@ -1,8 +1,8 @@
-# @kvirn-ui/core
+# @kvirn/core
 
-The framework-agnostic state machines behind `@kvirn-ui/react`. It has no React and touches no DOM at import time.
+The framework-agnostic state machines behind `@kvirn/ui`. It has no React and touches no DOM at import time.
 
-Most adopters never import it: use `@kvirn-ui/react`, which re-exports what you need (`masks`, `checks`, `MaskResult` and the file upload types).
+Most adopters never import it: use `@kvirn/ui`, which re-exports what you need (`masks`, `checks`, `MaskResult` and the file upload types).
 
 ## Public API
 
@@ -14,4 +14,4 @@ These are safe to use and follow semver:
 
 ## Internal exports
 
-Everything else serves `@kvirn-ui/react` and is not part of the public API and can change in any release, without a major version. That includes `createMask` (write a mask as a plain definition and pass it to `Input`, which resolves it), `createComponentStore`, the theme store helpers (`createThemeStore`, `resolveTheme`, `resolveThemeOptions`, `findInvalidThemeOptions`, `isSameThemeConfiguration`), `resolveMessageNamespace`, `getLanguage`, `matchesText`, `startsWithText` and the `default*` constants.
+Everything else serves `@kvirn/ui` and is not part of the public API and can change in any release, without a major version. That includes `createMask` (write a mask as a plain definition and pass it to `Input`, which resolves it), `createComponentStore`, the theme store helpers (`createThemeStore`, `resolveTheme`, `resolveThemeOptions`, `findInvalidThemeOptions`, `isSameThemeConfiguration`), `resolveMessageNamespace`, `getLanguage`, `matchesText`, `startsWithText` and the `default*` constants.

@@ -88,12 +88,12 @@ None.
 
 ## 8. Handoff (engineering tasks, `component-engineer`)
 
-1. `apps/storybook/.storybook/preview.tsx`: `import '@kvirn-ui/theme/reset.css'` before `theme.css`.
+1. `apps/storybook/.storybook/preview.tsx`: `import '@kvirn/theme/reset.css'` before `theme.css`.
 2. `apps/docs/app/layout.tsx`: same, before `theme.css`.
 3. Audit the 48 story and fixture files that render bare `<a>` or `<h1>`–`<h6>` (`grep -rlE "<(a |h[1-6][ >])" apps/storybook/src`) and the docs pages: `kv-link`, `kv-heading` or `kv-prose`. Fix fixtures, not `preview.css`.
 4. Copy from §4: `theming.mdx`, `packages/theme/README.md`, `reset.css` header.
 5. `.claude/skills/theme-css/SKILL.md` lines 20–22 and the `## reset.css` section: the reset is the baseline; delete "No story loads the reset" and "the theme works with or without it".
-6. Changeset for `@kvirn-ui/theme` (docs-level: the file is unchanged, its status is).
+6. Changeset for `@kvirn/theme` (docs-level: the file is unchanged, its status is).
 7. Gates: `vp run test` (every story on the reset, axe), `vp run theme:check` (no colour changed, expected green).
 
 ## 9. Usability test plan

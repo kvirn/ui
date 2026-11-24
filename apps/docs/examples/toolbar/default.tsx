@@ -1,5 +1,5 @@
 'use client'
-import { Toolbar } from '@kvirn-ui/react'
+import { Toolbar } from '@kvirn/ui'
 import { useToolbarTexts } from './texts.ts'
 
 export function DefaultToolbar() {

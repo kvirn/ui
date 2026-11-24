@@ -1,4 +1,4 @@
-import { Alert, Container, Link } from '@kvirn-ui/react'
+import { Alert, Container, Link } from '@kvirn/ui'
 import type { Meta, StoryObj } from '@storybook/react-vite'
 import { expect } from 'storybook/test'
 import { expectNoHorizontalOverflow } from '../../components/theme-story-assertions.ts'

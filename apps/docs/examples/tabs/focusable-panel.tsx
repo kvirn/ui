@@ -1,5 +1,5 @@
 'use client'
-import { Link, Tabs } from '@kvirn-ui/react'
+import { Link, Tabs } from '@kvirn/ui'
 import { useTabsTexts } from './texts.ts'
 
 export function FocusablePanel() {

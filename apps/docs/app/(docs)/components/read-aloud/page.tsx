@@ -1,4 +1,4 @@
-import '@kvirn-ui/theme/read-aloud.css'
+import '@kvirn/theme/read-aloud.css'
 import type { Metadata } from 'next'
 import { ReadAloudPage } from '../../../../components/read-aloud-page.tsx'
 import { readContract } from '../../../../lib/contract.ts'

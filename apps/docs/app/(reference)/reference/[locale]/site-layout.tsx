@@ -1,15 +1,6 @@
 'use client'
-import { MainMenu, SiteAlert, SiteFooter, SiteHeader, SiteSearch } from '@kvirn-ui/patterns'
-import {
-  Address,
-  DefinitionList,
-  Grid,
-  Heading,
-  Link,
-  List,
-  Navigation,
-  Stack,
-} from '@kvirn-ui/react'
+import { MainMenu, SiteAlert, SiteFooter, SiteHeader, SiteSearch } from '@kvirn/patterns'
+import { Address, DefinitionList, Grid, Heading, Link, List, Navigation, Stack } from '@kvirn/ui'
 import type { ReactNode } from 'react'
 import { referenceMessages } from '../../../../messages/reference.ts'
 import type { ReferenceLocale } from '../../../../messages/reference.ts'

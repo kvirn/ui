@@ -1,4 +1,4 @@
-import { CardBody, CardHeader, CardRoot, Heading, Link } from '@kvirn-ui/react'
+import { CardBody, CardHeader, CardRoot, Heading, Link } from '@kvirn/ui'
 import { AnchoredHeading } from './anchored-heading.tsx'
 import type { ApiPart } from './api-block.tsx'
 import { ApiBlock } from './api-block.tsx'
@@ -433,7 +433,7 @@ export function QuickExitPage({
       contractSections={contractSectionList(contract)}
       api={
         <ApiBlock
-          importLine="import { QuickExit, useQuickExit } from '@kvirn-ui/react'"
+          importLine="import { QuickExit, useQuickExit } from '@kvirn/ui'"
           parts={parts}
           hook={useQuickExitHook}
           strings={

@@ -1,4 +1,4 @@
-import { Table } from '@kvirn-ui/react'
+import { Table } from '@kvirn/ui'
 import contract from '../../../../../packages/react/src/table/table.a11y.md?raw'
 import guide from '../../../../../packages/react/src/table/table.md?raw'
 import type { Meta, StoryObj } from '@storybook/react-vite'

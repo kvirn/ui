@@ -1,6 +1,6 @@
-import { arrowForward } from '@kvirn-ui/icons'
-import { Container, Heading, Icon, Link, Section, mergeProps } from '@kvirn-ui/react'
-import type { HeadingProps, LinkProps } from '@kvirn-ui/react'
+import { arrowForward } from '@kvirn/icons'
+import { Container, Heading, Icon, Link, Section, mergeProps } from '@kvirn/ui'
+import type { HeadingProps, LinkProps } from '@kvirn/ui'
 import type { ComponentPropsWithRef, ElementType, ReactElement } from 'react'
 
 export type HeroRootProps = ComponentPropsWithRef<'div'>

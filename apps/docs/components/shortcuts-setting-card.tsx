@@ -1,5 +1,5 @@
 'use client'
-import { CardRoot, Field, Heading, Prose, Switch } from '@kvirn-ui/react'
+import { CardRoot, Field, Heading, Prose, Switch } from '@kvirn/ui'
 import type { ReactNode } from 'react'
 import { messages } from '../messages/en.ts'
 import { useShortcutsSetting } from '../lib/shortcuts-setting.ts'

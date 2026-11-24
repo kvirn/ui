@@ -1,6 +1,6 @@
 // kv-lang-ok-file: FinnishDisclosure is the long Finnish compound hard case
-import { Disclosure } from '@kvirn-ui/react'
-import type { DisclosureChangeReason } from '@kvirn-ui/react'
+import { Disclosure } from '@kvirn/ui'
+import type { DisclosureChangeReason } from '@kvirn/ui'
 import { useState } from 'react'
 
 // Fixtures for Components/Disclosure. Each exported function is one example, written to be read:

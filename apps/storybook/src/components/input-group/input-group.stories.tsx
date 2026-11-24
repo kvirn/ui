@@ -1,4 +1,4 @@
-import { Button, ButtonGroup, Card, Field, Icon, InputGroup, TextInput } from '@kvirn-ui/react'
+import { Button, ButtonGroup, Card, Field, Icon, InputGroup, TextInput } from '@kvirn/ui'
 import contract from '../../../../../packages/react/src/input-group/input-group.a11y.md?raw'
 import guide from '../../../../../packages/react/src/input-group/input-group.md?raw'
 import type { Meta, StoryObj } from '@storybook/react-vite'

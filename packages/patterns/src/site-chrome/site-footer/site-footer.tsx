@@ -1,6 +1,6 @@
 'use client'
 
-import { Container, Section, mergeProps } from '@kvirn-ui/react'
+import { Container, Section, mergeProps } from '@kvirn/ui'
 import type { ComponentPropsWithRef, ReactElement } from 'react'
 
 export type SiteFooterRootProps = ComponentPropsWithRef<'footer'>

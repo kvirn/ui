@@ -1,4 +1,4 @@
-import type { FocusScopeProps, UseFocusOptions, UseFocusResult } from '@kvirn-ui/react'
+import type { FocusScopeProps, UseFocusOptions, UseFocusResult } from '@kvirn/ui'
 import { propRows } from '../components/api-block.tsx'
 import type { AttributeRow } from '../components/api-block.tsx'
 

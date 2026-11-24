@@ -1,4 +1,4 @@
-import type { RowData, TableFeatures } from '@kvirn-ui/core'
+import type { RowData, TableFeatures } from '@kvirn/core'
 import { createContext, useContext } from 'react'
 import type { UseTableResult } from './use-table.ts'
 

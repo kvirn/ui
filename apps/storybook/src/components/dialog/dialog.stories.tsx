@@ -1,4 +1,4 @@
-import { Button, Dialog, Field, TextInput } from '@kvirn-ui/react'
+import { Button, Dialog, Field, TextInput } from '@kvirn/ui'
 import contract from '../../../../../packages/react/src/dialog/dialog.a11y.md?raw'
 import guide from '../../../../../packages/react/src/dialog/dialog.md?raw'
 import type { Meta, StoryObj } from '@storybook/react-vite'

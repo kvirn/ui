@@ -114,7 +114,7 @@ A click on the zone outside the button does nothing. A big click area that isn't
 
 Corrects the plan's draft table. Conventions:
 
-- `{count}` keys are plural functions (`format.plural`: `one`/`other` in en and sv; **`se` also has `two`**, and fi/nb/nn `one`/`other`). `{size}` and `{limit}` are `format.number(bytes, { style: 'unit', unit: 'megabyte' | 'kilobyte' | 'byte', maximumFractionDigits: 1 })`, decimal units, the same formatter for the file and the limit, so they compare (sv "14,2 MB", fi "14,2 Mt"). `{allowed}` is a disjunction list ("PDF, JPG or PNG"), built from `accept` with the existing `format.list` helper in `@kvirn-ui/i18n` (`Intl.ListFormat`, `type: 'disjunction'`; §9 Q2). `{name}` is the file's name, inserted as plain text. Every message is a full sentence with its full stop, so the announcer can join sentences with a space.
+- `{count}` keys are plural functions (`format.plural`: `one`/`other` in en and sv; **`se` also has `two`**, and fi/nb/nn `one`/`other`). `{size}` and `{limit}` are `format.number(bytes, { style: 'unit', unit: 'megabyte' | 'kilobyte' | 'byte', maximumFractionDigits: 1 })`, decimal units, the same formatter for the file and the limit, so they compare (sv "14,2 MB", fi "14,2 Mt"). `{allowed}` is a disjunction list ("PDF, JPG or PNG"), built from `accept` with the existing `format.list` helper in `@kvirn/i18n` (`Intl.ListFormat`, `type: 'disjunction'`; §9 Q2). `{name}` is the file's name, inserted as plain text. Every message is a full sentence with its full stop, so the announcer can join sentences with a space.
 - Agents write `fi`, `nb` and `nn`; `se` uses `en`, marked `lang="en"` (as `field.*`).
 - Errors name the file, say what's wrong in plain words, and say what to do. They never say "invalid", "not supported" or "error code", and never blame.
 
@@ -607,8 +607,8 @@ When Rejections clears, the Trigger's description loses it at the same time (the
 
 1. **Field's control id on the Trigger** (D3) is a change in how Field wires a control: `<label for>` targets a `<button>`, and the native input leaves the tree. Confirm, so Plan 0021 Phase 0 adds it next to `labelId`.
    - **Decided (orchestrator): proceed.** The Field control id goes on the Trigger; Plan 0021 Phase 0 already adds `labelId`.
-2. **`format.list`** (Intl.ListFormat, disjunction) in `@kvirn-ui/i18n` for `{allowed}`. Confirm it's added there, rather than the consumer passing an "allowed types" string. With wildcards (`image/*`) the consumer must override `limitsTypes` and `errorType` anyway: is that acceptable?
-   - **Decided (orchestrator): proceed.** `format.list` already exists in `@kvirn-ui/i18n` (§4.1 uses it); nothing new to add.
+2. **`format.list`** (Intl.ListFormat, disjunction) in `@kvirn/i18n` for `{allowed}`. Confirm it's added there, rather than the consumer passing an "allowed types" string. With wildcards (`image/*`) the consumer must override `limitsTypes` and `errorType` anyway: is that acceptable?
+   - **Decided (orchestrator): proceed.** `format.list` already exists in `@kvirn/i18n` (§4.1 uses it); nothing new to add.
 3. **Rejecting duplicates and empty files by default** (D11). Some services want the same file twice (rare). Add an opt-out prop, or wait for a request?
    - **Decided (orchestrator): reject by default, with an `allowDuplicates` opt-out prop** (D11, §10 item 4). Empty files are always rejected.
 4. **iPhone photos (HEIC).** Does Safari convert to JPEG for `accept=".jpg"` in every path (picker, drag from Photos on macOS)? If not, `errorType` for an iPhone photo should say how to fix it ("Save the image as JPG"). Needs a device check before `beta`.

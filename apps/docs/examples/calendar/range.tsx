@@ -1,6 +1,6 @@
 'use client'
-import { Calendar, useFormat } from '@kvirn-ui/react'
-import type { DateRange } from '@kvirn-ui/react'
+import { Calendar, useFormat } from '@kvirn/ui'
+import type { DateRange } from '@kvirn/ui'
 import { useState } from 'react'
 import { useCalendarTexts } from './texts.ts'
 

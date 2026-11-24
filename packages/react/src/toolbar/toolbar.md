@@ -9,7 +9,7 @@ A row of related controls that a keyboard user passes with **one Tab**, and move
 - **A disabled control stays focusable** with `aria-disabled`, so the arrows reach it and a screen reader says it is unavailable. Pressing it does nothing. This holds for `Toolbar.Button`, `Toolbar.Toggle` and `Toolbar.Item` alike. A natively disabled control (`focusableWhenDisabled={false}`) is skipped by the arrows and is never the Tab stop: Tab reaches the first control that can take focus, and when every control is natively disabled the toolbar leaves the Tab order.
 - **A control's own keys win.** The toolbar doesn't take a key an item already handled, a key from a text field, and a key with Control, Alt, Meta or Shift. A Listbox trigger keeps ArrowDown, Home and End (they open it), and Left and Right still move on.
 - **No overflow menu.** A toolbar that doesn't fit wraps, group by group, so every control stays visible and the keys follow the same order at every width.
-- Headless: no CSS. With `@kvirn-ui/theme/theme.css` imported it is styled: a hairline between groups from 40rem, each group a joined strip, buttons at 44px (32px inside `kv-compact` from 64rem), and a pressed toggle as a solid fill.
+- Headless: no CSS. With `@kvirn/theme/theme.css` imported it is styled: a hairline between groups from 40rem, each group a joined strip, buttons at 44px (32px inside `kv-compact` from 64rem), and a pressed toggle as a solid fill.
 
 ## API
 
@@ -56,7 +56,7 @@ Keyed `toolbar-*` and `button-group-*`, English, for the developer only: a toolb
 ## Component
 
 ```tsx
-import { Icon, Toolbar } from '@kvirn-ui/react'
+import { Icon, Toolbar } from '@kvirn/ui'
 
 ;<Toolbar.Root aria-label="Formatting" aria-controls={editorId}>
   <Toolbar.Group aria-label="History">
@@ -75,7 +75,7 @@ import { Icon, Toolbar } from '@kvirn-ui/react'
 </Toolbar.Root>
 ```
 
-An icon-only control takes `kv-button--icon-only` and an `aria-label`, and a tooltip where the toolbar's users might not know the icons (`bold` is an icon from `@kvirn-ui/icons`: `import { bold } from '@kvirn-ui/icons'`):
+An icon-only control takes `kv-button--icon-only` and an `aria-label`, and a tooltip where the toolbar's users might not know the icons (`bold` is an icon from `@kvirn/icons`: `import { bold } from '@kvirn/icons'`):
 
 ```tsx
 <Toolbar.Toggle
@@ -102,7 +102,7 @@ Pitfalls: a plain `<Button>` inside the toolbar is an ordinary Tab stop and is s
 ## Hook
 
 ```tsx
-import { mergeProps, useToolbar } from '@kvirn-ui/react'
+import { mergeProps, useToolbar } from '@kvirn/ui'
 
 function Actions() {
   const toolbar = useToolbar({ orientation: 'horizontal', loop: true })

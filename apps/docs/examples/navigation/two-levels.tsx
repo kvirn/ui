@@ -1,5 +1,5 @@
 'use client'
-import { Link, Navigation } from '@kvirn-ui/react'
+import { Link, Navigation } from '@kvirn/ui'
 import { useNavigationTexts } from './texts.ts'
 
 export function TwoLevels() {

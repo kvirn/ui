@@ -5,10 +5,10 @@ A slim bar with two sides: a line of text at the start and a navigation at the e
 - One element: `TopBar`, a plain `<div>` with no role. `useTopBar({ variant })` gives its class for your own element. Its children are laid out at the start and the end, in DOM order, and wrap at 320px. Write the text first and the navigation last.
 - The children are yours: a `<p>` or any text, and a `Navigation` with its own `label`. The bar assumes nothing about their tags and has no strings of its own.
 - `variant`: none (default) adds no class and no fill. `primary`, `secondary` or `accent` adds `kv-top-bar--<variant>`: a full-width fill with its on-colour text, underlined text links, focus ring and the current navigation item's bar.
-- With `@kvirn-ui/theme/theme.css`, `kv-top-bar` sets the layout and no font or line-height, so it takes the page's text. The Navigation and the links keep their own look, apart from the on-colour on a fill.
+- With `@kvirn/theme/theme.css`, `kv-top-bar` sets the layout and no font or line-height, so it takes the page's text. The Navigation and the links keep their own look, apart from the on-colour on a fill.
 
 ```tsx
-import { Link, Navigation, TopBar } from '@kvirn-ui/react'
+import { Link, Navigation, TopBar } from '@kvirn/ui'
 
 ;<TopBar variant="accent">
   <p>

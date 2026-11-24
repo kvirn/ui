@@ -1,7 +1,7 @@
-import { kvirnbyDocuments } from '@kvirn-ui/patterns/fixtures'
-import { en } from '@kvirn-ui/i18n/en'
-import { formatFileSize } from '@kvirn-ui/i18n'
-import { Heading, KvirnProvider, Link, List, useFormat } from '@kvirn-ui/react'
+import { kvirnbyDocuments } from '@kvirn/patterns/fixtures'
+import { en } from '@kvirn/i18n/en'
+import { formatFileSize } from '@kvirn/i18n'
+import { Heading, KvirnProvider, Link, List, useFormat } from '@kvirn/ui'
 import type { Meta, StoryObj } from '@storybook/react-vite'
 import contract from '../../../../../packages/patterns/src/content-and-media/document-list/document-list.a11y.md?raw'
 import { expect } from 'storybook/test'
@@ -11,7 +11,7 @@ import { chromeViewports, narrowGlobals, wideGlobals } from '../patterns-story-s
 // Patterns/Content and media/Document list (docs/design/storybook-patterns-t5.md S16).
 // Recipe: a heading, a List and Links; no package code.
 
-const description = `Documents to download, one link each. The file type and size go in the link text ("Budget 2027 (PDF, 2 MB)"), so a resident knows what they get before they follow it (2.4.4, 3.2.5); the size is written with \`formatFileSize\` from \`@kvirn-ui/i18n\`, in the page's locale. The date is a \`<time dateTime>\` written with \`useFormat\`. The list is a \`List\`, so the count is announced; with many documents, group them under a heading one level below the page's (by year here). A document in another language carries \`hrefLang\` on the link and \`lang\` on its text (3.1.2). A document that is not accessible is not linked: say so in text and offer "Ask for it in another format" with a contact (rule R9). Choose the heading \`as\` for the page's outline.
+const description = `Documents to download, one link each. The file type and size go in the link text ("Budget 2027 (PDF, 2 MB)"), so a resident knows what they get before they follow it (2.4.4, 3.2.5); the size is written with \`formatFileSize\` from \`@kvirn/i18n\`, in the page's locale. The date is a \`<time dateTime>\` written with \`useFormat\`. The list is a \`List\`, so the count is announced; with many documents, group them under a heading one level below the page's (by year here). A document in another language carries \`hrefLang\` on the link and \`lang\` on its text (3.1.2). A document that is not accessible is not linked: say so in text and offer "Ask for it in another format" with a contact (rule R9). Choose the heading \`as\` for the page's outline.
 
 ## Parts and gaps
 

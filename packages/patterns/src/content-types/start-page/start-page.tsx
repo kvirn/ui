@@ -1,15 +1,6 @@
 'use client'
 
-import {
-  Card,
-  Grid,
-  Container,
-  Heading,
-  Link,
-  Section,
-  Stack,
-  DefinitionList,
-} from '@kvirn-ui/react'
+import { Card, Grid, Container, Heading, Link, Section, Stack, DefinitionList } from '@kvirn/ui'
 import { kvirnbyHills, kvirnbySquare } from '../../fixtures/images.ts'
 import { PageFrame } from '../../page-frame/page-frame.tsx'
 import { Hero } from '../../navigation-and-promotion/hero/hero.tsx'

@@ -1,5 +1,5 @@
-import { createThemeScriptSource } from '@kvirn-ui/core'
-import type { ThemeScriptOptions } from '@kvirn-ui/core'
+import { createThemeScriptSource } from '@kvirn/core'
+import type { ThemeScriptOptions } from '@kvirn/core'
 
 export interface KvirnThemeScriptProps {
   /** The CSP nonce for this response, for a strict `script-src`. */

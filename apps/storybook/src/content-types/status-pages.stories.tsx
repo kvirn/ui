@@ -1,5 +1,5 @@
-import { PageFrame } from '@kvirn-ui/patterns'
-import { StatusPages } from '@kvirn-ui/patterns/content-types'
+import { PageFrame } from '@kvirn/patterns'
+import { StatusPages } from '@kvirn/patterns/content-types'
 import type { Meta, StoryObj } from '@storybook/react-vite'
 import { expect } from 'storybook/test'
 import source from '../../../../packages/patterns/src/content-types/status-pages/status-pages.tsx?raw'
@@ -8,7 +8,7 @@ import { chromeViewports, narrowGlobals, wideGlobals } from '../patterns/pattern
 import { expectPageOutline } from './page-outline.ts'
 import { withShell } from './shell.tsx'
 // Content types/Status pages: a whole page in the site chrome (docs/design/storybook-patterns-t5.md S15).
-// The page is a component in `@kvirn-ui/patterns/content-types`; the source panel shows its module text, which an adopter copies.
+// The page is a component in `@kvirn/patterns/content-types`; the source panel shows its module text, which an adopter copies.
 
 const description = `The pages a visitor lands on when something is missing, broken or closed: the 404, the 500 and a service that is closed until a set time. There is no breadcrumb, and \`main\` is one narrow column (\`Container size="form"\`). Each says what happened in plain words, whose fault it is, and what to do next.
 

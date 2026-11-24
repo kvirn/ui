@@ -21,7 +21,7 @@ export interface UseRadioOptions {
 /** Spread on the `<input type="radio">`. */
 export interface RadioPartProps extends FieldStateAttributes {
   /**
-   * The part's class, for `@kvirn-ui/theme` and your own CSS: `.kv-radio`. Add your own class
+   * The part's class, for `@kvirn/theme` and your own CSS: `.kv-radio`. Add your own class
    * next to it with `mergeProps`: class names join.
    */
   className: 'kv-radio'

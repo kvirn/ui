@@ -1,4 +1,4 @@
-import type { IconProps, UseIconOptions, UseIconResult } from '@kvirn-ui/react'
+import type { IconProps, UseIconOptions, UseIconResult } from '@kvirn/ui'
 import { propRows } from '../components/api-block.tsx'
 import type { ApiHook, AttributeRow } from '../components/api-block.tsx'
 
@@ -18,7 +18,7 @@ export const iconRows = propRows<IconDocumentedProps>({
     type: 'IconRegistryEntry',
     default: '–',
     description:
-      'A drawing from @kvirn-ui/icons, or a component: icon={search} or icon={Search}. It needs no registration, and a registered name wins over it. Icon’s size and label replace the component’s own, and className is joined with it.',
+      'A drawing from @kvirn/icons, or a component: icon={search} or icon={Search}. It needs no registration, and a registered name wins over it. Icon’s size and label replace the component’s own, and className is joined with it.',
   },
   as: {
     type: 'ElementType',
@@ -92,7 +92,7 @@ export const useIconHook: ApiHook = {
     icon: {
       type: 'IconRegistryEntry',
       default: '–',
-      description: 'An icon from @kvirn-ui/icons, or a component, used instead of a name.',
+      description: 'An icon from @kvirn/icons, or a component, used instead of a name.',
     },
     size: { type: 'IconSize', default: '20', description: 'The size in pixels, as a string.' },
     label: {

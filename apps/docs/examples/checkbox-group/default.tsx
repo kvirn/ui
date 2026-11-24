@@ -1,5 +1,5 @@
 'use client'
-import { Checkbox, CheckboxGroup, Field } from '@kvirn-ui/react'
+import { Checkbox, CheckboxGroup, Field } from '@kvirn/ui'
 import { useCheckboxGroupTexts } from './texts.ts'
 
 export function DefaultCheckboxGroup() {

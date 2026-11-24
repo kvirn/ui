@@ -1,4 +1,4 @@
-import { Heading, Icon, Link, List } from '@kvirn-ui/react'
+import { Heading, Icon, Link, List } from '@kvirn/ui'
 import type { Meta, StoryObj } from '@storybook/react-vite'
 import contract from '../../../../../packages/patterns/src/navigation-and-promotion/link-list/link-list.a11y.md?raw'
 import type { ReactNode } from 'react'

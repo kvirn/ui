@@ -7,12 +7,12 @@ A heading with its element as a required `as` prop, and its look as an optional 
 - `size` is the look, apart from the level: `display` or `heading-1` to `heading-6`, the type roles of the same names (Foundation / Typography). Each level looks like the role of its number (`as="h4"` is `heading-4`) unless you say otherwise. `heading-4` to `heading-6` stay at 16px and differ by weight and tracking, so resident-facing text stops at `h3` where it can.
 - Attributes and the `ref` reach the element, so `id` for `aria-labelledby` works as usual.
 - `as` takes only `h1` to `h6`, as a string, so it works from a Server Component. For a `<legend>` or another element, use `useHeading` with your own element.
-- Headless: no CSS. With `@kvirn-ui/theme/theme.css` imported, `kv-heading` and its size modifier style the heading in [Prose](../prose/prose.md) and outside it. Margins come from Prose or from you.
+- Headless: no CSS. With `@kvirn/theme/theme.css` imported, `kv-heading` and its size modifier style the heading in [Prose](../prose/prose.md) and outside it. Margins come from Prose or from you.
 
 ## Component
 
 ```tsx
-import { Heading, Prose, Section } from '@kvirn-ui/react'
+import { Heading, Prose, Section } from '@kvirn/ui'
 
 ;<Section as="aside" aria-labelledby="contact">
   <Prose>
@@ -34,7 +34,7 @@ import { Heading, Prose, Section } from '@kvirn-ui/react'
 ## Hook
 
 ```tsx
-import { useHeading } from '@kvirn-ui/react'
+import { useHeading } from '@kvirn/ui'
 
 const heading = useHeading({ level: 3, size: 'heading-2' })
 <h3 {...heading.rootProps}>Waste collection</h3>

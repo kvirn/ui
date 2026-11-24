@@ -2,7 +2,7 @@
 
 One component for every icon: icons from the icon library, your own SVGs, and icons from libraries such as Lucide, Heroicons and Phosphor. There are three routes, and you can mix them:
 
-- **`icon`** for one icon from a library: `<Icon icon={Search} />`. No setup. It also takes an icon from `@kvirn-ui/icons` directly: `<Icon icon={add} />` with `import { add } from '@kvirn-ui/icons'`.
+- **`icon`** for one icon from a library: `<Icon icon={Search} />`. No setup. It also takes an icon from `@kvirn/icons` directly: `<Icon icon={add} />` with `import { add } from '@kvirn/icons'`.
 - **`name`** for icons you register once in `KvirnProvider`: `<Icon name="close" />`. Register first: nothing is built in.
 - **`as`** (or children) for a one-off icon of your own, such as a municipality's mark.
 
@@ -16,13 +16,13 @@ Icon's `size` and `label` replace the library component's own in every route tha
 
 ## Icons come from your app
 
-`@kvirn-ui/react` has no default icons, so an app bundles only the icons it imports. Every `name` is one you register once in `KvirnProvider` (below), and `icon` draws a drawing or component with no registration. [`@kvirn-ui/icons`](../../../icons) is the icon library: the page **Icons/Library** in Storybook (and the Icons page on the docs site) shows all of it. The drawings are decorative: the name is the text beside each.
+`@kvirn/ui` has no default icons, so an app bundles only the icons it imports. Every `name` is one you register once in `KvirnProvider` (below), and `icon` draws a drawing or component with no registration. [`@kvirn/icons`](../../../icons) is the icon library: the page **Icons/Library** in Storybook (and the Icons page on the docs site) shows all of it. The drawings are decorative: the name is the text beside each.
 
-Directional icons (`chevron-back`, `chevron-forward`, `arrow-back`, `arrow-forward`, `external`) flip in right-to-left text, because the library marks them with `mirrorInRtl`. Every KvirnUI component imports its own icon from `@kvirn-ui/icons` and passes it with its name (`<Icon name="close" icon={close} />`). So when you register an icon under that name (`close`, `chevron-down`, `info`, and so on), every component uses yours. Mirroring belongs to the name: your entry's `mirrorInRtl` wins, else your entry keeps the flip of the icon it replaces, so a plain `ArrowRight` registered as `arrow-forward` still flips in a component. A bare `<Icon name>` of a plain component doesn't flip unless its entry says `mirrorInRtl: true`.
+Directional icons (`chevron-back`, `chevron-forward`, `arrow-back`, `arrow-forward`, `external`) flip in right-to-left text, because the library marks them with `mirrorInRtl`. Every KvirnUI component imports its own icon from `@kvirn/icons` and passes it with its name (`<Icon name="close" icon={close} />`). So when you register an icon under that name (`close`, `chevron-down`, `info`, and so on), every component uses yours. Mirroring belongs to the name: your entry's `mirrorInRtl` wins, else your entry keeps the flip of the icon it replaces, so a plain `ArrowRight` registered as `arrow-forward` still flips in a component. A bare `<Icon name>` of a plain component doesn't flip unless its entry says `mirrorInRtl: true`.
 
 ```tsx
-import { Button, Icon } from '@kvirn-ui/react'
-import { search } from '@kvirn-ui/icons'
+import { Button, Icon } from '@kvirn/ui'
+import { search } from '@kvirn/icons'
 
 <Icon name="search" />                              // registered once in KvirnProvider
 <Icon icon={search} label={messages.search} />      // no registration
@@ -30,15 +30,15 @@ import { search } from '@kvirn-ui/icons'
 <Button><Icon name="add" />Add</Button>
 ```
 
-The Map (`mapIcons` in `@kvirn-ui/map`, with the default marker pin) and the rich text editor (`richTextIconNames` in `@kvirn-ui/rich-text`) register their own icon sets, drawn from `@kvirn-ui/icons`.
+The Map (`mapIcons` in `@kvirn/map`, with the default marker pin) and the rich text editor (`richTextIconNames` in `@kvirn/rich-text`) register their own icon sets, drawn from `@kvirn/icons`.
 
 ## An icon: `icon`
 
-For an icon from `@kvirn-ui/icons`, import it by name (camelCase, with no `Icon` suffix, such as `chevronDown`; `deleteIcon` and `newIcon` end in `Icon` because the plain words are reserved) and pass it. Your bundle holds only the icons you import.
+For an icon from `@kvirn/icons`, import it by name (camelCase, with no `Icon` suffix, such as `chevronDown`; `deleteIcon` and `newIcon` end in `Icon` because the plain words are reserved) and pass it. Your bundle holds only the icons you import.
 
 ```tsx
-import { Icon } from '@kvirn-ui/react'
-import { search } from '@kvirn-ui/icons'
+import { Icon } from '@kvirn/ui'
+import { search } from '@kvirn/icons'
 
 ;<Icon icon={search} label={messages.search} />
 ```
@@ -46,7 +46,7 @@ import { search } from '@kvirn-ui/icons'
 For an icon from another library, pass the component, not an element. It needs no registration. A component can't cross from a server component to a client one, so use `icon` in a client component, and `name` (a string) in a server component.
 
 ```tsx
-import { Icon } from '@kvirn-ui/react'
+import { Icon } from '@kvirn/ui'
 import { MapPinIcon } from '@heroicons/react/24/outline'
 import { Search } from 'lucide-react'
 
@@ -56,7 +56,7 @@ import { Search } from 'lucide-react'
 
 - It takes any component that spreads SVG props onto one `<svg>` and forwards its ref (`IconComponent`): Lucide, Heroicons, Phosphor, SVGR output, or your own. A component that doesn't fit is a type error.
 - Icon passes `width`, `height`, `className` (joined with the component's own), `aria-*` and `role` to it, and they win over the library's own defaults (Lucide's 24px size, Heroicons' `aria-hidden`).
-- A component passed to `icon` doesn't mirror in right-to-left text by default. Set `mirrorInRtl` on the Icon, or register the icon under a name with `{ component, mirrorInRtl: true }`, which is the better place for a direction. An icon from `@kvirn-ui/icons` carries its own `mirrorInRtl` flag, so an arrow or chevron from the library flips with no prop.
+- A component passed to `icon` doesn't mirror in right-to-left text by default. Set `mirrorInRtl` on the Icon, or register the icon under a name with `{ component, mirrorInRtl: true }`, which is the better place for a direction. An icon from `@kvirn/icons` carries its own `mirrorInRtl` flag, so an arrow or chevron from the library flips with no prop.
 - A library draws its own stroke (Lucide's 2). To change it, register a wrapper component of your own that sets it, then use the name.
 - `IconProps` is a union of four forms (`name`, `icon`, `as` or children). A wrapper that types its props as `Omit<IconProps, K>` flattens the union, so it must omit `name | icon | as | children` together (or use a distributive `Omit`), then pass the one form it wants.
 
@@ -67,7 +67,7 @@ Put the registry in a client module, because it holds components. Register its t
 ```tsx
 // app/icons.ts
 'use client'
-import { defineIcons } from '@kvirn-ui/react'
+import { defineIcons } from '@kvirn/ui'
 import { ArrowRight, Trash2 } from 'lucide-react'
 import { MapPinIcon } from '@heroicons/react/24/outline'
 import MunicipalityLogo from './logo.svg?react'
@@ -79,7 +79,7 @@ export const icons = defineIcons({
   logo: MunicipalityLogo,
 })
 
-declare module '@kvirn-ui/react' {
+declare module '@kvirn/ui' {
   interface Register {
     icons: typeof icons
   }
@@ -89,7 +89,7 @@ declare module '@kvirn-ui/react' {
 ```tsx
 // app/providers.tsx
 'use client'
-import { KvirnProvider } from '@kvirn-ui/react'
+import { KvirnProvider } from '@kvirn/ui'
 import { icons } from './icons'
 
 export function Providers({ children }: { children: React.ReactNode }) {
@@ -108,7 +108,7 @@ export function Providers({ children }: { children: React.ReactNode }) {
 <Icon name="delte" /> // type error, and a warning in development
 ```
 
-- An entry is icon data (an icon from `@kvirn-ui/icons`), a component, or `{ component, mirrorInRtl }`. `mirrorInRtl: false` turns off the flip an icon from the library has (`arrow-forward`), and `mirrorInRtl` on an `<Icon>` wins over the entry. A component must forward its ref and spread SVG props onto one `<svg>`. Lucide, Heroicons, Phosphor and SVGR output all do.
+- An entry is icon data (an icon from `@kvirn/icons`), a component, or `{ component, mirrorInRtl }`. `mirrorInRtl: false` turns off the flip an icon from the library has (`arrow-forward`), and `mirrorInRtl` on an `<Icon>` wins over the entry. A component must forward its ref and spread SVG props onto one `<svg>`. Lucide, Heroicons, Phosphor and SVGR output all do.
 - A nested `KvirnProvider` adds icons and replaces names, over its parent's. `iconDefaults` (`size`) merges field by field.
 - Which value wins, lowest first: the icon's own defaults, the icon data's `mirrorInRtl`, `iconDefaults`, your entry, then the props on `<Icon>`.
 - An unknown name renders an empty `<svg>` at the right size and warns once in development.
@@ -131,10 +131,10 @@ export function Providers({ children }: { children: React.ReactNode }) {
 
 ## Labels for library icons
 
-An icon from `@kvirn-ui/icons` that stands alone, such as a status or a place, has a translated label in the `icons` messages. `Icon` never reads it by itself, because most icons sit beside text that already names them. Ask for it with `useIconLabel`, which takes the kebab-case name and returns the label, or `undefined` for an icon that has none (it then stays decorative).
+An icon from `@kvirn/icons` that stands alone, such as a status or a place, has a translated label in the `icons` messages. `Icon` never reads it by itself, because most icons sit beside text that already names them. Ask for it with `useIconLabel`, which takes the kebab-case name and returns the label, or `undefined` for an icon that has none (it then stays decorative).
 
 ```tsx
-import { Icon, useIconLabel } from '@kvirn-ui/react'
+import { Icon, useIconLabel } from '@kvirn/ui'
 
 <Icon name="city-hall" size="24" label={useIconLabel('city-hall')} />
 

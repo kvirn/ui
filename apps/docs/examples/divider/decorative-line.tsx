@@ -1,5 +1,5 @@
 'use client'
-import { Divider } from '@kvirn-ui/react'
+import { Divider } from '@kvirn/ui'
 import { useDividerTexts } from './texts.ts'
 
 export function DecorativeLine() {

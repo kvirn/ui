@@ -1,5 +1,5 @@
 'use client'
-import { Field, FileUpload } from '@kvirn-ui/react'
+import { Field, FileUpload } from '@kvirn/ui'
 import { useFileUploadTexts } from './texts.ts'
 
 export function OwnChecks() {

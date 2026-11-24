@@ -1,6 +1,6 @@
 # Design spec: docs site header in three primary bands
 
-> **Status note (2026-10-11):** the structure is built by the patterns: `SiteHeader` `variant="primary"` and `ApplicationLogo` in `@kvirn-ui/patterns`, `TopBar` in `@kvirn-ui/react` (Plan 0104), composed in `apps/docs` (Plan 0099). §6 (tokens, parts, states, contrast) is still the visual contract.
+> **Status note (2026-10-11):** the structure is built by the patterns: `SiteHeader` `variant="primary"` and `ApplicationLogo` in `@kvirn/patterns`, `TopBar` in `@kvirn/ui` (Plan 0104), composed in `apps/docs` (Plan 0099). §6 (tokens, parts, states, contrast) is still the visual contract.
 
 - **Status:** Draft · **Designer:** ux-designer agent · **Date:** 2026-10-10
 - **Plan:** to be written (links this spec in its Design section)
@@ -55,7 +55,7 @@ The docs catalog (`apps/docs/messages/en.ts`) is English-only by decision (docs-
 | `tools.github` **new**    | GitHub                              | GitHub             | GitHub                  | GitHub                              | → `https://github.com/kvirn/ui`, `target="_blank"`                                                                         |
 | `home` (exists)           | KvirnUI                             | –                  | –                       | –                                   | Brand link; the mark is decorative                                                                                         |
 
-Reused: `docs.nav.menuButton` "Menu", `docs.display.button` "Display settings", `link.newTabNotice` from `@kvirn-ui/i18n` (all locales). `docs.nav.sections.*` unchanged.
+Reused: `docs.nav.menuButton` "Menu", `docs.display.button` "Display settings", `link.newTabNotice` from `@kvirn/i18n` (all locales). `docs.nav.sections.*` unchanged.
 
 ## 5. Structure (DOM order = visual order at every width; no CSS `order`)
 

@@ -1,4 +1,4 @@
-import { SkipPanel } from '@kvirn-ui/react'
+import { SkipPanel } from '@kvirn/ui'
 import {
   SkipPanelCollapsed,
   SkipPanelDefault,
@@ -24,7 +24,7 @@ import {
 import { inDocsFrame } from '../error-summary/error-summary.fixture.tsx'
 import { expectNoHorizontalOverflow } from '../theme-story-assertions.ts'
 
-// Components/SkipPanel: the headless SkipPanel, styled by @kvirn-ui/theme (contract:
+// Components/SkipPanel: the headless SkipPanel, styled by @kvirn/theme (contract:
 // skip-panel.a11y.md). The panel is hidden until focus is inside it, so every story is a fixture:
 // the panel, a line with a Home link, and the main content. The panel is fixed to the top of the
 // window, as on a real site. Each story writes the whole thing out, so its code stands alone. Press Tab in the canvas to show it. The ids start with the story's name: an

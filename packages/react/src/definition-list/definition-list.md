@@ -5,12 +5,12 @@ Rows of a term, a description and an optional action, as one native description 
 - Six parts: `DefinitionList.Root` (`<dl>`), `.Row` (`<div>`), `.Term` (`<dt>`), `.Description` (`<dd>`), `.Actions` (`<dd>`) and `.Change` (`<a>`). Also exported as `DefinitionListRoot`, `DefinitionListRow`, `DefinitionListTerm`, `DefinitionListDescription`, `DefinitionListActions` and `DefinitionListChange`.
 - No role, no ARIA on the list and no state. The `<dl>` with `<div>` rows is the native structure, so a screen reader says "term" and "definition" and keeps a term with its descriptions.
 - The Change link's text is `definitionList.change` ("Change"), and its accessible name is that word plus the row's term, "Change Name", so it is clear out of context (2.4.4) and starts with the visible text (2.5.3). The link's id and the term's id are wired by the Row.
-- Headless: no CSS. Every part renders its class (`kv-definition-list`, `kv-definition-list-row`, `-term`, `-description`, `-actions`, and `kv-link kv-definition-list-change`), and your `className` joins it. With `@kvirn-ui/theme/theme.css` imported, the rows have `border-subtle` lines and stack below `40rem`.
+- Headless: no CSS. Every part renders its class (`kv-definition-list`, `kv-definition-list-row`, `-term`, `-description`, `-actions`, and `kv-link kv-definition-list-change`), and your `className` joins it. With `@kvirn/theme/theme.css` imported, the rows have `border-subtle` lines and stack below `40rem`.
 
 ## Component
 
 ```tsx
-import { DefinitionList } from '@kvirn-ui/react'
+import { DefinitionList } from '@kvirn/ui'
 
 ;<DefinitionList.Root>
   <DefinitionList.Row>
@@ -47,7 +47,7 @@ Your part:
 ## Hook
 
 ```tsx
-import { useDefinitionList } from '@kvirn-ui/react'
+import { useDefinitionList } from '@kvirn/ui'
 
 function Answer({ label, value, href }: { label: string; value: string; href: string }) {
   const list = useDefinitionList()

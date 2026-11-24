@@ -9,7 +9,7 @@ A month as a grid of days, for choosing one date near today: a booking, a start 
 - After a month or year button the new month is announced, and after a day is chosen "{date} selected", both politely through the Announcer. Wrap the app in a `KvirnProvider`.
 
 ```tsx
-import { Calendar } from '@kvirn-ui/react'
+import { Calendar } from '@kvirn/ui'
 
 ;<Calendar.Root
   value={date}

@@ -1,5 +1,5 @@
 'use client'
-import { Field, Switch, useAnnouncer } from '@kvirn-ui/react'
+import { Field, Switch, useAnnouncer } from '@kvirn/ui'
 import { useState } from 'react'
 import { useSwitchTexts } from './texts.ts'
 

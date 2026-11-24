@@ -1,4 +1,4 @@
-import { Alert, Card, Icon, KvirnProvider, useFormat } from '@kvirn-ui/react'
+import { Alert, Card, Icon, KvirnProvider, useFormat } from '@kvirn/ui'
 import contract from '../../../../../packages/react/src/alert/alert.a11y.md?raw'
 import guide from '../../../../../packages/react/src/alert/alert.md?raw'
 import type { Meta, StoryObj } from '@storybook/react-vite'
@@ -29,7 +29,7 @@ import {
 import type { AlertFixtureLocale } from './alert.fixture.tsx'
 import { withLibraryIcons } from '../../icons.tsx'
 
-// Components/Alert: the headless Alert, styled by @kvirn-ui/theme/theme.css
+// Components/Alert: the headless Alert, styled by @kvirn/theme/theme.css
 // (design spec docs/design/alert.md). The Keyboard story is the dismissible example: the optional
 // close button is the alert's only focusable part.
 

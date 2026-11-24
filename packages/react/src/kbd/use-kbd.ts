@@ -1,7 +1,7 @@
 /** Spread on the Kbd's element. Only the part's class: Kbd adds no role, ARIA or state. */
 export interface KbdPartProps {
   /**
-   * The part's class, for `@kvirn-ui/theme` and your own CSS: `.kv-kbd`. Add a class of your own
+   * The part's class, for `@kvirn/theme` and your own CSS: `.kv-kbd`. Add a class of your own
    * next to it with `mergeProps`: class names join.
    */
   className: 'kv-kbd'

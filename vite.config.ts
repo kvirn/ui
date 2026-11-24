@@ -19,23 +19,22 @@ const tanstackStoreRestriction = {
 // @tanstack/table-core, subpaths included. Everything else uses core's wrappers.
 const tanstackVirtualRestriction = {
   group: ['@tanstack/virtual-core', '@tanstack/virtual-core/*'],
-  message: 'Import createListVirtualizer from @kvirn-ui/core instead.',
+  message: 'Import createListVirtualizer from @kvirn/core instead.',
 }
 const tanstackTableRestriction = {
   group: ['@tanstack/table-core', '@tanstack/table-core/*'],
-  message: 'Import useTable and the table re-exports from @kvirn-ui/core or @kvirn-ui/react.',
+  message: 'Import useTable and the table re-exports from @kvirn/core or @kvirn/ui.',
 }
 // ProseMirror is reached only through `@tiptap/pm/*`, so the editor has one copy of it (two copies
-// break `instanceof` and plugin keys silently). Tiptap lives in `@kvirn-ui/rich-text` and the
-// Storybook app only (Plan 0036): `@kvirn-ui/react` and `core` never import it.
+// break `instanceof` and plugin keys silently). Tiptap lives in `@kvirn/rich-text` and the
+// Storybook app only (Plan 0036): `@kvirn/ui` and `core` never import it.
 const prosemirrorRestriction = {
   group: ['prosemirror-*', 'prosemirror-*/*'],
   message: 'Import ProseMirror through @tiptap/pm/* so there is one copy of it.',
 }
 const tiptapRestriction = {
   group: ['@tiptap/*', '@tiptap/*/*'],
-  message:
-    'Tiptap is used in @kvirn-ui/rich-text only. Keep Tiptap code out of the other packages.',
+  message: 'Tiptap is used in @kvirn/rich-text only. Keep Tiptap code out of the other packages.',
 }
 const tanstackPatterns = [tanstackVirtualRestriction, tanstackTableRestriction]
 const editorPatterns = [prosemirrorRestriction, tiptapRestriction]

@@ -1,4 +1,4 @@
-import type { SliderProps, UseSliderOptions, UseSliderResult } from '@kvirn-ui/react'
+import type { SliderProps, UseSliderOptions, UseSliderResult } from '@kvirn/ui'
 import { propRows } from '../components/api-block.tsx'
 import type { ApiHook, AttributeRow } from '../components/api-block.tsx'
 

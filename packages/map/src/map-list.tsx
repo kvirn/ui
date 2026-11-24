@@ -1,4 +1,4 @@
-import type { MapPlace } from '@kvirn-ui/core'
+import type { MapPlace } from '@kvirn/core'
 import { useContext, useEffect, useMemo, useState } from 'react'
 import type { ComponentPropsWithRef, ReactElement, ReactNode } from 'react'
 import { joinClassNames } from './class-names.ts'

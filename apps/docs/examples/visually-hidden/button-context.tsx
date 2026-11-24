@@ -1,5 +1,5 @@
 'use client'
-import { Button, VisuallyHidden } from '@kvirn-ui/react'
+import { Button, VisuallyHidden } from '@kvirn/ui'
 import { useVisuallyHiddenTexts } from './texts.ts'
 
 export function ButtonContext() {

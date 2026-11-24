@@ -1,5 +1,5 @@
 'use client'
-import { ButtonGroup, Toolbar } from '@kvirn-ui/react'
+import { ButtonGroup, Toolbar } from '@kvirn/ui'
 import { useButtonGroupTexts } from './texts.ts'
 
 export function InAToolbar() {

@@ -1,4 +1,4 @@
-import type { ListItemProps, ListRootProps } from '@kvirn-ui/react'
+import type { ListItemProps, ListRootProps } from '@kvirn/ui'
 import { propRows } from '../components/api-block.tsx'
 import type { AttributeRow } from '../components/api-block.tsx'
 

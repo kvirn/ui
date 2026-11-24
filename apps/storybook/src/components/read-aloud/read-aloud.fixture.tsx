@@ -1,5 +1,5 @@
-import type { ReadAloudEngine, ReadAloudError, ReadAloudVoice } from '@kvirn-ui/core'
-import { pause, play, settings, stop } from '@kvirn-ui/icons'
+import type { ReadAloudEngine, ReadAloudError, ReadAloudVoice } from '@kvirn/core'
+import { pause, play, settings, stop } from '@kvirn/icons'
 import {
   Breadcrumb,
   Container,
@@ -8,7 +8,7 @@ import {
   KvirnProvider,
   Popover,
   Tooltip,
-} from '@kvirn-ui/react'
+} from '@kvirn/ui'
 import {
   ApplicationLogo,
   LanguageLinks,
@@ -17,12 +17,12 @@ import {
   PageHeader,
   SiteHeader,
   SiteSearch,
-} from '@kvirn-ui/patterns'
-import { kvirnbyMark } from '@kvirn-ui/patterns/fixtures'
-import { ReadAloud, useReadAloud } from '@kvirn-ui/read-aloud'
-import { en } from '@kvirn-ui/i18n/en'
-import { fi } from '@kvirn-ui/i18n/fi'
-import { sv } from '@kvirn-ui/i18n/sv'
+} from '@kvirn/patterns'
+import { kvirnbyMark } from '@kvirn/patterns/fixtures'
+import { ReadAloud, useReadAloud } from '@kvirn/read-aloud'
+import { en } from '@kvirn/i18n/en'
+import { fi } from '@kvirn/i18n/fi'
+import { sv } from '@kvirn/i18n/sv'
 import type { Decorator } from '@storybook/react-vite'
 import type { ReactNode } from 'react'
 import { useMemo, useRef } from 'react'

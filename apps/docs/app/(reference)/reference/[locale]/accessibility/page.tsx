@@ -1,5 +1,5 @@
-import { PageFrameMain, PageToolsRoot } from '@kvirn-ui/patterns'
-import { Heading, Link, ListItem, ListRoot, Prose, Stack } from '@kvirn-ui/react'
+import { PageFrameMain, PageToolsRoot } from '@kvirn/patterns'
+import { Heading, Link, ListItem, ListRoot, Prose, Stack } from '@kvirn/ui'
 import type { Metadata } from 'next'
 import { notFound } from 'next/navigation'
 import { referenceStatementMessages } from '../../../../../messages/reference-statement.ts'

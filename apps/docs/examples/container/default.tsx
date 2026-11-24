@@ -1,5 +1,5 @@
 'use client'
-import { Card, Container, Heading } from '@kvirn-ui/react'
+import { Card, Container, Heading } from '@kvirn/ui'
 import { useContainerTexts } from './texts.ts'
 
 export function DefaultContainer() {

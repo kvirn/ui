@@ -1,14 +1,14 @@
-import { Divider } from '@kvirn-ui/react'
+import { Divider } from '@kvirn/ui'
 import contract from '../../../../../packages/react/src/divider/divider.a11y.md?raw'
 import guide from '../../../../../packages/react/src/divider/divider.md?raw'
 import type { CSSProperties } from 'react'
 import type { Meta, StoryObj } from '@storybook/react-vite'
 import { expect } from 'storybook/test'
-import { en } from '@kvirn-ui/i18n/en'
+import { en } from '@kvirn/i18n/en'
 import { InLanguage } from '../../fixture-language.tsx'
 import { usageGuide } from '../../docs-source.ts'
 
-// Components/Content/Divider: the headless Divider, styled by @kvirn-ui/theme. It is static
+// Components/Content/Divider: the headless Divider, styled by @kvirn/theme. It is static
 // content, so there's no focusable part of its own and no Keyboard story.
 
 const meta = {

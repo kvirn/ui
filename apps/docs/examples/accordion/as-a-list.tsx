@@ -1,5 +1,5 @@
 'use client'
-import { Accordion } from '@kvirn-ui/react'
+import { Accordion } from '@kvirn/ui'
 import { useAccordionTexts } from './texts.ts'
 
 export function AsAList() {

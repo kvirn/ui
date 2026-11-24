@@ -1,5 +1,5 @@
 'use client'
-import { Button, useFormat, useProgress } from '@kvirn-ui/react'
+import { Button, useFormat, useProgress } from '@kvirn/ui'
 import { useEffect, useState } from 'react'
 import { useProgressTexts } from './texts.ts'
 

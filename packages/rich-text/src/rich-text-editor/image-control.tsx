@@ -1,6 +1,6 @@
 'use client'
-import { Button, ButtonGroup, Checkbox, Field, Popover, TextInput } from '@kvirn-ui/react'
-import { useMessages } from '@kvirn-ui/react/internal'
+import { Button, ButtonGroup, Checkbox, Field, Popover, TextInput } from '@kvirn/ui'
+import { useMessages } from '@kvirn/ui/internal'
 import type { Editor } from '@tiptap/core'
 import { useEffect, useRef, useState } from 'react'
 import type { ReactElement } from 'react'

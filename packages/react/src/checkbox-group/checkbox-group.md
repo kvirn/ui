@@ -8,7 +8,7 @@ A CheckboxGroup is one question with several answers that can all be true: "How 
 - Each option is a `Checkbox` with a `value`, directly in its own `CheckboxGroup.Option` before the `Field.Label`. The group gives it its `name` and its checked state, and reports the next values. An Option has no "(optional)" marker and no error message of its own: the marker belongs to the question, so the legend ends with "(optional)" in English when the group isn't `required`.
 - **Controlled:** pass `value` (an array of the checked values) and `onValueChange(values, { reason: 'input', event })`. **Uncontrolled:** pass `defaultValue` and `name`, and the browser keeps the state; a form submit sends every checked box under the group's `name` (`FormData.getAll`).
 - Each checkbox is its own Tab stop. The group is not a composite widget, and the arrow keys do nothing.
-- Headless: no CSS. It renders `kv-checkbox-group` next to `kv-fieldset`, and your `className` joins them. With `@kvirn-ui/theme/theme.css` imported it is styled.
+- Headless: no CSS. It renders `kv-checkbox-group` next to `kv-fieldset`, and your `className` joins them. With `@kvirn/theme/theme.css` imported it is styled.
 
 ## API
 
@@ -52,7 +52,7 @@ These are the [Fieldset's](../fieldset/fieldset.md) parts under the group's name
 ## Component
 
 ```tsx
-import { Checkbox, CheckboxGroup, Field } from '@kvirn-ui/react'
+import { Checkbox, CheckboxGroup, Field } from '@kvirn/ui'
 
 ;<CheckboxGroup.Root
   name="contact"
@@ -93,7 +93,7 @@ Your part:
 ## Hook
 
 ```tsx
-import { useCheckboxGroup, useFieldset } from '@kvirn-ui/react'
+import { useCheckboxGroup, useFieldset } from '@kvirn/ui'
 
 function Contact({ value, setValue }: { value: string[]; setValue: (value: string[]) => void }) {
   const fieldset = useFieldset({ group: true })

@@ -1,7 +1,7 @@
 /** Spread on the Section's element. Only the part's class: Section adds no role, ARIA or state. */
 export interface SectionPartProps {
   /**
-   * The part's class, for `@kvirn-ui/theme` and your own CSS: `.kv-section`. Add a modifier class
+   * The part's class, for `@kvirn/theme` and your own CSS: `.kv-section`. Add a modifier class
    * of your own next to it with `mergeProps`: class names join.
    */
   className: 'kv-section'

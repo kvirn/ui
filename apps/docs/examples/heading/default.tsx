@@ -1,5 +1,5 @@
 'use client'
-import { Heading } from '@kvirn-ui/react'
+import { Heading } from '@kvirn/ui'
 import { useHeadingTexts } from './texts.ts'
 
 export function DefaultHeading() {

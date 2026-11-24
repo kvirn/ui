@@ -1,4 +1,4 @@
-# @kvirn-ui/theme
+# @kvirn/theme
 
 The optional default theme for KvirnUI: one hand-written, readable CSS file, `theme.css`. The headless packages ship no CSS. This file styles them through the classes they render and their state attributes.
 
@@ -9,12 +9,12 @@ It is designed and tested to meet WCAG 2.2 AA, but check your own service.
 ### 1. Import it
 
 ```sh
-pnpm add @kvirn-ui/theme
+pnpm add @kvirn/theme
 ```
 
 ```ts
 // Once, for example in your root layout.
-import '@kvirn-ui/theme/theme.css'
+import '@kvirn/theme/theme.css'
 ```
 
 Every KvirnUI component on the page is now styled. Remove the import, and they are unstyled again.
@@ -22,8 +22,8 @@ Every KvirnUI component on the page is now styled. Remove the import, and they a
 Optionally start from a blank page first: `reset.css` is Tailwind CSS's Preflight in plain CSS (headings, lists, links, images and form controls lose their browser styles). It sits in its own layer below the theme, so the import order doesn't matter. Lists keep their markers and an Icon stays inline. The theme works without it.
 
 ```ts
-import '@kvirn-ui/theme/reset.css'
-import '@kvirn-ui/theme/theme.css'
+import '@kvirn/theme/reset.css'
+import '@kvirn/theme/theme.css'
 ```
 
 - Every component part renders its own class: `kv-button`, `kv-link`, `kv-link-new-tab-notice`, `kv-link-icon`, `kv-navigation`, `kv-navigation-list`, `kv-navigation-item`, `kv-table-of-contents`, `kv-table-of-contents-list`, `kv-table-of-contents-item`, `kv-card`, `kv-card-header`, `kv-card-body`, `kv-card-footer`, `kv-section`, `kv-alert` and its parts (`kv-alert-icon`, `kv-alert-title`, `kv-alert-status`, `kv-alert-body`, `kv-alert-actions`, `kv-alert-close`), `kv-icon`, and for forms `kv-field`, `kv-field-label`, `kv-field-optional`, `kv-field-help-text`, `kv-field-error-message`, `kv-field-error-prefix`, `kv-fieldset`, `kv-fieldset-legend` and `kv-input`. Your `className` joins it, never replaces it. The theme selects on it.
@@ -109,7 +109,7 @@ If a brand colour fails as a fill, use it in the header band or the logo, and bu
 
 ### 3. Replace it, or skip it
 
-- **Your own copy.** Copy `node_modules/@kvirn-ui/theme/theme.css` into your project, edit it, and import your copy instead. It's meant to be read: numbered sections, the palette first, then the themes, then each component.
+- **Your own copy.** Copy `node_modules/@kvirn/theme/theme.css` into your project, edit it, and import your copy instead. It's meant to be read: numbered sections, the palette first, then the themes, then each component.
 - **No theme.** Skip it, and style `.kv-button`, `[data-disabled]`, `[data-focus-visible]`, `.kv-button--primary` and so on with Tailwind or your own CSS.
 
 ## Site-wide defaults
@@ -209,7 +209,7 @@ After changing colours, measure them. `checkThemeCss` reads a theme file the way
 
 ```ts
 import { readFileSync } from 'node:fs'
-import { checkThemeCss } from '@kvirn-ui/theme'
+import { checkThemeCss } from '@kvirn/theme'
 
 const problems = checkThemeCss(readFileSync('src/styles/theme.css', 'utf8'))
 // [] when everything passes, or messages like
@@ -262,7 +262,7 @@ In this repository, `vp run theme:check` runs it on `theme.css`.
 - 14. Table
 - 15. Rich text editor
 - 16. Display settings kv-display-settings: colour scheme, contrast and motion, as panels, a
-- `patterns.css`: the classes of `@kvirn-ui/patterns`, imported at the top of the file
+- `patterns.css`: the classes of `@kvirn/patterns`, imported at the top of the file
 
 The site-wide defaults are listed at the top of the file.
 

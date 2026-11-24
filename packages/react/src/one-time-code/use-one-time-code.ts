@@ -1,6 +1,6 @@
-import { masks } from '@kvirn-ui/core'
-import type { Mask } from '@kvirn-ui/core'
-import type { KvirnMessages } from '@kvirn-ui/i18n'
+import { masks } from '@kvirn/core'
+import type { Mask } from '@kvirn/core'
+import type { KvirnMessages } from '@kvirn/i18n'
 import {
   useCallback,
   useContext,

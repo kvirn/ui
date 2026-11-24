@@ -1,6 +1,6 @@
 'use client'
 
-import { Badge, Card, DefinitionList, Heading, Link, useFormat } from '@kvirn-ui/react'
+import { Badge, Card, DefinitionList, Heading, Link, useFormat } from '@kvirn/ui'
 import { kvirnbyCaseBadgeVariants } from '../../fixtures/my-pages.ts'
 import type { KvirnbyCase } from '../../fixtures/my-pages.ts'
 

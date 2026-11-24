@@ -4,13 +4,13 @@
 
 A FileUpload attaches files to a form. **One native button opens the system file dialog**: that is the way in for the keyboard, voice, switch and touch. A drop zone around it is an extra for devices that drag. Behind the button is a hidden native `<input type="file">`.
 
-- Parts: `FileUpload.Root`, `.Trigger`, `.Input`, `.DropZone`, `.DropHint`, `.Limits`, `.Rejections`, `.Summary`, `.List`, `.Item`, `.Preview`, `.Name`, `.Type`, `.Size`, `.Status`, `.Progress`, `.ItemError`, `.Actions`, `.CancelButton`, `.RetryButton` and `.RemoveButton`. Each is also exported on its own (`FileUploadRoot`, …), and the hook is `useFileUpload`. The state machine is `createFileUpload` in `@kvirn-ui/core`.
+- Parts: `FileUpload.Root`, `.Trigger`, `.Input`, `.DropZone`, `.DropHint`, `.Limits`, `.Rejections`, `.Summary`, `.List`, `.Item`, `.Preview`, `.Name`, `.Type`, `.Size`, `.Status`, `.Progress`, `.ItemError`, `.Actions`, `.CancelButton`, `.RetryButton` and `.RemoveButton`. Each is also exported on its own (`FileUploadRoot`, …), and the hook is `useFileUpload`. The state machine is `createFileUpload` in `@kvirn/core`.
 - **Every limit is checked here,** because a drop and "All files" skip the browser's checks: type (MIME type and extension), largest and smallest size, how many files, empty files, duplicates, folders, and your own `validate(file)`.
 - **A refused file never enters the list.** It is named under the button with how to fix it ("large.pdf is 2 MB. Choose a file that is 1 MB or smaller. To make a photo or scan smaller, save or scan it again at a lower resolution.", for the limit 1 MB and the language `en`). The Field is not marked invalid by it: you decide whether it blocks the form, from `onFilesReject`.
 - **Adding appends,** except with `multiple` off, where a new file replaces the old one.
 - **Progress is a native `<progress>`,** shown only while a file uploads, with the percentage as text. A file of unknown size gets no `<progress>` but a decorative `<span class="kv-progress-track" aria-hidden="true">` (a moving bar that loops while the upload runs and rests under reduced motion; for WCAG 2.2.2 see [Moving indicators and WCAG 2.2.2](/foundation/theming#moving-indicators)). Progress is never announced: only starts, finishes and failures are, in one polite sentence per batch.
 - **Focus never falls to the page.** Removing a file, or a button going away when an upload ends, moves focus to the next item (then the previous, then the button), never to a destructive button.
-- Headless: no CSS. The parts render `kv-file-upload` and one class per part, and your `className` joins them. With `@kvirn-ui/theme/theme.css` imported they are styled.
+- Headless: no CSS. The parts render `kv-file-upload` and one class per part, and your `className` joins them. With `@kvirn/theme/theme.css` imported they are styled.
 
 > **Client checks aren't security.** Check type, size and content again on the server. Photos can carry location data (EXIF), which your server should strip.
 
@@ -56,7 +56,7 @@ A FileUpload attaches files to a form. **One native button opens the system file
 ## Component
 
 ```tsx
-import { Field, FileUpload } from '@kvirn-ui/react'
+import { Field, FileUpload } from '@kvirn/ui'
 
 ;<Field.Root>
   <Field.Label>Attachments</Field.Label>

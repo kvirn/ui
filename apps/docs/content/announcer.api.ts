@@ -1,5 +1,5 @@
-import type { AnnounceOptions } from '@kvirn-ui/core'
-import type { UseAnnouncerResult } from '@kvirn-ui/react'
+import type { AnnounceOptions } from '@kvirn/core'
+import type { UseAnnouncerResult } from '@kvirn/ui'
 import { propRows } from '../components/api-block.tsx'
 
 export const useAnnouncerResultRows = propRows<UseAnnouncerResult>({

@@ -1,5 +1,5 @@
 'use client'
-import { Pagination } from '@kvirn-ui/react'
+import { Pagination } from '@kvirn/ui'
 import { usePaginationTexts } from './texts.ts'
 
 const currentPage = 7

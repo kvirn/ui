@@ -1,4 +1,4 @@
-import { PageFrameMain } from '@kvirn-ui/patterns'
+import { PageFrameMain } from '@kvirn/patterns'
 import {
   CardBody,
   CardRoot,
@@ -11,7 +11,7 @@ import {
   ListItem,
   ListRoot,
   Stack,
-} from '@kvirn-ui/react'
+} from '@kvirn/ui'
 import type { Metadata } from 'next'
 import { notFound } from 'next/navigation'
 import { referenceContactMessages } from '../../../../../../messages/reference-contact.ts'

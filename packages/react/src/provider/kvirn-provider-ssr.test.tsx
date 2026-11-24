@@ -1,4 +1,4 @@
-import { themeStorageKey } from '@kvirn-ui/core'
+import { themeStorageKey } from '@kvirn/core'
 import { hydrateRoot } from 'react-dom/client'
 import type { Root } from 'react-dom/client'
 import { renderToString } from 'react-dom/server'

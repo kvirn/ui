@@ -9,7 +9,7 @@ import {
   Progress,
   Stack,
   useFormat,
-} from '@kvirn-ui/react'
+} from '@kvirn/ui'
 import { kvirnbyCases } from '../../fixtures/my-pages.ts'
 import { PageFrame } from '../../page-frame/page-frame.tsx'
 import { ServiceLink } from '../../navigation-and-promotion/service-link/service-link.tsx'

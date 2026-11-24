@@ -1,5 +1,5 @@
 'use client'
-import { Icon } from '@kvirn-ui/react'
+import { Icon } from '@kvirn/ui'
 import { useIconTexts } from './texts.ts'
 
 export function WithLabel() {

@@ -10,12 +10,12 @@ A trail from the home page down to the page you are on: where you are, and the w
 - The separators are drawn by the theme and never read by a screen reader. `variant="slash"` swaps the chevron for a slash. `separator` takes your own element, for example an `<Icon>`: it is rendered in every item (the theme hides the first one, and a custom theme must too), hidden from screen readers, so it must be decoration. The default `chevron-forward` mirrors itself in RTL; a registered or own icon needs `mirrorInRtl`. The trail wraps at a narrow width and never collapses into "…": a hidden level is a hidden way out.
 - Also `useBreadcrumb({ variant, label, messages })`, which returns `rootProps`, `listProps`, `itemProps`, `currentProps`, `separatorProps` (for your own separator `<span>`) and the resolved `label` for your own elements.
 - Attributes and the `ref` reach each element. A `className` joins the part's class. `Breadcrumb.Link` takes `as` like `Link.Root`; the other parts have no `as`, because the landmark and the ordered list are fixed.
-- Headless: no CSS. With `@kvirn-ui/theme/theme.css` it is a wrapping row with chevron separators (mirrored in RTL).
+- Headless: no CSS. With `@kvirn/theme/theme.css` it is a wrapping row with chevron separators (mirrored in RTL).
 
 ## Component
 
 ```tsx
-import { Breadcrumb } from '@kvirn-ui/react'
+import { Breadcrumb } from '@kvirn/ui'
 
 ;<Breadcrumb.Root>
   <Breadcrumb.List>
@@ -42,7 +42,7 @@ A slash, or your own separator:
 ## Hook
 
 ```tsx
-import { useBreadcrumb } from '@kvirn-ui/react'
+import { useBreadcrumb } from '@kvirn/ui'
 
 const breadcrumb = useBreadcrumb()
 <nav {...breadcrumb.rootProps}>

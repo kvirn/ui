@@ -1,5 +1,5 @@
 'use client'
-import { Link, Navigation, Section } from '@kvirn-ui/react'
+import { Link, Navigation, Section } from '@kvirn/ui'
 import { OwnPackageMark, OwnPackageNote } from './own-package-badge.tsx'
 import type { SiteGroup, SitePage, SiteSection } from './site-sections.ts'
 

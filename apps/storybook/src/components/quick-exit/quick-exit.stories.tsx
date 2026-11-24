@@ -1,4 +1,4 @@
-import { QuickExit } from '@kvirn-ui/react'
+import { QuickExit } from '@kvirn/ui'
 import contract from '../../../../../packages/react/src/quick-exit/quick-exit.a11y.md?raw'
 import guide from '../../../../../packages/react/src/quick-exit/quick-exit.md?raw'
 import type { Meta, StoryObj } from '@storybook/react-vite'
@@ -7,7 +7,7 @@ import { expect, fn } from 'storybook/test'
 import { usageGuide } from '../../docs-source.ts'
 import { withQuickExitMessages } from './quick-exit.fixture.tsx'
 
-// Components/QuickExit: the headless QuickExit, styled by @kvirn-ui/theme (contract:
+// Components/QuickExit: the headless QuickExit, styled by @kvirn/theme (contract:
 // quick-exit.a11y.md). Every story passes its own `navigate`, so a story never leaves Storybook.
 // The real exit hides the page, so the stand-in shows it again and logs the destination.
 

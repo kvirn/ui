@@ -1,11 +1,11 @@
 // kv-lang-ok-file: the tests run in sv and fi because the box order, month and weekday names and the built-in labels are locale behaviour
-import { en } from '@kvirn-ui/i18n/en'
-import { fi } from '@kvirn-ui/i18n/fi'
-import { nb } from '@kvirn-ui/i18n/nb'
-import { nn } from '@kvirn-ui/i18n/nn'
-import { sv } from '@kvirn-ui/i18n/sv'
-import { expectNoA11yViolations } from '@kvirn-ui/testing'
-import { readAloud, readAnnouncements } from '@kvirn-ui/testing/read-aloud'
+import { en } from '@kvirn/i18n/en'
+import { fi } from '@kvirn/i18n/fi'
+import { nb } from '@kvirn/i18n/nb'
+import { nn } from '@kvirn/i18n/nn'
+import { sv } from '@kvirn/i18n/sv'
+import { expectNoA11yViolations } from '@kvirn/testing'
+import { readAloud, readAnnouncements } from '@kvirn/testing/read-aloud'
 import { useState } from 'react'
 import { afterEach, beforeEach, describe, expect, test, vi } from 'vite-plus/test'
 import type { MockInstance } from 'vite-plus/test'
@@ -18,7 +18,7 @@ import { Field } from '../field/field.tsx'
 import { Fieldset } from '../fieldset/fieldset.tsx'
 import { KvirnProvider } from '../provider/kvirn-provider.tsx'
 import { TextInput } from '../text-input/text-input.tsx'
-import { masks } from '@kvirn-ui/core'
+import { masks } from '@kvirn/core'
 import {
   dateInputValueToIsoDate,
   isoDateToDateInputValue,

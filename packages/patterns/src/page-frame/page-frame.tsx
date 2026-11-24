@@ -1,7 +1,7 @@
 'use client'
 
-import { Container, Grid, SkipLink, mergeProps } from '@kvirn-ui/react'
-import type { ContainerProps, GridItemProps } from '@kvirn-ui/react'
+import { Container, Grid, SkipLink, mergeProps } from '@kvirn/ui'
+import type { ContainerProps, GridItemProps } from '@kvirn/ui'
 import { useContext, useMemo } from 'react'
 import type { ComponentPropsWithRef, ReactElement } from 'react'
 import { PageFrameBodyContext, PageFrameContext } from './page-frame-context.ts'

@@ -1,4 +1,4 @@
-import { Container } from '@kvirn-ui/react'
+import { Container } from '@kvirn/ui'
 import type { ReactNode } from 'react'
 import { expect } from 'storybook/test'
 

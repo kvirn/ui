@@ -1,5 +1,5 @@
-import { kvirnbyTopTasks, kvirnbyTopTasksFinnish, type TopTask } from '@kvirn-ui/patterns/fixtures'
-import { Grid, Heading, Link } from '@kvirn-ui/react'
+import { kvirnbyTopTasks, kvirnbyTopTasksFinnish, type TopTask } from '@kvirn/patterns/fixtures'
+import { Grid, Heading, Link } from '@kvirn/ui'
 import type { Meta, StoryObj } from '@storybook/react-vite'
 import contract from '../../../../../packages/patterns/src/navigation-and-promotion/top-tasks/top-tasks.a11y.md?raw'
 import { expect, userEvent } from 'storybook/test'

@@ -49,7 +49,7 @@ div      [button.kv-button "Copy the case number"] [span.kv-copy-status ✓ Copi
 
 ```
 p.kv-code-block-label      Install
-pre.kv-code-block-code     pnpm add @kvirn-ui/react
+pre.kv-code-block-code     pnpm add @kvirn/ui
 [button.kv-button.kv-code-block-copy "Copy"]  [span.kv-copy-status ✓ Copied]
 ```
 

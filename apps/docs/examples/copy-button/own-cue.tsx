@@ -1,5 +1,5 @@
 'use client'
-import { useCopyButton } from '@kvirn-ui/react'
+import { useCopyButton } from '@kvirn/ui'
 import { useRef } from 'react'
 import { useCopyButtonTexts } from './texts.ts'
 

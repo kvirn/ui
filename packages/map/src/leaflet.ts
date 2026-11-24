@@ -10,7 +10,7 @@ import {
   type MapProviderEventName,
   type MapProviderEvents,
   type MapView,
-} from '@kvirn-ui/core'
+} from '@kvirn/core'
 import {
   map as createMap,
   tileLayer,

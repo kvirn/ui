@@ -1,5 +1,5 @@
 'use client'
-import { Heading, Section } from '@kvirn-ui/react'
+import { Heading, Section } from '@kvirn/ui'
 import { useSectionTexts } from './texts.ts'
 
 export function DefaultSection() {

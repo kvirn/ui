@@ -1,4 +1,4 @@
-import { Button, Card } from '@kvirn-ui/react'
+import { Button, Card } from '@kvirn/ui'
 import contract from '../../../../../packages/react/src/card/card.a11y.md?raw'
 import guide from '../../../../../packages/react/src/card/card.md?raw'
 import type { Meta, StoryObj } from '@storybook/react-vite'
@@ -17,7 +17,7 @@ import {
 } from './card.fixture.tsx'
 import type { CardFixtureLocale } from './card.fixture.tsx'
 
-// Components/Card: the headless Card, styled by @kvirn-ui/theme/theme.css (design
+// Components/Card: the headless Card, styled by @kvirn/theme/theme.css (design
 // spec docs/design/card.md).
 
 const localeOf = (globals: Record<string, unknown>): CardFixtureLocale => {

@@ -1,6 +1,6 @@
 'use client'
-import { Toolbar } from '@kvirn-ui/react'
-import { useMessages } from '@kvirn-ui/react/internal'
+import { Toolbar } from '@kvirn/ui'
+import { useMessages } from '@kvirn/ui/internal'
 import type { Editor } from '@tiptap/core'
 import type { Node as ProseMirrorNode } from '@tiptap/pm/model'
 import type { ReactElement } from 'react'

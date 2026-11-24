@@ -19,7 +19,7 @@ Load it with `accessibility` (what the component must expose) and `testing` (how
 - **Types:** export `UseXOptions`, `UseXResult`, `XPartProps` (the hook's prop object) and `XProps` (the component's). A part's element is chosen with `as` or not at all (see "Parts and `as`").
 - **Components take `ref` as a normal prop** (`ComponentPropsWithRef<'button'>`, React 19). A part that needs its own ref merges it with the consumer's through `useMergedRef(consumerRef, ownRef)` (internal, in `merge-props/`). It is stable while the refs are, so React does not detach and re-attach it each render.
 - **Subscribe to a core store with `useStoreSelector(store, selector)`** (internal, `useSyncExternalStore`). Consumers never call `setState`. Don't use `@tanstack/react-store`.
-- **Internal hooks are not exported** from the public entry: `useStoreSelector`, `useMessages`, `useEnv`, `useLinkComponent`. The one exception is for Kvirn's own packages: `@kvirn-ui/react/internal` (`src/internal.ts`) exports `useMessages`, the Field's context and `useDescriptionPart`, `useFocusVisible` and a few helpers to `@kvirn-ui/rich-text` (Plan 0036). It is unstable, documented as for Kvirn packages only, and `internal.test.tsx` proves the public entry never re-exports any of it. Add to it only when a Kvirn package needs the piece.
+- **Internal hooks are not exported** from the public entry: `useStoreSelector`, `useMessages`, `useEnv`, `useLinkComponent`. The one exception is for Kvirn's own packages: `@kvirn/ui/internal` (`src/internal.ts`) exports `useMessages`, the Field's context and `useDescriptionPart`, `useFocusVisible` and a few helpers to `@kvirn/rich-text` (Plan 0036). It is unstable, documented as for Kvirn packages only, and `internal.test.tsx` proves the public entry never re-exports any of it. Add to it only when a Kvirn package needs the piece.
 - **A native input control shares `useFieldControl`** (`field/use-field-control.ts`, internal, Plan 0098): the Field's wiring, `data-disabled`, `data-focused`, `data-focus-visible` and the focus handlers, with `FieldControlOptions<TDetails>` (`disabled`, `onValueChange`) and `FieldControlState` (`isInvalid`, `isRequired`, `isDisabled`, `isFocused`, `isFocusVisible`) as the shared option and result types. `useTextInput`, `useTextarea`, `useNumberInput` and `usePhoneInput` extend them and add only their own part props. A new native input control calls it rather than restating the wiring. Each keeps its own hook and part (never a merged `useInput`). Masked controls also extend `MaskBehaviourOptions` (`announceRejections`, `messages`) and `MaskedInputPartProps` from `mask/use-mask.ts`.
 
 ## Parts and `as`
@@ -89,7 +89,7 @@ Exception: `Grid.Root` renders two elements, an internal `<div class="kv-grid-co
 - **Namespaces** are built with `Object.assign(Root, { … })` or a frozen object (`as const`).
 - **`displayName` is set on every function component** (`FieldLabel.displayName = 'Field.Label'`).
 
-## Patterns (`@kvirn-ui/patterns`)
+## Patterns (`@kvirn/patterns`)
 
 A pattern wraps shipped components into a feature (Plan 0095, D9). It is a compound component, and the content is children, as literal JSX:
 
@@ -98,7 +98,7 @@ A pattern wraps shipped components into a feature (Plan 0095, D9). It is a compo
 - **A part is one native element or one library component,** takes `className` and the rest of the element's props (`mergeProps`), and `as` only where a link or a component is swapped (a router link).
 - **Props are for behaviour and state:** `current`, `defaultOpen`, `action`, `name`, `messages`. DOM order is children order: no `position` or `order` prop.
 - **The pattern owns what the adopter would get wrong:** open state, Escape, focus after close and close on a link click, held in context with a `data-*` attribute as the state hook.
-- **A pattern holds no text** (Plan 0095, D10). Visible text is a child; a landmark or control name is a `label` (or `aria-label`) prop forwarded to the shipped part. The only strings from `@kvirn-ui/i18n` are those a shipped part already owns (alert close, copy and read-aloud feedback): a pattern adds no key.
+- **A pattern holds no text** (Plan 0095, D10). Visible text is a child; a landmark or control name is a `label` (or `aria-label`) prop forwarded to the shipped part. The only strings from `@kvirn/i18n` are those a shipped part already owns (alert close, copy and read-aloud feedback): a pattern adds no key.
 - **Few tests.** A pattern composes tested components, so a test proves only behaviour the pattern adds. A `.a11y.md` row for composed behaviour names the shipped component's test.
 - **The `fixtures` export is assets only** (images, marks). Stories write the composition as literal JSX.
 
@@ -135,7 +135,7 @@ Rules for the catalog and locales are in `docs/architecture.md`, Internationalis
 - **An empty or whitespace override** (string, or a function's result) warns in development and falls through. An accessible name is never empty. Empty, whitespace-only or boolean children fall through to the message too.
 - **A key resolved from `en` while the locale is not `en`** warns once in development.
 - **Text keys are `TextMessage`** (`string | () => string`). A key with parameters is a function `(values, format)`. `useMessages` returns text as `string` and parameterised keys as `(values) => string`, with the locale's formatter bound.
-- **A number, date or list outside a message comes from `useFormat()`** (public, Plan 0046): the same formatter, so a value reads the same everywhere. Never `new Intl.NumberFormat(locale)` with the locale read by hand in a component, a fixture or an example. `format.date` takes an instant (`Date` or milliseconds, in the provider's `timeZone`) or a calendar date (`'YYYY-MM-DD'`, shown in UTC and never moved). A server component can't call a hook: use `createMessageFormat({ locale, timeZone })` from `@kvirn-ui/core`.
+- **A number, date or list outside a message comes from `useFormat()`** (public, Plan 0046): the same formatter, so a value reads the same everywhere. Never `new Intl.NumberFormat(locale)` with the locale read by hand in a component, a fixture or an example. `format.date` takes an instant (`Date` or milliseconds, in the provider's `timeZone`) or a calendar date (`'YYYY-MM-DD'`, shown in UTC and never moved). A server component can't call a hook: use `createMessageFormat({ locale, timeZone })` from `@kvirn/core`.
 - **Messages are plain strings, never JSX.** Changing a visible label is the adopter's job for WCAG 2.5.3.
 - **No hard-coded visible or announced text,** including `aria-label`. Developer warnings are not user text (below).
 - **List the component's message keys** in its `<name>.a11y.md`.
@@ -145,7 +145,7 @@ Rules for the catalog and locales are in `docs/architecture.md`, Internationalis
 An app declares types once, and every component picks them up.
 
 ```ts
-declare module '@kvirn-ui/react' {
+declare module '@kvirn/ui' {
   interface Register {
     linkComponent: typeof NextLink
     icons: typeof icons
@@ -154,7 +154,7 @@ declare module '@kvirn-ui/react' {
 ```
 
 - **Router links:** `<KvirnProvider linkComponent={NextLink}>` registers the router's link. `Link` always renders a native `<a href>` through it. `LinkProps` derives from the registered component, and falls back to `<a>` props without augmentation. A part's `as` overrides it per instance. The registered component must forward its ref and render an `<a>`, otherwise a development warning fires. KvirnUI adds `aria-current`, `rel` for new tabs and the new-tab notice. It has no router dependency.
-- **Icons:** `defineIcons(entries)` returns its argument typed and frozen. `<KvirnProvider icons iconDefaults>` registers them. Nested providers merge `icons` by name and `iconDefaults` by field. `Register['icons']` makes `IconName` the registered names (without it, `string`). The icon rules are in the `Icon` docs. There are no default icons (Plan 0130): `<Icon name>` resolves the registry, then the `icon` prop, then warns. A component that draws an icon imports it and passes both, `<Icon name="close" icon={close} />`, so it tree-shakes and a registered `close` still replaces it app-wide. An entry is `IconData` (from `@kvirn-ui/icons`, which depends on nothing), a component or `{ component, mirrorInRtl }`. The drawn library is `@kvirn-ui/icons` (public, no dependencies): named icons from `.` (`defineIcons({ calendar })`), `allIcons` and `iconNames` from `./all`. Its `icons` message group (`icons.<camelName>`, in `@kvirn-ui/i18n`) holds the labels of icons that stand alone; `Icon` never reads it by itself, because an icon beside text must stay decorative: `label={useIconLabel('city-hall')}` (kebab-case name, `string | undefined`; second argument `messages` overrides per instance) names one that stands alone.
+- **Icons:** `defineIcons(entries)` returns its argument typed and frozen. `<KvirnProvider icons iconDefaults>` registers them. Nested providers merge `icons` by name and `iconDefaults` by field. `Register['icons']` makes `IconName` the registered names (without it, `string`). The icon rules are in the `Icon` docs. There are no default icons (Plan 0130): `<Icon name>` resolves the registry, then the `icon` prop, then warns. A component that draws an icon imports it and passes both, `<Icon name="close" icon={close} />`, so it tree-shakes and a registered `close` still replaces it app-wide. An entry is `IconData` (from `@kvirn/icons`, which depends on nothing), a component or `{ component, mirrorInRtl }`. The drawn library is `@kvirn/icons` (public, no dependencies): named icons from `.` (`defineIcons({ calendar })`), `allIcons` and `iconNames` from `./all`. Its `icons` message group (`icons.<camelName>`, in `@kvirn/i18n`) holds the labels of icons that stand alone; `Icon` never reads it by itself, because an icon beside text must stay decorative: `label={useIconLabel('city-hall')}` (kebab-case name, `string | undefined`; second argument `messages` overrides per instance) names one that stands alone.
 - **The next registry follows the same shape:** an interface in `provider/register.ts`, a conditional type that falls back to the plain default, a provider prop.
 
 ## Developer warnings
@@ -170,7 +170,7 @@ declare module '@kvirn-ui/react' {
 
 ## `'use client'`
 
-Every export of `@kvirn-ui/react` is client code. The directive is a JS banner in the `pack` config of `packages/react/vite.config.ts`, and it sits at the top of `src/index.ts`, because bundling drops module-level directives. Component files start with `'use client'` too. The server-safe exports live in `@kvirn-ui/react/server` (`src/server.ts`, `src/server/`): a server `KvirnThemeScript`, `getLocaleProps`, `getMessages` and `createMessageFormat`. It is a second `pack` config without the banner, and its graph is `@kvirn-ui/core`, `@kvirn-ui/i18n` and React types only: never import a file that carries `'use client'`. `tooling/react-server-entry` builds the package and proves neither it nor its chunks carry the directive. `KvirnThemeScript` is rendered by the server entry in a Server Component and by the client entry in a client component. Passing `messages`, `linkComponent` (`NextLink`), `icons`, `theme.storage` or `env` to `KvirnProvider` needs a client wrapper (`AppKvirnProvider`, see `kvirn-provider.md`).
+Every export of `@kvirn/ui` is client code. The directive is a JS banner in the `pack` config of `packages/react/vite.config.ts`, and it sits at the top of `src/index.ts`, because bundling drops module-level directives. Component files start with `'use client'` too. The server-safe exports live in `@kvirn/ui/server` (`src/server.ts`, `src/server/`): a server `KvirnThemeScript`, `getLocaleProps`, `getMessages` and `createMessageFormat`. It is a second `pack` config without the banner, and its graph is `@kvirn/core`, `@kvirn/i18n` and React types only: never import a file that carries `'use client'`. `tooling/react-server-entry` builds the package and proves neither it nor its chunks carry the directive. `KvirnThemeScript` is rendered by the server entry in a Server Component and by the client entry in a client component. Passing `messages`, `linkComponent` (`NextLink`), `icons`, `theme.storage` or `env` to `KvirnProvider` needs a client wrapper (`AppKvirnProvider`, see `kvirn-provider.md`).
 
 ## Maintainer preferences
 

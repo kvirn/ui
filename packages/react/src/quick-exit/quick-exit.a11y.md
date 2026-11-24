@@ -56,7 +56,7 @@ Nothing is announced on a reset, a timeout or the exit: the page is gone. Withou
 
 ### Read aloud
 
-Approximated by `@kvirn-ui/testing`'s `readAloud`, with the English (`en`) texts; not NVDA or JAWS output. The hint is also read as its own paragraph after the link phrase.
+Approximated by `@kvirn/testing`'s `readAloud`, with the English (`en`) texts; not NVDA or JAWS output. The hint is also read as its own paragraph after the link phrase.
 
 | State or action          | Expected phrase(s) as read aloud                 | Live region politeness | Test                                                                                     |
 | ------------------------ | ------------------------------------------------ | ---------------------- | ---------------------------------------------------------------------------------------- |
@@ -81,7 +81,7 @@ Approximated by `@kvirn-ui/testing`'s `readAloud`, with the English (`en`) texts
 
 - A hint you override with a longer sentence (more than 3 lines on a narrow screen, or 2 lines on a wide one) makes the row taller than the scroll padding the theme sets for the sticky row, so a focused element can end up under it (2.4.11).
 
-Headless: no CSS. With `@kvirn-ui/theme/theme.css` the row is `kv-quick-exit` and the link `kv-quick-exit-link`.
+Headless: no CSS. With `@kvirn/theme/theme.css` the row is `kv-quick-exit` and the link `kv-quick-exit-link`.
 
 - Target size: the link is larger than 24 by 24 CSS pixels (2.5.8 Target Size (Minimum), AA).
 - Contrast: the link text and the focus ring meet 4.5:1 and 3:1 against their background (1.4.3 Contrast (Minimum), AA; 1.4.11 Non-text Contrast, AA).

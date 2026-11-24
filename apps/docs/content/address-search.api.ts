@@ -8,7 +8,7 @@ import type {
   AddressSearchRootProps,
   GeocoderProvider,
   UseAddressSearchResult,
-} from '@kvirn-ui/map'
+} from '@kvirn/map'
 import { propRows } from '../components/api-block.tsx'
 import type { ApiHook, AttributeRow, PropRow } from '../components/api-block.tsx'
 
@@ -33,7 +33,7 @@ const optionRows = propRows<
   geocoder: {
     type: 'GeocoderProvider',
     description:
-      'The service that finds addresses, as an object (see GeocoderProvider below). Make it once, outside your component. Its name is shown in the privacy notice. Geocoders come from @kvirn-ui/map: kvirnGeocoder (from @kvirn-ui/map/kvirn), nominatim (@kvirn-ui/map/nominatim) and googlePlaces (@kvirn-ui/map/google-places). You can also write your own. Nothing is sent before the visitor types and, on request, presses Search. What is typed, and the visitor’s IP address, reach this service, so name it in your privacy notice. KvirnUI recommends neither Nominatim nor Google for forms that residents fill in: read their terms first.',
+      'The service that finds addresses, as an object (see GeocoderProvider below). Make it once, outside your component. Its name is shown in the privacy notice. Geocoders come from @kvirn/map: kvirnGeocoder (from @kvirn/map/kvirn), nominatim (@kvirn/map/nominatim) and googlePlaces (@kvirn/map/google-places). You can also write your own. Nothing is sent before the visitor types and, on request, presses Search. What is typed, and the visitor’s IP address, reach this service, so name it in your privacy notice. KvirnUI recommends neither Nominatim nor Google for forms that residents fill in: read their terms first.',
   },
   onResult: {
     type: '(result: AddressResult | null) => void',

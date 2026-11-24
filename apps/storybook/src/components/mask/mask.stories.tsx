@@ -1,4 +1,4 @@
-import { masks, TextInput } from '@kvirn-ui/react'
+import { masks, TextInput } from '@kvirn/ui'
 import contract from '../../../../../packages/react/src/text-input/text-input.a11y.md?raw'
 import guide from '../../../../../packages/react/src/mask/mask.md?raw'
 import type { Meta, StoryObj } from '@storybook/react-vite'

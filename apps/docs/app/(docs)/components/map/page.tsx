@@ -1,4 +1,4 @@
-import '@kvirn-ui/theme/map.css'
+import '@kvirn/theme/map.css'
 import 'maplibre-gl/dist/maplibre-gl.css'
 import './map-own.css'
 import type { Metadata } from 'next'

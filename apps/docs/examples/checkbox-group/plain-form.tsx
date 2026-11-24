@@ -1,5 +1,5 @@
 'use client'
-import { Button, Checkbox, CheckboxGroup, Field } from '@kvirn-ui/react'
+import { Button, Checkbox, CheckboxGroup, Field } from '@kvirn/ui'
 import { useState } from 'react'
 import { useCheckboxGroupTexts } from './texts.ts'
 

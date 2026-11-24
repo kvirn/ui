@@ -1,4 +1,4 @@
-import { Link } from '@kvirn-ui/react'
+import { Link } from '@kvirn/ui'
 import { ApiBlock } from './api-block.tsx'
 import type { ApiPart } from './api-block.tsx'
 import { ComponentPage } from './component-page.tsx'
@@ -171,8 +171,8 @@ export function TooltipPage({
             note={
               <Note kind="tip">
                 Tooltips share one delay for the whole page. Make a separate group with{' '}
-                <code>createTooltipGroup()</code> from <code>@kvirn-ui/core</code> when a part of
-                the page should keep its own.
+                <code>createTooltipGroup()</code> from <code>@kvirn/core</code> when a part of the
+                page should keep its own.
               </Note>
             }
           >
@@ -216,7 +216,7 @@ export function TooltipPage({
       contractSections={contractSectionList(contract)}
       api={
         <ApiBlock
-          importLine="import { Tooltip, useTooltip } from '@kvirn-ui/react'"
+          importLine="import { Tooltip, useTooltip } from '@kvirn/ui'"
           parts={parts}
           hook={useTooltipHook}
         />

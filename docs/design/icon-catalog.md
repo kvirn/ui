@@ -1,6 +1,6 @@
 # Icon catalogue
 
-Every icon of `@kvirn-ui/icons`: **421 icons in 21 categories, all drawn, none planned**. Priority (1 to 3) ordered the drawing until an icon was drawn, and is removed from a drawn icon, so the Priority column is `–` throughout.
+Every icon of `@kvirn/icons`: **421 icons in 21 categories, all drawn, none planned**. Priority (1 to 3) ordered the drawing until an icon was drawn, and is removed from a drawn icon, so the Priority column is `–` throughout.
 
 ## How the catalogue is used
 
@@ -697,7 +697,7 @@ Check these at 16px, and change the drawing, never the threshold:
 - `rights`, `court` → `law`; `alarm` → `emergency`; `metro` → `subway` (`tram` is its own drawing); `park` → `tree`; `public-transport` → `bus`; `fault-report` → `repair`.
 - `navigation`: an alias of `menu`; `directions` has it as a tag. `translate` is its own drawing, not an alias of `interpreter`.
 
-**Not in the catalogue.** `marker` is the Map's registry name for the library's `pin` (`mapIcons` in `@kvirn-ui/map`, `packages/map/src/map-icons.ts`), filled by `map.css`. It is not a second catalogue entry.
+**Not in the catalogue.** `marker` is the Map's registry name for the library's `pin` (`mapIcons` in `@kvirn/map`, `packages/map/src/map-icons.ts`), filled by `map.css`. It is not a second catalogue entry.
 
 ## Decisions (maintainer, 2026-10-16)
 

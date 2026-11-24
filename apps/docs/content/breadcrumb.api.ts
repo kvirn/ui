@@ -1,8 +1,4 @@
-import type {
-  BreadcrumbRootProps,
-  UseBreadcrumbOptions,
-  UseBreadcrumbResult,
-} from '@kvirn-ui/react'
+import type { BreadcrumbRootProps, UseBreadcrumbOptions, UseBreadcrumbResult } from '@kvirn/ui'
 import { propRows } from '../components/api-block.tsx'
 import type { ApiHook, AttributeRow } from '../components/api-block.tsx'
 
@@ -19,7 +15,7 @@ export const breadcrumbRootRows = propRows<
     type: 'ReactNode',
     default: '–',
     description:
-      'Your own separator, rendered in every item (the theme hides the first one, and a custom theme must too): an Icon or a component. It is aria-hidden, so it must be decorative, never interactive. The chevronForward icon from @kvirn-ui/icons mirrors itself in RTL; an icon of your own needs mirrorInRtl.',
+      'Your own separator, rendered in every item (the theme hides the first one, and a custom theme must too): an Icon or a component. It is aria-hidden, so it must be decorative, never interactive. The chevronForward icon from @kvirn/icons mirrors itself in RTL; an icon of your own needs mirrorInRtl.',
   },
   label: {
     type: 'string',

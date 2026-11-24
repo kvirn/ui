@@ -8,7 +8,7 @@ import {
   TableRow,
   TableRowHeader,
   TableScrollRegion,
-} from '@kvirn-ui/react'
+} from '@kvirn/ui'
 import { Fragment } from 'react'
 import type { ReactNode } from 'react'
 import { messages } from '../messages/en.ts'

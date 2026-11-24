@@ -1,5 +1,5 @@
 'use client'
-import { Badge, Link } from '@kvirn-ui/react'
+import { Badge, Link } from '@kvirn/ui'
 import { useBadgeTexts } from './texts.ts'
 
 export function CountInALink() {

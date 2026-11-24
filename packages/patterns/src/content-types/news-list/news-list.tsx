@@ -1,15 +1,6 @@
 'use client'
 
-import {
-  Breadcrumb,
-  Container,
-  Heading,
-  Link,
-  List,
-  Pagination,
-  Stack,
-  useFormat,
-} from '@kvirn-ui/react'
+import { Breadcrumb, Container, Heading, Link, List, Pagination, Stack, useFormat } from '@kvirn/ui'
 import { kvirnbyNews } from '../../fixtures/news-events-and-notices.ts'
 import { PageFrame } from '../../page-frame/page-frame.tsx'
 import { NewsDate } from './news-date.tsx'

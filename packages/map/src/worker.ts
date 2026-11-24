@@ -1,4 +1,4 @@
-import type { ClusterTreeData, ClusterTreeOptions } from '@kvirn-ui/core'
+import type { ClusterTreeData, ClusterTreeOptions } from '@kvirn/core'
 import type { MapIndexer } from './use-map-places.ts'
 
 export type { MapIndexer }

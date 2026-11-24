@@ -1,4 +1,4 @@
-import { expectNoA11yViolations } from '@kvirn-ui/testing'
+import { expectNoA11yViolations } from '@kvirn/testing'
 import { createRef, useState } from 'react'
 import type { ComponentPropsWithRef, ReactNode } from 'react'
 import { renderToString } from 'react-dom/server'

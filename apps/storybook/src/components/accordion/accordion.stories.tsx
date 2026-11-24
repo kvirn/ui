@@ -1,4 +1,4 @@
-import { Accordion } from '@kvirn-ui/react'
+import { Accordion } from '@kvirn/ui'
 import contract from '../../../../../packages/react/src/accordion/accordion.a11y.md?raw'
 import guide from '../../../../../packages/react/src/accordion/accordion.md?raw'
 import type { Meta, StoryObj } from '@storybook/react-vite'
@@ -21,7 +21,7 @@ import {
 } from './accordion.fixture.tsx'
 
 // Components/Accordion: a list of disclosures with headings (APG Accordion, contract:
-// accordion.a11y.md), styled by @kvirn-ui/theme/theme.css. Accordion has no library strings: the
+// accordion.a11y.md), styled by @kvirn/theme/theme.css. Accordion has no library strings: the
 // questions and the answers are the story's own, in sv by default.
 
 const description = usageGuide(guide)

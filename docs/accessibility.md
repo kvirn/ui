@@ -79,7 +79,7 @@ The docs page shows the status as a Badge, always with the word in it so colour 
 
 ### Screen reader approximation
 
-`readAloud` and `readAnnouncements` (`@kvirn-ui/testing/read-aloud`, optional peer `@guidepup/virtual-screen-reader`) walk a rendered subtree with a virtual screen reader (`@guidepup/virtual-screen-reader`) and return the phrases it speaks, such as "button, Menu, not expanded" or "polite: Saved". Component tests and the `accessibility-reviewer` use them to check names, states, reading order and live-region text against the contract's Read aloud table.
+`readAloud` and `readAnnouncements` (`@kvirn/testing/read-aloud`, optional peer `@guidepup/virtual-screen-reader`) walk a rendered subtree with a virtual screen reader (`@guidepup/virtual-screen-reader`) and return the phrases it speaks, such as "button, Menu, not expanded" or "polite: Saved". Component tests and the `accessibility-reviewer` use them to check names, states, reading order and live-region text against the contract's Read aloud table.
 
 This is an approximation, not a screen reader. Its accessibility tree is its own, its wording is not NVDA's, JAWS's, VoiceOver's or TalkBack's, it doesn't prove modality or focus containment (that stays a component test), and its phrases can change between versions. It supports "designed and tested to meet WCAG 2.2 AA" and makes no compliance claim. On its own it never passes a matrix row: it is evidence for the agent check, and the human check still runs on the real AT. Orca can be used for local Linux checks, outside the matrix.
 

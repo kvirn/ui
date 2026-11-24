@@ -1,15 +1,6 @@
 'use client'
 
-import {
-  Breadcrumb,
-  Card,
-  Container,
-  Heading,
-  Link,
-  List,
-  Stack,
-  DefinitionList,
-} from '@kvirn-ui/react'
+import { Breadcrumb, Card, Container, Heading, Link, List, Stack, DefinitionList } from '@kvirn/ui'
 import { kvirnbySquare } from '../../fixtures/images.ts'
 import { PageFrame } from '../../page-frame/page-frame.tsx'
 import { NavTiles } from '../../navigation-and-promotion/nav-tiles/nav-tiles.tsx'

@@ -1,5 +1,5 @@
 'use client'
-import { Button, Field, Icon, InputGroup } from '@kvirn-ui/react'
+import { Button, Field, Icon, InputGroup } from '@kvirn/ui'
 import { useRef, useState } from 'react'
 import { useInputGroupTexts } from './texts.ts'
 

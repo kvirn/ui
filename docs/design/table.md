@@ -35,7 +35,7 @@ What this spec decides, in short:
 - **Constraints:**
   - Headless packages ship zero CSS (hard rule 5). The one exception is the layout-critical inline geometry of virtualization.
   - `display` is never changed on table elements.
-  - Only DESIGN.md tokens. Every visible or announced string comes from `@kvirn-ui/i18n` (hard rule 4).
+  - Only DESIGN.md tokens. Every visible or announced string comes from `@kvirn/i18n` (hard rule 4).
 - **Success criteria:**
   - Every story has 0 axe violations in all four themes.
   - Sort buttons and checkboxes have targets of at least 44×44px in comfortable density and at least 24×24px in compact density.

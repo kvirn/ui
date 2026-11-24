@@ -1,5 +1,5 @@
-import { Heading } from '@kvirn-ui/react'
-import type { HeadingProps } from '@kvirn-ui/react'
+import { Heading } from '@kvirn/ui'
+import type { HeadingProps } from '@kvirn/ui'
 import { messages } from '../messages/en.ts'
 
 const text = messages.docs.contents

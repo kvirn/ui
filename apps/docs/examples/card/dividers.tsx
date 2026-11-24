@@ -1,5 +1,5 @@
 'use client'
-import { Button, Card, Heading } from '@kvirn-ui/react'
+import { Button, Card, Heading } from '@kvirn/ui'
 import { useCardTexts } from './texts.ts'
 
 export function CardWithDividers() {

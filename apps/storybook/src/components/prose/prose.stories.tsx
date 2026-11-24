@@ -1,4 +1,4 @@
-import { Link, Prose } from '@kvirn-ui/react'
+import { Link, Prose } from '@kvirn/ui'
 import contract from '../../../../../packages/react/src/prose/prose.a11y.md?raw'
 import guide from '../../../../../packages/react/src/prose/prose.md?raw'
 import type { Decorator, Meta, StoryObj } from '@storybook/react-vite'
@@ -13,7 +13,7 @@ import {
   ProseOnSurfaces,
 } from './prose.fixture.tsx'
 
-// Components/Prose: the headless Prose, styled by @kvirn-ui/theme (docs/design/foundations-and-prose.md
+// Components/Prose: the headless Prose, styled by @kvirn/theme (docs/design/foundations-and-prose.md
 // §6.1–6.6 and §7). The Default story is the small example. The others put `<Prose>` around the
 // fixture article, a municipality's guidance page that uses every element prose styles. The article
 // follows the Locale toolbar: sv, nb, nn and en are written, and fi shows the English article

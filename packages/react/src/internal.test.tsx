@@ -2,10 +2,10 @@ import { describe, expect, test } from 'vite-plus/test'
 import * as internal from './internal.ts'
 import * as publicApi from './index.ts'
 
-// Plan 0036: `@kvirn-ui/react/internal` is for Kvirn packages (`@kvirn-ui/rich-text`). Its pieces
+// Plan 0036: `@kvirn/ui/internal` is for Kvirn packages (`@kvirn/rich-text`). Its pieces
 // are unstable, so they never leak into the public entry, where adopters would start to rely on them.
 
-describe('@kvirn-ui/react/internal', () => {
+describe('@kvirn/ui/internal', () => {
   test('exports the pieces a Kvirn package needs', () => {
     expect(internal.useMessages).toBeTypeOf('function')
     expect(internal.useFocusVisible).toBeTypeOf('function')

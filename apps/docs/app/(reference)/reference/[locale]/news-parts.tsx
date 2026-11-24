@@ -1,6 +1,6 @@
 'use client'
 
-import { Address, useFormat } from '@kvirn-ui/react'
+import { Address, useFormat } from '@kvirn/ui'
 import { referenceNewsMessages } from '../../../../messages/reference-news.ts'
 import type { ReferenceLocale } from '../../../../messages/reference.ts'
 

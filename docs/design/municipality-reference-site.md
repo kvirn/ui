@@ -1,10 +1,10 @@
 # Design spec: the reference municipality site in `apps/docs`
 
-- **Status:** Accepted (maintainer decisions in §10, 2026-10-06; inventory accepted 2026-10-13). **Revised 2026-10-13:** brought up to date with the shipped library and `@kvirn-ui/patterns`; the build order is re-cut into slices R0–R10 (§5), one engineer brief each.
+- **Status:** Accepted (maintainer decisions in §10, 2026-10-06; inventory accepted 2026-10-13). **Revised 2026-10-13:** brought up to date with the shipped library and `@kvirn/patterns`; the build order is re-cut into slices R0–R10 (§5), one engineer brief each.
 - **Designer:** ux-designer agent · **Date:** 2026-10-06, revised 2026-10-13
 - **Plan:** Plan 0053
-- **Type:** inventory and build order. The reference site **composes** patterns and content types; it does not define them. Patterns and content types are specified in [storybook-patterns.md](storybook-patterns.md) (Plan 0095; its slices S4+ are in progress) and built in `@kvirn-ui/patterns`. The docs shell is [docs-site.md](docs-site.md).
-- **Rule (maintainer, final):** the library comes first. A missing component or pattern is built in `@kvirn-ui/*`, reviewed in Storybook, then used on a reference page, then documented in the docs app. The roadmap is the order.
+- **Type:** inventory and build order. The reference site **composes** patterns and content types; it does not define them. Patterns and content types are specified in [storybook-patterns.md](storybook-patterns.md) (Plan 0095; its slices S4+ are in progress) and built in `@kvirn/patterns`. The docs shell is [docs-site.md](docs-site.md).
+- **Rule (maintainer, final):** the library comes first. A missing component or pattern is built in `@kvirn/*`, reviewed in Storybook, then used on a reference page, then documented in the docs app. The roadmap is the order.
 
 ## 1. Brief
 
@@ -14,9 +14,9 @@
   3. **The fictional resident** each page is designed for, judged as if real: once a year, on a phone, under stress, in a second language, with a screen reader or a tremor.
 - **Hardest-case user:** a Finnish accessibility consultant evaluating for a bilingual Ostrobothnian municipality, with NVDA, 400% zoom (320 CSS px), English and Swedish as second languages. They open a form page, make an error on purpose, and judge the library by what happens.
 - **The municipality: Kvirnby kommun** (fictional; the name carries the library's name). A mid-sized Swedish municipality. **Locales (Q1):** `sv` first and `en`, both complete; Finnish and Sámi pages later (Lag 2009:724, `TODO(legal-verify)`). Tone: plain Swedish (_klarspråk_), "du" and "vi", calm, no blame. Content data: the Kvirnby world in [storybook-patterns.md §8.2](storybook-patterns.md#82-data-sketch). <!-- kv-lang-ok: the Swedish law name and the plain-language term klarspråk -->
-- **Constraints:** no third-party requests, cookies or analytics (rule 7): no maps, embeds, real eID redirects or consent. No compliance claims (rule 8). Every form is client-side only and says so. A pattern holds no text (Plan 0095 D10): visible text and landmark names (`label` props) are the page's content, in the docs app's reference messages (sv, en); only strings a shipped component owns come from `@kvirn-ui/i18n` (five locales, rule 4).
+- **Constraints:** no third-party requests, cookies or analytics (rule 7): no maps, embeds, real eID redirects or consent. No compliance claims (rule 8). Every form is client-side only and says so. A pattern holds no text (Plan 0095 D10): visible text and landmark names (`label` props) are the page's content, in the docs app's reference messages (sv, en); only strings a shipped component owns come from `@kvirn/i18n` (five locales, rule 4).
 - **Success criteria:**
-  - Every reference page imports `theme.css`, the self-hosted IBM Plex CSS and `@kvirn-ui/*` only: **no `docs.css` or `gallery.css` on reference routes** (the proof that adopters can do the same).
+  - Every reference page imports `theme.css`, the self-hosted IBM Plex CSS and `@kvirn/*` only: **no `docs.css` or `gallery.css` on reference routes** (the proof that adopters can do the same).
   - Every page type works at 320px and 400% zoom, in four themes and forced colours, with 0 axe violations.
   - Each reference page links to "How this page is built", which lists every part with its docs page.
   - ≥ 80% of evaluators correctly say Kvirnby is not a real municipality, and ≥ 80% find the parts a page uses within 2 minutes (usability plan, §9, `pending`).
@@ -74,13 +74,13 @@ Out of v1 (Q1, Q11): Finnish and Sámi pages, page feedback ("Was this page help
 | **T5 List**        | breadcrumb → `main`: `h1` → (search field) → count as text → list → pagination                                                                                                           | one column                                                     | one column `45rem` (no card grid for results) |
 | **T6 Status**      | `main`: `h1`, one or two paragraphs, links                                                                                                                                               | `Container size="form"`                                        | same                                          |
 
-- **Frame:** `PageFrame` (`@kvirn-ui/patterns`) wraps `KvirnProvider` and sets `lang`; its `locale` takes `sv` and `en`, which is v1. The shell and content-type split is Plan 0095 D12: the shell is the reference layout, each route renders only its content type and owns `main#main`.
-- **Layout (shipped in `@kvirn-ui/react`):** `Container` (`page`, `reading`, `form`), `Stack`, `Grid` (`Grid.Root as="ul"` for lists of links, `Grid.Item as="nav"` for a named sidebar), `List`, `Address`. DOM order is the visual order at every width; nothing is sticky; nothing scrolls sideways at 320px (1.3.2, 1.4.10, 2.4.11).
+- **Frame:** `PageFrame` (`@kvirn/patterns`) wraps `KvirnProvider` and sets `lang`; its `locale` takes `sv` and `en`, which is v1. The shell and content-type split is Plan 0095 D12: the shell is the reference layout, each route renders only its content type and owns `main#main`.
+- **Layout (shipped in `@kvirn/ui`):** `Container` (`page`, `reading`, `form`), `Stack`, `Grid` (`Grid.Root as="ul"` for lists of links, `Grid.Item as="nav"` for a named sidebar), `List`, `Address`. DOM order is the visual order at every width; nothing is sticky; nothing scrolls sideways at 320px (1.3.2, 1.4.10, 2.4.11).
 - **`<html lang>`** is the page's locale, so the reference site has its own root layout (a route group), separate from the docs' `lang="en"` (3.1.1).
 
 ## 4. Blocks and where they live now
 
-Status: **shipped** (in `@kvirn-ui/react`) · **built** (pattern in `@kvirn-ui/patterns` or a story composition, Plan 0095) · **0095 T5** (in Plan 0095's IA, not built; specified in storybook-patterns.md S4+) · **gap** (on no plan).
+Status: **shipped** (in `@kvirn/ui`) · **built** (pattern in `@kvirn/patterns` or a story composition, Plan 0095) · **0095 T5** (in Plan 0095's IA, not built; specified in storybook-patterns.md S4+) · **gap** (on no plan).
 
 | #   | Block                    | Home now                                                                                            | Status            |
 | --- | ------------------------ | --------------------------------------------------------------------------------------------------- | ----------------- |
@@ -150,7 +150,7 @@ Why this order: R0–R1 are on every page. R2–R3 are the most common page type
 ## 6. Information architecture and labelling
 
 - **Docs site:** the Patterns and Content types galleries (`/patterns`, `/content-types`) document the parts; a "Reference site" entry opens `/reference`: an index of P1–P22, each "Open the page" (sv, en) and "How it's built", unbuilt pages listed as such.
-- **Routes:** `/reference/{sv|en}/…`, own root layout and `<html lang>`, only `theme.css`, the font CSS and `@kvirn-ui/*`; the docs shell is not shown. "How it's built" lives in the docs at `/reference/how/{page}`. Moving between the two root layouts is a full page load, which is acceptable.
+- **Routes:** `/reference/{sv|en}/…`, own root layout and `<html lang>`, only `theme.css`, the font CSS and `@kvirn/*`; the docs shell is not shown. "How it's built" lives in the docs at `/reference/how/{page}`. Moving between the two root layouts is a full page load, which is acceptable.
 - **Labelling, so nobody mistakes Kvirnby for a real service:**
   1. A `TopBar` notice row, first inside `banner` on every reference page, in the page's language (`reference.notice`), with "How this page is built" and "KvirnUI documentation" links. Not an Alert (it isn't a status), never dismissible.
   2. `<title>`: "{page} – Kvirnby (fictional municipality) – KvirnUI".
@@ -211,7 +211,7 @@ Library strings already exist for the shipped parts (`skipLink`, `breadcrumb`, `
 15. **Open:** who reviews non-sv/en copy; moot for v1.
 16. **Inventory accepted 2026-10-13** (§2–§4); Plan 0053 takes §5 as its task list.
 17. **Flat page slugs (2026-10-14):** a page is `/reference/{locale}/{slug}` with the slug the R1 menu data uses (`preschool`, not `children-and-education/preschool`), so the dynamic `[topic]` route never meets a static folder of the same name. Units and steps nest under their page (`preschool/hillside`).
-18. **Reference pages compose patterns and components, not content types (2026-10-14).** The content types in `@kvirn-ui/patterns/content-types` hold English example text and are the layout reference. Each page composes the exported patterns and components with its own sv and en content and real routes, as an adopter would, so the content types' API doesn't grow.
+18. **Reference pages compose patterns and components, not content types (2026-10-14).** The content types in `@kvirn/patterns/content-types` hold English example text and are the layout reference. Each page composes the exported patterns and components with its own sv and en content and real routes, as an adopter would, so the content types' API doesn't grow.
 19. **Deferred from R6–R10 (2026-10-14):** P6 save-and-return and e-ID prefill, P7 "change and return to Check answers" and "submit failed" (nothing is sent, rule 7), the R7 DateInput step, and P10's empty and loading states; one roadmap line tracks them. The statement's supervisory section is a fill-in (§10.8 names Digg).
 20. **R0 as built:** the docs routes live in `app/(docs)/`, the reference root layout is `app/(reference)/reference/[locale]/layout.tsx` (sv, en; `dynamicParams` off; noindex; title template; a bare `ReferenceShell` with the notice row). `/reference` and `/reference/how/[page]` stay in the docs shell (§6). The 404 and service-unavailable pages are plain markup, because `StatusPages` is fixed English example text. An unknown locale gets Next's default 404; unknown paths below a locale go through `[...rest]` to the reference 404.
 21. **Order:** library first, docs second; the roadmap is the order (maintainer, 2026-10-06).
@@ -222,4 +222,4 @@ Library strings already exist for the shipped parts (`skipLink`, `breadcrumb`, `
 2. **Owner for the gaps:** B19 back link and B23 numeric class are library choices (a class each, DESIGN.md text, `theme.css`): one small plan? B25 timeout, B26 case card and a My pages content type are in no plan: add them to Plan 0095 T5 (storybook-patterns.md S4+) as a "My pages" group?
 3. **Search holding page (R1–R8):** the header search goes to a T6 page that says search is not built on the reference site yet. Acceptable, or leave the search slot out until R9 (which contradicts Q12)?
 4. **Re-cut order:** R0–R10 replaces S0–S7 because most S-slice library parts have shipped. Confirm.
-5. Observed, out of scope: `docs/roadmap.md` says the docs app does not consume `@kvirn-ui/patterns` yet, but the docs shell imports it (`apps/docs/components/site-shell.tsx`).
+5. Observed, out of scope: `docs/roadmap.md` says the docs app does not consume `@kvirn/patterns` yet, but the docs shell imports it (`apps/docs/components/site-shell.tsx`).

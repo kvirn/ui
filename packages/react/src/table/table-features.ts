@@ -5,7 +5,7 @@ import type {
   Row_RowSelection,
   TableFeatures,
   Table_RowSelection,
-} from '@kvirn-ui/core'
+} from '@kvirn/core'
 
 // Internal. TanStack Table adds an API to a column, row or table only when its feature is
 // registered, and types it the same way. The table parts work with any set of features, so they

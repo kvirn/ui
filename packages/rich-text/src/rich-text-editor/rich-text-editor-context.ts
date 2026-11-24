@@ -1,4 +1,4 @@
-import type { KvirnMessages } from '@kvirn-ui/i18n'
+import type { KvirnMessages } from '@kvirn/i18n'
 import type { Editor } from '@tiptap/core'
 import { createContext, useContext } from 'react'
 import type { RichTextFormat } from '../value/document-value.ts'

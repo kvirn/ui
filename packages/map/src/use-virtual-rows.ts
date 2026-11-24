@@ -1,4 +1,4 @@
-import { createListVirtualizer } from '@kvirn-ui/core'
+import { createListVirtualizer } from '@kvirn/core'
 import { useLayoutEffect, useMemo, useReducer, useRef } from 'react'
 import type { CSSProperties, KeyboardEvent } from 'react'
 import { hasModifier } from './has-modifier.ts'

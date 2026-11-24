@@ -1,6 +1,6 @@
 # KvirnUI design language
 
-The visual and interaction source of truth for everything in KvirnUI that has a look: the default theme (`@kvirn-ui/theme`), the styled blocks (planned, M4), Storybook stories and the docs site. The headless packages ship zero CSS and are not bound by it (AGENTS.md hard rule 5).
+The visual and interaction source of truth for everything in KvirnUI that has a look: the default theme (`@kvirn/theme`), the styled blocks (planned, M4), Storybook stories and the docs site. The headless packages ship zero CSS and are not bound by it (AGENTS.md hard rule 5).
 
 It is a default, not a brand (`docs/vision.md`, non-goals). A municipality rebrands by overriding the `--kv-*` custom properties ([Theming](#theming)), and everything here is written so a rebrand stays accessible.
 
@@ -198,7 +198,7 @@ Six levels, `h1` to `h6`, each a role (`heading-1` to `heading-6`), with `displa
 
 > **Maintainer review (Plan 0056):** this section (the `80rem`, `45rem` and `40rem` measures, the `space-4`/`6`/`10` page padding, the column minimums, the sidebar widths and the `64rem` break) is new text. Remove this note when approved.
 
-Three components in `@kvirn-ui/react` place content with typed choices and no CSS of the adopter's own: `Container`, `Stack` and `Grid`. They draw nothing (no colour, edge or shadow) and add no role, landmark or name. The widths below are layout constants, not tokens; the gaps are `space` steps.
+Three components in `@kvirn/ui` place content with typed choices and no CSS of the adopter's own: `Container`, `Stack` and `Grid`. They draw nothing (no colour, edge or shadow) and add no role, landmark or name. The widths below are layout constants, not tokens; the gaps are `space` steps.
 
 | Component   | Choice         | Values                                                                                                                                                                                                                                                                                                                                                                                                         |
 | ----------- | -------------- | -------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
@@ -328,7 +328,7 @@ A solid `focus-ring` at `--kv-focus-ring-width` (never below 2px, which 2.4.13 n
 
 ### Icons
 
-Outline style, a 1.5 stroke on a 24 grid with round caps and joins, in `currentColor`. Every icon comes from `@kvirn-ui/icons`, with semantic names, in the style of Heroicons outline but drawn from our own keylines (`docs/design/icon-library.md`). `@kvirn-ui/react` has no icons of its own: each component imports the icon it draws, and an app that registers the same name in `KvirnProvider` replaces it everywhere. Icons are inline SVG: no icon fonts and none from third-party servers.
+Outline style, a 1.5 stroke on a 24 grid with round caps and joins, in `currentColor`. Every icon comes from `@kvirn/icons`, with semantic names, in the style of Heroicons outline but drawn from our own keylines (`docs/design/icon-library.md`). `@kvirn/ui` has no icons of its own: each component imports the icon it draws, and an app that registers the same name in `KvirnProvider` replaces it everywhere. Icons are inline SVG: no icon fonts and none from third-party servers.
 
 - **Size** is the size in pixels, as a string (`size="20"`, the default; one of 12, 14, 16, 20, 24, 28, 32, 40, 48, 56, 64, 80 or 96), and the theme turns it into rem with `kv-icon--size-<px>`, so an icon follows the root font size and not the text. Use `"20"` in buttons, because it equals their line height. Another size is a class you add. Colour is `currentColor` and stroke is 1.5 unless you choose: `variant` (`primary`, `secondary`, `accent`, `muted`, `info`, `success`, `warning`, `danger`) adds `kv-icon--<variant>`, and `kv-icon--stroke-1`, `-1-5` or `-2` sets the stroke. The theme sets colour and stroke only through those classes, and in forced colours, where an icon takes its parent's system colour and the variant is dropped. A variant decorates and never replaces words.
 - **Meaning.** An icon is decorative (`aria-hidden`) unless it has a `label` from i18n. A status icon always comes with the status in words, and the four statuses differ in shape as well as colour: info a square, success a circle, warning a triangle, error an octagon. A meaningful icon has 3:1 contrast against its background.
@@ -697,12 +697,12 @@ Each component's design spec, in `docs/design/`. The accessibility contract is i
 
 ### How it works
 
-- **Two files, opt-in by import.** `import '@kvirn-ui/theme/reset.css'` then `import '@kvirn-ui/theme/theme.css'`. The reset is Tailwind's Preflight in plain CSS (lists keep their markers, an Icon stays inline): it is the baseline the theme is designed on, and Storybook and the docs run on both files. Skip the reset only if you already run Tailwind v4. The theme styles every component on the page, and removing it unstyles them. Nothing loads CSS for you, and `KvirnProvider` never does. See [reset-baseline](docs/design/reset-baseline.md).
+- **Two files, opt-in by import.** `import '@kvirn/theme/reset.css'` then `import '@kvirn/theme/theme.css'`. The reset is Tailwind's Preflight in plain CSS (lists keep their markers, an Icon stays inline): it is the baseline the theme is designed on, and Storybook and the docs run on both files. Skip the reset only if you already run Tailwind v4. The theme styles every component on the page, and removing it unstyles them. Nothing loads CSS for you, and `KvirnProvider` never does. See [reset-baseline](docs/design/reset-baseline.md).
 - **Part classes select components, `data-*` is state.** Each part renders its own class and the consumer's `className` joins it. Choices are classes the consumer adds.
 - **Override variables, not selectors.** Rebrand by overriding a role scale on `:root` (`--kv-primary-50` … `--kv-primary-950`), or set a single semantic token (`:root { --kv-color-link: var(--kv-primary-700) }`). Scales go on `:root`, where the semantic tokens are declared. To change one theme only, target the same selectors `theme.css` uses (`:root[data-kv-color-scheme='dark']`).
 - **Your CSS always wins.** Everything in `theme.css` is in `@layer kv`, so any unlayered CSS, or any layer declared after `kv`, overrides it regardless of specificity.
 - **Own it, or skip it.** Copy `theme.css` into your project and import your copy, or skip it and style the `kv-*` classes and `data-*` attributes with Tailwind or your own CSS.
-- After any colour change, run `vp run theme:check`, or `checkThemeCss()` from `@kvirn-ui/theme` on your own file.
+- After any colour change, run `vp run theme:check`, or `checkThemeCss()` from `@kvirn/theme` on your own file.
 
 ### Rebranding for a municipality
 
@@ -764,7 +764,7 @@ Content is design. Most failures in public services are unclear words, not uncle
 - Lead with what the user needs to do and by when. Put the exception at the end.
 - Headings and buttons describe the task: "Apply for parking permit", not "Parking permit form".
 - Errors say what went wrong and how to fix it: "Enter a date in the format 31.12.2026", not "Invalid input".
-- Every visible or announced string comes from `@kvirn-ui/i18n` in all five locales (AGENTS.md hard rule 4). Designs show the Swedish and Finnish strings side by side to catch length and wrapping issues.
+- Every visible or announced string comes from `@kvirn/i18n` in all five locales (AGENTS.md hard rule 4). Designs show the Swedish and Finnish strings side by side to catch length and wrapping issues.
 - Dates, numbers and currency use `Intl` for the active locale (`31.12.2026` in fi, `2026-12-31` in sv).
 
 ## Do's and Don'ts

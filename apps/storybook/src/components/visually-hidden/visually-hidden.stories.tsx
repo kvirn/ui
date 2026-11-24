@@ -1,11 +1,11 @@
-import { VisuallyHidden } from '@kvirn-ui/react'
+import { VisuallyHidden } from '@kvirn/ui'
 import contract from '../../../../../packages/react/src/visually-hidden/visually-hidden.a11y.md?raw'
 import guide from '../../../../../packages/react/src/visually-hidden/visually-hidden.md?raw'
 import type { Meta, StoryObj } from '@storybook/react-vite'
 import { expect } from 'storybook/test'
 import { usageGuide } from '../../docs-source.ts'
 
-// Components/VisuallyHidden: the headless VisuallyHidden, styled by @kvirn-ui/theme. Its text is
+// Components/VisuallyHidden: the headless VisuallyHidden, styled by @kvirn/theme. Its text is
 // not drawn, so each story shows what a screen reader gets in the sentence around it. It has no
 // focusable part and no Keyboard story.
 

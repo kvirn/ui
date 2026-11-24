@@ -1,5 +1,5 @@
-import { PageFrame } from '@kvirn-ui/patterns'
-import { Heading } from '@kvirn-ui/react'
+import { PageFrame } from '@kvirn/patterns'
+import { Heading } from '@kvirn/ui'
 import type { Meta, StoryObj } from '@storybook/react-vite'
 import { expect, userEvent, within } from 'storybook/test'
 import { chromeViewports, wideGlobals } from '../patterns/patterns-story-support.tsx'

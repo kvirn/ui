@@ -1,6 +1,6 @@
 'use client'
 
-// Public API of @kvirn-ui/rich-text. The whole entry is client code. Tiptap and ProseMirror are
+// Public API of @kvirn/rich-text. The whole entry is client code. Tiptap and ProseMirror are
 // peers: this package never bundles them, so the app owns one copy of each.
 export { defaultExtensions, isAllowedLinkAddress } from './extensions/default-extensions.ts'
 export type { DefaultExtensionsOptions } from './extensions/default-extensions.ts'

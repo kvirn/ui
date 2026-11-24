@@ -5,14 +5,14 @@ import {
   motionAttribute,
   createThemeStore,
   themeStorageKey,
-} from '@kvirn-ui/core'
+} from '@kvirn/core'
 import type {
   ColorSchemePreference,
   ContrastPreference,
   MotionPreference,
   StoredThemePreference,
   ThemeScriptOptions,
-} from '@kvirn-ui/core'
+} from '@kvirn/core'
 import { renderToString } from 'react-dom/server'
 import { afterEach, describe, expect, test } from 'vite-plus/test'
 import { cdp } from 'vite-plus/test/browser'

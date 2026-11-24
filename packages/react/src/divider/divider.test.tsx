@@ -1,5 +1,5 @@
-import { expectNoA11yViolations } from '@kvirn-ui/testing'
-import { readAloud } from '@kvirn-ui/testing/read-aloud'
+import { expectNoA11yViolations } from '@kvirn/testing'
+import { readAloud } from '@kvirn/testing/read-aloud'
 import { createRef } from 'react'
 import { describe, expect, test } from 'vite-plus/test'
 import { page } from 'vite-plus/test/browser'

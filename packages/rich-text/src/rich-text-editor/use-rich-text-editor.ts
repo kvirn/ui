@@ -1,5 +1,5 @@
-import { getCharacterCount } from '@kvirn-ui/core'
-import type { KvirnMessages } from '@kvirn-ui/i18n'
+import { getCharacterCount } from '@kvirn/core'
+import type { KvirnMessages } from '@kvirn/i18n'
 import {
   FieldContext,
   isKeyboardFocus,
@@ -9,7 +9,7 @@ import {
   useQuietAnnouncer,
   warnAnnouncerMissing,
   warnOnce,
-} from '@kvirn-ui/react/internal'
+} from '@kvirn/ui/internal'
 import { getSchema, resolveExtensions } from '@tiptap/core'
 import type { Editor, EditorOptions, Extensions } from '@tiptap/core'
 import type { Transaction } from '@tiptap/pm/state'

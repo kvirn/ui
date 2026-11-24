@@ -1,4 +1,4 @@
-import { announcementDebounceMilliseconds, createCombobox } from '@kvirn-ui/core'
+import { announcementDebounceMilliseconds, createCombobox } from '@kvirn/core'
 import type {
   Combobox as ComboboxMachine,
   ComboboxAnnouncement,
@@ -8,8 +8,8 @@ import type {
   ListboxEntry,
   ListboxGroup,
   ListboxSection,
-} from '@kvirn-ui/core'
-import type { KvirnMessages } from '@kvirn-ui/i18n'
+} from '@kvirn/core'
+import type { KvirnMessages } from '@kvirn/i18n'
 import {
   useCallback,
   useContext,

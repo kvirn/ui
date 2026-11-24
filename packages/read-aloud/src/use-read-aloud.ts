@@ -4,7 +4,7 @@ import {
   createReadAloud,
   kvirnSpeechEngine,
   readAloudRates,
-} from '@kvirn-ui/core'
+} from '@kvirn/core'
 import type {
   CollectedText,
   ReadAloud,
@@ -16,8 +16,8 @@ import type {
   ReadAloudVoiceMap,
   ReadAloudVoicesStatus,
   ResolvedMessages,
-} from '@kvirn-ui/core'
-import type { KvirnMessages } from '@kvirn-ui/i18n'
+} from '@kvirn/core'
+import type { KvirnMessages } from '@kvirn/i18n'
 import {
   useCallback,
   useEffect,
@@ -36,9 +36,9 @@ import type {
   PointerEvent,
   RefObject,
 } from 'react'
-import { useAnnouncer, useButton, useLocale } from '@kvirn-ui/react'
-import type { ButtonPartProps } from '@kvirn-ui/react'
-import { useEnv, useMessages, useReadAloudEngine, warnOnce } from '@kvirn-ui/react/internal'
+import { useAnnouncer, useButton, useLocale } from '@kvirn/ui'
+import type { ButtonPartProps } from '@kvirn/ui'
+import { useEnv, useMessages, useReadAloudEngine, warnOnce } from '@kvirn/ui/internal'
 import { collectRangeText } from './collect-range-text.ts'
 
 const highlightName = 'kv-read-aloud'

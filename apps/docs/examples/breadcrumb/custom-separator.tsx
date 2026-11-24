@@ -1,5 +1,5 @@
 'use client'
-import { Breadcrumb, Icon } from '@kvirn-ui/react'
+import { Breadcrumb, Icon } from '@kvirn/ui'
 import { useBreadcrumbTexts } from './texts.ts'
 
 export function CustomSeparator() {

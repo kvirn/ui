@@ -15,7 +15,7 @@ const containerTags = ['div', 'main', 'section', 'article'] as const
 export type ContainerProps = AsTag<(typeof containerTags)[number], 'div', UseContainerOptions>
 
 /**
- * One `<div class="kv-container">` that centres and limits the width of the page's content (contract: container.a11y.md). `size` picks the measure. With `@kvirn-ui/theme`, `'page'` is `80rem` with inline padding, `'reading'` `45rem` and `'form'` `40rem`. Usable in a server component.
+ * One `<div class="kv-container">` that centres and limits the width of the page's content (contract: container.a11y.md). `size` picks the measure. With `@kvirn/theme`, `'page'` is `80rem` with inline padding, `'reading'` `45rem` and `'form'` `40rem`. Usable in a server component.
  *
  * @example
  * <Container as="main" id="main" size="reading">

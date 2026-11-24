@@ -4,7 +4,7 @@ import { join } from 'node:path'
 import { fileURLToPath } from 'node:url'
 import { beforeAll, describe, expect, it } from 'vite-plus/test'
 
-// `@kvirn-ui/react/server` is imported by Server Components, so neither it nor a chunk it imports
+// `@kvirn/ui/server` is imported by Server Components, so neither it nor a chunk it imports
 // may start with `'use client'`; the client entries must (Plan 0094). The dist is not committed,
 // so this test builds it first with `vp pack` in packages/react (a few seconds).
 
@@ -31,7 +31,7 @@ beforeAll(() => {
   execFileSync('pnpm', ['exec', 'vp', 'pack'], { cwd: reactPackage, stdio: 'pipe' })
 }, 180_000)
 
-describe('@kvirn-ui/react/server build', () => {
+describe('@kvirn/ui/server build', () => {
   for (const file of ['server.mjs', 'server.cjs']) {
     it(`${file} and every chunk it imports carry no 'use client'`, () => {
       const files = reachableFiles(file)

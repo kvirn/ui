@@ -1,4 +1,4 @@
-import type { Announcer } from '@kvirn-ui/core'
+import type { Announcer } from '@kvirn/core'
 
 // The announcement buffer behind FileUpload (design spec §7.3). Pure: no React,
 // no DOM, no i18n. It is given finished sentences and structured upload results, and decides

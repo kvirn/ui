@@ -1,4 +1,4 @@
-import { Field, Textarea } from '@kvirn-ui/react'
+import { Field, Textarea } from '@kvirn/ui'
 import contract from '../../../../../packages/react/src/textarea/textarea.a11y.md?raw'
 import guide from '../../../../../packages/react/src/textarea/textarea.md?raw'
 import type { Meta, StoryObj } from '@storybook/react-vite'
@@ -15,7 +15,7 @@ import {
   textareaTextsFor,
 } from './textarea.fixture.tsx'
 
-// Components/Form/Textarea: the native multi-line <textarea>, styled by @kvirn-ui/theme/theme.css
+// Components/Form/Textarea: the native multi-line <textarea>, styled by @kvirn/theme/theme.css
 // like the TextInput (design spec docs/design/rich-text-editor.md §6.2 and §6.3). It lives in a
 // Field, which gives it its name, description, help text and error. With `characterCount` and
 // `maxLength` a count of the characters left follows it: the limit is not written as the native

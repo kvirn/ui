@@ -1,5 +1,5 @@
 'use client'
-import { Toolbar } from '@kvirn-ui/react'
+import { Toolbar } from '@kvirn/ui'
 import { useId, useState } from 'react'
 import type { ReactNode } from 'react'
 import { useToolbarTexts } from './texts.ts'

@@ -46,7 +46,7 @@ Address renders no text, so it has no message keys.
 
 ## Visual / modes
 
-Headless: Address ships no CSS. With `@kvirn-ui/theme/theme.css`, `kv-address` shows the address in upright text at the body text size and line height. Browsers set `address` in italic, and long italic text is harder to read, so the theme undoes it. Sizes are in rem (1.4.4). Target size and focus indicator belong to the links inside. Motion: none.
+Headless: Address ships no CSS. With `@kvirn/theme/theme.css`, `kv-address` shows the address in upright text at the body text size and line height. Browsers set `address` in italic, and long italic text is harder to read, so the theme undoes it. Sizes are in rem (1.4.4). Target size and focus indicator belong to the links inside. Motion: none.
 
 ## WCAG SCs covered
 

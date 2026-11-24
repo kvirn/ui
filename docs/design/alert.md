@@ -117,7 +117,7 @@ Alert.Danger tabIndex=-1 ref=summaryRef        (div.kv-alert.kv-alert--danger; f
 
 ## 4. Content
 
-### 4.1 Component strings (`@kvirn-ui/i18n`, all six locales)
+### 4.1 Component strings (`@kvirn/i18n`, all six locales)
 
 Each ready-made root's status word starts its Title. It includes its punctuation, like `field.errorPrefix`, so a locale controls it. Agents write `fi`, `nb` and `nn`. The `se` (Northern Sámi) words are real Sámi, not English placeholders (the maintainer's decision, 2026-10-02).
 
@@ -243,7 +243,7 @@ The icon stays beside the title at every width. At 231px a line holds about 26 c
 
 **Why `AlertInfo` and not `InfoAlert`:** the architecture's convention is component first, then part, so every export of the component sorts together in autocomplete, in the docs' API table and in tree-shaking reports (`AlertRoot`, `AlertInfo`, `AlertTitle`). `InfoAlert` would be the only export in the library that breaks it. The ready-made roots are Roots, so they sit next to `Alert.Root` in the vocabulary.
 
-- **`announce?: AnnouncerPoliteness`** (`'polite' | 'assertive'`, the core type re-exported by `@kvirn-ui/react`), default none, on all five roots (§7.2).
+- **`announce?: AnnouncerPoliteness`** (`'polite' | 'assertive'`, the core type re-exported by `@kvirn/ui`), default none, on all five roots (§7.2).
 - **`messages?: Partial<KvirnMessages['alert']>`** on the ready-made roots. Each reads only its own key.
 - **Types:** `AlertVariant` (`'info' | 'success' | 'warning' | 'danger'`, used by the hook and by dynamic selection), `UseAlertOptions`, `UseAlertResult`, `AlertRootProps` (the plain Root), `AlertStatusRootProps` (the four ready-made roots: `AlertRootProps` plus `messages`), `AlertTitleProps`, `AlertBodyProps`, `AlertActionsProps`.
 - **`useAlert({ variant?, announce, messages })`** for your own elements. Without `variant`, it's the plain Root: `rootProps` (`kv-alert`), `titleProps`, `bodyProps`, `actionsProps`. With `variant`, it's a ready-made root: `rootProps` also has the status class, and it returns `iconProps` (`name` and `className` for `<Icon>`) and `statusProps` (`className` and `children`, the resolved word), all from one table, so the hook gives the same agreement as the components. `titleProps` and `bodyProps` carry the refs the announcement reads. The hook option exists because the hook must offer what the components do (API conventions: hook and compound); it isn't a component prop (§11 open question 2).
@@ -560,7 +560,7 @@ and add two rows after it:
 - `packages/theme/src/contrast-requirements.ts` comment, and `button-edge.ts` backgrounds (§6.6).
 - `packages/theme/README.md`: the part classes, the status classes and who renders them, the component tokens, and the restyle table (§6.2).
 - `docs/design/README.md`: this spec's row: `| [Alert: status messages (Info, Success, Warning, Danger), the vocabulary, and when to announce](alert.md) | to be written | Draft |`.
-- New: `packages/react/src/alert/` (`alert.tsx`, `use-alert.ts`, `alert.test.tsx`, `alert.a11y.md`, `alert.md` with the restyle table), `apps/storybook/src/components/alert/` (stories, fixture, e2e), a changeset (`@kvirn-ui/react`, `@kvirn-ui/theme`, `@kvirn-ui/i18n` minor).
+- New: `packages/react/src/alert/` (`alert.tsx`, `use-alert.ts`, `alert.test.tsx`, `alert.a11y.md`, `alert.md` with the restyle table), `apps/storybook/src/components/alert/` (stories, fixture, e2e), a changeset (`@kvirn/ui`, `@kvirn/theme`, `@kvirn/i18n` minor).
 
 ## 10. Decision to record (main session, status _Proposed_)
 

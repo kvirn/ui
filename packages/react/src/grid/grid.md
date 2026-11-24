@@ -11,7 +11,7 @@ Explicit, consistent column tracks with the range of Tailwind's grid utilities: 
 - Reading order. There is no `order-*` or dense packing. `start-*`, `end-*` and `row-start-*` place an item on a line: putting a later item before an earlier one makes the visual order differ from the DOM, reading and focus order (1.3.2, 2.4.3). Keep line placement in DOM order.
 
 ```tsx
-import { Grid } from '@kvirn-ui/react'
+import { Grid } from '@kvirn/ui'
 
 ;<Grid.Root className="kv-grid--cols-1 kv-grid--lg-cols-12">
   <Grid.Item className="kv-grid-item--lg-span-8">…</Grid.Item>

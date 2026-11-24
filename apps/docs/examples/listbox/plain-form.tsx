@@ -1,5 +1,5 @@
 'use client'
-import { Button, Field, Listbox } from '@kvirn-ui/react'
+import { Button, Field, Listbox } from '@kvirn/ui'
 import { useEffect, useRef, useState } from 'react'
 import { municipalities } from './data.ts'
 import type { Municipality } from './data.ts'

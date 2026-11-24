@@ -1,4 +1,4 @@
-import type { ListboxEntry, ListboxSection } from '@kvirn-ui/core'
+import type { ListboxEntry, ListboxSection } from '@kvirn/core'
 import { createContext } from 'react'
 import type {
   ListboxEmptyPartProps,

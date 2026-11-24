@@ -1,5 +1,5 @@
 'use client'
-import { useScrollArea } from '@kvirn-ui/react'
+import { useScrollArea } from '@kvirn/ui'
 import { useScrollAreaTexts } from './texts.ts'
 
 export function OwnMarkup() {

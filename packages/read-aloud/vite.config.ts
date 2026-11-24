@@ -8,7 +8,7 @@ export default defineConfig({
     {
       ...packPreset,
       entry: ['src/index.ts'],
-      deps: { neverBundle: ['react', 'react-dom', /^@kvirn-ui\//] },
+      deps: { neverBundle: ['react', 'react-dom', /^@kvirn\//] },
       banner,
       inputOptions: {
         onLog(level, log, handler) {

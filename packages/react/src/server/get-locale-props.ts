@@ -1,5 +1,5 @@
-import { resolveDirection } from '@kvirn-ui/core'
-import type { Direction } from '@kvirn-ui/core'
+import { resolveDirection } from '@kvirn/core'
+import type { Direction } from '@kvirn/core'
 
 export interface LocaleProps {
   lang: string

@@ -1,5 +1,5 @@
 'use client'
-import { Button, Icon } from '@kvirn-ui/react'
+import { Button, Icon } from '@kvirn/ui'
 import { useEffect, useState } from 'react'
 import type { RefObject } from 'react'
 import { messages } from '../messages/en.ts'

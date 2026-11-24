@@ -1,5 +1,5 @@
-import { expectNoA11yViolations } from '@kvirn-ui/testing'
-import { readAnnouncements } from '@kvirn-ui/testing/read-aloud'
+import { expectNoA11yViolations } from '@kvirn/testing'
+import { readAnnouncements } from '@kvirn/testing/read-aloud'
 import { useEffect, useRef, useState } from 'react'
 import { renderToString } from 'react-dom/server'
 import { afterEach, beforeEach, describe, expect, expectTypeOf, test, vi } from 'vite-plus/test'

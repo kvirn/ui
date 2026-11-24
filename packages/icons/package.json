@@ -1,5 +1,5 @@
 {
-  "name": "@kvirn-ui/icons",
+  "name": "@kvirn/icons",
   "version": "0.0.0",
   "description": "Outline icons on one 24 grid, as plain data, with no dependencies. Each icon is tree-shakeable, and a small React component draws it.",
   "homepage": "https://ui.kvirn.com",

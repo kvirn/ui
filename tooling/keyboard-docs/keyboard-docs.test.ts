@@ -31,13 +31,13 @@ describe('importedContract', () => {
 
   it('finds nothing when a stories file imports no contract', () => {
     expect(
-      importedContract('/a/b.stories.tsx', `import { Button } from '@kvirn-ui/react'`),
+      importedContract('/a/b.stories.tsx', `import { Button } from '@kvirn/ui'`),
     ).toBeUndefined()
   })
 })
 
 describe('listPackageSourceDirectories', () => {
-  it('scans every package that has a src folder, not only @kvirn-ui/react', () => {
+  it('scans every package that has a src folder, not only @kvirn/ui', () => {
     const directories = listPackageSourceDirectories(repositoryRoot).map((directory) =>
       relative(repositoryRoot, directory),
     )

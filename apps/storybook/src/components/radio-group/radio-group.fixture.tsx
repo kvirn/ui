@@ -1,4 +1,4 @@
-import { Button, Field, Fieldset, RadioGroup, TextInput } from '@kvirn-ui/react'
+import { Button, Field, Fieldset, RadioGroup, TextInput } from '@kvirn/ui'
 import { useId, useState } from 'react'
 import { choiceTextsFor } from '../form/choice.fixture.tsx'
 import type { FormLocale } from '../form/form.fixture.tsx'

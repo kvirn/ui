@@ -1,5 +1,5 @@
 'use client'
-import { Field, Icon, Listbox } from '@kvirn-ui/react'
+import { Field, Icon, Listbox } from '@kvirn/ui'
 import { findMunicipality } from './data.ts'
 import type { Municipality } from './data.ts'
 import { useListboxTexts } from './texts.ts'

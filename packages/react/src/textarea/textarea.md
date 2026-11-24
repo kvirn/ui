@@ -2,14 +2,14 @@
 
 **KvirnUI holds no form state; bring your own form logic.** Textarea is the multi-line text box of a [Field](../field/field.md): a native `<textarea>` for a longer answer, such as "Describe your situation", a message to a caseworker or a reason for an appeal. It renders the `value` you give it, reports changes up through `onValueChange`, never copies the value into state of its own, and doesn't validate. Use it with TanStack Form, React Hook Form, your own `useState`, or a plain `<form>`.
 
-For a short answer on one line, use [TextInput](../text-input/text-input.md). For text with headings, lists and links, use the rich text editor (`@kvirn-ui/rich-text`). Don't use a Textarea to collect a code, a number or a date: those are a TextInput with a mask, a [NumberInput](../number-input/number-input.md) and a [DateInput](../date-input/date-input.md).
+For a short answer on one line, use [TextInput](../text-input/text-input.md). For text with headings, lists and links, use the rich text editor (`@kvirn/rich-text`). Don't use a Textarea to collect a code, a number or a date: those are a TextInput with a mask, a [NumberInput](../number-input/number-input.md) and a [DateInput](../date-input/date-input.md).
 
 - A native `<textarea>`. The browser supplies the role (`textbox`, multi-line), the keyboard, selection, spellcheck, paste, undo and autofill. Enter is a line break, and Tab leaves the box.
 - Inside a Field it takes its `id`, `aria-describedby`, `aria-invalid`, `aria-required` and `disabled` from it. Outside a Field it needs `aria-label` or `aria-labelledby`: a dev warning says so.
 - `rows` is 5 unless you set it. The box grows with its text where the browser supports `field-sizing: content`, and `rows` is its minimum. Nothing is written in JavaScript.
 - **Controlled:** pass `value` and `onValueChange(value, { reason: 'input', event })`. **Uncontrolled:** pass `defaultValue` and `name`, and the browser keeps the value until a form submit reads it. `onChange` and every other native prop, `name` and `ref` pass through.
 - **A count of the characters left:** `characterCount` with `maxLength` shows "You have 120 characters remaining." right under the box, announces it politely when it matters, and never cuts a pasted text.
-- Headless: no CSS. It renders `kv-textarea`, and your `className` joins it. With `@kvirn-ui/theme/theme.css` imported it is styled like a TextInput, full width, with vertical resize only.
+- Headless: no CSS. It renders `kv-textarea`, and your `className` joins it. With `@kvirn/theme/theme.css` imported it is styled like a TextInput, full width, with vertical resize only.
 
 ## API
 
@@ -53,7 +53,7 @@ What Textarea does on its own: it takes the control's `id` and `aria-describedby
 ## Component
 
 ```tsx
-import { Field, Textarea } from '@kvirn-ui/react'
+import { Field, Textarea } from '@kvirn/ui'
 
 // Controlled by your own state. The value lives in your useState, not in Textarea.
 const [situation, setSituation] = useState('')
@@ -170,7 +170,7 @@ Outside a Field, nothing links the count to the box: pass the count an `id` and 
 ## Hook
 
 ```tsx
-import { useTextarea } from '@kvirn-ui/react'
+import { useTextarea } from '@kvirn/ui'
 
 function StoryBox() {
   const { textareaProps } = useTextarea({

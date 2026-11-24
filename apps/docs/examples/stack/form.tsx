@@ -1,5 +1,5 @@
 'use client'
-import { Button, Heading, Stack } from '@kvirn-ui/react'
+import { Button, Heading, Stack } from '@kvirn/ui'
 import { useId } from 'react'
 import { useStackTexts } from './texts.ts'
 

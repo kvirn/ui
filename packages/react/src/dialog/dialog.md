@@ -10,7 +10,7 @@ A Dialog is a window on top of the page that asks for the user's attention: a fo
 - **Content stays mounted while closed,** hidden and inert, so uncontrolled fields keep what was typed (3.3.7). The cost: ids in it exist from the first render, so they must be unique on the page, and a heavy subtree is rendered while closed. Render the whole `Dialog.Root` conditionally to start fresh.
 - **Initial focus** is `initialFocusRef`, else the first tabbable that is not a Close, else the Title.
 - **Tab leaves to the browser's own UI before it wraps,** where the APG cycles inside. This is the native modal's behaviour and an approved deviation.
-- **Scroll lock** is `data-kv-scroll-locked` on `<html>`, ref-counted. `@kvirn-ui/theme` turns it into `overflow: hidden`. Without the theme, add your own CSS: the headless package ships none.
+- **Scroll lock** is `data-kv-scroll-locked` on `<html>`, ref-counted. `@kvirn/theme` turns it into `overflow: hidden`. Without the theme, add your own CSS: the headless package ships none.
 - The dialog hosts its own live regions, because the provider's are inert while a modal is open: a Combobox, Table or FileUpload inside still announces.
 - One string: `dialog.close`, the name of an icon-only `Dialog.Close`. A `Close` with children uses them as its name.
 - Headless: no CSS. The parts render `kv-dialog`, `kv-dialog-trigger`, `kv-dialog-title`, `-description`, `-body`, `-actions` and `-close`, and your `className` joins them.
@@ -18,7 +18,7 @@ A Dialog is a window on top of the page that asks for the user's attention: a fo
 ## API
 
 ```tsx
-import { Dialog } from '@kvirn-ui/react'
+import { Dialog } from '@kvirn/ui'
 
 ;<Dialog.Root>
   <Dialog.Trigger>Change phone number</Dialog.Trigger>
@@ -46,7 +46,7 @@ import { Dialog } from '@kvirn-ui/react'
 ## Hook
 
 ```tsx
-import { useDialog } from '@kvirn-ui/react'
+import { useDialog } from '@kvirn/ui'
 
 function Own() {
   const dialog = useDialog()

@@ -1,4 +1,4 @@
-import type { FileUploadEntry } from '@kvirn-ui/core'
+import type { FileUploadEntry } from '@kvirn/core'
 import { createContext } from 'react'
 import type { UseFileUploadResult } from './use-file-upload.ts'
 

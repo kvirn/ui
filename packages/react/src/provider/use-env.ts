@@ -1,5 +1,5 @@
-import { getDefaultEnv } from '@kvirn-ui/core'
-import type { Env } from '@kvirn-ui/core'
+import { getDefaultEnv } from '@kvirn/core'
+import type { Env } from '@kvirn/core'
 import { useContext, useSyncExternalStore } from 'react'
 import { KvirnConfigContext } from './provider-context.ts'
 

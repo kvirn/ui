@@ -1,4 +1,4 @@
-import type { KvirnMessages } from '@kvirn-ui/i18n'
+import type { KvirnMessages } from '@kvirn/i18n'
 import { useMemo } from 'react'
 import { useMessages } from '../provider/use-messages.ts'
 
@@ -15,7 +15,7 @@ export interface UsePaginationOptions {
 /** Spread on the `<nav>`. */
 export interface PaginationRootPartProps {
   /**
-   * The part's class, for `@kvirn-ui/theme` and your own CSS: `.kv-pagination`. Add your own
+   * The part's class, for `@kvirn/theme` and your own CSS: `.kv-pagination`. Add your own
    * class next to it with `mergeProps`: class names join.
    */
   className: 'kv-pagination'

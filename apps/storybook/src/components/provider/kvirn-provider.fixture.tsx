@@ -1,6 +1,6 @@
 // kv-lang-ok-file: the provider stories demonstrate locale and message catalogs (sv, fi), so their texts are Swedish and Finnish
-import { defineMessages } from '@kvirn-ui/i18n'
-import { sv } from '@kvirn-ui/i18n/sv'
+import { defineMessages } from '@kvirn/i18n'
+import { sv } from '@kvirn/i18n/sv'
 import {
   Button,
   ButtonGroup,
@@ -9,8 +9,8 @@ import {
   KvirnThemeScript,
   ScrollArea,
   useTheme,
-} from '@kvirn-ui/react'
-import type { StoredThemePreference, ThemeStorageAdapter } from '@kvirn-ui/react'
+} from '@kvirn/ui'
+import type { StoredThemePreference, ThemeStorageAdapter } from '@kvirn/ui'
 import { useMemo, useState } from 'react'
 import { renderToStaticMarkup } from 'react-dom/server'
 

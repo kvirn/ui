@@ -1,10 +1,10 @@
-import type { KvirnMessages } from '@kvirn-ui/i18n'
-import { en } from '@kvirn-ui/i18n/en'
-import { fi } from '@kvirn-ui/i18n/fi'
-import { nb } from '@kvirn-ui/i18n/nb'
-import { nn } from '@kvirn-ui/i18n/nn'
-import { sv } from '@kvirn-ui/i18n/sv'
-import { Icon, KvirnProvider, Link } from '@kvirn-ui/react'
+import type { KvirnMessages } from '@kvirn/i18n'
+import { en } from '@kvirn/i18n/en'
+import { fi } from '@kvirn/i18n/fi'
+import { nb } from '@kvirn/i18n/nb'
+import { nn } from '@kvirn/i18n/nn'
+import { sv } from '@kvirn/i18n/sv'
+import { Icon, KvirnProvider, Link } from '@kvirn/ui'
 import contract from '../../../../../packages/react/src/link/link.a11y.md?raw'
 import guide from '../../../../../packages/react/src/link/link.md?raw'
 import type { Meta, StoryObj } from '@storybook/react-vite'
@@ -16,7 +16,7 @@ import { expectMinimumTargetSize, expectNoHorizontalOverflow } from '../theme-st
 import { AppRoot, RoutedLinkList, RouterAndPlainLinks } from './link.fixture.tsx'
 import { withLibraryIcons } from '../../icons.tsx'
 
-// Components/Link: the headless Link, styled by @kvirn-ui/theme/theme.css.
+// Components/Link: the headless Link, styled by @kvirn/theme/theme.css.
 // The keyboard contract is proved in link.test.tsx, so the play functions only read. A list of
 // page links with a current page is Components/Navigation.
 

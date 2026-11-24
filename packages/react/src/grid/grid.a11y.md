@@ -75,7 +75,7 @@ Grid renders no text, so it has no message keys.
 
 ## Visual / modes
 
-Headless: Grid ships no CSS. With `@kvirn-ui/theme/theme.css`:
+Headless: Grid ships no CSS. With `@kvirn/theme/theme.css`:
 
 - Focus indicator, target size, contrast: not applicable. Grid has no colour, no edge and no control of its own.
 - forced-colors behaviour: not applicable, nothing is drawn.

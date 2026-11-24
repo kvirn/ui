@@ -8,8 +8,8 @@ import {
   Stack,
   Stepper,
   TextInput,
-} from '@kvirn-ui/react'
-import type { StepperProps } from '@kvirn-ui/react'
+} from '@kvirn/ui'
+import type { StepperProps } from '@kvirn/ui'
 import contract from '../../../../../packages/react/src/stepper/stepper.a11y.md?raw'
 import guide from '../../../../../packages/react/src/stepper/stepper.md?raw'
 import type { Meta, StoryObj } from '@storybook/react-vite'
@@ -18,7 +18,7 @@ import { usageGuide } from '../../docs-source.ts'
 import { withFormLocale } from '../form/form.fixture.tsx'
 import { expectNoHorizontalOverflow } from '../theme-story-assertions.ts'
 
-// Components/Stepper: the headless Stepper, styled by @kvirn-ui/theme. One line of text under the
+// Components/Stepper: the headless Stepper, styled by @kvirn/theme. One line of text under the
 // page heading, so there's no focusable part and no Keyboard story. It is a position, not
 // navigation: no list, no links, no live region.
 

@@ -9,8 +9,8 @@ import type {
   ToolbarIconProps,
   UseRichTextEditorOptions,
   UseRichTextEditorResult,
-} from '@kvirn-ui/rich-text'
-import type { ToolbarGroupProps } from '@kvirn-ui/react'
+} from '@kvirn/rich-text'
+import type { ToolbarGroupProps } from '@kvirn/ui'
 import { propRows } from '../components/api-block.tsx'
 import type { ApiHook, AttributeRow } from '../components/api-block.tsx'
 

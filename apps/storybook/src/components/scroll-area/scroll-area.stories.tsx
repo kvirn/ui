@@ -1,4 +1,4 @@
-import { ScrollArea } from '@kvirn-ui/react'
+import { ScrollArea } from '@kvirn/ui'
 import contract from '../../../../../packages/react/src/scroll-area/scroll-area.a11y.md?raw'
 import guide from '../../../../../packages/react/src/scroll-area/scroll-area.md?raw'
 import type { Meta, StoryObj } from '@storybook/react-vite'
@@ -15,7 +15,7 @@ import {
 } from './scroll-area.fixture.tsx'
 
 // Components/ScrollArea: a `<div>` with the browser's own scrollbars, styled by
-// @kvirn-ui/theme/theme.css. While the content overflows it is a named region and a Tab stop, so a
+// @kvirn/theme/theme.css. While the content overflows it is a named region and a Tab stop, so a
 // keyboard user can scroll it; when it fits it is a plain `<div>`. `Table.ScrollRegion` is the
 // same behaviour for a table.
 

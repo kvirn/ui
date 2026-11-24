@@ -6,7 +6,7 @@ A Table shows data in rows and columns: cases, payments, decisions, statistics. 
 - **It is not a grid.** There is no `role="grid"` and no arrow-key navigation between cells. Links, buttons and checkboxes in cells are in the Tab order, in reading order, as people expect on a web page. A spreadsheet-like editor would be a different component.
 - **Nothing changes the `display` of a table element.** Some browsers drop the table semantics when it is changed, so none of the parts or the theme does.
 - **Name it.** Use `Table.Caption`, or `aria-labelledby` on `Table.Root`, pointing at a visible heading. A table with neither warns in development.
-- Headless: no CSS. The parts render `kv-table` and one class per part, with state as `data-*` attributes (`data-sort`, `data-selected`, `data-expanded`, `data-busy`, `data-virtualized`), and your `className` joins them. With `@kvirn-ui/theme/theme.css` imported they are styled.
+- Headless: no CSS. The parts render `kv-table` and one class per part, with state as `data-*` attributes (`data-sort`, `data-selected`, `data-expanded`, `data-busy`, `data-virtualized`), and your `className` joins them. With `@kvirn/theme/theme.css` imported they are styled.
 
 ## When to use it
 
@@ -19,7 +19,7 @@ If the rows are links to something, make the row header the link and keep the ot
 A small table that never changes needs no TanStack Table. Every part is the plain native element with its class when it has no `table`.
 
 ```tsx
-import { Table } from '@kvirn-ui/react'
+import { Table } from '@kvirn/ui'
 
 ;<Table.Root>
   <Table.Caption>Fees</Table.Caption>
@@ -42,7 +42,7 @@ import { Table } from '@kvirn-ui/react'
 
 ## With `useTable`
 
-`useTable` is TanStack Table with KvirnUI's accessible defaults. You say which features the table has, with `tableFeatures`, and write the columns with `createColumnHelper`. Everything comes from `@kvirn-ui/react`, so you install nothing else.
+`useTable` is TanStack Table with KvirnUI's accessible defaults. You say which features the table has, with `tableFeatures`, and write the columns with `createColumnHelper`. Everything comes from `@kvirn/ui`, so you install nothing else.
 
 ```tsx
 import {
@@ -54,7 +54,7 @@ import {
   rowSortingFeature,
   tableFeatures,
   useTable,
-} from '@kvirn-ui/react'
+} from '@kvirn/ui'
 
 // Outside the component: the features and the columns are made once.
 const features = tableFeatures({
@@ -113,7 +113,7 @@ function Cases({ data }: { data: Case[] }) {
 
 Give the Root and the ScrollRegion the same result (`table={cases}`). The `rowHeader` is the id of the column whose cells are `<th scope="row">`.
 
-What is supported is what `@kvirn-ui/react` exports: sorting, row selection, expanding, pagination, column and global filtering and column visibility, with their row models and the built-in sort and filter functions. Define the features and the columns outside the component, so they keep their identity between renders.
+What is supported is what `@kvirn/ui` exports: sorting, row selection, expanding, pagination, column and global filtering and column visibility, with their row models and the built-in sort and filter functions. Define the features and the columns outside the component, so they keep their identity between renders.
 
 ## Sorting
 

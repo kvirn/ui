@@ -1,4 +1,4 @@
-import { SectionNav } from '@kvirn-ui/patterns'
+import { SectionNav } from '@kvirn/patterns'
 import type { Meta, StoryObj } from '@storybook/react-vite'
 import { expect, userEvent } from 'storybook/test'
 import contract from '../../../../../packages/patterns/src/navigation-and-promotion/section-nav/section-nav.a11y.md?raw'

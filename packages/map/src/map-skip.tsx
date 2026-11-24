@@ -1,4 +1,4 @@
-import { SkipLink } from '@kvirn-ui/react'
+import { SkipLink } from '@kvirn/ui'
 import { useContext } from 'react'
 import type { ReactElement, ReactNode } from 'react'
 import { MapListPresenceContext, useMapContext } from './map-context.ts'

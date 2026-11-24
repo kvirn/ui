@@ -1,11 +1,11 @@
-import { Link, List } from '@kvirn-ui/react'
+import { Link, List } from '@kvirn/ui'
 import contract from '../../../../../packages/react/src/list/list.a11y.md?raw'
 import guide from '../../../../../packages/react/src/list/list.md?raw'
 import type { Meta, StoryObj } from '@storybook/react-vite'
 import { expect } from 'storybook/test'
 import { usageGuide } from '../../docs-source.ts'
 
-// Components/Content/List: the headless List, styled by @kvirn-ui/theme. It is static content, so
+// Components/Content/List: the headless List, styled by @kvirn/theme. It is static content, so
 // there's no focusable part of its own and no Keyboard story.
 
 const meta = {

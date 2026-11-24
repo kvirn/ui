@@ -1,5 +1,5 @@
 'use client'
-import type { KvirnMessages } from '@kvirn-ui/i18n'
+import type { KvirnMessages } from '@kvirn/i18n'
 import {
   createElement,
   useContext,
@@ -162,7 +162,7 @@ DefinitionListChange.displayName = 'DefinitionList.Change'
 /**
  * Rows of a term, a description and optional actions, as one native description list (contract:
  * definition-list.a11y.md): a check-your-answers page, a contact card, a case card. Read-only. With
- * `@kvirn-ui/theme`, the rows have dividers and stack below `40rem`.
+ * `@kvirn/theme`, the rows have dividers and stack below `40rem`.
  *
  * @example
  * <DefinitionList.Root>

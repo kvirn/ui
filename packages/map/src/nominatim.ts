@@ -1,4 +1,4 @@
-import type { AddressResult, GeocoderProvider } from '@kvirn-ui/core'
+import type { AddressResult, GeocoderProvider } from '@kvirn/core'
 
 const DEFAULT_LIMIT = 6
 const CACHE_SIZE = 50

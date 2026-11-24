@@ -1,5 +1,5 @@
 'use client'
-import { CodeBlock, Stack } from '@kvirn-ui/react'
+import { CodeBlock, Stack } from '@kvirn/ui'
 import { useCodeBlockTexts } from './texts.ts'
 
 export function SeveralBlocks() {
@@ -8,7 +8,7 @@ export function SeveralBlocks() {
     <Stack className="kv-stack--gap-4">
       <CodeBlock.Root>
         <CodeBlock.Label>{texts.installLabel}</CodeBlock.Label>
-        <CodeBlock.Code>pnpm add @kvirn-ui/react @kvirn-ui/theme</CodeBlock.Code>
+        <CodeBlock.Code>pnpm add @kvirn/ui @kvirn/theme</CodeBlock.Code>
         <CodeBlock.Copy
           messages={{
             label: texts.copyCommand,

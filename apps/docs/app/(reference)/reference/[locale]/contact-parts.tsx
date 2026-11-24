@@ -13,7 +13,7 @@ import {
   Heading,
   Link,
   Stack,
-} from '@kvirn-ui/react'
+} from '@kvirn/ui'
 import type { ReactNode } from 'react'
 import { referenceContactMessages } from '../../../../messages/reference-contact.ts'
 import type { ReferenceLocale } from '../../../../messages/reference.ts'

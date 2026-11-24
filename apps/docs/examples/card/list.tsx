@@ -1,5 +1,5 @@
 'use client'
-import { Card, Heading, Link } from '@kvirn-ui/react'
+import { Card, Heading, Link } from '@kvirn/ui'
 import { useCardTexts } from './texts.ts'
 
 export function NewsList() {

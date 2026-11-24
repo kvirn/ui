@@ -1,8 +1,8 @@
 'use client'
 
-import type { KvirnMessages } from '@kvirn-ui/i18n'
-import { Alert, Link, mergeProps } from '@kvirn-ui/react'
-import type { AlertCloseProps, LinkProps } from '@kvirn-ui/react'
+import type { KvirnMessages } from '@kvirn/i18n'
+import { Alert, Link, mergeProps } from '@kvirn/ui'
+import type { AlertCloseProps, LinkProps } from '@kvirn/ui'
 import { useContext, useId, useMemo, useState } from 'react'
 import type {
   ComponentPropsWithRef,

@@ -68,7 +68,7 @@ A tag outside the list changes the page's outline or semantics (1.3.1 Info and R
 
 ## Visual / modes
 
-Headless: Section ships no CSS. With the default theme (`@kvirn-ui/theme/theme.css`):
+Headless: Section ships no CSS. With the default theme (`@kvirn/theme/theme.css`):
 
 - Focus indicator: none of its own (a section is never focused). Children keep their own rings, never clipped.
 - Target size: not applicable. Section has no controls of its own (2.5.8 Target Size (Minimum), AA).

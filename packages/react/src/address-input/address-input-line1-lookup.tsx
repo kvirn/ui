@@ -1,7 +1,7 @@
 'use client'
-import type { AddressResult, GeocoderProvider } from '@kvirn-ui/core'
-import type { KvirnMessages } from '@kvirn-ui/i18n'
-import { check, error as errorIcon, info as infoIcon } from '@kvirn-ui/icons'
+import type { AddressResult, GeocoderProvider } from '@kvirn/core'
+import type { KvirnMessages } from '@kvirn/i18n'
+import { check, error as errorIcon, info as infoIcon } from '@kvirn/icons'
 import { useEffect, useRef, useState } from 'react'
 import {
   DEFAULT_DEBOUNCE_MILLISECONDS,

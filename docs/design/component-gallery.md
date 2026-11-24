@@ -109,7 +109,7 @@ Inset text, Steps and Images and media were planned as `/content-types/*` (landi
 | `docs.nav.patternGroups.{siteChrome,navigationAndPromotion,contentAndMedia,newsEventsAndNotices,searchAndForms,placesAndContacts}` | Site chrome · Navigation and promotion · Content and media · News, events and notices · Search and forms · Places and contacts                                                                                                                                                                            | Group `h2`s and sidebar                 |
 | summaries (data, not keys)                                                                                                         | Button: "A button that does something, such as sending a form or saving a draft." · Prose: "Styles for text you don't control, with inset text, steps and figures." · Hero: "The page's title and one next step." · Content page: "One topic in full: a breadcrumb, the section's pages and the article." | One sentence, ≤ ~100 characters         |
 
-**Locales:** the gallery renders no library string, so `@kvirn-ui/i18n` gets no key and the five locales are untouched (rule 4 holds: every string is a key in the docs catalog, which is English by decision). No "Read more", no fixed alt text.
+**Locales:** the gallery renders no library string, so `@kvirn/i18n` gets no key and the five locales are untouched (rule 4 holds: every string is a key in the docs catalog, which is English by decision). No "Read more", no fixed alt text.
 
 ## 5. Structure
 

@@ -1,5 +1,5 @@
 // kv-lang-ok-file: LongFinnishLabels is the long Finnish name hard case under locale fi
-import { Button, ButtonGroup, Card, Toggle } from '@kvirn-ui/react'
+import { Button, ButtonGroup, Card, Toggle } from '@kvirn/ui'
 import contract from '../../../../../packages/react/src/button-group/button-group.a11y.md?raw'
 import guide from '../../../../../packages/react/src/button-group/button-group.md?raw'
 import type { Meta, StoryObj } from '@storybook/react-vite'
@@ -7,7 +7,7 @@ import { expect } from 'storybook/test'
 import { usageGuide } from '../../docs-source.ts'
 import { expectNoHorizontalOverflow } from '../theme-story-assertions.ts'
 
-// Components/ButtonGroup: a row of related buttons, styled by @kvirn-ui/theme/theme.css
+// Components/ButtonGroup: a row of related buttons, styled by @kvirn/theme/theme.css
 // (contract: button-group.a11y.md). It has no keys of its own, so there is no Keyboard story and
 // its Tab row is a component test. In a toolbar it is Toolbar.Group: see
 // Components/Toolbar.

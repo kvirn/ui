@@ -1,6 +1,6 @@
 'use client'
 
-import { Breadcrumb, Container, Heading, Link, List, Prose, Stack } from '@kvirn-ui/react'
+import { Breadcrumb, Container, Heading, Link, List, Prose, Stack } from '@kvirn/ui'
 import { kvirnbyHills } from '../../fixtures/images.ts'
 import { PageFrame } from '../../page-frame/page-frame.tsx'
 import { PageTools } from '../../site-chrome/page-tools/page-tools.tsx'

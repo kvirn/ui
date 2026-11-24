@@ -8,7 +8,7 @@ import {
   isWeekStart,
   kvirnSpeechEngine,
   resolveDirection,
-} from '@kvirn-ui/core'
+} from '@kvirn/core'
 import type {
   Direction,
   Env,
@@ -17,8 +17,8 @@ import type {
   ReadAloudVoiceMap,
   ThemeOptions,
   WeekStart,
-} from '@kvirn-ui/core'
-import type { PartialMessages } from '@kvirn-ui/i18n'
+} from '@kvirn/core'
+import type { PartialMessages } from '@kvirn/i18n'
 import {
   useContext,
   useEffect,
@@ -90,7 +90,7 @@ export interface KvirnProviderProps {
    */
   country?: MaskCountry | undefined
   /**
-   * A catalog (`sv` from `@kvirn-ui/i18n/sv`) or a partial override. Resolved over the
+   * A catalog (`sv` from `@kvirn/i18n/sv`) or a partial override. Resolved over the
    * parent provider's messages, and finally over built-in `en`.
    */
   messages?: PartialMessages | undefined

@@ -1,5 +1,5 @@
 'use client'
-import { Icon, Toolbar, Tooltip } from '@kvirn-ui/react'
+import { Icon, Toolbar, Tooltip } from '@kvirn/ui'
 import { useTooltipTexts } from './texts.ts'
 
 export function IconToolbar() {

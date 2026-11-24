@@ -1,4 +1,4 @@
-import { CopyButton } from '@kvirn-ui/react'
+import { CopyButton } from '@kvirn/ui'
 import contract from '../../../../../packages/react/src/copy-button/copy-button.a11y.md?raw'
 import guide from '../../../../../packages/react/src/copy-button/copy-button.md?raw'
 import type { Meta, StoryObj } from '@storybook/react-vite'
@@ -8,7 +8,7 @@ import { usageGuide } from '../../docs-source.ts'
 import { withCopyMessages } from './copy-button.fixture.tsx'
 import { expectMinimumTargetSize, expectNoHorizontalOverflow } from '../theme-story-assertions.ts'
 
-// Components/CopyButton: a Button that copies a text, styled by @kvirn-ui/theme/theme.css
+// Components/CopyButton: a Button that copies a text, styled by @kvirn/theme/theme.css
 // (contract: copy-button.a11y.md). The Clipboard API is stubbed in the plays that click, so the
 // result doesn't depend on the browser's permission prompt.
 

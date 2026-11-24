@@ -1,5 +1,5 @@
-import { Heading, Link, TableOfContents } from '@kvirn-ui/react'
-import type { TableOfContentsRootProps } from '@kvirn-ui/react'
+import { Heading, Link, TableOfContents } from '@kvirn/ui'
+import type { TableOfContentsRootProps } from '@kvirn/ui'
 import contract from '../../../../../packages/react/src/table-of-contents/table-of-contents.a11y.md?raw'
 import guide from '../../../../../packages/react/src/table-of-contents/table-of-contents.md?raw'
 import type { Meta, StoryObj } from '@storybook/react-vite'
@@ -22,7 +22,7 @@ import {
   withStickyHeader,
 } from './table-of-contents.fixture.tsx'
 
-// Components/TableOfContents: the headless TableOfContents, styled by @kvirn-ui/theme/theme.css
+// Components/TableOfContents: the headless TableOfContents, styled by @kvirn/theme/theme.css
 // (design spec docs/design/table-of-contents.md). Their play functions only read, or scroll to a
 // heading to show the current state. Every story is a page that scrolls (its sections are 70vh, and shorter on a
 // Docs page, preview.css). The heading ids start with the story's own name: an id is unique on a

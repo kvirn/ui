@@ -246,7 +246,7 @@ Card is level 2 only.
 | "A text block on a surface in a sidebar" (`card.md` Example A)                                | `Card.Root` with `kv-card--surface`                                | **`Section`** rendered as a named `<aside>`. It loses the `lg` radius and the hairline. A consumer who wants a rounded raised block uses a default Card instead |
 | "A card that looks part of the page on a `surface` section" (`kv-card--canvas`)               | `Card.Root` with `kv-card--canvas`                                 | `Section` with `kv-section--canvas` if it's a region, or a default Card if it's an object                                                                       |
 
-**Release:** nothing is published (`0.0.0`), and `.changeset/card.md` is still pending. So amend `.changeset/card.md` (remove the two classes from its theme bullet) and add `.changeset/section.md` (`@kvirn-ui/react` minor: Section and `useSection`; `@kvirn-ui/theme` minor: Section styles and tokens). Whether the commit is marked `!` is the main session's call: there's no published API to break.
+**Release:** nothing is published (`0.0.0`), and `.changeset/card.md` is still pending. So amend `.changeset/card.md` (remove the two classes from its theme bullet) and add `.changeset/section.md` (`@kvirn/ui` minor: Section and `useSection`; `@kvirn/theme` minor: Section styles and tokens). Whether the commit is marked `!` is the main session's call: there's no published API to break.
 
 ### 6.8 States
 

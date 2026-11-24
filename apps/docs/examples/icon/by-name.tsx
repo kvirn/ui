@@ -1,5 +1,5 @@
 'use client'
-import { Icon, Link } from '@kvirn-ui/react'
+import { Icon, Link } from '@kvirn/ui'
 import { useIconTexts } from './texts.ts'
 
 export function ByName() {

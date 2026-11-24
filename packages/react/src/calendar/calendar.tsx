@@ -2,7 +2,7 @@
 import { Fragment, useContext, useEffect } from 'react'
 import type { ComponentPropsWithRef, ReactElement, ReactNode } from 'react'
 import { warnOnce } from '../dev/dev-warning.ts'
-import { chevronBack, chevronForward } from '@kvirn-ui/icons'
+import { chevronBack, chevronForward } from '@kvirn/icons'
 import { Icon } from '../icon/icon.tsx'
 import { mergeProps } from '../merge-props/merge-props.ts'
 import { Tooltip } from '../tooltip/tooltip.tsx'

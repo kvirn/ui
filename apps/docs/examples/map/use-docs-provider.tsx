@@ -1,5 +1,5 @@
 'use client'
-import type { MapProvider } from '@kvirn-ui/map'
+import type { MapProvider } from '@kvirn/map'
 import { useEffect, useState } from 'react'
 import type { ReactNode } from 'react'
 import { useMapTexts } from './texts.ts'
@@ -13,8 +13,8 @@ const plainStyle = {
 
 // The engine is imported on the client only, so the server render never touches the DOM.
 async function createProvider(plainLabel: string): Promise<MapProvider> {
-  const { maplibre } = await import('@kvirn-ui/map/maplibre')
-  const { kvirnBaseMap } = await import('@kvirn-ui/map/kvirn')
+  const { maplibre } = await import('@kvirn/map/maplibre')
+  const { kvirnBaseMap } = await import('@kvirn/map/kvirn')
   // The bundler moves the engine away from its worker: pass the worker's address.
   const workerUrl = new URL('maplibre-gl/dist/maplibre-gl-worker.mjs', import.meta.url).href
   return maplibre({

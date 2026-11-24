@@ -1,5 +1,5 @@
 'use client'
-import { Card, Heading } from '@kvirn-ui/react'
+import { Card, Heading } from '@kvirn/ui'
 import { useId } from 'react'
 import { useCardTexts } from './texts.ts'
 

@@ -1,6 +1,6 @@
-import { en } from '@kvirn-ui/i18n/en'
-import { ContentTypeShell } from '@kvirn-ui/patterns/content-types'
-import { KvirnProvider } from '@kvirn-ui/react'
+import { en } from '@kvirn/i18n/en'
+import { ContentTypeShell } from '@kvirn/patterns/content-types'
+import { KvirnProvider } from '@kvirn/ui'
 import type { Decorator } from '@storybook/react-vite'
 
 // The shell every content-type story shares (decision D12): skip link, header, optional site alert

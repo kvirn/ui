@@ -1,5 +1,5 @@
-import { pin } from '@kvirn-ui/icons'
-import { Icon } from '@kvirn-ui/react'
+import { pin } from '@kvirn/icons'
+import { Icon } from '@kvirn/ui'
 import { useRef } from 'react'
 import type { CSSProperties, ReactElement } from 'react'
 import { useMapContext } from './map-context.ts'

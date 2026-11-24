@@ -1,4 +1,4 @@
-import { Button, Popover } from '@kvirn-ui/react'
+import { Button, Popover } from '@kvirn/ui'
 import { useState } from 'react'
 
 // Fixtures for Components/Popover: each function is one example, and the story's "Show code"

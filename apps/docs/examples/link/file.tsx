@@ -1,5 +1,5 @@
 'use client'
-import { Link, useFormat } from '@kvirn-ui/react'
+import { Link, useFormat } from '@kvirn/ui'
 import { useLinkFileTexts } from './texts.ts'
 
 export function FileLink() {

@@ -1,6 +1,6 @@
 'use client'
-import { en } from '@kvirn-ui/i18n/en'
-import { Card, KvirnProvider, useLocale } from '@kvirn-ui/react'
+import { en } from '@kvirn/i18n/en'
+import { Card, KvirnProvider, useLocale } from '@kvirn/ui'
 import { Component, useEffect, useId, useRef, useState } from 'react'
 import type { ReactNode } from 'react'
 import { messages } from '../messages/en.ts'

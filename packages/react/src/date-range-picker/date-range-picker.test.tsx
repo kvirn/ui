@@ -1,8 +1,8 @@
 // kv-lang-ok-file: the tests run in sv because month and weekday names, announcements and the built-in labels are locale behaviour
-import { masks } from '@kvirn-ui/core'
-import { sv } from '@kvirn-ui/i18n/sv'
-import { expectNoA11yViolations } from '@kvirn-ui/testing'
-import { readAloud, readAnnouncements } from '@kvirn-ui/testing/read-aloud'
+import { masks } from '@kvirn/core'
+import { sv } from '@kvirn/i18n/sv'
+import { expectNoA11yViolations } from '@kvirn/testing'
+import { readAloud, readAnnouncements } from '@kvirn/testing/read-aloud'
 import { useState } from 'react'
 import { afterEach, beforeEach, describe, expect, test, vi } from 'vite-plus/test'
 import type { MockInstance } from 'vite-plus/test'

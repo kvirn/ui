@@ -49,7 +49,7 @@
 | --------------- | -------------------------------- | ------------------------- | --------------------- |
 |                 | `button, Menu, not expanded`     | none / polite / assertive | `<name>.test.tsx › …` |
 
-Each row has a named test using `readAloud` or `readAnnouncements` (`@kvirn-ui/testing/read-aloud`). The phrases are the virtual screen reader's approximation, not NVDA or JAWS wording, and it does not prove modality or focus containment; that stays a component test. The manual AT matrix stays `pending`.
+Each row has a named test using `readAloud` or `readAnnouncements` (`@kvirn/testing/read-aloud`). The phrases are the virtual screen reader's approximation, not NVDA or JAWS wording, and it does not prove modality or focus containment; that stays a component test. The manual AT matrix stays `pending`.
 
 ## Consumer responsibilities
 

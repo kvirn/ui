@@ -1,6 +1,6 @@
-import { arrowEast, arrowNorth, arrowSouth, arrowWest, locate, pin, remove } from '@kvirn-ui/icons'
+import { arrowEast, arrowNorth, arrowSouth, arrowWest, locate, pin, remove } from '@kvirn/icons'
 
-/** The Map's icons by name, for `KvirnProvider icons` or `<Icon icon>`: all from `@kvirn-ui/icons`. */
+/** The Map's icons by name, for `KvirnProvider icons` or `<Icon icon>`: all from `@kvirn/icons`. */
 export const mapIcons = Object.freeze({
   marker: pin,
   locate,

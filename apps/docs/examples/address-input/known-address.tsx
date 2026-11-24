@@ -1,5 +1,5 @@
 'use client'
-import { DefinitionList } from '@kvirn-ui/react'
+import { DefinitionList } from '@kvirn/ui'
 import { useAddressInputTexts } from './texts.ts'
 
 export function KnownAddress() {

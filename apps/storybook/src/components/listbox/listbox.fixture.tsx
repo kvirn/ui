@@ -1,5 +1,5 @@
 // kv-lang-ok-file: per-locale story texts (the toolbar locale selects the table), and municipality names with å, ä and ö for the type-ahead and collation examples
-import { Button, Card, Field, Icon, Listbox } from '@kvirn-ui/react'
+import { Button, Card, Field, Icon, Listbox } from '@kvirn/ui'
 import { useMemo, useState } from 'react'
 import { choiceTextsFor } from '../form/choice.fixture.tsx'
 import type { ChoiceTexts } from '../form/choice.fixture.tsx'

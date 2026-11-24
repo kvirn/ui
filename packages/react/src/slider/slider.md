@@ -17,7 +17,7 @@ A Slider is for an approximate value, where "about this much" is the answer: a s
 - **Say the unit.** `aria-valuetext` is always set: `valueText(value)`, or the number in the provider's locale. Give `valueText` the unit (`15 km`), since a screen reader would otherwise say "0.3".
 - **Controlled:** pass `value` (a number) and `onValueChange(value, { reason: 'input', event })`. **Uncontrolled:** pass `defaultValue` and `name`. A submit sends `name=value`.
 - **Not required.** `required` is not a prop: a range always has a value.
-- Headless: no CSS. It renders `kv-slider`, and your `className` joins it. With `@kvirn-ui/theme/theme.css` imported it is styled (a plain track and a `primary` thumb, a 44px thumb on touch screens).
+- Headless: no CSS. It renders `kv-slider`, and your `className` joins it. With `@kvirn/theme/theme.css` imported it is styled (a plain track and a `primary` thumb, a 44px thumb on touch screens).
 
 ## API
 
@@ -49,7 +49,7 @@ Slider is a single part, `<Slider>`. `type` is fixed. There are no sub-parts: th
 ## Component
 
 ```tsx
-import { Field, Slider } from '@kvirn-ui/react'
+import { Field, Slider } from '@kvirn/ui'
 
 ;<Field.Root>
   <Field.Label marker="none">Distance from your address in kilometres</Field.Label>
@@ -69,7 +69,7 @@ Your part:
 ## Hook
 
 ```tsx
-import { useSlider } from '@kvirn-ui/react'
+import { useSlider } from '@kvirn/ui'
 
 function Volume({ volume, setVolume }: { volume: number; setVolume: (value: number) => void }) {
   const control = useSlider({

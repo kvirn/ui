@@ -1,5 +1,5 @@
 'use client'
-import { Button } from '@kvirn-ui/react'
+import { Button } from '@kvirn/ui'
 import { useButtonTexts } from './texts.ts'
 
 export function DefaultButton() {

@@ -22,7 +22,7 @@ The parts and behaviour are decided in the Listbox, overlay and Combobox decisio
   5. A staff member who uses only the keyboard, 50 times a day: one Tab stop, APG keys, nothing that slows them down.
 - **Job to be done:** When a service asks me to choose from a long list, I want to find my answer quickly by typing or scrolling, and see clearly what I've chosen, so I can move on with confidence.
 - **Context:** residents: rare, stressed, any device. On touch, a single-choice Listbox is the platform's own picker, and Combobox and Autocomplete stay custom. Staff: daily, desktop, keyboard.
-- **Constraints:** headless packages ship no CSS (hard rule 5). Only DESIGN.md tokens. Every visible or announced string from `@kvirn-ui/i18n` in all six locales (hard rule 4).
+- **Constraints:** headless packages ship no CSS (hard rule 5). Only DESIGN.md tokens. Every visible or announced string from `@kvirn/i18n` in all six locales (hard rule 4).
 - **Success criteria:** the user completes the choice on the first try, sees the field while typing, can confirm their choice without reopening the list, and removes a single chosen value without losing the others.
 - **Evidence:** none from KvirnUI users yet. Prior art is cited in §2. Everything else is an assumption.
 - **Assumptions and research questions:**

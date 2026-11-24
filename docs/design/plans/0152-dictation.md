@@ -25,13 +25,13 @@ Spec: `docs/design/dictation.md`. Read it for the states (§6), the copy (§4, n
 
 ### Layers
 
-| Layer                   | Where                                         | What                                                                                                                                                                         |
-| ----------------------- | --------------------------------------------- | ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| core (pure at import)   | `packages/core/src/dictation/`                | `create-dictation.ts` (machine), `dictation-recorder.ts` (capture), `encode-wav.ts`, `detect-silence.ts`, `kvirn-transcriber.ts`, `dictation-transcriber.ts` (the interface) |
-| react (private package) | `packages/dictation/` → `@kvirn-ui/dictation` | `useDictation`, `Dictation.Button`, `Dictation.Notice`, `Dictation.Status`; scaffolded like `packages/read-aloud`                                                            |
-| i18n                    | `packages/i18n/src/*.ts`                      | `dictation` in every locale                                                                                                                                                  |
-| theme                   | `packages/theme/theme.css`                    | `kv-dictation-notice`, `kv-dictation-status`, the listening fill on the group button, the container query to icon-only (all approved 2026-10-23)                             |
-| stories                 | `apps/storybook/src/components/dictation/`    | every state, Keyboard, RTL, ForcedColors, Narrow; a fake recorder and a fake transcriber, so CI never records                                                                |
+| Layer                   | Where                                      | What                                                                                                                                                                         |
+| ----------------------- | ------------------------------------------ | ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| core (pure at import)   | `packages/core/src/dictation/`             | `create-dictation.ts` (machine), `dictation-recorder.ts` (capture), `encode-wav.ts`, `detect-silence.ts`, `kvirn-transcriber.ts`, `dictation-transcriber.ts` (the interface) |
+| react (private package) | `packages/dictation/` → `@kvirn/dictation` | `useDictation`, `Dictation.Button`, `Dictation.Notice`, `Dictation.Status`; scaffolded like `packages/read-aloud`                                                            |
+| i18n                    | `packages/i18n/src/*.ts`                   | `dictation` in every locale                                                                                                                                                  |
+| theme                   | `packages/theme/theme.css`                 | `kv-dictation-notice`, `kv-dictation-status`, the listening fill on the group button, the container query to icon-only (all approved 2026-10-23)                             |
+| stories                 | `apps/storybook/src/components/dictation/` | every state, Keyboard, RTL, ForcedColors, Narrow; a fake recorder and a fake transcriber, so CI never records                                                                |
 
 ### API sketch
 
@@ -110,7 +110,7 @@ T1 and T3 can run in parallel. T2 comes after T1, T4 after T2 and T3, and T5 and
 
 ## Decisions
 
-- **D1 Package `@kvirn-ui/dictation`, private until 1.2; the machine in core** (maintainer, 2026-10-23).
+- **D1 Package `@kvirn/dictation`, private until 1.2; the machine in core** (maintainer, 2026-10-23).
 - **D2 Spec decisions** (maintainer and accessibility review, 2026-10-23): the icon-only mic below 20rem; the notice on the first press of each page load; the new classes and the listening fill; Continue speaking for 2.2.1; the transcript never altered. All of these are recorded in the spec's §9.
 - **D3 Silence by an energy threshold, no Silero VAD** (lead). Silero would bring onnxruntime-web, a new dependency of several MB. The service runs its own VAD anyway (0002). Revisit if T8 shows cut-offs.
 - **D4 Capture PCM to WAV in the browser, no `MediaRecorder`** (lead). It is the same in every browser, needs no format sniffing or codec, and is small enough at 10 s. Risk: a strict CSP that blocks `blob:` worklets (see risks).
@@ -137,7 +137,7 @@ No test speaks to the live service; the smoke project only checks `/health`.
 
 ## Rollout
 
-Private until 1.2, then minor changesets for `core`, `i18n`, `theme` and `@kvirn-ui/dictation`. AT status `pending` in the roadmap.
+Private until 1.2, then minor changesets for `core`, `i18n`, `theme` and `@kvirn/dictation`. AT status `pending` in the roadmap.
 
 ## Done when
 

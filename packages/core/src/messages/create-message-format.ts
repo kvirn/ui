@@ -10,8 +10,8 @@ export interface PluralForms {
 
 /**
  * The locale-aware helper passed to parameterised messages, and returned by `useFormat()` in
- * `@kvirn-ui/react`. Built on `Intl` only, with no ICU runtime. `@kvirn-ui/i18n`'s `MessageFormat`
- * type describes the same shape; a type test in `@kvirn-ui/react` keeps the two in step.
+ * `@kvirn/ui`. Built on `Intl` only, with no ICU runtime. `@kvirn/i18n`'s `MessageFormat`
+ * type describes the same shape; a type test in `@kvirn/ui` keeps the two in step.
  */
 export interface MessageFormatter {
   /**

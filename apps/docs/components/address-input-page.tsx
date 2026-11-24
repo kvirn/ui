@@ -1,4 +1,4 @@
-import { AlertBody, AlertInfo, AlertTitle, Link } from '@kvirn-ui/react'
+import { AlertBody, AlertInfo, AlertTitle, Link } from '@kvirn/ui'
 import type { ReactNode } from 'react'
 import { ApiBlock } from './api-block.tsx'
 import type { ApiPart } from './api-block.tsx'
@@ -165,8 +165,8 @@ export function AddressInputPage({
             Give the Root a <code>geocoder</code> when a choice from a list should fill in the
             postal code and city, for example in a change-of-address form. The street box stays free
             text, so a resident can ignore the list or add a house number that it does not have.
-            Geocoders come from <code>@kvirn-ui/map</code>. <code>kvirnGeocoder</code> is built for
-            the Kvirn map service, which Kvirn hosts in the EU.
+            Geocoders come from <code>@kvirn/map</code>. <code>kvirnGeocoder</code> is built for the
+            Kvirn map service, which Kvirn hosts in the EU.
           </li>
           <li>
             Leave the <code>geocoder</code> out when you have no address service that you can name
@@ -408,8 +408,8 @@ export function AddressInputPage({
       contractSections={contractSectionList(contract)}
       api={
         <ApiBlock
-          importLine={`import { AddressInput, useAddressInput } from '@kvirn-ui/react'
-import { kvirnGeocoder } from '@kvirn-ui/map/kvirn' // only for the address lookup`}
+          importLine={`import { AddressInput, useAddressInput } from '@kvirn/ui'
+import { kvirnGeocoder } from '@kvirn/map/kvirn' // only for the address lookup`}
           parts={parts}
           hook={useAddressInputHook}
           strings={

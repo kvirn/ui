@@ -1,5 +1,5 @@
-import { PageFrame } from '@kvirn-ui/patterns'
-import { EventListPage } from '@kvirn-ui/patterns/content-types'
+import { PageFrame } from '@kvirn/patterns'
+import { EventListPage } from '@kvirn/patterns/content-types'
 import type { Meta, StoryObj } from '@storybook/react-vite'
 import { expect, userEvent, waitFor } from 'storybook/test'
 import source from '../../../../packages/patterns/src/content-types/event-list/event-list.tsx?raw'
@@ -8,7 +8,7 @@ import { chromeViewports, narrowGlobals, wideGlobals } from '../patterns/pattern
 import { expectPageOutline } from './page-outline.ts'
 import { withShell } from './shell.tsx'
 // Content types/Event list: a whole page in the site chrome (docs/design/storybook-patterns-t5.md S11).
-// The page is a component in `@kvirn-ui/patterns/content-types`; the source panel shows its module text, which an adopter copies.
+// The page is a component in `@kvirn/patterns/content-types`; the source panel shows its module text, which an adopter copies.
 
 const description = `The events archive: the title, the filters (category as a [CheckboxGroup](?path=/docs/components-forms-checkboxgroup--docs) and a [DateRangePicker](?path=/docs/components-forms-daterangepicker--docs) after two typed date fields), the result count, the events and Pagination. Typing a date always works. The filters change the list in place and say the new count once, politely, through the provider's announcer. A cancelled event starts its title with "Cancelled:" and adds a Badge; a moved event says its new date in words.
 

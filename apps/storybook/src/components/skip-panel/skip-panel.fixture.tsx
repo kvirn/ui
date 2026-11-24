@@ -1,4 +1,4 @@
-import { Heading, Link, SkipPanel } from '@kvirn-ui/react'
+import { Heading, Link, SkipPanel } from '@kvirn/ui'
 
 // Fixtures for Components/SkipPanel. Each exported function is one example, written to be read: the
 // stories show its source as "Show code" (`showSource`). The ids start with the story's name, since

@@ -1,5 +1,5 @@
 {
-  "name": "@kvirn-ui/map",
+  "name": "@kvirn/map",
   "version": "0.0.0",
   "private": true,
   "description": "An accessible map for KvirnUI: the viewport, places and address search on a replaceable engine.",
@@ -98,10 +98,10 @@
     "build": "vp pack"
   },
   "dependencies": {
-    "@kvirn-ui/core": "workspace:*",
-    "@kvirn-ui/i18n": "workspace:*",
-    "@kvirn-ui/icons": "workspace:*",
-    "@kvirn-ui/react": "workspace:*"
+    "@kvirn/core": "workspace:*",
+    "@kvirn/i18n": "workspace:*",
+    "@kvirn/icons": "workspace:*",
+    "@kvirn/ui": "workspace:*"
   },
   "devDependencies": {
     "@types/react": "catalog:",

@@ -1,5 +1,5 @@
-import { PageFrame } from '@kvirn-ui/patterns'
-import { NewsList } from '@kvirn-ui/patterns/content-types'
+import { PageFrame } from '@kvirn/patterns'
+import { NewsList } from '@kvirn/patterns/content-types'
 import type { Meta, StoryObj } from '@storybook/react-vite'
 import source from '../../../../packages/patterns/src/content-types/news-list/news-list.tsx?raw'
 import { expectNoHorizontalOverflow } from '../components/theme-story-assertions.ts'
@@ -7,7 +7,7 @@ import { chromeViewports, narrowGlobals, wideGlobals } from '../patterns/pattern
 import { expectPageOutline } from './page-outline.ts'
 import { withShell } from './shell.tsx'
 // Content types/News list: a whole page in the site chrome (docs/design/storybook-patterns-t5.md S9).
-// The page is a component in `@kvirn-ui/patterns/content-types`; the source panel shows its module text, which an adopter copies.
+// The page is a component in `@kvirn/patterns/content-types`; the source panel shows its module text, which an adopter copies.
 
 const description = `The news archive: the title, how many items are shown, the news list newest first and Pagination. Items are \`h2\` under the \`h1\`, one link each, in the heading. The filtered state comes with Search and filter. Built from [Breadcrumb](?path=/docs/components-navigation-breadcrumb--docs), a [List](?path=/docs/components-content-list--docs) and [Pagination](?path=/docs/patterns-news-events-and-notices-pagination--docs).
 

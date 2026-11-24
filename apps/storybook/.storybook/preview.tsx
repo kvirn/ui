@@ -1,19 +1,19 @@
 import { Controls, Primary, Stories, Subtitle, Title } from '@storybook/addon-docs/blocks'
 import type { Decorator, Preview } from '@storybook/react-vite'
-import { getDefaultEnv, getThemeStore } from '@kvirn-ui/core'
-import type { ColorSchemePreference, ContrastPreference } from '@kvirn-ui/core'
-import { wcagTags } from '@kvirn-ui/testing'
+import { getDefaultEnv, getThemeStore } from '@kvirn/core'
+import type { ColorSchemePreference, ContrastPreference } from '@kvirn/core'
+import { wcagTags } from '@kvirn/testing'
 import { useLayoutEffect } from 'react'
 import type { ReactNode } from 'react'
 // Self-hosted IBM Plex Sans and Serif, the same files as the docs site: no network request
 // (hard rule 7).
 import '../../docs/fonts/ibm-plex/ibm-plex.css'
 // The default theme, as an adopter imports it.
-import '@kvirn-ui/theme/theme.css'
+import '@kvirn/theme/theme.css'
 // Opt-in classes for the map and the rich text editor, as an adopter imports them after theme.css.
-import '@kvirn-ui/theme/map.css'
-import '@kvirn-ui/theme/read-aloud.css'
-import '@kvirn-ui/theme/rich-text.css'
+import '@kvirn/theme/map.css'
+import '@kvirn/theme/read-aloud.css'
+import '@kvirn/theme/rich-text.css'
 import './preview.css'
 import {
   expectNoClippedTextWithSpacing,

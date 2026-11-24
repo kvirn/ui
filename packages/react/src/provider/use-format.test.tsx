@@ -1,4 +1,4 @@
-import { fi } from '@kvirn-ui/i18n/fi'
+import { fi } from '@kvirn/i18n/fi'
 import { useEffect } from 'react'
 import { beforeEach, describe, expect, test, vi } from 'vite-plus/test'
 import { page } from 'vite-plus/test/browser'

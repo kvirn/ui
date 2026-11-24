@@ -1,11 +1,11 @@
-import { Badge } from '@kvirn-ui/react'
+import { Badge } from '@kvirn/ui'
 import contract from '../../../../../packages/react/src/badge/badge.a11y.md?raw'
 import guide from '../../../../../packages/react/src/badge/badge.md?raw'
 import type { Meta, StoryObj } from '@storybook/react-vite'
 import { expect } from 'storybook/test'
 import { usageGuide } from '../../docs-source.ts'
 
-// Components/Badge: the headless Badge, styled by @kvirn-ui/theme. A badge is text, not a
+// Components/Badge: the headless Badge, styled by @kvirn/theme. A badge is text, not a
 // control, so there's no focusable part and no Keyboard story.
 
 const meta = {

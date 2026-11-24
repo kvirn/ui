@@ -1,7 +1,7 @@
 'use client'
 
-import { Disclosure, Link, Navigation, mergeProps } from '@kvirn-ui/react'
-import type { DisclosureTriggerProps, LinkProps } from '@kvirn-ui/react'
+import { Disclosure, Link, Navigation, mergeProps } from '@kvirn/ui'
+import type { DisclosureTriggerProps, LinkProps } from '@kvirn/ui'
 import { createContext, useContext, useState } from 'react'
 import type { ComponentPropsWithRef, ElementType, ReactElement } from 'react'
 import { useIsWideViewport } from '../../site-chrome/is-wide-viewport.ts'

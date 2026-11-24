@@ -6,7 +6,7 @@ import type {
   ListboxValueProps,
   UseListboxOptions,
   UseListboxResult,
-} from '@kvirn-ui/react'
+} from '@kvirn/ui'
 import { propRows } from '../components/api-block.tsx'
 import type { ApiHook, AttributeRow } from '../components/api-block.tsx'
 

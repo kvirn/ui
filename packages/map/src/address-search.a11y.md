@@ -111,7 +111,7 @@ Not announced: the active suggestion (the screen reader reads it through `aria-a
 | Pick with describePick | `polite: <the announcement>` in place of `Chosen: …`                                                                                                                                    | polite                 | `address-search.test.tsx › AddressSearch read aloud › a pick with describePick says its announcement in place of chosen`                                    |
 | Clear                  | nothing                                                                                                                                                                                 | none                   | `address-search.test.tsx › AddressSearch read aloud › Clear says nothing`                                                                                   |
 
-Each row has a named test using `readAloud` or `readAnnouncements` (`@kvirn-ui/testing/read-aloud`). The phrases are the virtual screen reader's approximation, not NVDA or JAWS wording, and it does not prove modality or focus containment; that stays a component test.
+Each row has a named test using `readAloud` or `readAnnouncements` (`@kvirn/testing/read-aloud`). The phrases are the virtual screen reader's approximation, not NVDA or JAWS wording, and it does not prove modality or focus containment; that stays a component test.
 
 ## Consumer responsibilities
 

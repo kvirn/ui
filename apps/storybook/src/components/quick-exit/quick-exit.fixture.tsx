@@ -1,7 +1,7 @@
-import { KvirnProvider } from '@kvirn-ui/react'
-import { en } from '@kvirn-ui/i18n/en'
-import { fi } from '@kvirn-ui/i18n/fi'
-import { sv } from '@kvirn-ui/i18n/sv'
+import { KvirnProvider } from '@kvirn/ui'
+import { en } from '@kvirn/i18n/en'
+import { fi } from '@kvirn/i18n/fi'
+import { sv } from '@kvirn/i18n/sv'
 import type { Decorator } from '@storybook/react-vite'
 
 // Story fixture for Components/QuickExit. The library's own words follow the locale toolbar

@@ -1,5 +1,5 @@
-import { ApplicationLogo } from '@kvirn-ui/patterns'
-import { Heading, Link, Section } from '@kvirn-ui/react'
+import { ApplicationLogo } from '@kvirn/patterns'
+import { Heading, Link, Section } from '@kvirn/ui'
 import { messages } from '../messages/en.ts'
 import { sectionCurrent, siteTools } from './site-sections.ts'
 import type { SiteSection } from './site-sections.ts'

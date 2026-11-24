@@ -1,5 +1,5 @@
 'use client'
-import { Address, Link } from '@kvirn-ui/react'
+import { Address, Link } from '@kvirn/ui'
 import { useAddressTexts } from './texts.ts'
 
 export function DefaultAddress() {

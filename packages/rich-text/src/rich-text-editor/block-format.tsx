@@ -1,6 +1,6 @@
 'use client'
-import { Listbox } from '@kvirn-ui/react'
-import { FieldContext, useMessages, warnOnce } from '@kvirn-ui/react/internal'
+import { Listbox } from '@kvirn/ui'
+import { FieldContext, useMessages, warnOnce } from '@kvirn/ui/internal'
 import type { Editor } from '@tiptap/core'
 import { useEffect, useMemo } from 'react'
 import type { ReactElement } from 'react'

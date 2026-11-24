@@ -1,5 +1,5 @@
 'use client'
-import { CardBody, CardRoot, Grid, Heading, Icon, Link, LinkIcon, Stack } from '@kvirn-ui/react'
+import { CardBody, CardRoot, Grid, Heading, Icon, Link, LinkIcon, Stack } from '@kvirn/ui'
 import { homeMessages } from '../../messages/home.ts'
 import { Band } from './band.tsx'
 

@@ -1,5 +1,5 @@
 'use client'
-import { PageFrame, PageTools, SectionNav, ServiceLink } from '@kvirn-ui/patterns'
+import { PageFrame, PageTools, SectionNav, ServiceLink } from '@kvirn/patterns'
 import {
   Accordion,
   Breadcrumb,
@@ -13,7 +13,7 @@ import {
   Stack,
   Table,
   TableOfContents,
-} from '@kvirn-ui/react'
+} from '@kvirn/ui'
 import {
   easyToReadSwedish,
   referenceContentMessages,

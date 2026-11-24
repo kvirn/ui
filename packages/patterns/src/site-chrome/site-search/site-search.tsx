@@ -1,7 +1,7 @@
 'use client'
 
-import { search } from '@kvirn-ui/icons'
-import { Button, ButtonGroup, Field, Icon, TextInput, mergeProps } from '@kvirn-ui/react'
+import { search } from '@kvirn/icons'
+import { Button, ButtonGroup, Field, Icon, TextInput, mergeProps } from '@kvirn/ui'
 import type { ComponentPropsWithRef, ReactElement, ReactNode } from 'react'
 
 export interface SiteSearchProps extends Omit<ComponentPropsWithRef<'search'>, 'children'> {

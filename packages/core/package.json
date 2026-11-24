@@ -1,5 +1,5 @@
 {
-  "name": "@kvirn-ui/core",
+  "name": "@kvirn/core",
   "version": "0.0.0",
   "description": "Framework-agnostic state and interaction logic for KvirnUI.",
   "homepage": "https://ui.kvirn.com",

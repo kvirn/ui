@@ -1,5 +1,5 @@
 import { afterEach, describe, expect, test, vi } from 'vite-plus/test'
-import type { MapTheme } from '@kvirn-ui/core'
+import type { MapTheme } from '@kvirn/core'
 
 // Contract: themed base maps in map.md and plan 0147. The engine is mocked at its boundary:
 // nothing is drawn and nothing leaves the process.

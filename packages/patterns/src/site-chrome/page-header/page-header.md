@@ -8,8 +8,8 @@ The top of a page's `main`: a full-width `surface` band with the breadcrumb, the
 - Text is children. The pattern has no strings and no presentation props. Parts are also flat exports (`PageHeaderRoot`, `PageHeaderTitle`, …).
 
 ```tsx
-import { PageHeader } from '@kvirn-ui/patterns'
-import { Breadcrumb, DefinitionList } from '@kvirn-ui/react'
+import { PageHeader } from '@kvirn/patterns'
+import { Breadcrumb, DefinitionList } from '@kvirn/ui'
 
 ;<PageHeader.Root>
   <Breadcrumb.Root>…</Breadcrumb.Root>
@@ -19,7 +19,7 @@ import { Breadcrumb, DefinitionList } from '@kvirn-ui/react'
     <DefinitionList.Row>
       <DefinitionList.Term>Package</DefinitionList.Term>
       <DefinitionList.Description>
-        <code>@kvirn-ui/react</code>
+        <code>@kvirn/ui</code>
       </DefinitionList.Description>
     </DefinitionList.Row>
   </PageHeader.Facts>

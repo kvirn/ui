@@ -40,7 +40,7 @@ const accessibleDefaults = { enableMultiSort: false }
 /**
  * Creates a TanStack Table instance (`constructTable`) with the store reactivity bindings,
  * and adapts its state to a `ReadableStore`. The only place a table is constructed.
- * Use `tableFeatures` and the other re-exports from `@kvirn-ui/core` for the features.
+ * Use `tableFeatures` and the other re-exports from `@kvirn/core` for the features.
  *
  * @example
  * const features = tableFeatures({ rowSortingFeature, sortedRowModel: createSortedRowModel() })

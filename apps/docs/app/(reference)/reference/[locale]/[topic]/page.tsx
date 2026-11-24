@@ -6,7 +6,7 @@ import {
   PageToolsCopyLink,
   PageToolsPrint,
   PageToolsRoot,
-} from '@kvirn-ui/patterns'
+} from '@kvirn/patterns'
 import {
   BreadcrumbCurrent,
   BreadcrumbItem,
@@ -19,7 +19,7 @@ import {
   ListItem,
   ListRoot,
   Stack,
-} from '@kvirn-ui/react'
+} from '@kvirn/ui'
 import type { Metadata } from 'next'
 import { notFound } from 'next/navigation'
 import {

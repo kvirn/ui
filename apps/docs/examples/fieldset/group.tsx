@@ -1,5 +1,5 @@
 'use client'
-import { Field, Fieldset, TextInput } from '@kvirn-ui/react'
+import { Field, Fieldset, TextInput } from '@kvirn/ui'
 import { useFieldsetTexts } from './texts.ts'
 
 export function OneQuestion() {

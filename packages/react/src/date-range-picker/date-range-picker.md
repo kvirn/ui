@@ -34,7 +34,7 @@ import {
   masks,
   maskedDateToIsoDate,
   useLocale,
-} from '@kvirn-ui/react'
+} from '@kvirn/ui'
 
 const { locale } = useLocale()
 ;<DateRangePicker.Root

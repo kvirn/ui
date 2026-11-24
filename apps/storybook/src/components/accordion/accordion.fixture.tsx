@@ -1,5 +1,5 @@
 // kv-lang-ok-file: FinnishAccordion is the long Finnish compound hard case
-import { Accordion } from '@kvirn-ui/react'
+import { Accordion } from '@kvirn/ui'
 
 // Fixtures for Components/Accordion. Each exported function is one example, written to be read: the
 // stories show its source as "Show code" (`showSource`). The texts are plain strings here, where

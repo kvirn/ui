@@ -1,6 +1,6 @@
 'use client'
 
-import { arrowBack } from '@kvirn-ui/icons'
+import { arrowBack } from '@kvirn/icons'
 import {
   Alert,
   Button,
@@ -14,7 +14,7 @@ import {
   Stack,
   TextInput,
   Textarea,
-} from '@kvirn-ui/react'
+} from '@kvirn/ui'
 import { useEffect, useRef, useState } from 'react'
 import type { FormEvent } from 'react'
 import { kvirnbyFeedbackReference, kvirnbyReferringAddress } from '../../fixtures/accessibility.ts'

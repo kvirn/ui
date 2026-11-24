@@ -9,7 +9,7 @@ A `<div>` that scrolls with the browser's own scrollbars, for content that may n
 - **Both axes.** The area sets no size. Give it `max-block-size` in your own CSS to scroll down as well as sideways.
 - `region="always"` makes it a named region whether it scrolls or not. It is a Tab stop only while it scrolls.
 - [`Table.ScrollRegion`](../table/table.md) is the same behaviour for a table: it is named by the caption and also the virtualizer's scroll element.
-- Headless: it renders `kv-scroll-region kv-scroll-area`, and your `className` joins them. With `@kvirn-ui/theme/theme.css` imported it scrolls sideways and draws the focus ring.
+- Headless: it renders `kv-scroll-region kv-scroll-area`, and your `className` joins them. With `@kvirn/theme/theme.css` imported it scrolls sideways and draws the focus ring.
 
 ```tsx
 <ScrollArea aria-label="Fees">

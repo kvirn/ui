@@ -1,5 +1,5 @@
 'use client'
-import { Autocomplete, Field } from '@kvirn-ui/react'
+import { Autocomplete, Field } from '@kvirn/ui'
 import { streetsWithDistrict } from './data.ts'
 import type { Street } from './data.ts'
 import { useAutocompleteTexts } from './texts.ts'

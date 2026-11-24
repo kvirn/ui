@@ -6,7 +6,7 @@ import type {
   AddressInputRootProps,
   UseAddressInputOptions,
   UseAddressInputResult,
-} from '@kvirn-ui/react'
+} from '@kvirn/ui'
 import { propRows } from '../components/api-block.tsx'
 import type { ApiHook, AttributeRow } from '../components/api-block.tsx'
 import { textInputRows } from './text-input.api.ts'
@@ -30,7 +30,7 @@ export const addressInputRootRows = propRows<
     type: 'GeocoderProvider',
     default: '–',
     description:
-      'Turns the address lookup on: AddressInput.Line1 becomes a combobox that suggests addresses and stays free text. What is typed in Line1, and the visitor’s IP address, reach this geocoder, and nothing is sent before minLength characters. Geocoders come from @kvirn-ui/map (kvirnGeocoder, nominatim, googlePlaces). Without it, Line1 is a plain text box and AddressInput makes no network call.',
+      'Turns the address lookup on: AddressInput.Line1 becomes a combobox that suggests addresses and stays free text. What is typed in Line1, and the visitor’s IP address, reach this geocoder, and nothing is sent before minLength characters. Geocoders come from @kvirn/map (kvirnGeocoder, nominatim, googlePlaces). Without it, Line1 is a plain text box and AddressInput makes no network call.',
   },
   onLookupResult: {
     type: '(result: AddressResult) => void',

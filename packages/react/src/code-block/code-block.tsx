@@ -87,13 +87,13 @@ CodeBlockCopy.displayName = 'CodeBlock.Copy'
 
 /**
  * A code sample with a label and a copy button (contract: code-block.a11y.md). The code wraps
- * and never scrolls, and nothing is highlighted. With `@kvirn-ui/theme`, the Root draws the
+ * and never scrolls, and nothing is highlighted. With `@kvirn/theme`, the Root draws the
  * surface and the Code the mono type.
  *
  * @example
  * <CodeBlock.Root>
  *   <CodeBlock.Label>Installera</CodeBlock.Label>
- *   <CodeBlock.Code>pnpm add @kvirn-ui/react</CodeBlock.Code>
+ *   <CodeBlock.Code>pnpm add @kvirn/ui</CodeBlock.Code>
  *   <CodeBlock.Copy />
  * </CodeBlock.Root>
  */

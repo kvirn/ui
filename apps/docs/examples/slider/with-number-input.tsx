@@ -1,5 +1,5 @@
 'use client'
-import { Field, InputGroup, NumberInput, Slider } from '@kvirn-ui/react'
+import { Field, InputGroup, NumberInput, Slider } from '@kvirn/ui'
 import { useId, useState } from 'react'
 import { useSliderTexts } from './texts.ts'
 

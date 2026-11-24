@@ -1,6 +1,6 @@
 # Icon library: grid, parts kit, file format and inventory
 
-The construction facts for `@kvirn-ui/icons` (Plan 0124). The fixed numbers (grid, keylines, gaps, markup rules, angles) are in [`icon.md` §6.1](icon.md#61-drawing-rules-for-the-built-ins); how to decide and check is the `iconography` skill. This file holds what the two share in practice: the grid files, the parts with their coordinates, the file format, the inventory and the measured QA facts.
+The construction facts for `@kvirn/icons` (Plan 0124). The fixed numbers (grid, keylines, gaps, markup rules, angles) are in [`icon.md` §6.1](icon.md#61-drawing-rules-for-the-built-ins); how to decide and check is the `iconography` skill. This file holds what the two share in practice: the grid files, the parts with their coordinates, the file format, the inventory and the measured QA facts.
 
 ## 1. The grid
 

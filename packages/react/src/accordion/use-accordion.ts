@@ -6,7 +6,7 @@ export interface AccordionPartProps<
     | 'accordion-heading',
 > {
   /**
-   * The part's class, for `@kvirn-ui/theme` and your own CSS: `.kv-accordion`. Add a class of
+   * The part's class, for `@kvirn/theme` and your own CSS: `.kv-accordion`. Add a class of
    * your own next to it with `mergeProps`: class names join.
    */
   className: `kv-${Name}`

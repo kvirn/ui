@@ -1,5 +1,5 @@
-import { Heading, Link } from '@kvirn-ui/react'
-import type { HeadingProps, LinkCurrent } from '@kvirn-ui/react'
+import { Heading, Link } from '@kvirn/ui'
+import type { HeadingProps, LinkCurrent } from '@kvirn/ui'
 import type { ElementType, ReactElement, ReactNode } from 'react'
 
 export interface LinkedHeadingProps extends Omit<HeadingProps, 'as' | 'size' | 'children'> {

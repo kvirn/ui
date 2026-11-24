@@ -51,7 +51,7 @@ export interface SliderPartProps extends Pick<
   'data-invalid' | 'data-disabled'
 > {
   /**
-   * The part's class, for `@kvirn-ui/theme` and your own CSS: `.kv-slider`. Add your own class
+   * The part's class, for `@kvirn/theme` and your own CSS: `.kv-slider`. Add your own class
    * next to it with `mergeProps`: class names join.
    */
   className: 'kv-slider'

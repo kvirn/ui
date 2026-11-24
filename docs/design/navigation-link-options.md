@@ -260,7 +260,7 @@ Every option changes DESIGN.md rules, so it needs the maintainer's approval, wit
    - `link.a11y.md`, the forced-colours line.
    - The comment in `contrast-requirements.ts` that names the use of `primary` on `primary-subtle`.
    - The story JSDoc for Link › Current Page and Navigation › RTL, which mention "a background, a bar and weight" and "the current bar".
-   - A changeset for `@kvirn-ui/theme`.
+   - A changeset for `@kvirn/theme`.
 
 ## 9. Accessibility annotations
 
@@ -516,7 +516,7 @@ On top of the chosen current-page option (§5), in §8:
 | C with T1               | About 35 | As B with T1, with `secondary`                                                                                |
 | B or C with T2          | About 30 | Two pseudo-elements on ancestor rows, and a forced-colours colour                                             |
 
-All of them stay one import, with no new class or `data-*` (with M1), and no change to `@kvirn-ui/react`.
+All of them stay one import, with no new class or `data-*` (with M1), and no change to `@kvirn/ui`.
 
 ### 12.9 Decisions for the maintainer
 

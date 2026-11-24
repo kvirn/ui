@@ -1,8 +1,8 @@
 'use client'
 
-import { Disclosure, Link, Navigation, mergeProps } from '@kvirn-ui/react'
-import type { DisclosurePanelProps, DisclosureTriggerProps, LinkProps } from '@kvirn-ui/react'
-import { useMergedRef } from '@kvirn-ui/react/internal'
+import { Disclosure, Link, Navigation, mergeProps } from '@kvirn/ui'
+import type { DisclosurePanelProps, DisclosureTriggerProps, LinkProps } from '@kvirn/ui'
+import { useMergedRef } from '@kvirn/ui/internal'
 import {
   createContext,
   useCallback,

@@ -1,6 +1,6 @@
 'use client'
-import { fi } from '@kvirn-ui/i18n/fi'
-import { KvirnProvider, Link, useLocale } from '@kvirn-ui/react'
+import { fi } from '@kvirn/i18n/fi'
+import { KvirnProvider, Link, useLocale } from '@kvirn/ui'
 import type { ReactNode } from 'react'
 import { useKvirnProviderTexts } from './texts.ts'
 

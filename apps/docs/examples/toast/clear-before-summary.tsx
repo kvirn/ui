@@ -1,13 +1,5 @@
 'use client'
-import {
-  Button,
-  ButtonGroup,
-  ErrorSummary,
-  Field,
-  Stack,
-  TextInput,
-  useToast,
-} from '@kvirn-ui/react'
+import { Button, ButtonGroup, ErrorSummary, Field, Stack, TextInput, useToast } from '@kvirn/ui'
 import { useId, useState } from 'react'
 import { useToastTexts } from './texts.ts'
 

@@ -1,4 +1,4 @@
-// `@kvirn-ui/patterns/content-types`: whole pages as components, with English example text. The main entry stays free of text.
+// `@kvirn/patterns/content-types`: whole pages as components, with English example text. The main entry stays free of text.
 export { Contact } from './contact/contact.tsx'
 export type { ContactProps } from './contact/contact.tsx'
 export { ContentPage } from './content-page/content-page.tsx'

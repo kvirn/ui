@@ -6,7 +6,7 @@ A labelled `<nav>` landmark around a list of page links, with the current page m
 - Every navigation needs a name, and two navigations on a page need two different names, because a screen reader user picks a landmark by it (WCAG 2.4.1, 2.4.6). Set `label`, or `aria-labelledby` pointing at a visible heading.
 - The current page is `current="page"` on its [Link](../link/link.md), which sets `aria-current="page"`. Exactly one link per navigation has `aria-current`: when the page isn't listed, `current` on the deepest item shown gives `aria-current="true"`. Never on an ancestor of a listed page, and never on a link inside a `hidden` group. Navigation doesn't detect the page, and it warns in development when two links have it.
 - Every link is a Tab stop, and there are no arrow keys: it is a list of links, not a menu. A horizontal bar has the same keys.
-- Headless: no CSS. Each part renders its stable class: `kv-navigation`, `kv-navigation-list` and `kv-navigation-item`, and your `className` joins it. With `@kvirn-ui/theme/theme.css` imported, the links become navigation items: the current page is a solid fill, every ancestor of it is a quiet bold trail, and the rest are plain with an underline on hover. It is a vertical list by default, and `className="kv-navigation--horizontal"` on the root makes the top level a row that wraps. There is no `orientation` prop: the links are plain Tab stops, so the layout changes no keys, and a look is a class.
+- Headless: no CSS. Each part renders its stable class: `kv-navigation`, `kv-navigation-list` and `kv-navigation-item`, and your `className` joins it. With `@kvirn/theme/theme.css` imported, the links become navigation items: the current page is a solid fill, every ancestor of it is a quiet bold trail, and the rest are plain with an underline on hover. It is a vertical list by default, and `className="kv-navigation--horizontal"` on the root makes the top level a row that wraps. There is no `orientation` prop: the links are plain Tab stops, so the layout changes no keys, and a look is a class.
 
 ## API
 
@@ -30,7 +30,7 @@ Dev warnings (English, development only, never shown to users):
 ## Component
 
 ```tsx
-import { Link, Navigation } from '@kvirn-ui/react'
+import { Link, Navigation } from '@kvirn/ui'
 
 ;<Navigation.Root label="Main menu">
   <Navigation.List>
@@ -97,7 +97,7 @@ A `kv-link--service` link inside an item keeps its own look. In compact density 
 ## Hook
 
 ```tsx
-import { useNavigation } from '@kvirn-ui/react'
+import { useNavigation } from '@kvirn/ui'
 
 function MainMenu() {
   const navigation = useNavigation({ label: 'Main menu' })

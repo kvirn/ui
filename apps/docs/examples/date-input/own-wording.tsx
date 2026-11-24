@@ -1,13 +1,5 @@
 'use client'
-import {
-  DateInput,
-  Field,
-  Fieldset,
-  TextInput,
-  masks,
-  useDateInput,
-  useLocale,
-} from '@kvirn-ui/react'
+import { DateInput, Field, Fieldset, TextInput, masks, useDateInput, useLocale } from '@kvirn/ui'
 import { useDateInputTexts } from './texts.ts'
 
 export function OwnWordingDate() {

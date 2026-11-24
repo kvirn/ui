@@ -1,6 +1,6 @@
 'use client'
-import type { MaskInput } from '@kvirn-ui/core'
-import type { KvirnMessages } from '@kvirn-ui/i18n'
+import type { MaskInput } from '@kvirn/core'
+import type { KvirnMessages } from '@kvirn/i18n'
 import { createElement, useContext, useEffect, useRef } from 'react'
 import type { ComponentPropsWithRef, ReactElement } from 'react'
 import { warnOnce } from '../dev/dev-warning.ts'

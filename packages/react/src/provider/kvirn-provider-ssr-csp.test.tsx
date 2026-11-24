@@ -1,4 +1,4 @@
-import { colorSchemeAttribute, contrastAttribute, themeStorageKey } from '@kvirn-ui/core'
+import { colorSchemeAttribute, contrastAttribute, themeStorageKey } from '@kvirn/core'
 import { renderToString } from 'react-dom/server'
 import { afterEach, expect, test } from 'vite-plus/test'
 import { CspApp } from './kvirn-provider-ssr-csp.app.tsx'

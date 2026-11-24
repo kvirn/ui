@@ -1,5 +1,5 @@
-import { isValidDateParts, masks, parseIsoDate, toIsoDate } from '@kvirn-ui/core'
-import type { IsoDate } from '@kvirn-ui/core'
+import { isValidDateParts, masks, parseIsoDate, toIsoDate } from '@kvirn/core'
+import type { IsoDate } from '@kvirn/core'
 import type { DateInputValue } from '../date-input/use-date-input.ts'
 
 const emptyDateInputValue: DateInputValue = Object.freeze({ year: '', month: '', day: '' })

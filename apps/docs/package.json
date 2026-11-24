@@ -1,23 +1,23 @@
 {
-  "name": "@kvirn-ui/docs",
+  "name": "@kvirn/docs",
   "version": "0.0.0",
   "private": true,
   "type": "module",
   "scripts": {
     "dev": "NEXT_TELEMETRY_DISABLED=1 next dev",
-    "build": "pnpm --filter '@kvirn-ui/docs^...' run build && NEXT_TELEMETRY_DISABLED=1 next build",
+    "build": "pnpm --filter '@kvirn/docs^...' run build && NEXT_TELEMETRY_DISABLED=1 next build",
     "start": "NEXT_TELEMETRY_DISABLED=1 next start"
   },
   "dependencies": {
-    "@kvirn-ui/core": "workspace:*",
-    "@kvirn-ui/i18n": "workspace:*",
-    "@kvirn-ui/icons": "workspace:*",
-    "@kvirn-ui/map": "workspace:*",
-    "@kvirn-ui/patterns": "workspace:*",
-    "@kvirn-ui/react": "workspace:*",
-    "@kvirn-ui/read-aloud": "workspace:*",
-    "@kvirn-ui/rich-text": "workspace:*",
-    "@kvirn-ui/theme": "workspace:*",
+    "@kvirn/core": "workspace:*",
+    "@kvirn/i18n": "workspace:*",
+    "@kvirn/icons": "workspace:*",
+    "@kvirn/map": "workspace:*",
+    "@kvirn/patterns": "workspace:*",
+    "@kvirn/read-aloud": "workspace:*",
+    "@kvirn/rich-text": "workspace:*",
+    "@kvirn/theme": "workspace:*",
+    "@kvirn/ui": "workspace:*",
     "@tiptap/core": "catalog:",
     "@tiptap/extension-image": "catalog:",
     "@tiptap/extension-table": "catalog:",
@@ -31,7 +31,7 @@
     "react-dom": "catalog:"
   },
   "devDependencies": {
-    "@kvirn-ui/testing": "workspace:*",
+    "@kvirn/testing": "workspace:*",
     "@types/node": "catalog:",
     "@types/react": "catalog:",
     "@types/react-dom": "catalog:",

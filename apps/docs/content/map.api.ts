@@ -14,7 +14,7 @@ import type {
   MapSkipProps,
   UseMapOptions,
   UseMapResult,
-} from '@kvirn-ui/map'
+} from '@kvirn/map'
 import { propRows } from '../components/api-block.tsx'
 import type { ApiHook, AttributeRow, PropRow } from '../components/api-block.tsx'
 
@@ -51,7 +51,7 @@ export const rootRows = propRows<UseMapOptions>({
     type: "'main' | (() => MapIndexer)",
     default: "'main'",
     description:
-      '“main” builds the index of a large source on the page, in slices of 8 ms. Pass createMapWorker from @kvirn-ui/map/worker to build it in a Web Worker instead.',
+      '“main” builds the index of a large source on the page, in slices of 8 ms. Pass createMapWorker from @kvirn/map/worker to build it in a Web Worker instead.',
   },
   baseMap: {
     type: 'string',
@@ -428,12 +428,12 @@ export const sourceRows = propRows<MapPlaceSource>({
     type: 'Uint16Array',
     default: '–',
     description:
-      'For each place, the index of its layer in layers, or NO_LAYER (from @kvirn-ui/core) for none.',
+      'For each place, the index of its layer in layers, or NO_LAYER (from @kvirn/core) for none.',
   },
   get: {
     type: '(index: number) => MapPlace | Promise<MapPlace>',
     description:
-      'The place at an index, built when a marker, a row or a popup needs it. It may return a promise (a server call); a failed one is not tried again. placesToSource(places, layers) from @kvirn-ui/core shows the shape.',
+      'The place at an index, built when a marker, a row or a popup needs it. It may return a promise (a server call); a failed one is not tried again. placesToSource(places, layers) from @kvirn/core shows the shape.',
   },
 })
 

@@ -1,5 +1,5 @@
-import { expectNoA11yViolations } from '@kvirn-ui/testing'
-import { readAloud, readAnnouncements } from '@kvirn-ui/testing/read-aloud'
+import { expectNoA11yViolations } from '@kvirn/testing'
+import { readAloud, readAnnouncements } from '@kvirn/testing/read-aloud'
 import { afterEach, beforeEach, describe, expect, test, vi } from 'vite-plus/test'
 import type { MockInstance } from 'vite-plus/test'
 import { page, userEvent } from 'vite-plus/test/browser'

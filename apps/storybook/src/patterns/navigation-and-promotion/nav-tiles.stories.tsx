@@ -1,4 +1,4 @@
-import { NavTiles } from '@kvirn-ui/patterns'
+import { NavTiles } from '@kvirn/patterns'
 import type { Meta, StoryObj } from '@storybook/react-vite'
 import { expect } from 'storybook/test'
 import contract from '../../../../../packages/patterns/src/navigation-and-promotion/nav-tiles/nav-tiles.a11y.md?raw'

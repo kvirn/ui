@@ -1,5 +1,5 @@
 'use client'
-import { VisuallyHidden } from '@kvirn-ui/react'
+import { VisuallyHidden } from '@kvirn/ui'
 import { useVisuallyHiddenTexts } from './texts.ts'
 
 export function HiddenHeading() {

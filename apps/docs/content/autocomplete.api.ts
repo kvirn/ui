@@ -2,7 +2,7 @@ import type {
   AutocompleteRootProps,
   UseAutocompleteOptions,
   UseAutocompleteResult,
-} from '@kvirn-ui/react'
+} from '@kvirn/ui'
 import { propRows } from '../components/api-block.tsx'
 import type { ApiHook } from '../components/api-block.tsx'
 import { comboboxResultRows, comboboxRootRows } from './combobox.api.ts'

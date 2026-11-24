@@ -1,5 +1,5 @@
-import { en } from '@kvirn-ui/i18n/en'
-import { Address, Card, Heading, KvirnProvider, Link, DefinitionList } from '@kvirn-ui/react'
+import { en } from '@kvirn/i18n/en'
+import { Address, Card, Heading, KvirnProvider, Link, DefinitionList } from '@kvirn/ui'
 import type { Meta, StoryObj } from '@storybook/react-vite'
 import { expect, userEvent } from 'storybook/test'
 import { expectNoHorizontalOverflow } from '../../components/theme-story-assertions.ts'

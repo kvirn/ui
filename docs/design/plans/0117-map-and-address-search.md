@@ -27,7 +27,7 @@ No map, geo or geocoding code exists. `Address` (`packages/react/src/address`) i
 ```
 packages/core/src/map/        pure: geo maths, view state, selection, layer visibility,
                                in-view filter, grid clustering, provider types (types only)
-packages/map  @kvirn-ui/map    React hooks and parts, AddressSearch, memory provider, 'use client'
+packages/map  @kvirn/map    React hooks and parts, AddressSearch, memory provider, 'use client'
   src/index.ts                 useMap, Map.*, useAddressSearch, AddressSearch, types, createMemoryProvider
   src/maplibre.ts   sub-entry  MapLibre GL adapter    (peer maplibre-gl, optional)
   src/leaflet.ts    sub-entry  Leaflet adapter        (peer leaflet, optional)
@@ -40,8 +40,8 @@ The provider draws tiles and reports the camera (`center`, `zoom`, `bounds`) and
 ### API sketch
 
 ```tsx
-import { Map, AddressSearch } from '@kvirn-ui/map'
-import { maplibre } from '@kvirn-ui/map/maplibre'
+import { Map, AddressSearch } from '@kvirn/map'
+import { maplibre } from '@kvirn/map/maplibre'
 
 const provider = maplibre({ style: 'https://tiles.example.se/style.json', attribution })
 
@@ -124,11 +124,11 @@ Approved by the maintainer on 2026-10-14 (spec §9 recommendations):
 - **Details popup at every width (maintainer, 2026-10-14):** `Map.Details` is a non-modal `role=dialog` popup anchored above the pressed marker (below if no room), portalled right after the markers so tab order follows them, with no panel below the map at any width and no hard focus trap (Escape and Close return focus to the opener). The marker moves to the bottom-centre on press. Replaces spec D13's in-flow panel; trade-off against 2.4.11 on 320px handled by capping the popup to the room above the marker so it never covers it.
 - **Details fields and parts (maintainer, 2026-10-14):** `MapPlace` gains `image?: { src, alt }` and `description?`. `Map.Details` without children renders image, title with Close, body and address; with nodes exactly those; the function form stays. Parts `Map.DetailsImage|Title|Body|Address|Close` read the place from context and render nothing when empty. Look: 18rem max, full-bleed 16:9 image, `space-3` content padding, `kv-card` dropped, address in `text-muted`. `title` and `titleAs` props removed (use `Map.DetailsTitle as`).
 - **Sequencing (maintainer, 2026-10-14):** English strings first, no tests until the map works. This defers, it doesn't waive: `sv fi nb nn` strings, `map.test.tsx` (every keyboard row), axe stories and the gates are owed before `accessibility-reviewer` and before the package is un-privated. `i18n:check` stays red until then.
-- Pure logic in `core`, parts in `@kvirn-ui/map` (like `rich-text` on core): keeps rule 3 and one package for engines.
+- Pure logic in `core`, parts in `@kvirn/map` (like `rich-text` on core): keeps rule 3 and one package for engines.
 
 Taken during implementation (foundation and React slices):
 
-- **maplibre-gl 6.14.0**, BSD-3-Clause, no install scripts (its `prepare` runs only in its own repo), 24 transitive packages, no network at import. Pinned in the catalog, a devDependency of `@kvirn-ui/map` and the Storybook app, an optional peer (`^6.14.0`) of the `/maplibre` entry.
+- **maplibre-gl 6.14.0**, BSD-3-Clause, no install scripts (its `prepare` runs only in its own repo), 24 transitive packages, no network at import. Pinned in the catalog, a devDependency of `@kvirn/map` and the Storybook app, an optional peer (`^6.14.0`) of the `/maplibre` entry.
 - **Adapter:** `maplibre({ style })` takes the style from the consumer (no default URL). Keyboard off, rotate and pitch off, `cooperativeGestures` on so one finger scrolls the page and the wheel zooms with Ctrl/Command (D9). The engine's English overlay is hidden (`display: none`) and the `cooperativegestureprevented` event becomes the provider's `gesture` event: the viewport renders `map.gestureTouch` / `map.gestureWheel` itself. The canvas is `aria-hidden` and out of the tab order. Attribution control off: `Map.Attribution` renders the consumer's text.
 - **Provider contract** gained `getSize`, `getBounds` and a `gesture` event; `MapProvider.mount` is the only place an engine is touched, and an `AbortSignal` destroys it.
 - **Single source of truth for the camera:** commands call `handle.setView`; the engine's `move`/`moveend` events write the store. Motion always jumps (no animation) for now (D7).
@@ -159,7 +159,7 @@ AddressSearch (spec [address-search.md](../address-search.md), maintainer 2026-1
 
 - **Approved, keyboard deviation (D1):** Enter with nothing highlighted searches and never submits the form; `keyboard` skill updated in the same change.
 - **Approved, API (D2–D4):** search on request (Enter or a Search button) by default, as-you-type only when the geocoder declares `suggest: true` (`nominatim` is false, per its usage policy). `GeocoderProvider` gains `name?`, `attribution?`, `suggest?`; `search` gains a `locale` option; `AddressResult` gains `address?` (`line1`, `postalCode`, `city`, `country`). `Map.show(result)` draws a non-interactive result pin and announces `map.addressShown`; new `clearResult()`.
-- **Taken as recommended (D5–D8):** keep the "Chosen: {label}" announcement; Root renders a `div` (docs example wraps `<search>`); a form using only the lookup still imports `@kvirn-ui/map`; status text lives in the popup so Escape hides it.
+- **Taken as recommended (D5–D8):** keep the "Chosen: {label}" announcement; Root renders a `div` (docs example wraps `<search>`); a form using only the lookup still imports `@kvirn/map`; status text lives in the popup so Escape hides it.
 - **Implementation (P4b):** the combobox hook gets `announceResults` (default `true`); AddressSearch sets it `false`, because empty `messages` fell through to the Autocomplete's own "No results" and "N results", which doubled ours (test in `combobox.test.tsx`). The Search button exists only on request, so the as-you-type intent test checks `submit` for Enter and that no button renders. The test recorder starts from the live region's current text, so a new recorder does not count an old message. Stories (`address-search.stories.tsx`) use the offline MapLibre provider from `map.fixture.tsx` (no tiles, no network) for WithMap, so the pin is visible. Each state is its own story, since one popup is open at a time.
 - **Google adapter (maintainer):** keep `gestureHandling: 'cooperative'`; Google's own hint shows beside ours, documented in `map.md`.
 
@@ -178,7 +178,7 @@ Unit tests in `core` for geo maths, clustering and view state. Browser tests dri
 
 ## Rollout
 
-New package `@kvirn-ui/map`, private until the accessibility review returns APPROVE, then alpha. Changesets are off until alpha.
+New package `@kvirn/map`, private until the accessibility review returns APPROVE, then alpha. Changesets are off until alpha.
 
 ## Done when
 

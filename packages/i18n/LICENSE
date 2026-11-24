@@ -3,8 +3,8 @@ Business Source License 1.1
 Parameters
 
 Licensor:             Kvirn UI
-Licensed Work:        KvirnUI (the @kvirn-ui/* packages in this repository, except
-                      @kvirn-ui/icons, which is under the MIT License).
+Licensed Work:        KvirnUI (the @kvirn/* packages in this repository, except
+                      @kvirn/icons, which is under the MIT License).
                       The Licensed Work is (c) 2026 Kvirn UI.
 Additional Use Grant: You may make production use of the Licensed Work if you are
                       an individual and the use is solely personal: your own personal

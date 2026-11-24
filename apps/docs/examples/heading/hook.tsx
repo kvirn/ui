@@ -1,5 +1,5 @@
 'use client'
-import { useHeading } from '@kvirn-ui/react'
+import { useHeading } from '@kvirn/ui'
 import { useHeadingTexts } from './texts.ts'
 
 export function OwnElement() {

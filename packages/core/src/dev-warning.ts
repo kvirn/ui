@@ -16,7 +16,7 @@ function isDevelopmentBuild(): boolean {
 /**
  * Logs a developer-facing warning once per key, and never in production. Console text for
  * developers only: never shown to or announced for users. The same tiny helper as
- * `@kvirn-ui/react`'s `warnOnce`, duplicated here because `core` takes no dependency on React
+ * `@kvirn/ui`'s `warnOnce`, duplicated here because `core` takes no dependency on React
  * (rule 3): a DOM-walking helper such as `collectText` still needs to warn.
  */
 export function warnOnce(key: string, message: string): void {

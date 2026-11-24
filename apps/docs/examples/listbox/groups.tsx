@@ -1,5 +1,5 @@
 'use client'
-import { Field, Listbox } from '@kvirn-ui/react'
+import { Field, Listbox } from '@kvirn/ui'
 import { useMemo } from 'react'
 import { findMunicipality } from './data.ts'
 import type { Municipality } from './data.ts'

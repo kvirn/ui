@@ -1,4 +1,4 @@
-import type { KvirnMessages } from '@kvirn-ui/i18n'
+import type { KvirnMessages } from '@kvirn/i18n'
 import { useCallback, useEffect, useId, useMemo, useRef } from 'react'
 import type { MouseEvent, RefCallback } from 'react'
 import { warnOnce } from '../dev/dev-warning.ts'

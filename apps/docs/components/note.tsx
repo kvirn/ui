@@ -1,4 +1,4 @@
-import { AlertBody, AlertInfo, AlertTitle, AlertWarning } from '@kvirn-ui/react'
+import { AlertBody, AlertInfo, AlertTitle, AlertWarning } from '@kvirn/ui'
 import type { ReactNode } from 'react'
 import { messages } from '../messages/en.ts'
 

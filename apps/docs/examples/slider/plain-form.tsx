@@ -1,5 +1,5 @@
 'use client'
-import { Button, Field, Slider } from '@kvirn-ui/react'
+import { Button, Field, Slider } from '@kvirn/ui'
 import { useState } from 'react'
 import { useSliderTexts } from './texts.ts'
 

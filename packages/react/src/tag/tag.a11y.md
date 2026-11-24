@@ -69,7 +69,7 @@ The live region keeps only the last message, so the filter pattern sets `announc
 
 ## Visual / modes
 
-Headless: no CSS. With `@kvirn-ui/theme/theme.css`, a static `kv-tag` is a `surface` chip with a decorative `border-subtle` hairline, no cross and no hover. A removable chip is `kv-tag-remove`: a `surface` button with a `border-control` edge (1.4.11), a cross drawn with borders, a 44px minimum height (32px in compact: 2.5.8), a hover fill and the focus ring (2.4.7). Text is `text` on `surface`, measured by `theme:check` (1.4.3). In forced colours the edge is `ButtonText` (`Highlight` on hover) and the cross, being borders, shows. Nothing is shown by fill alone (1.4.1). Long text wraps (1.4.10); RTL uses logical properties; there is no motion.
+Headless: no CSS. With `@kvirn/theme/theme.css`, a static `kv-tag` is a `surface` chip with a decorative `border-subtle` hairline, no cross and no hover. A removable chip is `kv-tag-remove`: a `surface` button with a `border-control` edge (1.4.11), a cross drawn with borders, a 44px minimum height (32px in compact: 2.5.8), a hover fill and the focus ring (2.4.7). Text is `text` on `surface`, measured by `theme:check` (1.4.3). In forced colours the edge is `ButtonText` (`Highlight` on hover) and the cross, being borders, shows. Nothing is shown by fill alone (1.4.1). Long text wraps (1.4.10); RTL uses logical properties; there is no motion.
 
 ## WCAG SCs covered
 

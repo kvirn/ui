@@ -2,12 +2,12 @@ import { afterEach, beforeEach, describe, expect, test, vi } from 'vite-plus/tes
 import { cdp, page, userEvent } from 'vite-plus/test/browser'
 import { render } from 'vitest-browser-react'
 import type { ComponentProps } from 'react'
-import { Icon, KvirnProvider } from '@kvirn-ui/react'
+import { Icon, KvirnProvider } from '@kvirn/ui'
 import { Map } from './map.tsx'
 import { mapIcons } from './map-icons.ts'
 import { createMemoryProvider } from './memory-provider.ts'
-import type { MapBaseMap, MapPlace, MapProvider, MapTheme } from '@kvirn-ui/core'
-import type { Env } from '@kvirn-ui/core'
+import type { MapBaseMap, MapPlace, MapProvider, MapTheme } from '@kvirn/core'
+import type { Env } from '@kvirn/core'
 
 // Contract: map.a11y.md. This file proves the focus-not-obscured row (WCAG 2.4.11). Component
 // tests load no theme, so the fixture positions the viewport, the markers and the chrome itself.

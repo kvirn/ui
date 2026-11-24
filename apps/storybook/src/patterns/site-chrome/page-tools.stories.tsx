@@ -1,4 +1,4 @@
-import { en } from '@kvirn-ui/i18n/en'
+import { en } from '@kvirn/i18n/en'
 import {
   ApplicationLogo,
   MainMenu,
@@ -6,9 +6,9 @@ import {
   PageTools,
   SiteHeader,
   SiteSearch,
-} from '@kvirn-ui/patterns'
-import { kvirnbyMark } from '@kvirn-ui/patterns/fixtures'
-import { KvirnProvider } from '@kvirn-ui/react'
+} from '@kvirn/patterns'
+import { kvirnbyMark } from '@kvirn/patterns/fixtures'
+import { KvirnProvider } from '@kvirn/ui'
 import type { Meta, StoryObj } from '@storybook/react-vite'
 import { expect, userEvent } from 'storybook/test'
 import contract from '../../../../../packages/patterns/src/site-chrome/page-tools/page-tools.a11y.md?raw'

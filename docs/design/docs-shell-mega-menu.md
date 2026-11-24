@@ -21,9 +21,9 @@
 
 | Source                                                                                                                                                                                                                  | Reuse                                                                           | Change and why                                                                                                          |
 | ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | ------------------------------------------------------------------------------- | ----------------------------------------------------------------------------------------------------------------------- |
-| `MainMenu` (`main-menu.a11y.md`), `SiteHeader` primary, `SiteSearch`, `ApplicationLogo` in `@kvirn-ui/patterns`; `TopBar` in `@kvirn-ui/react` (Plan 0104)                                                              | All behaviour: one topic open wide, Escape, focus-out close, `data-trail`, Menu | None to the patterns. The docs app composes `SiteHeader.Menu` **inside** the `Masthead` (§5) instead of as a third band |
+| `MainMenu` (`main-menu.a11y.md`), `SiteHeader` primary, `SiteSearch`, `ApplicationLogo` in `@kvirn/patterns`; `TopBar` in `@kvirn/ui` (Plan 0104)                                                                       | All behaviour: one topic open wide, Escape, focus-out close, `data-trail`, Menu | None to the patterns. The docs app composes `SiteHeader.Menu` **inside** the `Masthead` (§5) instead of as a third band |
 | [APG Disclosure Navigation](https://www.w3.org/WAI/ARIA/apg/patterns/disclosure/examples/disclosure-navigation/)                                                                                                        | Buttons that show lists of links; no `menu` roles                               | No arrow keys (MainMenu's recorded deviation)                                                                           |
-| `Breadcrumb` (`@kvirn-ui/react`), DESIGN.md Breadcrumb                                                                                                                                                                  | The trail, separator, `aria-current="page"`, its i18n label "You are here"      | Omitted where it would be one item                                                                                      |
+| `Breadcrumb` (`@kvirn/ui`), DESIGN.md Breadcrumb                                                                                                                                                                        | The trail, separator, `aria-current="page"`, its i18n label "You are here"      | Omitted where it would be one item                                                                                      |
 | GOV.UK [Service navigation](https://design-system.service.gov.uk/components/service-navigation/) and [Pagination](https://design-system.service.gov.uk/components/pagination/) (block style for "previous / next page") | Previous and next as two labelled links with the page title under the direction | Card edge with `border-subtle`, as the prototype                                                                        |
 
 ## 3. Flow and unhappy paths
@@ -65,7 +65,7 @@ The docs catalog (`apps/docs/messages/en.ts`) is English-only by decision (docs-
 | `footer.sectionsHeading` **new**                                                                                                | Sections                            | Footer `nav` name (`aria-labelledby` its `h2`)                          |
 | `footer.projectHeading` **new**                                                                                                 | Project                             | Second footer `nav`                                                     |
 | `footer.status` **new**                                                                                                         | `({ status }) => Status: ${status}` | → `/docs#status`                                                        |
-| `breadcrumb.label` (`@kvirn-ui/i18n`)                                                                                           | You are here                        | Breadcrumb `nav` name, all 5 locales already                            |
+| `breadcrumb.label` (`@kvirn/i18n`)                                                                                              | You are here                        | Breadcrumb `nav` name, all 5 locales already                            |
 
 ## 5. Structure (DOM order = visual order; no CSS `order`)
 
@@ -194,7 +194,7 @@ None. Pairs reused, all measured by `theme:check`: `on-primary` on `primary` and
 
 ## 10. Storybook patterns (maintainer, 2026-10-11)
 
-The site header and the page header become `@kvirn-ui/patterns` patterns with stories, and the docs app composes them, so the library shows what the docs site uses. Pattern changes need a plan and updated `*.a11y.md` (AGENTS.md workflow); this is the design input.
+The site header and the page header become `@kvirn/patterns` patterns with stories, and the docs app composes them, so the library shows what the docs site uses. Pattern changes need a plan and updated `*.a11y.md` (AGENTS.md workflow); this is the design input.
 
 ### 10.1 Site header: the menu in the masthead (P2a change)
 

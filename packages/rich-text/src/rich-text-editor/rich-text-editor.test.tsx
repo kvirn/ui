@@ -1,8 +1,8 @@
 // kv-lang-ok-file: the tests run on the Swedish catalog and assert its built-in strings
-import { Field, KvirnProvider } from '@kvirn-ui/react'
-import { sv } from '@kvirn-ui/i18n/sv'
-import { readAloud, readAnnouncements } from '@kvirn-ui/testing/read-aloud'
-import { expectNoA11yViolations } from '@kvirn-ui/testing'
+import { Field, KvirnProvider } from '@kvirn/ui'
+import { sv } from '@kvirn/i18n/sv'
+import { readAloud, readAnnouncements } from '@kvirn/testing/read-aloud'
+import { expectNoA11yViolations } from '@kvirn/testing'
 import type { JSONContent } from '@tiptap/core'
 import { EditorContent } from '@tiptap/react'
 import { createRef, useEffect, useRef, useState } from 'react'
