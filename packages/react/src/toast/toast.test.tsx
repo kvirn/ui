@@ -84,6 +84,11 @@ const button = (name: string) => page.getByRole('button', { name, exact: true })
 const closeButton = (index: number) =>
   page.getByRole('button', { name: 'Close message', exact: true }).nth(index)
 const press = (name: string) => userEvent.click(button(name))
+// Vitest 5.1 advances fake timers while a click or hover waits, so a test that proves a timer's length starts it from the keyboard.
+async function pressByKeyboard(name: string) {
+  button(name).element().focus()
+  await userEvent.keyboard('{Enter}')
+}
 
 /** Every message the polite live regions of the page held, in order. A region keeps one for five seconds. */
 function recordAnnouncements() {
@@ -546,7 +551,7 @@ describe('timers', () => {
   test('a number sets the exact timer length: a toast times out after it, and not before', async () => {
     useFakeClock()
     await render(<Page toast={{ autoDismiss: 2500 }} actions={{ Show: showTimed }} />)
-    await press('Show')
+    await pressByKeyboard('Show')
     await vi.advanceTimersByTimeAsync(2499)
     expect(toastElements()).toHaveLength(1)
     await vi.advanceTimersByTimeAsync(1)
@@ -593,7 +598,7 @@ describe('timers', () => {
     await vi.advanceTimersByTimeAsync(600_000)
     expect(toastElements()).toHaveLength(1)
 
-    await press('On')
+    await pressByKeyboard('On')
     await vi.advanceTimersByTimeAsync(2999)
     expect(toastElements()).toHaveLength(1)
     await vi.advanceTimersByTimeAsync(1)
@@ -647,7 +652,7 @@ describe('timers', () => {
     await vi.advanceTimersByTimeAsync(600_000)
     expect(toastElements()).toHaveLength(1)
 
-    await press('Finish')
+    await pressByKeyboard('Finish')
     await vi.advanceTimersByTimeAsync(9999)
     expect(toastElements()).toHaveLength(1)
     await vi.advanceTimersByTimeAsync(1)
@@ -666,8 +671,14 @@ describe('timers', () => {
     await vi.advanceTimersByTimeAsync(600_000)
     expect(toastElements()).toHaveLength(1)
 
+    let leftAt = Number.NaN
+    regionElement()?.addEventListener('pointerleave', () => {
+      leftAt = performance.now()
+    })
     await userEvent.hover(button('Before'))
-    await vi.advanceTimersByTimeAsync(4999)
+    expect(leftAt).not.toBeNaN()
+    const sinceLeave = performance.now() - leftAt
+    await vi.advanceTimersByTimeAsync(4999 - sinceLeave)
     expect(toastElements()).toHaveLength(1)
     await vi.advanceTimersByTimeAsync(1)
 

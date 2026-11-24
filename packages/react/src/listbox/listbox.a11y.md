@@ -106,7 +106,7 @@ Space and Enter open the native list on most platforms, and Enter in the open li
 
 An option holds any markup. The four parts are optional, and Combobox and Autocomplete share them.
 
-- **Name.** With a `Listbox.OptionText` the option has `aria-labelledby` pointing at it, so the name is that text alone. Without one the name is the option's whole text content. An `aria-label` or `aria-labelledby` of the consumer's wins (4.1.2 Name, Role, Value (A), 2.5.3 Label in Name (A)).
+- **Name.** With a `Listbox.OptionText` the option has `aria-labelledby` pointing at it, so the name is that text alone. The OptionText must be the option's first and most prominent line: it is the visible label for speech input (2.5.3), and the second line is a description. Without one the name is the option's whole text content. An `aria-label` or `aria-labelledby` of the consumer's wins (4.1.2 Name, Role, Value (A), 2.5.3 Label in Name (A)).
 - **Description.** With a `Listbox.OptionDescription` the option has `aria-describedby` pointing at it, after any `aria-describedby` of the consumer's.
 - **Decorative parts.** `Listbox.OptionIcon` and `Listbox.OptionIndicator` are `aria-hidden="true"`. An image inside carries `alt=""` (1.1.1 Non-text Content (A)). `aria-selected` is unchanged: the indicator is decoration, and its children show only on the chosen option.
 - **`itemToString` equals the OptionText.** Typeahead, filtering and the trigger's value use `itemToString`. A development warning fires when the OptionText's text differs, and a part outside an option warns once.

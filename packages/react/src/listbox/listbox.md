@@ -104,7 +104,7 @@ Four optional parts give the markup a place and keep the name right. Use as many
 ```
 
 - **`Listbox.OptionIcon`**: a `<span aria-hidden="true">` for an icon, flag or avatar. It is decorative and never part of the name, so anything it means must also be in the text.
-- **`Listbox.OptionText`**: a `<span>` the option's `aria-labelledby` points at, so the name is this text alone and a second line is not part of it. Typeahead, filtering and the trigger's value still use `itemToString`: keep the two equal (a dev warning, `listbox-option-text-mismatch`, fires when they differ). An `aria-label` or `aria-labelledby` on the option wins.
+- **`Listbox.OptionText`**: a `<span>` the option's `aria-labelledby` points at, so the name is this text alone and a second line is not part of it. It must be the option's first and most prominent line: it is the visible label for speech input (2.5.3), and the second line is a description. Typeahead, filtering and the trigger's value still use `itemToString`: keep the two equal (a dev warning, `listbox-option-text-mismatch`, fires when they differ). An `aria-label` or `aria-labelledby` on the option wins.
 - **`Listbox.OptionDescription`**: a `<span>` the option's `aria-describedby` points at. Screen readers differ in whether they read a description for the active option, so never put the only copy of something essential here.
 - **`Listbox.OptionIndicator`**: a `<span aria-hidden="true">` at the end that always keeps its place. With no children the default theme draws the check in it. Children replace the check and show only on the chosen option. Its presence sets `data-has-indicator` on the option, so the theme's own tick steps aside. The state is still `aria-selected`.
 

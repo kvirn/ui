@@ -475,8 +475,10 @@ describe('visible status', () => {
         <CopyButton text="123" />
       </KvirnProvider>,
     )
-    await userEvent.click(copyButton())
-    await expect.poll(() => statusElement()?.textContent).toBe('Copied')
+    copyButton().element().focus()
+    await userEvent.keyboard('{Enter}')
+    await vi.advanceTimersByTimeAsync(0)
+    expect(statusElement()?.textContent).toBe('Copied')
     await vi.advanceTimersByTimeAsync(4999)
     expect(statusElement()).not.toBeNull()
     await vi.advanceTimersByTimeAsync(1)

@@ -446,6 +446,7 @@ export function useMenu({
         }, 0)
       },
     },
+    // The annotation is for tsrs, which loses the contextual type here (oxc-project/tsrs#1019).
     getItemProps: (
       kind,
       {
@@ -455,7 +456,7 @@ export function useMenu({
         textValue,
         checked,
         isCurrent = false,
-      } = {},
+      }: MenuItemOptions = {},
     ) => ({
       className: itemClassNames[kind],
       type: 'button',

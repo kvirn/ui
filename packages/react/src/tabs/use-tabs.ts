@@ -342,7 +342,8 @@ export function useTabsState({
       onKeyDown: handleKeyDown,
       onBlur: handleBlur,
     },
-    getTabProps: (tabValue, { disabled = false, onClick } = {}) => ({
+    // The annotation is for tsrs, which loses the contextual type here (oxc-project/tsrs#1019).
+    getTabProps: (tabValue, { disabled = false, onClick }: UseTabsTabOptions = {}) => ({
       className: 'kv-tabs-tab',
       id: getTabId(rootId, tabValue),
       type: 'button',
