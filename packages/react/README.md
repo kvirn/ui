@@ -11,4 +11,4 @@ import { Button, KvirnProvider } from '@kvirn-ui/react'
 import '@kvirn-ui/theme/theme.css' // optional default styles
 ```
 
-Ships ESM and CommonJS with types for both. Needs React 19 or later. Designed and tested to meet WCAG 2.2 AA.
+Ships ESM and CommonJS with types for both. Needs React 19 (`^19.0.0`). Designed and tested to meet WCAG 2.2 AA.
