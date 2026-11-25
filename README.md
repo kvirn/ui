@@ -49,7 +49,7 @@ const disclosure = useDisclosure()
 
 ## Development
 
-Requires Node 22.18+ (or 24.11+, or 26+), pnpm 12 and [Vite+](https://viteplus.dev) (`vp`).
+Requires Node 26+ (`.nvmrc`), pnpm 12 and [Vite+](https://viteplus.dev) (`vp`).
 
 ```sh
 pnpm install
