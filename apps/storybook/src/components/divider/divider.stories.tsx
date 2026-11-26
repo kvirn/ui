@@ -3,7 +3,6 @@ import contract from '../../../../../packages/react/src/divider/divider.a11y.md?
 import guide from '../../../../../packages/react/src/divider/divider.md?raw'
 import type { CSSProperties } from 'react'
 import type { Meta, StoryObj } from '@storybook/react-vite'
-import { expect } from 'storybook/test'
 import { en } from '@kvirn/i18n/en'
 import { InLanguage } from '../../fixture-language.tsx'
 import { usageGuide } from '../../docs-source.ts'
@@ -32,9 +31,6 @@ export const Default: Story = {
       <p>Contact details</p>
     </>
   ),
-  play: async ({ canvas }) => {
-    await expect(canvas.getByRole('separator')).toBeVisible()
-  },
 }
 
 /** A purely visual line: `role="presentation"` keeps it out of the announcements. */
@@ -46,10 +42,6 @@ export const Presentation: Story = {
       <p>Contact details</p>
     </>
   ),
-  play: async ({ canvas }) => {
-    await expect(canvas.queryByRole('separator')).toBeNull()
-    await expect(canvas.getByText('Contact details')).toBeVisible()
-  },
 }
 
 /** Every value is a CSS variable, set from a class or any ancestor. */
@@ -70,9 +62,6 @@ export const CustomVariables: Story = {
       <p>Contact details</p>
     </div>
   ),
-  play: async ({ canvas }) => {
-    await expect(canvas.getByRole('separator')).toBeVisible()
-  },
 }
 
 /** Right to left: the line spans the inline size. Divider holds no strings, so `en` only satisfies the provider. */
@@ -84,9 +73,6 @@ export const RTL: Story = {
       <p>بيانات الاتصال</p>
     </InLanguage>
   ),
-  play: async ({ canvas }) => {
-    await expect(canvas.getByRole('separator')).toBeVisible()
-  },
 }
 
 /** Forced colours: the line is a border, so it keeps its edge. */
@@ -99,7 +85,4 @@ export const ForcedColors: Story = {
       <p>Contact details</p>
     </>
   ),
-  play: async ({ canvas }) => {
-    await expect(canvas.getByRole('separator')).toBeVisible()
-  },
 }

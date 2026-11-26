@@ -137,7 +137,7 @@ A masked TextInput announces a rejection through the shared Announcer (4.1.3 Sta
 - 2.4.7 Focus Visible (AA): the focus ring.
 - 2.4.13 Focus Appearance (AAA): the ring's thickness and contrast. Not counted toward the AA bar.
 - 2.5.3 Label in Name (A): the visible label is the name.
-- 2.5.8 Target Size (Minimum) (AA): the box is at least 24 × 24 CSS px (`text-input.stories.tsx › Default`).
+- 2.5.8 Target Size (Minimum) (AA): the box is at least 24 × 24 CSS px (`text-input.stories.tsx › Compact`).
 - 3.2.2 On Input (A): typing never moves focus, and a full mask doesn't advance (`use-mask.test.tsx › Tab and Shift+Tab move through the masked inputs in DOM order`).
 - 3.3.1 Error Identification (A) and 3.3.2 Labels or Instructions (A): through the Field. A mask never auto-fixes or clamps what the user entered, and dropped characters are reported (`text-input.test.tsx › onValueChange gets the masked value and the mask details, once per change`).
 - 3.3.8 Accessible Authentication (Minimum) (AA): paste and autofill work, and no cognitive test is added. A mask normalises a pasted value instead of refusing it.
@@ -146,21 +146,21 @@ A masked TextInput announces a rejection through the shared Announcer (4.1.3 Sta
 
 ## AT test record
 
-| AT + browser + OS                                                          | Agent check | Human check | Result  | Notes                                                                                                                   |
-| -------------------------------------------------------------------------- | ----------- | ----------- | ------- | ----------------------------------------------------------------------------------------------------------------------- |
-| **Automated (re-runnable tests)**                                          |             |             |         |                                                                                                                         |
-| axe, WCAG 2.2 A and AA, every story, 4 themes                              | pass        | n/a         | pass    | text-input.stories.tsx, every story, 4 themes                                                                           |
-| Markup and ARIA (roles, names, ids, states)                                | pass        | n/a         | pass    | text-input.test.tsx › the Field’s label is the name, its id links them, and the type stays text; expectNoA11yViolations |
-| Keyboard contract rows (Vitest browser)                                    | pass        | n/a         | pass    | 19 rows, each names a test (text-input.test.tsx › Tab moves through the inputs in DOM order)                            |
-| Focus order and management                                                 | pass        | n/a         | pass    | text-input.test.tsx asserts focus (toHaveFocus); first rule: Tab moves through the inputs in DOM order                  |
-| Display modes (forced colours, 320px reflow, text spacing, reduced motion) | pass        | n/a         | pass    | the four sweep projects (`storybook-forced-colors`, `-reduced-motion`, `-reflow`, `-text-spacing`), run in CI           |
-| **Core (required for beta)**                                               |             |             |         |                                                                                                                         |
-| NVDA + Chrome + Windows                                                    | pending     | pending     | pending |                                                                                                                         |
-| VoiceOver + Safari + iOS                                                   | pending     | pending     | pending |                                                                                                                         |
-| **Release (before 1.0 and each minor)**                                    |             |             |         |                                                                                                                         |
-| JAWS + Chrome + Windows                                                    | pending     | pending     | pending |                                                                                                                         |
-| TalkBack + Chrome + Android                                                | pending     | pending     | pending |                                                                                                                         |
-| VoiceOver + Safari + macOS                                                 | pending     | pending     | pending |                                                                                                                         |
+| AT + browser + OS                                                          | Agent check | Human check | Result  | Notes                                                                                                         |
+| -------------------------------------------------------------------------- | ----------- | ----------- | ------- | ------------------------------------------------------------------------------------------------------------- |
+| **Automated (re-runnable tests)**                                          |             |             |         |                                                                                                               |
+| axe, WCAG 2.2 A and AA, every story, light theme                           | pass        | n/a         | pass    | text-input.stories.tsx, every story, light theme                                                              |
+| Markup and ARIA (roles, names, ids, states)                                | pass        | n/a         | pass    | text-input.test.tsx › the Field’s label is the name, its id links them, and the type stays text               |
+| Keyboard contract rows (Vitest browser)                                    | pass        | n/a         | pass    | 19 rows, each names a test (text-input.test.tsx › Tab moves through the inputs in DOM order)                  |
+| Focus order and management                                                 | pass        | n/a         | pass    | text-input.test.tsx asserts focus (toHaveFocus); first rule: Tab moves through the inputs in DOM order        |
+| Display modes (forced colours, 320px reflow, text spacing, reduced motion) | pass        | n/a         | pass    | the four sweep projects (`storybook-forced-colors`, `-reduced-motion`, `-reflow`, `-text-spacing`), run in CI |
+| **Core (required for beta)**                                               |             |             |         |                                                                                                               |
+| NVDA + Chrome + Windows                                                    | pending     | pending     | pending |                                                                                                               |
+| VoiceOver + Safari + iOS                                                   | pending     | pending     | pending |                                                                                                               |
+| **Release (before 1.0 and each minor)**                                    |             |             |         |                                                                                                               |
+| JAWS + Chrome + Windows                                                    | pending     | pending     | pending |                                                                                                               |
+| TalkBack + Chrome + Android                                                | pending     | pending     | pending |                                                                                                               |
+| VoiceOver + Safari + macOS                                                 | pending     | pending     | pending |                                                                                                               |
 
 ### What to check
 

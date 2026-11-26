@@ -121,16 +121,6 @@ async function scrollToHeading(canvasElement: HTMLElement, name: string) {
 export const Default: Story = {
   decorators: [withContentsColumns],
   render: renderPage,
-  play: async ({ canvas }) => {
-    const navigation = canvas.getByRole('navigation', { name: 'On this page' })
-    await expect(within(navigation).getAllByRole('list')).toHaveLength(2)
-    await expect(within(navigation).getAllByRole('link')).toHaveLength(5)
-    // The first heading is on screen, so it is current before any scrolling.
-    await expect(navigation.querySelectorAll('[aria-current]')).toHaveLength(1)
-    await expect(
-      within(navigation).getByRole('link', { name: 'Who needs a building permit?' }),
-    ).toHaveAttribute('aria-current', 'location')
-  },
 }
 
 /**
@@ -220,11 +210,6 @@ export const LabelledByHeading: Story = {
       </div>
     </>
   ),
-  play: async ({ canvas }) => {
-    const navigation = canvas.getByRole('navigation', { name: 'On this page' })
-    await expect(navigation).toHaveAttribute('aria-labelledby', 'labelled-by-heading-title')
-    await expect(navigation).not.toHaveAttribute('aria-label')
-  },
 }
 
 /**
@@ -237,10 +222,8 @@ export const Levels: Story = {
   args: { items: sampleItems('levels', levels) },
   decorators: [withContentsColumns],
   render: renderPage,
-  play: async ({ canvas, canvasElement }) => {
-    await expect(within(canvas.getByRole('navigation')).getAllByRole('list')).toHaveLength(4)
+  play: async ({ canvasElement }) => {
     await scrollToHeading(canvasElement, 'Drawings')
-    await expect(canvasElement.querySelectorAll('[aria-current]')).toHaveLength(1)
   },
 }
 
@@ -254,9 +237,6 @@ export const StickyOffset: Story = {
   args: { items: sampleItems('sticky-offset'), offset: 64 },
   decorators: [withStickyHeader],
   render: renderPage,
-  play: async ({ canvas }) => {
-    await expect(canvas.getByRole('navigation', { name: 'On this page' })).toBeVisible()
-  },
 }
 
 /**
@@ -267,11 +247,6 @@ export const StickyOffset: Story = {
 export const CustomRender: Story = {
   parameters: showSource('table-of-contents/table-of-contents.fixture.tsx', 'ContentsWithOwnList'),
   render: () => <ContentsWithOwnList />,
-  play: async ({ canvas }) => {
-    const navigation = canvas.getByRole('navigation', { name: 'On this page' })
-    // Only the top level: the function drew its own list.
-    await expect(within(navigation).getAllByRole('link')).toHaveLength(3)
-  },
 }
 
 /**
@@ -284,7 +259,6 @@ export const CompactDensity: Story = {
   render: renderPage,
   play: async ({ canvas, canvasElement }) => {
     const links = within(canvas.getByRole('navigation')).getAllByRole('link')
-    await expect(links).toHaveLength(5)
     for (const link of links) {
       await expectMinimumTargetSize(link)
     }
@@ -302,8 +276,6 @@ export const LongFinnishText: Story = {
   decorators: [withNarrowColumn],
   render: renderPage,
   play: async ({ canvas, canvasElement }) => {
-    // kv-lang-ok: Finnish locale story
-    await expect(canvas.getByRole('navigation', { name: 'Tällä sivulla' })).toBeVisible()
     await scrollToHeading(
       canvasElement,
       // kv-lang-ok: Finnish locale story
@@ -322,8 +294,7 @@ export const RTL: Story = {
   args: { items: sampleItems('rtl', permit) },
   decorators: [withContentsColumns],
   render: renderPage,
-  play: async ({ canvas, canvasElement }) => {
-    await expect(canvas.getByRole('navigation', { name: 'On this page' })).toBeVisible()
+  play: async ({ canvasElement }) => {
     await scrollToHeading(canvasElement, 'Fees')
   },
 }

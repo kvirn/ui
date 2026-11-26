@@ -1,4 +1,3 @@
-import { expectNoA11yViolations } from '@kvirn/testing'
 import { readAnnouncements } from '@kvirn/testing/read-aloud'
 import { useEffect, useRef, useState } from 'react'
 import { renderToString } from 'react-dom/server'
@@ -408,21 +407,6 @@ describe('announce', () => {
 })
 
 describe('accessibility', () => {
-  test('no axe violations with the title focused', async () => {
-    const view = await render(
-      <KvirnProvider>
-        <Probe routeKey="/a" />
-      </KvirnProvider>,
-    )
-    await view.rerender(
-      <KvirnProvider>
-        <Probe routeKey="/b" />
-      </KvirnProvider>,
-    )
-    await expect.element(heading()).toHaveFocus()
-    await expectNoA11yViolations(document.body)
-  })
-
   test('the hook returns nothing to spread', () => {
     expectTypeOf(useRouteFocus).returns.toEqualTypeOf<void>()
   })

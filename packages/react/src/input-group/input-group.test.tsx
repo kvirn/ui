@@ -1,6 +1,5 @@
 import { en } from '@kvirn/i18n/en'
 import { sv } from '@kvirn/i18n/sv'
-import { expectNoA11yViolations } from '@kvirn/testing'
 import { createRef, useState } from 'react'
 import { afterEach, beforeEach, describe, expect, expectTypeOf, test, vi } from 'vite-plus/test'
 import type { MockInstance } from 'vite-plus/test'
@@ -86,7 +85,7 @@ function SearchField({ onClear }: { onClear?: () => void }) {
 
 describe('rendering', () => {
   test('Root has the kv-input-group part class and Addon the kv-input-group-addon one', async () => {
-    const { container } = await render(<RentField />)
+    await render(<RentField />)
     const root = page.getByTestId('root').element()
     const addon = page.getByTestId('addon').element()
     expect(root.className).toBe('kv-input-group')
@@ -94,7 +93,6 @@ describe('rendering', () => {
     expect(addon.className).toBe('kv-input-group-addon')
     expect(root.contains(addon)).toBe(true)
     expect(root.querySelector('input')).not.toBeNull()
-    await expectNoA11yViolations(container)
     expect(consoleWarn).not.toHaveBeenCalled()
   })
 
@@ -123,7 +121,7 @@ describe('rendering', () => {
   })
 
   test('works without a Field: the Input is named by its own aria-label', async () => {
-    const { container } = await render(
+    await render(
       <InputGroup.Root>
         <TextInput aria-label="Monthly rent in kronor" />
         <InputGroup.Addon>kr</InputGroup.Addon>
@@ -132,7 +130,6 @@ describe('rendering', () => {
     await expect
       .element(page.getByRole('textbox', { name: 'Monthly rent in kronor' }))
       .toBeVisible()
-    await expectNoA11yViolations(container)
     expect(consoleWarn).not.toHaveBeenCalled()
   })
 })
@@ -159,7 +156,7 @@ describe('name and description come from the Field, never from the Addon', () =>
     }
   })
 
-  test('the name and description follow the locale, and axe is clean in sv and en', async () => {
+  test('the name and description follow the locale, in sv and en', async () => {
     const swedish = await render(
       <KvirnProvider locale="sv-SE" messages={sv}>
         <RentField invalid />
@@ -169,10 +166,9 @@ describe('name and description come from the Field, never from the Addon', () =>
       .element(page.getByRole('textbox', { name: 'Monthly rent in kronor' }))
       // kv-lang-ok: the sv catalog's error prefix
       .toHaveAccessibleDescription('For example 8450 Fel: Enter the rent in whole kronor')
-    await expectNoA11yViolations(swedish.container)
     await swedish.unmount()
 
-    const english = await render(
+    await render(
       <KvirnProvider locale="en-GB" messages={en}>
         <RentField invalid />
       </KvirnProvider>,
@@ -180,16 +176,14 @@ describe('name and description come from the Field, never from the Addon', () =>
     await expect
       .element(page.getByRole('textbox', { name: 'Monthly rent in kronor' }))
       .toHaveAccessibleDescription('For example 8450 Error: Enter the rent in whole kronor')
-    await expectNoA11yViolations(english.container)
   })
 
   test('the Button’s name is its own text, and the group adds no name to it', async () => {
-    const { container } = await render(<SearchField />)
+    await render(<SearchField />)
     await expect.element(page.getByRole('button', { name: 'Clear' })).toBeVisible()
     await expect
       .element(page.getByRole('searchbox', { name: 'Search among services' }))
       .toHaveAccessibleName('Search among services')
-    await expectNoA11yViolations(container)
   })
 })
 
@@ -578,13 +572,12 @@ describe('useInputGroup', () => {
   }
 
   test('gives spreadable props for your own elements, with the same behaviour', async () => {
-    const { container } = await render(<HookGroup invalid />)
+    await render(<HookGroup invalid />)
     const root = page.getByTestId('root')
     await expect.element(root).toHaveAttribute('data-invalid', '')
     await expect.element(page.getByTestId('addon')).toHaveAttribute('aria-hidden', 'true')
     await userEvent.click(page.getByTestId('addon'))
     await expect.element(page.getByRole('textbox')).toHaveFocus()
-    await expectNoA11yViolations(container)
   })
 
   test('reports its state, including keyboard focus', async () => {

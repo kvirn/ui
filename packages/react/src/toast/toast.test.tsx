@@ -1,6 +1,5 @@
 import { fi } from '@kvirn/i18n/fi'
 import { sv } from '@kvirn/i18n/sv'
-import { expectNoA11yViolations } from '@kvirn/testing'
 import { useEffect, useState } from 'react'
 import { renderToString } from 'react-dom/server'
 import { afterEach, beforeEach, describe, expect, expectTypeOf, test, vi } from 'vite-plus/test'
@@ -255,36 +254,6 @@ describe('rendering and ARIA', () => {
     expect(regionElement()?.getAttribute('lang')).toBe('ar')
     expect(regionElement()?.getAttribute('dir')).toBe('rtl')
   })
-
-  test('has no axe violations with a status word, a body, an action and two toasts', async () => {
-    const { container } = await render(
-      <Page
-        actions={{
-          Show: (toast) => {
-            toast.show({
-              variant: 'success',
-              title: 'The draft has been removed',
-              body: <p>You can undo it.</p>,
-              action: { label: 'Undo', onPress: () => {} },
-            })
-            toast.show({ title: 'Your report is ready' })
-          },
-        }}
-      />,
-    )
-    await press('Show')
-    await expect.element(page.getByRole('region', { name: 'Messages' })).toBeVisible()
-
-    // The theme spaces the action and Close; without it they touch (target-size, 2.5.8).
-    const spacing = document.createElement('style')
-    spacing.textContent = '.kv-toast button { margin: 8px }'
-    document.head.append(spacing)
-    try {
-      await expectNoA11yViolations(container)
-    } finally {
-      spacing.remove()
-    }
-  })
 })
 
 describe('languages', () => {
@@ -292,7 +261,7 @@ describe('languages', () => {
     const title =
       // kv-lang-ok: a long Swedish title, to prove it wraps under lang sv
       'Dina ändringar av aviseringsinställningarna är sparade och börjar gälla från och med nästa inloggning'
-    const { container } = await render(
+    await render(
       <Page
         locale="sv"
         messages={sv}
@@ -310,13 +279,12 @@ describe('languages', () => {
     expect(toastTitles()).toEqual([`${sv.alert.successPrefix} ${title}`])
     // kv-lang-ok: the sv catalog's Close label
     await expect.element(page.getByRole('button', { name: 'Stäng meddelandet' })).toBeVisible()
-    await expectNoA11yViolations(container)
   })
 
   test('fi: a long compound-word title and body show in full, with the Finnish name and status word', async () => {
     // kv-lang-ok: a long Finnish compound-word title, to prove it shows in full under lang fi
     const title = 'Luonnoksen tallennusasetukset on päivitetty ja ilmoitusasetukset tallennettu'
-    const { container } = await render(
+    await render(
       <Page
         locale="fi"
         messages={fi}
@@ -337,7 +305,6 @@ describe('languages', () => {
     // kv-lang-ok: the provider catalog's region label
     await expect.element(page.getByRole('region', { name: 'Ilmoitukset' })).toBeVisible()
     expect(toastTitles()).toEqual([`${fi.alert.successPrefix} ${title}`])
-    await expectNoA11yViolations(container)
   })
 })
 

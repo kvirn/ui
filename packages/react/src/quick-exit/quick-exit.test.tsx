@@ -1,4 +1,3 @@
-import { expectNoA11yViolations } from '@kvirn/testing'
 import { readAloud, readAnnouncements } from '@kvirn/testing/read-aloud'
 import { afterEach, beforeEach, describe, expect, test, vi } from 'vite-plus/test'
 import type { MockInstance } from 'vite-plus/test'
@@ -356,12 +355,5 @@ describe('read aloud', () => {
     ).rejects.toThrow('No live-region announcement')
     await userEvent.keyboard('{Shift}{Shift}')
     expect(navigate).not.toHaveBeenCalled()
-  })
-})
-
-describe('a11y', () => {
-  test('the default render has no axe violations', async () => {
-    const { container } = await renderQuickExit()
-    await expectNoA11yViolations(container)
   })
 })

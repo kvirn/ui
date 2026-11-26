@@ -16,13 +16,12 @@ describe('disclosure machine', () => {
 })
 ```
 
-## Component + axe (Vitest browser mode)
+## Component (Vitest browser mode)
 
 ```tsx
 import { expect, test } from 'vite-plus/test'
 import { page, userEvent } from 'vite-plus/test/browser'
 import { render } from 'vitest-browser-react'
-import { expectNoA11yViolations } from '@kvirn/testing'
 import { Disclosure } from './disclosure'
 
 const Fixture = () => (
@@ -33,16 +32,15 @@ const Fixture = () => (
 )
 
 test('trigger exposes aria-expanded and toggles panel', async () => {
-  const { container } = await render(<Fixture />)
+  await render(<Fixture />)
   const trigger = page.getByRole('button', { name: 'Show more' })
   await expect.element(trigger).toHaveAttribute('aria-expanded', 'false')
   await userEvent.click(trigger)
   await expect.element(trigger).toHaveAttribute('aria-expanded', 'true')
-  await expectNoA11yViolations(container)
 })
 ```
 
-`expectNoA11yViolations` wraps `axe.run(element, { runOnly: { type: 'tag', values: ['wcag2a','wcag2aa','wcag21a','wcag21aa','wcag22aa'] } })` and fails with a readable list of violations.
+A component test does not call axe: the Storybook a11y addon runs it on every story state (a state only a test reaches gets a story).
 
 ## Keyboard rows (same component test)
 
@@ -144,4 +142,4 @@ export const ForcedColors: Story = { globals: { forcedColors: 'active' } }
 
 Stories that drive the theme store themselves (the `KvirnProvider` stories) opt out of the preview's Mode and Contrast with `parameters: { themeStore: 'story' }`.
 
-Stories need no axe code: the a11y addon runs axe with the WCAG 2.2 AA tags on every story in `vp test run`, once in each of the four `storybook*` projects (light, dark, light and dark with more contrast), and any violation fails the test (`parameters.a11y.test: 'error'` in `apps/storybook/.storybook/preview.tsx`).
+Stories need no axe code: the a11y addon runs axe with the WCAG 2.2 AA tags on every story in `vp test run`, once, in the light theme (`theme:check` proves contrast in all four), and any violation fails the test (`parameters.a11y.test: 'error'` in `apps/storybook/.storybook/preview.tsx`).

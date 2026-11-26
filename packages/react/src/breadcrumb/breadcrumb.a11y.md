@@ -89,21 +89,21 @@ Designed and tested to meet WCAG 2.2 AA.
 
 ## AT test record
 
-| AT + browser + OS                                                          | Agent check | Human check | Result  | Notes                                                                                                                  |
-| -------------------------------------------------------------------------- | ----------- | ----------- | ------- | ---------------------------------------------------------------------------------------------------------------------- |
-| **Automated (re-runnable tests)**                                          |             |             |         |                                                                                                                        |
-| axe, WCAG 2.2 A and AA, every story, 4 themes                              | pass        | n/a         | pass    | breadcrumb.stories.tsx, every story, 4 themes                                                                          |
-| Markup and ARIA (roles, names, ids, states)                                | pass        | n/a         | pass    | `breadcrumb.test.tsx` (axe and role, name and state): `is a navigation landmark named by the message breadcrumb.label` |
-| Keyboard contract rows (Vitest browser)                                    | pass        | n/a         | pass    | 4 rows, each names a test in `breadcrumb.test.tsx`                                                                     |
-| Focus order and management                                                 | pass        | n/a         | pass    | `breadcrumb.test.tsx` asserts focus                                                                                    |
-| Display modes (forced colours, 320px reflow, text spacing, reduced motion) | pass        | n/a         | pass    | the four sweep projects (`storybook-forced-colors`, `-reduced-motion`, `-reflow`, `-text-spacing`), run in CI          |
-| **Core (required for beta)**                                               |             |             |         |                                                                                                                        |
-| NVDA + Chrome + Windows                                                    | pending     | pending     | pending |                                                                                                                        |
-| VoiceOver + Safari + iOS                                                   | pending     | pending     | pending |                                                                                                                        |
-| **Release (before 1.0 and each minor)**                                    |             |             |         |                                                                                                                        |
-| JAWS + Chrome + Windows                                                    | pending     | pending     | pending |                                                                                                                        |
-| TalkBack + Chrome + Android                                                | pending     | pending     | pending |                                                                                                                        |
-| VoiceOver + Safari + macOS                                                 | pending     | pending     | pending |                                                                                                                        |
+| AT + browser + OS                                                          | Agent check | Human check | Result  | Notes                                                                                                          |
+| -------------------------------------------------------------------------- | ----------- | ----------- | ------- | -------------------------------------------------------------------------------------------------------------- |
+| **Automated (re-runnable tests)**                                          |             |             |         |                                                                                                                |
+| axe, WCAG 2.2 A and AA, every story, light theme                           | pass        | n/a         | pass    | breadcrumb.stories.tsx, every story, light theme                                                               |
+| Markup and ARIA (roles, names, ids, states)                                | pass        | n/a         | pass    | `breadcrumb.test.tsx` (role, name and state): `is a navigation landmark named by the message breadcrumb.label` |
+| Keyboard contract rows (Vitest browser)                                    | pass        | n/a         | pass    | 4 rows, each names a test in `breadcrumb.test.tsx`                                                             |
+| Focus order and management                                                 | pass        | n/a         | pass    | `breadcrumb.test.tsx` asserts focus                                                                            |
+| Display modes (forced colours, 320px reflow, text spacing, reduced motion) | pass        | n/a         | pass    | the four sweep projects (`storybook-forced-colors`, `-reduced-motion`, `-reflow`, `-text-spacing`), run in CI  |
+| **Core (required for beta)**                                               |             |             |         |                                                                                                                |
+| NVDA + Chrome + Windows                                                    | pending     | pending     | pending |                                                                                                                |
+| VoiceOver + Safari + iOS                                                   | pending     | pending     | pending |                                                                                                                |
+| **Release (before 1.0 and each minor)**                                    |             |             |         |                                                                                                                |
+| JAWS + Chrome + Windows                                                    | pending     | pending     | pending |                                                                                                                |
+| TalkBack + Chrome + Android                                                | pending     | pending     | pending |                                                                                                                |
+| VoiceOver + Safari + macOS                                                 | pending     | pending     | pending |                                                                                                                |
 
 ### What to check
 

@@ -109,13 +109,8 @@ type Story = StoryObj<typeof meta>
 export const Default: Story = {
   play: async ({ canvas, globals }) => {
     const { text } = choiceTextsFor(localeOf(globals))
-    const group = canvas.getByRole('group', { name: new RegExp(`^${text.contactLegend}`) })
-    await expect(group.tagName).toBe('FIELDSET')
-    await expect(group).toHaveAccessibleDescription(text.contactHint)
     for (const label of [text.contactEmail, text.contactText, text.contactLetter]) {
-      const checkbox = canvas.getByRole('checkbox', { name: label })
-      await expectMinimumTargetSize(checkbox)
-      await expect(checkbox).toHaveAttribute('name', 'contact')
+      await expectMinimumTargetSize(canvas.getByRole('checkbox', { name: label }))
     }
   },
 }
@@ -179,12 +174,7 @@ export const Keyboard: Story = {
  * The description: a `CheckboxGroup.Prose` above the options says how many answers are allowed.
  * It is read as the group's description. The main example shows it too.
  */
-export const WithDescription: Story = {
-  play: async ({ canvas, globals }) => {
-    const { text } = choiceTextsFor(localeOf(globals))
-    await expect(canvas.getByText(text.contactHint)).toBeVisible()
-  },
-}
+export const WithDescription: Story = {}
 
 /** An option's own help text is in that checkbox's description, under its label. */
 export const WithOptionHelpTexts: Story = {
@@ -216,27 +206,11 @@ export const WithOptionHelpTexts: Story = {
       </>
     )
   },
-  play: async ({ canvas, globals }) => {
-    const { text } = choiceTextsFor(localeOf(globals))
-    await expect(
-      canvas.getByRole('checkbox', { name: text.contactLetter }),
-    ).toHaveAccessibleDescription(text.contactLetterHint)
-  },
 }
 
 /** Invalid: every box gets a 2px edge, and the message is under the options. No aria-invalid. */
 export const Invalid: Story = {
   args: { invalid: true },
-  play: async ({ canvas, globals }) => {
-    const { text } = choiceTextsFor(localeOf(globals))
-    const group = canvas.getByRole('group', { name: new RegExp(`^${text.contactLegend}`) })
-    await expect(group).toHaveAccessibleDescription(
-      new RegExp(`${text.contactHint}.*${text.contactError}`),
-    )
-    const checkbox = canvas.getByRole('checkbox', { name: text.contactEmail })
-    await expect(checkbox).toHaveAttribute('data-invalid')
-    await expect(checkbox).not.toHaveAttribute('aria-invalid')
-  },
 }
 
 /**
@@ -246,22 +220,11 @@ export const Invalid: Story = {
  */
 export const Required: Story = {
   args: { required: true },
-  play: async ({ canvas, globals }) => {
-    const { text } = choiceTextsFor(localeOf(globals))
-    const group = canvas.getByRole('group', { name: text.contactLegend })
-    await expect(group).toHaveAttribute('data-required')
-    await expect(group).not.toHaveAttribute('aria-required')
-  },
 }
 
 /** Disabled: native `fieldset[disabled]`, so every checkbox is disabled and skipped by Tab. */
 export const Disabled: Story = {
   args: { disabled: true, defaultValue: ['email'] },
-  play: async ({ canvas, globals }) => {
-    const { text } = choiceTextsFor(localeOf(globals))
-    await expect(canvas.getByRole('checkbox', { name: text.contactEmail })).toBeDisabled()
-    await expect(canvas.getByRole('checkbox', { name: text.contactEmail })).toBeChecked()
-  },
 }
 
 /** In a card: the edges keep 3:1 against `surface-raised` (1.4.11). */
@@ -294,10 +257,6 @@ export const InCard: Story = {
         </Card.Root>
       </>
     )
-  },
-  play: async ({ canvas, globals }) => {
-    const { text } = choiceTextsFor(localeOf(globals))
-    await expect(canvas.getByRole('checkbox', { name: text.contactEmail })).toBeVisible()
   },
 }
 

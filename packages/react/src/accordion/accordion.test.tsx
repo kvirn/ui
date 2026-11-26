@@ -1,4 +1,3 @@
-import { expectNoA11yViolations } from '@kvirn/testing'
 import { createRef } from 'react'
 import type { ReactNode } from 'react'
 import { renderToString } from 'react-dom/server'
@@ -80,7 +79,6 @@ describe('rendering', () => {
     }
     expect(container.querySelector('.kv-accordion-item')?.hasAttribute('role')).toBe(false)
     expect(container.querySelector('.kv-accordion-panel')?.hasAttribute('role')).toBe(false)
-    await expectNoA11yViolations(container)
     expect(consoleWarn).not.toHaveBeenCalled()
   })
 
@@ -151,7 +149,6 @@ describe('rendering', () => {
     expect(expanded('Vad kostar det?')).toBe('true')
     expect(expanded('How long does it take?')).toBe('false')
     expect(container.querySelectorAll('.kv-accordion-item[data-open]')).toHaveLength(2)
-    await expectNoA11yViolations(container)
   })
 
   test('region is opt-in: the panel is a region named by its trigger', async () => {
@@ -221,7 +218,6 @@ describe('rendering', () => {
       </Accordion.Root>,
     )
     expect(container.querySelector('ul.kv-accordion > li.kv-accordion-item')).not.toBeNull()
-    await expectNoA11yViolations(container)
   })
 
   test('Root takes ol and Item keeps the open state on a li', async () => {

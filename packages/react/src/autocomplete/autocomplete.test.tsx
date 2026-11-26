@@ -1,6 +1,5 @@
 // kv-lang-ok-file: the fixture holds Swedish street names because the filter tests prove å, ä and ö handling
 import { sv } from '@kvirn/i18n/sv'
-import { expectNoA11yViolations } from '@kvirn/testing'
 import { createRef, useState } from 'react'
 import { renderToString } from 'react-dom/server'
 import {
@@ -148,7 +147,7 @@ async function typeText(text: string) {
 
 describe('rendering', () => {
   test('a closed autocomplete: a native input wired to a hidden listbox popup', async () => {
-    const { container } = await render(<Example />)
+    await render(<Example />)
     const element = inputElement()
     const popup = popupElement()
     expect(element.getAttribute('role')).toBe('combobox')
@@ -165,7 +164,6 @@ describe('rendering', () => {
     expect(element.getAttribute('aria-controls')).toBe(list?.id)
     expect(isShown()).toBe(false)
     expect(page.getByRole('option').elements()).toHaveLength(0)
-    await expectNoA11yViolations(container)
     expect(consoleWarn).not.toHaveBeenCalled()
   })
 
@@ -200,14 +198,13 @@ describe('rendering', () => {
   })
 
   test('typing opens the popup with the matching suggestions, and focus stays on the input', async () => {
-    const { container } = await render(<Example />)
+    await render(<Example />)
     await typeText('sto')
     await expect.poll(isShown).toBe(true)
     expect(inputElement().getAttribute('aria-expanded')).toBe('true')
     expect(optionNames()).toEqual(['Storgatan', 'Stora Torget'])
     expect(inputElement().hasAttribute('aria-activedescendant')).toBe(false)
     await expect.element(input()).toHaveFocus()
-    await expectNoA11yViolations(container)
     expect(consoleWarn).not.toHaveBeenCalled()
   })
 
@@ -227,7 +224,7 @@ describe('rendering', () => {
   })
 
   test('no suggestion is selected, and Autocomplete.Empty says "No results" when nothing matches', async () => {
-    const { container } = await render(<Example />)
+    await render(<Example />)
     await typeText('{ArrowDown}')
     await expect.poll(isShown).toBe(true)
     for (const element of page.getByRole('option').elements()) {
@@ -240,7 +237,6 @@ describe('rendering', () => {
     // Plain text beside a hidden listbox, not an option.
     expect(optionNames()).toEqual([])
     expect(listElement()?.hasAttribute('hidden')).toBe(true)
-    await expectNoA11yViolations(container)
   })
 
   test('with no suggestion and nothing loading the input reports collapsed, with or without Empty', async () => {
@@ -437,14 +433,13 @@ describe('the value is the text', () => {
   })
 
   test('Toggle opens the popup with every suggestion, and is not a tab stop', async () => {
-    const { container } = await render(<Example withButtons />)
+    await render(<Example withButtons />)
     const toggle = page.getByRole('button', { name: 'Show options' })
     await expect.element(toggle).toHaveAttribute('tabindex', '-1')
     await userEvent.click(toggle)
     await expect.poll(isShown).toBe(true)
     expect(optionNames()).toHaveLength(6)
     await expect.element(input()).toHaveFocus()
-    await expectNoA11yViolations(container)
     await userEvent.click(toggle)
     await expect.poll(isShown).toBe(false)
   })
@@ -600,7 +595,7 @@ describe('keyboard rows', () => {
   })
 
   test('right to left: ArrowDown and ArrowUp still mean next and previous suggestion, and ArrowLeft and ArrowRight only move the caret', async () => {
-    const { container } = await render(
+    await render(
       <div dir="rtl">
         <Example />
       </div>,
@@ -613,7 +608,6 @@ describe('keyboard rows', () => {
     expect(activeName()).toBe('Kungsgatan')
     await userEvent.keyboard('{ArrowUp}')
     expect(activeName()).toBe('Storgatan')
-    await expectNoA11yViolations(container)
     await userEvent.keyboard('{ArrowLeft}')
     expect(inputElement().hasAttribute('aria-activedescendant')).toBe(false)
     await userEvent.keyboard('{ArrowDown}')

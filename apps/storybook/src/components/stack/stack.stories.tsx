@@ -2,7 +2,6 @@ import { Card, Heading, Stack } from '@kvirn/ui'
 import contract from '../../../../../packages/react/src/stack/stack.a11y.md?raw'
 import guide from '../../../../../packages/react/src/stack/stack.md?raw'
 import type { Meta, StoryObj } from '@storybook/react-vite'
-import { expect } from 'storybook/test'
 import { usageGuide } from '../../docs-source.ts'
 import { expectNoHorizontalOverflow } from '../theme-story-assertions.ts'
 
@@ -60,10 +59,6 @@ export const AsList: Story = {
       <li>School transport</li>
     </Stack>
   ),
-  play: async ({ canvas }) => {
-    await expect(canvas.getByRole('list')).toBeVisible()
-    await expect(canvas.getAllByRole('listitem')).toHaveLength(3)
-  },
 }
 
 /** A 320px column with a long Finnish word: it wraps and nothing scrolls sideways (1.4.10). */

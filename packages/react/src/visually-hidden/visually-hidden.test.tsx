@@ -1,4 +1,3 @@
-import { expectNoA11yViolations } from '@kvirn/testing'
 import { createRef } from 'react'
 import { afterEach, beforeEach, describe, expect, test, vi } from 'vite-plus/test'
 import type { MockInstance } from 'vite-plus/test'
@@ -113,18 +112,5 @@ describe('VisuallyHidden', () => {
 
   test('useVisuallyHidden gives the class', () => {
     expect(useVisuallyHidden().visuallyHiddenProps).toEqual({ className: 'kv-visually-hidden' })
-  })
-
-  test('has no axe violations', async () => {
-    const { container } = await render(
-      <main>
-        <h1>Search</h1>
-        <p>
-          Found 3<VisuallyHidden> results</VisuallyHidden>
-        </p>
-      </main>,
-    )
-    await expect.element(page.getByText('results')).toBeInTheDocument()
-    await expectNoA11yViolations(container)
   })
 })

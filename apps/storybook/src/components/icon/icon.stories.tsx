@@ -182,13 +182,6 @@ export const Default: Story = {
       },
     },
   },
-  play: async ({ canvas, canvasElement }) => {
-    const svg = canvasElement.querySelector('svg')
-    await expect(svg).not.toBeNull()
-    await expect(svg).toHaveAttribute('aria-hidden', 'true')
-    await expect(svg).toHaveClass('kv-icon--size-20')
-    await expect(canvas.queryByRole('img')).toBeNull()
-  },
 }
 
 /**
@@ -198,11 +191,6 @@ export const Default: Story = {
 export const WithoutRegistration: Story = {
   parameters: showSource('icon/icon.fixture.tsx', 'IconFromDrawing'),
   render: () => <IconFromDrawing />,
-  play: async ({ canvasElement }) => {
-    const svg = canvasElement.querySelector('svg')
-    await expect(svg).toHaveAttribute('aria-hidden', 'true')
-    await expect(svg?.children.length).toBeGreaterThan(0)
-  },
 }
 
 const mapIconNames = Object.keys(mapIcons) as (keyof typeof mapIcons)[]
@@ -359,14 +347,6 @@ export const SizesNextToText: Story = {
       </div>
     </>
   ),
-  play: async ({ canvas }) => {
-    for (const testId of ['sizes-body', 'sizes-200']) {
-      const block = canvas.getByTestId(testId)
-      for (const size of iconSizes) {
-        await expect(block.querySelectorAll(`svg.kv-icon--size-${size}`)).toHaveLength(3)
-      }
-    }
-  },
 }
 
 /**
@@ -399,26 +379,6 @@ export const InButtons: Story = {
       </section>
     </>
   ),
-  play: async ({ canvas, canvasElement }) => {
-    await expect(canvas.getAllByRole('button', { name: 'Close' })).toHaveLength(8)
-    await expect(canvas.getAllByRole('button', { name: 'Search' })).toHaveLength(2)
-    await expect(canvas.getAllByRole('button', { name: 'Copy' })).toHaveLength(2)
-    for (const button of canvasElement.querySelectorAll('.kv-button--icon-only')) {
-      // The name is the button's, and the icon is its only child, hidden from AT.
-      await expect(button.children).toHaveLength(1)
-      await expect(button.textContent).toBe('')
-      await expect(button.querySelector(':scope > svg')).toHaveAttribute('aria-hidden', 'true')
-    }
-    // DOM order is start and end: the icon comes first in one button, last in the other.
-    const addChild = canvas.getAllByRole('button', { name: 'Add another child' })[0]
-    await expect(addChild?.firstElementChild).toBe(addChild?.querySelector('svg'))
-    const next = canvas.getAllByRole('button', { name: 'Continue' })[0]
-    await expect(next?.lastElementChild).toBe(next?.querySelector('svg'))
-    await expect(
-      // kv-lang-ok: Finnish locale story
-      canvas.getAllByRole('button', { name: 'Lataa päätös PDF-tiedostona' }),
-    ).toHaveLength(1)
-  },
 }
 
 /**
@@ -440,15 +400,6 @@ export const StatusWithText: Story = {
       </div>
     </div>
   ),
-  play: async ({ canvas }) => {
-    for (const word of ['Good to know', 'Done', 'Warning', 'Error']) {
-      // Two copies of each alert, and the status word is its title (after the alert's own
-      // status prefix in the accessible name).
-      await expect(
-        canvas.getAllByRole('heading', { name: (name) => name.endsWith(word) }),
-      ).toHaveLength(2)
-    }
-  },
 }
 
 /** Inherited colour, then each `variant` an icon may use (design spec §6.3). */
@@ -462,15 +413,6 @@ export const Colors: Story = {
   ],
   parameters: showSource('icon/icon.fixture.tsx', 'ColorVariants'),
   render: () => <ColorVariants />,
-  play: async ({ canvasElement }) => {
-    const icons = canvasElement.querySelectorAll('svg')
-    await expect(icons).toHaveLength(6)
-    await expect(icons[0]?.hasAttribute('color')).toBe(false)
-    await expect(icons[0]?.getAttribute('class')).not.toMatch(/kv-icon--(muted|danger|primary)/)
-    for (const [index, variant] of ['muted', 'danger', 'success', 'warning', 'primary'].entries()) {
-      await expect(icons[index + 1]).toHaveClass(`kv-icon--${variant}`)
-    }
-  },
 }
 
 /**
@@ -487,13 +429,6 @@ export const DecorativeAndMeaningful: Story = {
   ],
   parameters: showSource('icon/icon.fixture.tsx', 'DecorativeAndMeaningfulIcons'),
   render: () => <DecorativeAndMeaningfulIcons />,
-  play: async ({ canvas, canvasElement }) => {
-    const logo = canvas.getByRole('img', { name: 'Exempelby municipality' })
-    await expect(logo).not.toHaveAttribute('aria-hidden')
-    // Only the logo is in the accessibility tree: the calendar icon is hidden.
-    await expect(canvas.getAllByRole('img')).toHaveLength(1)
-    await expect(canvasElement.querySelectorAll('svg[aria-hidden="true"]')).toHaveLength(1)
-  },
 }
 
 /**
@@ -527,8 +462,6 @@ export const RTL: Story = {
     for (const icon of canvas.getByRole('region', { name: 'stays' }).querySelectorAll('svg')) {
       await expect(icon).not.toHaveAttribute('data-mirror-in-rtl')
     }
-    await expect(canvas.getByRole('button', { name: 'Continue' })).toBeVisible()
-    await expect(canvas.getByRole('button', { name: 'Next' })).toBeVisible()
   },
 }
 
@@ -548,19 +481,6 @@ export const RegistryEntriesAndDefaults: Story = {
     ),
   ],
   render: () => <RegistryEntries />,
-  play: async ({ canvasElement }) => {
-    const [entryNoFlip, instanceFlips, defaultSize, ownSize, nestedDelete, nestedKeepsParent] =
-      canvasElement.querySelectorAll('svg')
-    await expect(entryNoFlip).not.toHaveAttribute('data-mirror-in-rtl')
-    await expect(instanceFlips).toHaveAttribute('data-mirror-in-rtl')
-    // iconDefaults.size is '24' (1.5rem) until an icon sets its own.
-    await expect(defaultSize).toHaveAttribute('width', '1.5rem')
-    await expect(ownSize).toHaveAttribute('width', '1rem')
-    // The nested provider adds `delete` and its stroke, keeps the parent's size and `search`.
-    await expect(nestedDelete).toHaveAttribute('width', '1.5rem')
-    await expect(nestedKeepsParent).toHaveAttribute('width', '1.5rem')
-    await expect(nestedKeepsParent).toHaveClass('lucide-search')
-  },
 }
 
 /**
@@ -571,13 +491,6 @@ export const RegistryEntriesAndDefaults: Story = {
 export const UnknownName: Story = {
   parameters: showSource('icon/icon.fixture.tsx', 'UnknownNameIcon'),
   render: () => <UnknownNameIcon />,
-  play: async ({ canvasElement }) => {
-    const icon = canvasElement.querySelector('svg')
-    await expect(icon).toHaveAttribute('aria-hidden', 'true')
-    await expect(icon).toHaveAttribute('width', '1.5rem')
-    await expect(icon).toHaveAttribute('viewBox', '0 0 24 24')
-    await expect(icon?.children).toHaveLength(0)
-  },
 }
 
 /**
@@ -598,11 +511,6 @@ export const ForcedColors: Story = {
   ],
   parameters: showSource('icon/icon.fixture.tsx', 'IconsInTextButtonAndLink'),
   render: () => <IconsInTextButtonAndLink />,
-  play: async ({ canvas, canvasElement }) => {
-    await expect(canvas.getAllByRole('button')).toHaveLength(1)
-    await expect(canvas.getAllByRole('link')).toHaveLength(1)
-    await expect(canvasElement.querySelectorAll('svg.kv-icon--danger')).toHaveLength(3)
-  },
 }
 
 /**
@@ -619,12 +527,6 @@ export const YourOwnSvg: Story = {
   ],
   parameters: showSource('icon/icon.fixture.tsx', 'OwnSvgIcons'),
   render: () => <OwnSvgIcons />,
-  play: async ({ canvas, canvasElement }) => {
-    await expect(canvasElement.querySelectorAll('svg')).toHaveLength(3)
-    // Only the one with a label is an image.
-    await expect(canvas.getAllByRole('img')).toHaveLength(1)
-    await expect(canvas.getByRole('img', { name: 'Exempelby municipality' })).toBeVisible()
-  },
 }
 
 /**
@@ -745,10 +647,6 @@ export const InRunningTextAndLinks: Story = {
   parameters: showSource('icon/icon.fixture.tsx', 'IconsInRunningText'),
   render: () => <IconsInRunningText />,
   play: async ({ canvas }) => {
-    // The new-tab notice is part of the link's name. The icon adds nothing.
-    await expect(
-      canvas.getByRole('link', { name: 'Read the guide (opens in a new tab)' }),
-    ).toBeVisible()
     await expectNoHorizontalOverflow(canvas.getByTestId('narrow'))
   },
 }

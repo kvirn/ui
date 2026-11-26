@@ -1,4 +1,3 @@
-import { expectNoA11yViolations } from '@kvirn/testing'
 import { createRef, useState } from 'react'
 import type { ComponentPropsWithRef, ReactNode } from 'react'
 import { renderToString } from 'react-dom/server'
@@ -72,13 +71,12 @@ function TextToolbar({
 
 describe('rendering', () => {
   test('is a div with role="toolbar", its name and the part class, and no aria-orientation when horizontal', async () => {
-    const { container } = await render(<TextToolbar />)
+    await render(<TextToolbar />)
     const toolbar = page.getByRole('toolbar', { name: 'Formatting' })
     expect(toolbar.element().tagName).toBe('DIV')
     await expect.element(toolbar).toHaveClass('kv-toolbar')
     await expect.element(toolbar).not.toHaveAttribute('aria-orientation')
     await expect.element(page.getByRole('group', { name: 'Text style' })).toBeVisible()
-    await expectNoA11yViolations(container)
     expect(consoleWarn).not.toHaveBeenCalled()
   })
 
@@ -557,7 +555,7 @@ describe('keys the item owns', () => {
 describe('disabled controls', () => {
   test('a disabled button and toggle are focusable with aria-disabled, reachable by the arrows, and inert', async () => {
     const onClick = vi.fn<() => void>()
-    const { container } = await render(
+    await render(
       <TextToolbar>
         <Toolbar.Button>Undo</Toolbar.Button>
         <Toolbar.Button disabled onClick={onClick}>
@@ -579,7 +577,6 @@ describe('disabled controls', () => {
     await expect.element(button('Bold')).toHaveFocus()
     await userEvent.keyboard('{Enter}')
     await expect.element(button('Bold')).toHaveAttribute('aria-pressed', 'false')
-    await expectNoA11yViolations(container)
   })
 
   test('a natively disabled control (focusableWhenDisabled={false}) is skipped by the arrows', async () => {
@@ -652,7 +649,7 @@ describe('disabled controls', () => {
 
   test('a disabled Toolbar.Item stays reachable and inert', async () => {
     const onClick = vi.fn<() => void>()
-    const { container } = await render(
+    await render(
       <TextToolbar>
         <Toolbar.Button style={fixtureButtonStyle}>Undo</Toolbar.Button>
         <Toolbar.Item disabled onClick={onClick} style={fixtureButtonStyle}>
@@ -672,7 +669,6 @@ describe('disabled controls', () => {
     expect(onClick).not.toHaveBeenCalled()
     await userEvent.keyboard('{ArrowRight}')
     await expect.element(button('Image')).toHaveFocus()
-    await expectNoA11yViolations(container)
   })
 
   test('a disabled Toolbar.Item that renders a Popover.Trigger does not open', async () => {
@@ -937,7 +933,7 @@ describe('useToolbar', () => {
   }
 
   test('gives spreadable props: one Tab stop, the arrows and Home and End', async () => {
-    const { container } = await render(<HookToolbar />)
+    await render(<HookToolbar />)
     expect(tabIndexOf('One')).toBe('0')
     expect(tabIndexOf('Two')).toBe('-1')
     await userEvent.keyboard('{Tab}{Tab}{ArrowRight}')
@@ -946,7 +942,6 @@ describe('useToolbar', () => {
     await expect.element(button('Three')).toHaveFocus()
     await userEvent.keyboard('{ArrowRight}')
     await expect.element(button('One')).toHaveFocus()
-    await expectNoA11yViolations(container)
   })
 })
 

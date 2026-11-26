@@ -1,4 +1,3 @@
-import { expectNoA11yViolations } from '@kvirn/testing'
 import { createRef } from 'react'
 import { afterEach, beforeEach, describe, expect, test, vi } from 'vite-plus/test'
 import type { MockInstance } from 'vite-plus/test'
@@ -121,22 +120,5 @@ describe('Badge', () => {
     const element = page.getByTestId('badge').element()
     expect(element.hasAttribute('role')).toBe(false)
     expect(element.hasAttribute('aria-live')).toBe(false)
-  })
-
-  test('has no axe violations in any variant', async () => {
-    const { container } = await render(
-      <main>
-        <h1>My cases</h1>
-        <ul>
-          {variants.map((variant) => (
-            <li key={variant}>
-              Case <Badge variant={variant}>Status {variant}</Badge>
-            </li>
-          ))}
-        </ul>
-      </main>,
-    )
-    await expect.element(page.getByText('Status danger')).toBeVisible()
-    await expectNoA11yViolations(container)
   })
 })

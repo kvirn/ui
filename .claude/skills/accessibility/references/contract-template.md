@@ -68,21 +68,21 @@ What the consumer must provide, such as a label, a heading level or an error tex
 
 ## AT test record
 
-| AT + browser + OS                                                          | Agent check | Human check | Result  | Notes |
-| -------------------------------------------------------------------------- | ----------- | ----------- | ------- | ----- |
-| **Automated (re-runnable tests)**                                          |             |             |         |       |
-| axe, WCAG 2.2 A and AA, every story, 4 themes                              | pending     | n/a         | pending |       |
-| Markup and ARIA (roles, names, ids, states)                                | pending     | n/a         | pending |       |
-| Keyboard contract rows (Vitest browser)                                    | pending     | n/a         | pending |       |
-| Focus order and management                                                 | pending     | n/a         | pending |       |
-| Display modes (forced colours, 320px reflow, text spacing, reduced motion) | pending     | n/a         | pending |       |
-| **Core (required for beta)**                                               |             |             |         |       |
-| NVDA + Chrome + Windows                                                    | pending     | pending     | pending |       |
-| VoiceOver + Safari + iOS                                                   | pending     | pending     | pending |       |
-| **Release (before 1.0 and each minor)**                                    |             |             |         |       |
-| JAWS + Chrome + Windows                                                    | pending     | pending     | pending |       |
-| TalkBack + Chrome + Android                                                | pending     | pending     | pending |       |
-| VoiceOver + Safari + macOS                                                 | pending     | pending     | pending |       |
+| AT + browser + OS                                                                       | Agent check | Human check | Result  | Notes |
+| --------------------------------------------------------------------------------------- | ----------- | ----------- | ------- | ----- |
+| **Automated (re-runnable tests)**                                                       |             |             |         |       |
+| axe, WCAG 2.2 A and AA, every story, light theme; contrast in 4 themes by `theme:check` | pending     | n/a         | pending |       |
+| Markup and ARIA (roles, names, ids, states)                                             | pending     | n/a         | pending |       |
+| Keyboard contract rows (Vitest browser)                                                 | pending     | n/a         | pending |       |
+| Focus order and management                                                              | pending     | n/a         | pending |       |
+| Display modes (forced colours, 320px reflow, text spacing, reduced motion)              | pending     | n/a         | pending |       |
+| **Core (required for beta)**                                                            |             |             |         |       |
+| NVDA + Chrome + Windows                                                                 | pending     | pending     | pending |       |
+| VoiceOver + Safari + iOS                                                                | pending     | pending     | pending |       |
+| **Release (before 1.0 and each minor)**                                                 |             |             |         |       |
+| JAWS + Chrome + Windows                                                                 | pending     | pending     | pending |       |
+| TalkBack + Chrome + Android                                                             | pending     | pending     | pending |       |
+| VoiceOver + Safari + macOS                                                              | pending     | pending     | pending |       |
 
 ## Known issues
 

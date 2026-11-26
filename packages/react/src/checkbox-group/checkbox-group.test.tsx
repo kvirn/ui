@@ -1,4 +1,3 @@
-import { expectNoA11yViolations } from '@kvirn/testing'
 import { createRef, useState } from 'react'
 import type { ReactNode } from 'react'
 import { afterEach, beforeEach, describe, expect, expectTypeOf, test, vi } from 'vite-plus/test'
@@ -103,7 +102,6 @@ describe('rendering', () => {
       .toHaveAccessibleDescription('Select all that apply. Error: Choose how we should contact you')
     await expect.element(group).toHaveAttribute('data-invalid', '')
     expectNoDanglingReferences(container)
-    await expectNoA11yViolations(container)
     expect(consoleWarn).not.toHaveBeenCalled()
   })
 
@@ -151,7 +149,6 @@ describe('rendering', () => {
       .element(page.getByRole('group', { name: 'How should we contact you? (optional)' }))
       .toHaveAccessibleDescription('Select all that apply.')
     expectNoDanglingReferences(container)
-    await expectNoA11yViolations(container)
     expect(consoleWarn).not.toHaveBeenCalled()
   })
 

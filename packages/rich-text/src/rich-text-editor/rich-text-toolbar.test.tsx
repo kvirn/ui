@@ -1,7 +1,6 @@
 // kv-lang-ok-file: the tests run on the Swedish catalog and assert its built-in strings
 import { Field, KvirnProvider } from '@kvirn/ui'
 import { sv } from '@kvirn/i18n/sv'
-import { expectNoA11yViolations } from '@kvirn/testing'
 import { readAloud, readAnnouncements } from '@kvirn/testing/read-aloud'
 import { Mark } from '@tiptap/core'
 import type { ReactNode } from 'react'
@@ -114,13 +113,12 @@ function controlNames(): string[] {
 
 describe('the toolbar', () => {
   test('is named "Formatering" and the Field’s label, controls the text, and says its shortcut', async () => {
-    const { container } = await render(<Editor />)
+    await render(<Editor />)
     const bar = page.getByRole('toolbar', { name: 'Formatering Beskrivning' })
     await expect.element(bar).toBeInTheDocument()
     await expect.element(textbox()).toBeInTheDocument()
     await expect.element(bar).toHaveAttribute('aria-controls', textbox().element().id)
     await expect.element(bar).toHaveAttribute('aria-keyshortcuts', 'Alt+F10')
-    await expectNoA11yViolations(container)
   })
 
   test('outside a Field its name stands alone', async () => {
@@ -741,7 +739,7 @@ async function focusMore() {
 
 describe('the compact toolbar', () => {
   test('CompactControls shows Bold, Italic and the two lists, then "More", and every other control once, in the menu, in the default order', async () => {
-    const { container } = await render(<Editor toolbar={compactToolbar()} />)
+    await render(<Editor toolbar={compactToolbar()} />)
     await vi.waitFor(() =>
       expect(barNames()).toEqual(['Fetstil', 'Kursiv', 'Punktlista', 'Numrerad lista', 'Mer']),
     )
@@ -768,7 +766,6 @@ describe('the compact toolbar', () => {
     ])
     await expect.element(more()).toHaveAttribute('aria-haspopup', 'menu')
     await expect.element(more()).toHaveAttribute('aria-expanded', 'false')
-    await expectNoA11yViolations(container)
   })
 
   test('with one control left over it is on the bar and there is no "More"', async () => {

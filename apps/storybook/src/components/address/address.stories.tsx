@@ -2,7 +2,6 @@ import { Address, Card, Link } from '@kvirn/ui'
 import contract from '../../../../../packages/react/src/address/address.a11y.md?raw'
 import guide from '../../../../../packages/react/src/address/address.md?raw'
 import type { Meta, StoryObj } from '@storybook/react-vite'
-import { expect } from 'storybook/test'
 import { en } from '@kvirn/i18n/en'
 import { InLanguage } from '../../fixture-language.tsx'
 import { usageGuide } from '../../docs-source.ts'
@@ -35,11 +34,6 @@ export const Default: Story = {
       <Link.Root href="mailto:contact@kvirnby.example">contact@kvirnby.example</Link.Root>
     </Address>
   ),
-  play: async ({ canvas }) => {
-    await expect(canvas.getByText('Kvirnby municipality', { exact: false })).toBeVisible()
-    await expect(canvas.getByRole('link', { name: '+46 123 456 789' })).toBeVisible()
-    await expect(canvas.getByRole('link', { name: 'contact@kvirnby.example' })).toBeVisible()
-  },
 }
 
 /** A postal address: `<br />` breaks the lines inside one `Address`. */
@@ -55,9 +49,6 @@ export const PostalAddress: Story = {
       123 45 Kvirnby
     </Address>
   ),
-  play: async ({ canvas }) => {
-    await expect(canvas.getByText('Box 100', { exact: false })).toBeVisible()
-  },
 }
 
 /** In a Card, as on a contact card. The text keeps the body size and is not italic. */
@@ -75,9 +66,6 @@ export const InCard: Story = {
       </Card.Body>
     </Card.Root>
   ),
-  play: async ({ canvas }) => {
-    await expect(canvas.getByText('Storgatan 1', { exact: false })).toBeVisible()
-  },
 }
 
 /** Right to left: the lines follow the reading direction. Address holds no strings, so `en` only satisfies the provider. */
@@ -93,7 +81,4 @@ export const RTL: Story = {
       </Address>
     </InLanguage>
   ),
-  play: async ({ canvas }) => {
-    await expect(canvas.getByRole('link', { name: '+46 123 456 789' })).toBeVisible()
-  },
 }

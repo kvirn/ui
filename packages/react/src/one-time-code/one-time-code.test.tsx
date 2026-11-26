@@ -1,5 +1,4 @@
 import { en } from '@kvirn/i18n/en'
-import { expectNoA11yViolations } from '@kvirn/testing'
 import { createRef, useState } from 'react'
 import type { ReactNode, Ref } from 'react'
 import { renderToString } from 'react-dom/server'
@@ -1356,31 +1355,5 @@ describe('announcements', () => {
     )
     await userEvent.type(code(), '1a')
     await expect.poll(() => document.body.textContent).toContain('Only digits can be entered here.')
-  })
-})
-
-describe('axe', () => {
-  const states: [string, CodeFieldProps][] = [
-    ['empty', {}],
-    ['partly filled', { defaultValue: '481' }],
-    ['complete', { defaultValue: '481920' }],
-    ['invalid', { defaultValue: '481920', invalid: true }],
-    ['disabled', { defaultValue: '481920', disabled: true }],
-    ['read-only', { defaultValue: '481920', readOnly: true }],
-    ['letters and digits in groups', { pattern: '****-****', defaultValue: 'K7QX-2M9P' }],
-    ['uppercase letters then digits', { pattern: 'AA-9999', defaultValue: 'AB-12' }],
-  ]
-  test.each(states)('no violations: %s', async (_name, props) => {
-    const { container } = await render(<CodeField {...props} />)
-    await expect.element(code()).toBeVisible()
-    await expectNoA11yViolations(container)
-  })
-
-  test('no violations while focused, with a selection', async () => {
-    const { container } = await render(<CodeField defaultValue="481" />)
-    await userEvent.click(code())
-    await userEvent.keyboard('{Control>}a{/Control}')
-    await expect.poll(() => selectedSlots().length).toBe(3)
-    await expectNoA11yViolations(container)
   })
 })

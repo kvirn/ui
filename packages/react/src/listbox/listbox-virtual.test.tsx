@@ -1,5 +1,4 @@
 import { sv } from '@kvirn/i18n/sv'
-import { expectNoA11yViolations } from '@kvirn/testing'
 import { afterEach, beforeEach, describe, expect, test, vi } from 'vite-plus/test'
 import type { MockInstance } from 'vite-plus/test'
 import { page, userEvent } from 'vite-plus/test/browser'
@@ -207,14 +206,6 @@ describe('virtualize: the window', () => {
     await expect.poll(isShown).toBe(true)
     await expect.poll(renderedCount).toBeGreaterThan(5)
     expect(renderedCount()).toBeLessThan(100)
-  })
-
-  test('an open virtualized list has no axe violations', async () => {
-    const { container } = await render(<Example />)
-    await userEvent.click(trigger())
-    await expect.poll(renderedCount).toBeGreaterThan(5)
-    await expectNoA11yViolations(container)
-    expect(consoleWarn).not.toHaveBeenCalled()
   })
 })
 

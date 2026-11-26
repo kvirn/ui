@@ -2,7 +2,6 @@
 import type { MaskInput } from '@kvirn/core'
 import { en } from '@kvirn/i18n/en'
 import { sv } from '@kvirn/i18n/sv'
-import { expectNoA11yViolations } from '@kvirn/testing'
 import { createRef, useEffect } from 'react'
 import { afterEach, beforeEach, describe, expect, expectTypeOf, test, vi } from 'vite-plus/test'
 import type { MockInstance } from 'vite-plus/test'
@@ -44,7 +43,7 @@ type ValueChange = (value: string, details: TextInputChangeDetails) => void
 
 describe('rendering', () => {
   test('renders a native text box, not a spinbutton, with no min, max or pattern attribute', async () => {
-    const { container } = await render(
+    await render(
       <Field.Root required>
         <Field.Label>How many children live with you?</Field.Label>
         <NumberInput name="children" min={0} max={12} />
@@ -59,7 +58,6 @@ describe('rendering', () => {
     for (const attribute of ['min', 'max', 'step', 'pattern', 'maxlength']) {
       await expect.element(input).not.toHaveAttribute(attribute)
     }
-    await expectNoA11yViolations(container)
     expect(consoleWarn).not.toHaveBeenCalled()
   })
 
@@ -495,7 +493,6 @@ describe('in a Field', () => {
         'A whole number from 0 to 12, for example 2. Error: Enter the number of children as a number from 0 to 12',
       )
     expect(container.querySelector('label')?.getAttribute('for')).toBe(input.element().id)
-    await expectNoA11yViolations(container)
     expect(consoleWarn).not.toHaveBeenCalled()
   })
 
@@ -537,7 +534,7 @@ describe('in a Field', () => {
 
 describe('inside an InputGroup', () => {
   test('works in InputGroup.Root next to an Addon, and the label carries the unit', async () => {
-    const { container } = await render(
+    await render(
       <Field.Root required>
         <Field.Label>Monthly rent in kronor</Field.Label>
         <InputGroup.Root>
@@ -555,7 +552,6 @@ describe('inside an InputGroup', () => {
     await expect.element(input).toHaveFocus()
     await userEvent.keyboard('8450')
     expect(plainSpaces((input.element() as HTMLInputElement).value)).toMatch(/^8[\s,.]?450$/)
-    await expectNoA11yViolations(container)
     expect(consoleWarn).not.toHaveBeenCalled()
   })
 })
@@ -680,7 +676,7 @@ describe('useNumberInput', () => {
 
   test('gives spreadable props for your own <input>, in the provider’s locale, reading the Field', async () => {
     const onValueChange = vi.fn<ValueChange>()
-    const { container } = await render(
+    await render(
       <KvirnProvider locale="sv" messages={sv}>
         <Field.Root invalid required>
           <Field.Label>Belopp</Field.Label>
@@ -697,7 +693,6 @@ describe('useNumberInput', () => {
     await userEvent.type(input, '1.5')
     await expect.element(input).toHaveValue('1,5')
     expect(onValueChange.mock.lastCall?.[1].unmaskedValue).toBe('1.5')
-    await expectNoA11yViolations(container)
   })
 
   test('format and unmask follow the provider’s locale', async () => {

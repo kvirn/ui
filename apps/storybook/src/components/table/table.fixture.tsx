@@ -467,7 +467,15 @@ export function SortableCases({ locale }: { locale: FormLocale }) {
 }
 
 /** A staff tool: compact rows, two selected, a link in the row header. Select all is mixed. */
-export function SelectableCases({ locale, className }: { locale: FormLocale; className?: string }) {
+export function SelectableCases({
+  locale,
+  className,
+  withoutRowHeader = false,
+}: {
+  locale: FormLocale
+  className?: string
+  withoutRowHeader?: boolean
+}) {
   const { texts } = tableTextsFor(locale)
   const format = useFormat()
   const columns = useMemo(
@@ -479,7 +487,7 @@ export function SelectableCases({ locale, className }: { locale: FormLocale; cla
     columns,
     data: cases,
     getRowId: (record) => record.id,
-    rowHeader: 'name',
+    ...(withoutRowHeader ? {} : { rowHeader: 'name' }),
     initialState: {
       sorting: [{ id: 'name', desc: false }],
       rowSelection: { c1: true, c3: true },

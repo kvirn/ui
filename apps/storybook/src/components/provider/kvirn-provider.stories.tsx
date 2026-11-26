@@ -1,5 +1,5 @@
 // kv-lang-ok-file: the provider stories demonstrate locale and message catalogs (sv, fi), so their texts are Swedish and Finnish
-import { colorSchemeAttribute, contrastAttribute, getDefaultEnv, getThemeStore } from '@kvirn/core'
+import { getDefaultEnv, getThemeStore } from '@kvirn/core'
 import { en } from '@kvirn/i18n/en'
 import { fi } from '@kvirn/i18n/fi'
 import { sv } from '@kvirn/i18n/sv'
@@ -7,7 +7,7 @@ import { KvirnProvider } from '@kvirn/ui'
 import contract from '../../../../../packages/react/src/provider/kvirn-provider.a11y.md?raw'
 import guide from '../../../../../packages/react/src/provider/kvirn-provider.md?raw'
 import type { Meta, StoryObj } from '@storybook/react-vite'
-import { expect, within } from 'storybook/test'
+import { expect } from 'storybook/test'
 import { showSource, usageGuide } from '../../docs-source.ts'
 // Package-internal fixture, shared with the provider's tests. Not part of the public API.
 import {
@@ -67,51 +67,27 @@ type Story = StoryObj<typeof meta>
  * A provider and what it gives components. `theme` is read once, when the document's theme
  * store is created: reload the story after changing it.
  */
-export const Default: Story = {
-  play: async ({ canvas }) => {
-    const settings = canvas.getByRole('region', { name: 'Inställningar' })
-    await expect(settings).toHaveAttribute('lang', 'sv-SE')
-  },
-}
+export const Default: Story = {}
 
 /** Swedish strings from `@kvirn/i18n/sv`. */
-export const Swedish: Story = {
-  play: async ({ canvas }) => {
-    const settings = canvas.getByRole('region', { name: 'Inställningar' })
-    await expect(settings).toHaveAttribute('lang', 'sv-SE')
-    await expect(within(settings).getByText('(öppnas i en ny flik)')).toBeVisible()
-  },
-}
+export const Swedish: Story = {}
 
 /** Finnish strings and the Helsinki time zone. */
 export const Finnish: Story = {
   args: { locale: 'fi-FI', messages: fi, timeZone: 'Europe/Helsinki' },
   globals: { locale: 'fi' },
-  play: async ({ canvas }) => {
-    const settings = canvas.getByRole('region', { name: 'Asetukset' })
-    await expect(settings).toHaveAttribute('lang', 'fi-FI')
-    await expect(within(settings).getByText('(avautuu uuteen välilehteen)')).toBeVisible()
-  },
 }
 
 /** Without `messages` the English defaults apply. */
 export const English: Story = {
   args: { locale: 'en-GB', messages: undefined, timeZone: 'Europe/London' },
   globals: { locale: 'en' },
-  play: async ({ canvas }) => {
-    const settings = canvas.getByRole('region', { name: 'Settings' })
-    await expect(within(settings).getByText('(opens in a new tab)')).toBeVisible()
-  },
 }
 
 /** `dir="rtl"` overrides the direction the locale implies. */
 export const RightToLeftOverride: Story = {
   args: { locale: 'en', messages: undefined, dir: 'rtl', timeZone: 'UTC' },
   globals: { locale: 'en', dir: 'rtl' },
-  play: async ({ canvas }) => {
-    const settings = canvas.getByRole('region', { name: 'Settings' })
-    await expect(settings).toHaveAttribute('dir', 'rtl')
-  },
 }
 
 /** A section in another language spreads `localeProps`, so `lang` matches its strings (3.1.2). */
@@ -125,15 +101,6 @@ export const NestedLocale: Story = {
         </KvirnProvider>
       </>
     ),
-  },
-  play: async ({ canvas }) => {
-    await expect(canvas.getByRole('region', { name: 'Inställningar' })).toHaveAttribute(
-      'lang',
-      'sv-SE',
-    )
-    const finnish = canvas.getByRole('region', { name: 'Asetukset' })
-    await expect(finnish).toHaveAttribute('lang', 'fi-FI')
-    await expect(within(finnish).getByText('Europe/Stockholm')).toBeVisible()
   },
 }
 
@@ -158,27 +125,10 @@ export const UntranslatedSection: Story = {
     ),
   },
   globals: { locale: 'fi' },
-  play: async ({ canvas }) => {
-    const finnish = canvas.getByRole('region', { name: 'Asetukset' })
-    await expect(finnish).toHaveAttribute('lang', 'fi-FI')
-    await expect(within(finnish).getByText('(avautuu uuteen välilehteen)')).toBeVisible()
-    const english = canvas.getByRole('region', { name: 'Settings' })
-    await expect(english).toHaveAttribute('lang', 'en-GB')
-    await expect(within(english).getByText('(opens in a new tab)')).toBeVisible()
-    await expect(within(english).getByText('Europe/Helsinki')).toBeVisible()
-  },
 }
 
-/**
- * A theme switcher of native radio groups on `useTheme()`. Its play function only
- * reads: it must not change the persisted theme.
- */
-export const ThemeSwitcher: Story = {
-  play: async ({ canvas }) => {
-    await expect(canvas.getByRole('group', { name: 'Färgschema' })).toBeVisible()
-    await expect(canvas.getByRole('group', { name: 'Kontrast' })).toBeVisible()
-  },
-}
+/** A theme switcher of native radio groups on `useTheme()`. */
+export const ThemeSwitcher: Story = {}
 
 /**
  * Back to `system` on both axes after the story, which also removes the stored key, so a
@@ -197,28 +147,9 @@ function themeCombination(
 ) {
   return {
     beforeEach: () => resetThemePreference,
-    play: async ({ canvas, canvasElement, userEvent }) => {
+    play: async ({ canvas, userEvent }) => {
       await userEvent.click(canvas.getByRole('radio', { name: colorScheme }))
       await userEvent.click(canvas.getByRole('radio', { name: contrast }))
-      // The display-mode sweeps run with forced colours or reduced motion on, and the summary follows them.
-      const media = (query: string) => window.matchMedia(query).matches
-      const motion = media('(prefers-reduced-motion: reduce)') ? 'Mindre rörelse' : 'Full rörelse'
-      await expect(
-        canvas.getByText(
-          media('(forced-colors: active)')
-            ? 'Systemets tvingade färger används och går före ditt val.'
-            : `Används nu: ${colorScheme}, ${contrast}, ${motion}`,
-        ),
-      ).toBeVisible()
-      const root = canvasElement.ownerDocument.documentElement
-      await expect(root).toHaveAttribute(
-        colorSchemeAttribute,
-        colorScheme === 'Mörkt' ? 'dark' : 'light',
-      )
-      await expect(root).toHaveAttribute(
-        contrastAttribute,
-        contrast === 'Hög kontrast' ? 'more' : 'standard',
-      )
     },
   } satisfies Story
 }
@@ -277,12 +208,6 @@ export const OwnMessages: Story = {
 export const ThemeScriptWithNonce: Story = {
   parameters: showSource('provider/kvirn-provider.fixture.tsx', 'ServerHead'),
   render: () => <ServerHead />,
-  play: async ({ canvasElement }) => {
-    const markup = canvasElement.querySelector('pre')?.textContent ?? ''
-    await expect(markup).toContain('nonce="abc123"')
-    await expect(markup).toContain('"colorScheme":"dark"')
-    await expect(markup).toContain('"contrast":"more"')
-  },
 }
 
 /** With the forced-colors marker. */

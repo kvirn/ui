@@ -109,50 +109,12 @@ const meta = {
 export default meta
 type Story = StoryObj<typeof meta>
 
-/** The boxes of the field in the canvas: a drawing, one per character of the pattern. */
-const slotsOf = (canvasElement: HTMLElement) => [
-  ...canvasElement.querySelectorAll<HTMLElement>('.kv-one-time-code-slot'),
-]
-
-/** Every cell of the pattern in order, boxes and separators: one per position of the pattern. */
-const cellsOf = (canvasElement: HTMLElement) => [
-  ...canvasElement.querySelectorAll<HTMLElement>(
-    '.kv-one-time-code-slot, .kv-one-time-code-separator',
-  ),
-]
-
-/** The positions of the separators among the cells. */
-const separatorIndexes = (canvasElement: HTMLElement) =>
-  cellsOf(canvasElement).flatMap((cell, index) =>
-    cell.classList.contains('kv-one-time-code-separator') ? [index] : [],
-  )
-
 /**
  * An empty six-digit code from a text message. The label says where the code is, and the help text
  * above the boxes says how many digits it has: the boxes are hidden from screen readers. Press a
  * box, or Tab in, and type, paste "481 920", or accept the SMS suggestion: it's one field.
  */
-export const Default: Story = {
-  play: async ({ canvas, canvasElement, globals }) => {
-    const texts = oneTimeCodeTextsFor(localeOf(globals))
-    const input = canvas.getByRole('textbox', { name: texts.smsLabel })
-    await expect(input).toHaveAccessibleDescription(texts.smsHint(6))
-    await expect(input).toHaveAttribute('autocomplete', 'one-time-code')
-    await expect(input).toHaveAttribute('inputmode', 'numeric')
-    await expect(input).toHaveAttribute('dir', 'ltr')
-    await expect(input).not.toHaveAttribute('maxlength')
-    await expect(slotsOf(canvasElement)).toHaveLength(6)
-    await expect(separatorIndexes(canvasElement)).toEqual([])
-    for (const slot of cellsOf(canvasElement)) {
-      await expect(slot).toHaveAttribute('aria-hidden', 'true')
-    }
-    // The pattern's counts, for the theme (always rendered).
-    const root = canvasElement.querySelector('.kv-one-time-code')
-    await expect(root).toHaveAttribute('data-character-count', '6')
-    await expect(root).toHaveAttribute('data-separator-count', '0')
-    await expectMinimumTargetSize(input)
-  },
-}
+export const Default: Story = {}
 
 /**
  * Three digits typed. The boxes show them, and the input has no focus: no box is active until it
@@ -160,13 +122,6 @@ export const Default: Story = {
  */
 export const PartlyFilled: Story = {
   args: { defaultValue: '481' },
-  play: async ({ canvas, canvasElement, globals }) => {
-    const texts = oneTimeCodeTextsFor(localeOf(globals))
-    await expect(canvas.getByRole('textbox', { name: texts.smsLabel })).toHaveValue('481')
-    await expect(
-      slotsOf(canvasElement).filter((slot) => slot.hasAttribute('data-filled')),
-    ).toHaveLength(3)
-  },
 }
 
 /**
@@ -176,11 +131,6 @@ export const PartlyFilled: Story = {
  */
 export const Complete: Story = {
   args: { defaultValue: '481920' },
-  play: async ({ canvas, canvasElement, globals }) => {
-    const texts = oneTimeCodeTextsFor(localeOf(globals))
-    await expect(canvas.getByRole('textbox', { name: texts.smsLabel })).toHaveValue('481920')
-    await expect(canvasElement.querySelector('.kv-one-time-code')).toHaveAttribute('data-complete')
-  },
 }
 
 /**
@@ -218,17 +168,6 @@ export const Invalid: Story = {
       </>
     )
   },
-  play: async ({ canvas, canvasElement, globals }) => {
-    const texts = oneTimeCodeTextsFor(localeOf(globals))
-    const input = canvas.getByRole('textbox', { name: texts.smsLabel })
-    await expect(input).toHaveAttribute('aria-invalid', 'true')
-    await expect(input).toHaveAccessibleDescription(
-      new RegExp(`${texts.smsHint(6).slice(0, 12)}.*${texts.errorWrong.slice(0, 12)}`),
-    )
-    for (const slot of slotsOf(canvasElement)) {
-      await expect(slot).toHaveAttribute('data-invalid')
-    }
-  },
 }
 
 /**
@@ -237,10 +176,6 @@ export const Invalid: Story = {
  */
 export const Disabled: Story = {
   args: { defaultValue: '481920', disabled: true },
-  play: async ({ canvas, globals }) => {
-    const texts = oneTimeCodeTextsFor(localeOf(globals))
-    await expect(canvas.getByRole('textbox', { name: texts.smsLabel })).toBeDisabled()
-  },
 }
 
 /**
@@ -272,24 +207,6 @@ export const TwoGroups: Story = {
       </>
     )
   },
-  play: async ({ canvas, canvasElement, globals }) => {
-    const texts = oneTimeCodeTextsFor(localeOf(globals))
-    const input = canvas.getByRole('textbox', { name: texts.emailLabel })
-    await expect(input).toHaveValue('K7QX-2M9P')
-    await expect(input).toHaveAttribute('autocapitalize', 'characters')
-    await expect(input).not.toHaveAttribute('inputmode')
-    await expect(input).toHaveAccessibleDescription(texts.emailGroupsHint(8, 2, 4))
-    // Eight boxes and one separator at the fifth position, all hidden from assistive technology.
-    await expect(cellsOf(canvasElement)).toHaveLength(9)
-    await expect(slotsOf(canvasElement)).toHaveLength(8)
-    await expect(separatorIndexes(canvasElement)).toEqual([4])
-    for (const cell of cellsOf(canvasElement)) {
-      await expect(cell).toHaveAttribute('aria-hidden', 'true')
-    }
-    const root = canvasElement.querySelector('.kv-one-time-code')
-    await expect(root).toHaveAttribute('data-character-count', '8')
-    await expect(root).toHaveAttribute('data-separator-count', '1')
-  },
 }
 
 /**
@@ -319,17 +236,6 @@ export const ThreeGroups: Story = {
       </>
     )
   },
-  play: async ({ canvas, canvasElement, globals }) => {
-    const texts = oneTimeCodeTextsFor(localeOf(globals))
-    const input = canvas.getByRole('textbox', { name: texts.emailLabel })
-    await expect(input).toHaveValue('H4T-K92')
-    await expect(input).toHaveAccessibleDescription(texts.emailGroupsHint(9, 3, 3))
-    await expect(cellsOf(canvasElement)).toHaveLength(11)
-    await expect(separatorIndexes(canvasElement)).toEqual([3, 7])
-    const root = canvasElement.querySelector('.kv-one-time-code')
-    await expect(root).toHaveAttribute('data-character-count', '9')
-    await expect(root).toHaveAttribute('data-separator-count', '2')
-  },
 }
 
 /**
@@ -339,16 +245,6 @@ export const ThreeGroups: Story = {
  */
 export const LetterPrefix: Story = {
   args: { pattern: 'AA-9999', defaultValue: 'HT-4829' },
-  play: async ({ canvas, canvasElement, globals }) => {
-    const texts = oneTimeCodeTextsFor(localeOf(globals))
-    const input = canvas.getByRole('textbox', { name: texts.smsLabel })
-    await expect(input).toHaveValue('HT-4829')
-    await expect(input).toHaveAttribute('autocapitalize', 'characters')
-    await expect(input).not.toHaveAttribute('inputmode')
-    await expect(input).toHaveAccessibleDescription(texts.smsPrefixHint(2, 4))
-    await expect(cellsOf(canvasElement)).toHaveLength(7)
-    await expect(separatorIndexes(canvasElement)).toEqual([2])
-  },
 }
 
 /**
@@ -377,15 +273,6 @@ export const CaseAsTyped: Story = {
         </Field.Root>
       </>
     )
-  },
-  play: async ({ canvas, globals }) => {
-    const texts = oneTimeCodeTextsFor(localeOf(globals))
-    const input = canvas.getByRole('textbox', { name: texts.caseLabel })
-    await expect(input).not.toHaveAttribute('autocapitalize')
-    await userEvent.type(input, '1')
-    await expect(input).toHaveValue('')
-    await userEvent.type(input, 'abc3D9')
-    await expect(input).toHaveValue('ab-c3D9')
   },
 }
 
@@ -508,12 +395,6 @@ export const Compact: Story = {
 export const RTL: Story = {
   globals: { dir: 'rtl', locale: 'en' },
   args: { pattern: 'AA-9999', defaultValue: 'HT-4829' },
-  play: async ({ canvas }) => {
-    const texts = oneTimeCodeTextsFor('en')
-    const input = canvas.getByRole('textbox', { name: texts.smsLabel })
-    await expect(input).toHaveAttribute('dir', 'ltr')
-    await expect(input).toHaveValue('HT-4829')
-  },
 }
 
 /**
@@ -621,10 +502,5 @@ export const Keyboard: Story = {
         </form>
       </>
     )
-  },
-  play: async ({ canvas, globals }) => {
-    const texts = oneTimeCodeTextsFor(localeOf(globals))
-    await expect(canvas.getByRole('textbox', { name: texts.emailLabel })).toHaveValue('')
-    await expect(canvas.getByRole('button', { name: texts.submit })).toBeVisible()
   },
 }

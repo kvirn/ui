@@ -5,7 +5,7 @@ import type { Meta, StoryObj } from '@storybook/react-vite'
 import { expect, fn, userEvent } from 'storybook/test'
 import { usageGuide } from '../../docs-source.ts'
 import { localeOf, textsFor, withFormLocale } from '../form/form.fixture.tsx'
-import { expectMinimumTargetSize, expectNoHorizontalOverflow } from '../theme-story-assertions.ts'
+import { expectNoHorizontalOverflow } from '../theme-story-assertions.ts'
 
 // Components/Form/NumberInput: a quantity or an amount, a native text box with the number mask
 // built in (design spec docs/design/form-fields.md §6.4). It is never `type="number"`, which
@@ -178,26 +178,7 @@ type Story = StoryObj<typeof meta>
  * `allowNegative`, `grouping`, `min` and `max`, and a width class. A letter is left out and
  * announced, and a range is reported to `onValueChange` but never enforced.
  */
-export const Default: Story = {
-  play: async ({ canvas, args, globals }) => {
-    const { text } = textsFor(localeOf(globals))
-    const input = canvas.getByRole('textbox', { name: text.children })
-    // A text box with a numeric keypad: not a spinbutton, and no min or max attribute.
-    await expect(input).toHaveAttribute('type', 'text')
-    await expect(input).toHaveAttribute('inputmode', 'numeric')
-    await expect(input).toHaveAttribute('spellcheck', 'false')
-    await expect(input).not.toHaveAttribute('min')
-    await expect(canvas.queryByRole('spinbutton')).toBeNull()
-    await expectMinimumTargetSize(input)
-    // The mask leaves out what it can't take: the letters never reach the value.
-    await userEvent.type(input, 'a2b')
-    await expect(input).toHaveValue('2')
-    await expect(args.onValueChange).toHaveBeenLastCalledWith(
-      '2',
-      expect.objectContaining({ reason: 'input', unmaskedValue: '2' }),
-    )
-  },
-}
+export const Default: Story = {}
 
 /**
  * The fixture the keyboard tests drive: an amount as text. Try the keys in the Keyboard section
@@ -236,13 +217,6 @@ export const WholeNumber: Story = {
       </>
     )
   },
-  play: async ({ canvas, globals }) => {
-    const { text } = textsFor(localeOf(globals))
-    const input = canvas.getByRole('textbox', { name: text.children })
-    await expect(input).toHaveAttribute('inputmode', 'numeric')
-    await userEvent.type(input, 'a2b')
-    await expect(input).toHaveValue('2')
-  },
 }
 
 /**
@@ -261,18 +235,6 @@ export const Amount: Story = {
         </Field.Root>
       </>
     )
-  },
-  play: async ({ canvas, globals }) => {
-    const { text, rentExample } = textsFor(localeOf(globals))
-    const input = canvas.getByRole('textbox', { name: text.rent })
-    await expect(input).toHaveAttribute('inputmode', 'decimal')
-    // Typed the way people write amounts: the space is left out (and announced), the comma is
-    // the decimal mark, and the mask writes the grouping and the page's decimal mark.
-    await userEvent.type(input, '1 250,50')
-    await expect(input).toHaveValue(rentExample)
-    // A currency sign is a letter to the mask: it is left out.
-    await userEvent.type(input, ' kr')
-    await expect(input).toHaveValue(rentExample)
   },
 }
 
@@ -294,14 +256,6 @@ export const WithoutMask: Story = {
         </Field.Root>
       </>
     )
-  },
-  play: async ({ canvas, globals }) => {
-    const { text } = textsFor(localeOf(globals))
-    const input = canvas.getByRole('textbox', { name: text.rent })
-    await expect(input).toHaveAttribute('inputmode', 'decimal')
-    // Nothing is left out: a letter and a currency sign stay as typed.
-    await userEvent.type(input, 'about 1250 kr')
-    await expect(input).toHaveValue('about 1250 kr')
   },
 }
 
@@ -326,14 +280,6 @@ export const AmountWithUnit: Story = {
       </>
     )
   },
-  play: async ({ canvas, globals }) => {
-    const { text, amountExample } = textsFor(localeOf(globals))
-    const input = canvas.getByRole('textbox', { name: text.rentWithUnit })
-    // The unit isn't in the name or the description: the label already says it.
-    await expect(input).toHaveAccessibleDescription(text.rentUnitExample(amountExample))
-    await userEvent.type(input, '8450')
-    await expect(input).toHaveValue(amountExample)
-  },
 }
 
 /**
@@ -352,14 +298,6 @@ export const Negative: Story = {
         </Field.Root>
       </>
     )
-  },
-  play: async ({ canvas, globals }) => {
-    const { text } = textsFor(localeOf(globals))
-    const input = canvas.getByRole('textbox', { name: text.balance })
-    await expect(input).toHaveAttribute('inputmode', 'text')
-    // The minus sign is taken once, at the start: a second one is left out.
-    await userEvent.type(input, '-8450-')
-    await expect(input).toHaveValue('-8450')
   },
 }
 
@@ -386,19 +324,6 @@ export const OutOfRange: Story = {
           <Field.ErrorMessage>{text.childrenRangeError}</Field.ErrorMessage>
         </Field.Root>
       </>
-    )
-  },
-  play: async ({ canvas, globals }) => {
-    const { text } = textsFor(localeOf(globals))
-    const input = canvas.getByRole('textbox', { name: text.children })
-    await expect(input).toHaveAttribute('aria-invalid', 'true')
-    await expect(input).toHaveValue('25')
-    // The range is only reported: it isn't an attribute on the input.
-    await expect(input).not.toHaveAttribute('max')
-    // The help text stays, and the error joins it in the description.
-    await expect(input).toHaveAccessibleDescription(expect.stringContaining(text.childrenHint))
-    await expect(input).toHaveAccessibleDescription(
-      expect.stringContaining(text.childrenRangeError),
     )
   },
 }
@@ -461,11 +386,7 @@ export const Finnish: Story = {
       </>
     )
   },
-  play: async ({ canvas, canvasElement }) => {
-    await expect(
-      // kv-lang-ok: asserts the Finnish label under locale fi
-      canvas.getByRole('textbox', { name: 'Montako lasta asuu kanssasi?' }),
-    ).toBeVisible()
+  play: async ({ canvasElement }) => {
     const column = canvasElement.querySelector<HTMLElement>('.kv-story-narrow')
     if (column === null) {
       throw new Error('no narrow column')

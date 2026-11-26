@@ -36,7 +36,7 @@ Two theme classes for CMS content. Neither is a component, adds a role, or needs
 
 - `kv-inset`: any block, usually `<div>`; no role, no ARIA, not a live region. Not `aside` (a landmark), not `role="note"`, not `role="status"`: it is static article content, never announced (4.1.3 does not apply). Test: `prose.test.tsx › kv-inset adds no role, no live region and no tab stop, and its text stays in the reading order`.
 - `kv-steps`: native `<ol>`. Keeps the `list` role with n `listitem`s (Chromium); the WebKit list role and the marker being read are not proven by a test: test it with your own assistive technology. The number is the native `::marker`, never `list-style: none`, so WebKit keeps the list too. No `aria-current`, no `tabindex`. Test: `prose.test.tsx › ol.kv-steps keeps the list role with one listitem per step, and no ARIA of its own`.
-- `figure`: native `figure`, named by `figcaption`. No class: prose already styles it. Test: `prose.test.tsx › an article with an inset, steps and a figure with alt text has no axe violations`.
+- `figure`: native `figure`, named by `figcaption`. No class: prose already styles it. Story: `prose.stories.tsx › Article`.
 
 Consumer responsibilities for these (nothing enforces them):
 
@@ -108,7 +108,7 @@ With the theme, `kv-prose--small`, the default, `kv-prose--large`, `kv-prose--xl
 
 ## WCAG SCs covered
 
-- 1.3.1 Info and Relationships (A): Prose has no role of its own, so the content you write decides the semantics (`prose.test.tsx`). In a Field or Fieldset the description is part of the accessible description of the control or group (`prose.test.tsx`, axe in both). `kv-steps` is a native list.
+- 1.3.1 Info and Relationships (A): Prose has no role of its own, so the content you write decides the semantics (`prose.test.tsx`). In a Field or Fieldset the description is part of the accessible description of the control or group (`prose.test.tsx`). `kv-steps` is a native list.
 - 3.3.2 Labels or Instructions (A): a description in a Field is linked to its control.
 - 1.4.3 Contrast (Minimum) (AA), 1.4.10 Reflow (AA) and 1.4.12 Text Spacing (AA): the `kv-prose` theme rules, as checked by the display-mode sweeps and by stories for the sizes and the width option. The default colours are checked by the automatic contrast check.
 - 1.4.4 Resize Text (AA): the sizes are in rem.
@@ -116,21 +116,21 @@ With the theme, `kv-prose--small`, the default, `kv-prose--large`, `kv-prose--xl
 
 ## AT test record
 
-| AT + browser + OS                                                          | Agent check | Human check | Result  | Notes                                                                                                                   |
-| -------------------------------------------------------------------------- | ----------- | ----------- | ------- | ----------------------------------------------------------------------------------------------------------------------- |
-| **Automated (re-runnable tests)**                                          |             |             |         |                                                                                                                         |
-| axe, WCAG 2.2 A and AA, every story, 4 themes                              | pass        | n/a         | pass    | prose.stories.tsx, every story, 4 themes                                                                                |
-| Markup and ARIA (roles, names, ids, states)                                | pass        | n/a         | pass    | prose.test.tsx › renders one element with the kv-prose class, no role or ARIA, and its children; expectNoA11yViolations |
-| Keyboard contract rows (Vitest browser)                                    | n/a         | n/a         | n/a     | no focusable or operable part; prose renders no tabindex                                                                |
-| Focus order and management                                                 | n/a         | n/a         | n/a     | nothing focusable: the component never takes or moves focus                                                             |
-| Display modes (forced colours, 320px reflow, text spacing, reduced motion) | pass        | n/a         | pass    | the four sweep projects (`storybook-forced-colors`, `-reduced-motion`, `-reflow`, `-text-spacing`), run in CI           |
-| **Core (required for beta)**                                               |             |             |         |                                                                                                                         |
-| NVDA + Chrome + Windows                                                    | pending     | pending     | pending |                                                                                                                         |
-| VoiceOver + Safari + iOS                                                   | pending     | pending     | pending |                                                                                                                         |
-| **Release (before 1.0 and each minor)**                                    |             |             |         |                                                                                                                         |
-| JAWS + Chrome + Windows                                                    | pending     | pending     | pending |                                                                                                                         |
-| TalkBack + Chrome + Android                                                | pending     | pending     | pending |                                                                                                                         |
-| VoiceOver + Safari + macOS                                                 | pending     | pending     | pending |                                                                                                                         |
+| AT + browser + OS                                                          | Agent check | Human check | Result  | Notes                                                                                                         |
+| -------------------------------------------------------------------------- | ----------- | ----------- | ------- | ------------------------------------------------------------------------------------------------------------- |
+| **Automated (re-runnable tests)**                                          |             |             |         |                                                                                                               |
+| axe, WCAG 2.2 A and AA, every story, light theme                           | pass        | n/a         | pass    | prose.stories.tsx, every story, light theme                                                                   |
+| Markup and ARIA (roles, names, ids, states)                                | pass        | n/a         | pass    | prose.test.tsx › renders one element with the kv-prose class, no role or ARIA, and its children               |
+| Keyboard contract rows (Vitest browser)                                    | n/a         | n/a         | n/a     | no focusable or operable part; prose renders no tabindex                                                      |
+| Focus order and management                                                 | n/a         | n/a         | n/a     | nothing focusable: the component never takes or moves focus                                                   |
+| Display modes (forced colours, 320px reflow, text spacing, reduced motion) | pass        | n/a         | pass    | the four sweep projects (`storybook-forced-colors`, `-reduced-motion`, `-reflow`, `-text-spacing`), run in CI |
+| **Core (required for beta)**                                               |             |             |         |                                                                                                               |
+| NVDA + Chrome + Windows                                                    | pending     | pending     | pending |                                                                                                               |
+| VoiceOver + Safari + iOS                                                   | pending     | pending     | pending |                                                                                                               |
+| **Release (before 1.0 and each minor)**                                    |             |             |         |                                                                                                               |
+| JAWS + Chrome + Windows                                                    | pending     | pending     | pending |                                                                                                               |
+| TalkBack + Chrome + Android                                                | pending     | pending     | pending |                                                                                                               |
+| VoiceOver + Safari + macOS                                                 | pending     | pending     | pending |                                                                                                               |
 
 ### What to check
 

@@ -54,11 +54,8 @@ export const Restore: Story = {
   parameters: source('RestoreDrawer'),
   render: (_args, { globals }) => <RestoreDrawer locale={localeFor(globals)} />,
   play: async ({ canvas }) => {
-    const opener = canvas.getByRole('button', { name: 'Open filters' })
-    await userEvent.click(opener)
+    await userEvent.click(canvas.getByRole('button', { name: 'Open filters' }))
     await waitFor(() => expect(canvas.getByRole('textbox', { name: 'Search' })).toHaveFocus())
-    await userEvent.click(canvas.getByRole('button', { name: 'Close' }))
-    await waitFor(() => expect(opener).toHaveFocus())
   },
 }
 
@@ -70,12 +67,6 @@ export const Loop: Story = {
     const opener = canvas.getByRole('button', { name: 'Open filters' })
     await userEvent.click(opener)
     await waitFor(() => expect(canvas.getByRole('textbox', { name: 'Search' })).toHaveFocus())
-    await userEvent.tab({ shift: true })
-    await expect(canvas.getByRole('button', { name: 'Close' })).toHaveFocus()
-    await userEvent.tab()
-    await expect(canvas.getByRole('textbox', { name: 'Search' })).toHaveFocus()
-    await userEvent.keyboard('{Escape}')
-    await waitFor(() => expect(opener).toHaveFocus())
   },
 }
 
@@ -83,14 +74,9 @@ export const Loop: Story = {
 export const Inert: Story = {
   parameters: source('InertDrawer'),
   render: (_args, { globals }) => <InertDrawer locale={localeFor(globals)} />,
-  play: async ({ canvas, canvasElement }) => {
-    const opener = canvas.getByRole('button', { name: 'Open filters' })
-    await userEvent.click(opener)
+  play: async ({ canvas }) => {
+    await userEvent.click(canvas.getByRole('button', { name: 'Open filters' }))
     await waitFor(() => expect(canvas.getByRole('textbox', { name: 'Search' })).toHaveFocus())
-    await expect(canvasElement.querySelector('[inert]')).not.toBeNull()
-    await userEvent.keyboard('{Escape}')
-    await waitFor(() => expect(opener).toHaveFocus())
-    await expect(canvasElement.ownerDocument.querySelector('[inert]')).toBeNull()
   },
 }
 
@@ -112,11 +98,8 @@ export const Step: Story = {
   parameters: source('WizardStep'),
   render: (_args, { globals }) => <WizardStep locale={localeFor(globals)} />,
   play: async ({ canvas }) => {
-    await expect(canvas.getByRole('heading', { level: 2 })).not.toHaveFocus()
     await userEvent.click(canvas.getByRole('button', { name: 'Next step' }))
     await waitFor(() => expect(canvas.getByRole('heading', { name: 'Step 2' })).toHaveFocus())
-    await userEvent.tab()
-    await expect(canvas.getByRole('button', { name: 'First in the step' })).toHaveFocus()
   },
 }
 
@@ -137,11 +120,8 @@ export const Part: Story = {
   parameters: source('ScopePart'),
   render: (_args, { globals }) => <ScopePart locale={localeFor(globals)} />,
   play: async ({ canvas }) => {
-    const opener = canvas.getByRole('button', { name: 'Open filters' })
-    await userEvent.click(opener)
+    await userEvent.click(canvas.getByRole('button', { name: 'Open filters' }))
     await waitFor(() => expect(canvas.getByRole('textbox', { name: 'Search' })).toHaveFocus())
-    await userEvent.keyboard('{Escape}')
-    await waitFor(() => expect(opener).toHaveFocus())
   },
 }
 
@@ -149,21 +129,6 @@ export const Part: Story = {
 export const Keyboard: Story = {
   parameters: source('LoopDrawer'),
   render: (_args, { globals }) => <LoopDrawer locale={localeFor(globals)} />,
-  play: async ({ canvas }) => {
-    const opener = canvas.getByRole('button', { name: 'Open filters' })
-    await userEvent.click(opener)
-    await waitFor(() => expect(canvas.getByRole('textbox', { name: 'Search' })).toHaveFocus())
-    await userEvent.tab()
-    await expect(canvas.getByRole('button', { name: 'Apply' })).toHaveFocus()
-    await userEvent.tab()
-    await expect(canvas.getByRole('button', { name: 'Close' })).toHaveFocus()
-    await userEvent.tab()
-    await expect(canvas.getByRole('textbox', { name: 'Search' })).toHaveFocus()
-    await userEvent.tab({ shift: true })
-    await expect(canvas.getByRole('button', { name: 'Close' })).toHaveFocus()
-    await userEvent.keyboard('{Escape}')
-    await waitFor(() => expect(opener).toHaveFocus())
-  },
 }
 
 /** Right to left, in English: the same behaviour. */

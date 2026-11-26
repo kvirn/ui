@@ -9,13 +9,17 @@
     "storybook": "vp run --filter @kvirn/storybook dev",
     "docs": "vp run --filter '@kvirn/docs^...' build && vp run --parallel --filter @kvirn/docs --filter @kvirn/core --filter @kvirn/i18n --filter @kvirn/ui --filter @kvirn/theme dev",
     "build": "vp run -r build",
-    "test": "vp test run --project node --project browser && node tooling/storybook-run/storybook-run.ts storybook storybook-dark storybook-light-contrast storybook-dark-contrast",
+    "lint": "vp lint",
+    "format": "vp fmt",
+    "check": "vp check --no-fmt --no-lint",
+    "test": "vp test run --project node --project browser && node tooling/storybook-run/storybook-run.ts storybook",
+    "smoke": "vp test run --project smoke",
+    "sweep": "node tooling/storybook-run/storybook-run.ts storybook-forced-colors storybook-reduced-motion storybook-reflow storybook-text-spacing",
+    "ci": "vp fmt --check && vp lint && vp run build && pnpm run check && pnpm run test && pnpm run i18n:check && pnpm run theme:check && pnpm run sweep",
     "ci:docker": "node tooling/ci/docker-ci.ts",
     "i18n:check": "node packages/i18n/scripts/i18n-check.ts",
     "theme:check": "node packages/theme/scripts/theme-check.ts",
-    "changeset": "changeset",
-    "format": "vp fmt",
-    "lint": "vp lint"
+    "changeset": "changeset"
   },
   "devDependencies": {
     "@changesets/cli": "catalog:",

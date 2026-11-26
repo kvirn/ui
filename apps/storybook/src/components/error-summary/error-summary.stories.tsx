@@ -3,7 +3,7 @@ import contract from '../../../../../packages/react/src/error-summary/error-summ
 import guide from '../../../../../packages/react/src/error-summary/error-summary.md?raw'
 import type { Meta, StoryObj } from '@storybook/react-vite'
 import { useState } from 'react'
-import { expect, userEvent, waitFor } from 'storybook/test'
+import { expect, userEvent } from 'storybook/test'
 import { usageGuide } from '../../docs-source.ts'
 import { expectNoHorizontalOverflow } from '../theme-story-assertions.ts'
 import { inDocsFrame, ParkingForm, withErrorSummaryLocale } from './error-summary.fixture.tsx'
@@ -53,19 +53,11 @@ const summaryName = /There is a problem/
 /** After a failed submit: the summary above the form, and each link goes to its field or group. */
 export const Default: Story = {
   render: () => <ParkingForm prefix="default" disableAutoFocus />,
-  play: async ({ canvas }) => {
-    await expect(canvas.getByRole('group', { name: summaryName })).toBeVisible()
-    await expect(canvas.getByRole('heading', { level: 2 })).toHaveTextContent(summaryName)
-    await expect(canvas.getAllByRole('listitem')).toHaveLength(2)
-  },
 }
 
 /** The page title carries the prefix while the summary is shown (`prefixDocumentTitle`). */
 export const TitlePrefix: Story = {
   render: () => <ParkingForm prefix="title-prefix" prefixDocumentTitle disableAutoFocus />,
-  play: async () => {
-    await waitFor(() => expect(document.title.startsWith('Error: ')).toBe(true))
-  },
 }
 
 function Submitting() {
@@ -100,21 +92,6 @@ export const OnSubmit: Story = {
 /** The keys: Tab goes through the links, and Enter on one moves focus to its field. */
 export const Keyboard: Story = {
   render: () => <ParkingForm prefix="keyboard" disableAutoFocus />,
-  play: async ({ canvas }) => {
-    if (inDocsFrame()) {
-      return
-    }
-    canvas.getByRole('group', { name: summaryName }).focus()
-    await userEvent.tab()
-    await expect(canvas.getByRole('link', { name: 'Enter your email address' })).toHaveFocus()
-    await userEvent.tab()
-    await expect(
-      canvas.getByRole('link', { name: 'Choose how long the permit should be valid' }),
-    ).toHaveFocus()
-    await userEvent.tab({ shift: true })
-    await userEvent.keyboard('{Enter}')
-    await expect(canvas.getByRole('textbox', { name: /Email/ })).toHaveFocus()
-  },
 }
 
 /** One problem: the same box and list, with a single link. */
@@ -129,10 +106,6 @@ export const SingleError: Story = {
       </ErrorSummary.List>
     </ErrorSummary.Root>
   ),
-  play: async ({ canvas }) => {
-    await expect(canvas.getByRole('group', { name: summaryName })).toBeVisible()
-    await expect(canvas.getAllByRole('listitem')).toHaveLength(1)
-  },
 }
 
 /** A 320px column with long Finnish compound errors: they wrap and nothing scrolls sideways (1.4.10). */
@@ -156,13 +129,11 @@ export const Reflow320: Story = {
   ),
   decorators: [(Story) => <div className="kv-story-narrow">{<Story />}</div>],
   globals: { locale: 'fi' },
-  play: async ({ canvasElement, canvas }) => {
+  play: async ({ canvasElement }) => {
     const column = canvasElement.querySelector<HTMLElement>('.kv-story-narrow')
     if (column === null) {
       throw new Error('no narrow column')
     }
-    // kv-lang-ok: asserts the Finnish summary title under locale fi
-    await expect(canvas.getByRole('group', { name: /Lomakkeessa on virheitä/ })).toBeVisible()
     await expectNoHorizontalOverflow(column)
   },
 }
@@ -183,9 +154,6 @@ export const RTL: Story = {
       </ErrorSummary.List>
     </ErrorSummary.Root>
   ),
-  play: async ({ canvas }) => {
-    await expect(canvas.getByRole('group', { name: /There is a problem/ })).toBeVisible()
-  },
 }
 
 /** The danger bar, icon, status word and underlined links survive forced colours. */

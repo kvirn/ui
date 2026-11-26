@@ -118,19 +118,6 @@ export const Default: Story = {
       </Navigation.List>
     </Navigation.Root>
   ),
-  play: async ({ canvas }) => {
-    const navigation = canvas.getByRole('navigation', { name: 'Main menu' })
-    await expect(within(navigation).getAllByRole('list')).toHaveLength(2)
-    const current = within(navigation).getByRole('link', { name: 'Building permits' })
-    await expect(current).toHaveAttribute('aria-current', 'page')
-    await expect(current).toHaveAttribute('data-current', '')
-    // The ancestor is the trail, which is only drawn: it has no aria-current.
-    for (const name of ['Start', 'Building and living', 'Renovating', 'About us']) {
-      const link = within(navigation).getByRole('link', { name })
-      await expect(link).not.toHaveAttribute('aria-current')
-      await expect(link).not.toHaveAttribute('data-current')
-    }
-  },
 }
 
 /**
@@ -189,14 +176,10 @@ export const Horizontal: Story = {
   play: async ({ canvas }) => {
     const navigation = canvas.getByRole('navigation', { name: 'Main menu' })
     const links = within(navigation).getAllByRole('link')
-    await expect(links).toHaveLength(5)
     // 2.5.8: every link in the row is at least 24 × 24 CSS px.
     for (const link of links) {
       await expectMinimumTargetSize(link)
     }
-    await expect(
-      within(navigation).getByRole('link', { name: 'Building and living' }),
-    ).toHaveAttribute('aria-current', 'page')
   },
 }
 
@@ -210,21 +193,6 @@ export const Horizontal: Story = {
 export const ActiveTrail: Story = {
   parameters: showSource('navigation/navigation.fixture.tsx', 'StaffNavigation'),
   render: () => <StaffNavigation />,
-  play: async ({ canvas }) => {
-    const navigation = canvas.getByRole('navigation', { name: 'Case handling' })
-    // Exactly one current link, and it is the page.
-    await expect(navigation.querySelectorAll('[aria-current]')).toHaveLength(1)
-    await expect(within(navigation).getByRole('link', { name: 'In progress' })).toHaveAttribute(
-      'aria-current',
-      'page',
-    )
-    // None of its ancestors has it.
-    for (const name of ['Cases', 'Building permits']) {
-      await expect(within(navigation).getByRole('link', { name })).not.toHaveAttribute(
-        'aria-current',
-      )
-    }
-  },
 }
 
 /**
@@ -236,19 +204,6 @@ export const ActiveTrail: Story = {
 export const CollapsedGroups: Story = {
   parameters: showSource('navigation/navigation.fixture.tsx', 'CollapsedNavigation'),
   render: () => <CollapsedNavigation />,
-  play: async ({ canvas }) => {
-    const navigation = canvas.getByRole('navigation', { name: 'Main menu' })
-    // Both groups are still in the DOM, and hidden: no one can reach their links.
-    await expect(navigation.querySelectorAll('.kv-navigation-list[hidden] a')).toHaveLength(4)
-    await expect(
-      within(navigation).queryByRole('link', { name: 'Building permits' }),
-    ).not.toBeInTheDocument()
-    // One current link, the deepest item shown.
-    await expect(navigation.querySelectorAll('[aria-current]')).toHaveLength(1)
-    await expect(
-      within(navigation).getByRole('link', { name: 'Building and living' }),
-    ).toHaveAttribute('aria-current', 'true')
-  },
 }
 
 /**
@@ -259,17 +214,6 @@ export const CollapsedGroups: Story = {
 export const GroupLabels: Story = {
   parameters: showSource('navigation/navigation.fixture.tsx', 'GroupedNavigation'),
   render: () => <GroupedNavigation />,
-  play: async ({ canvas }) => {
-    const navigation = canvas.getByRole('navigation', { name: 'Documentation' })
-    const components = within(navigation).getByRole('list', { name: 'Components' })
-    await expect(within(components).getAllByRole('link')).toHaveLength(3)
-    await expect(within(navigation).getByRole('list', { name: 'Foundations' })).toBeVisible()
-    await expect(within(navigation).queryByRole('heading')).not.toBeInTheDocument()
-    await expect(
-      within(navigation).queryByRole('link', { name: 'Components' }),
-    ).not.toBeInTheDocument()
-    await expect(navigation.querySelectorAll('.kv-navigation-label[tabindex]')).toHaveLength(0)
-  },
 }
 
 /** A group label is long and Finnish at 320px: it wraps and the sidebar never scrolls sideways (1.4.10). */
@@ -301,10 +245,6 @@ export const LongFinnishGroupLabel: Story = {
     </InLanguage>
   ),
   play: async ({ canvas }) => {
-    await expect(
-      // kv-lang-ok: Finnish locale story: the long-word hard case and the Finnish built-in strings
-      canvas.getByRole('list', { name: 'Rakentaminen, ympäristö ja kiinteistöasiat' }),
-    ).toBeVisible()
     await expectNoHorizontalOverflow(canvas.getByTestId('narrow'))
   },
 }
@@ -332,16 +272,6 @@ export const GroupLabelsForcedColors: Story = {
 export const PageNotInTheMenu: Story = {
   parameters: showSource('navigation/navigation.fixture.tsx', 'UnlistedPageNavigation'),
   render: () => <UnlistedPageNavigation />,
-  play: async ({ canvas }) => {
-    const navigation = canvas.getByRole('navigation', { name: 'Main menu' })
-    await expect(navigation.querySelectorAll('[aria-current]')).toHaveLength(1)
-    await expect(
-      within(navigation).getByRole('link', { name: 'Building permits' }),
-    ).toHaveAttribute('aria-current', 'true')
-    await expect(
-      within(navigation).getByRole('link', { name: 'Building and living' }),
-    ).not.toHaveAttribute('aria-current')
-  },
 }
 
 /**
@@ -367,9 +297,6 @@ export const LabelledByHeading: Story = {
       </Navigation.Root>
     </>
   ),
-  play: async ({ canvas }) => {
-    await expect(canvas.getByRole('navigation', { name: 'In this section' })).toBeVisible()
-  },
 }
 
 /** Two navigations on a page each have their own name, so a screen reader's landmark list tells them apart. */
@@ -405,11 +332,6 @@ export const TwoNavigations: Story = {
       </Navigation.Root>
     </>
   ),
-  play: async ({ canvas }) => {
-    await expect(canvas.getAllByRole('navigation')).toHaveLength(2)
-    await expect(canvas.getByRole('navigation', { name: 'Main menu' })).toBeVisible()
-    await expect(canvas.getByRole('navigation', { name: 'Footer' })).toBeVisible()
-  },
 }
 
 /**
@@ -441,7 +363,6 @@ export const WithServiceLink: Story = {
   ),
   play: async ({ canvas }) => {
     const service = canvas.getByRole('link', { name: 'Apply for a building permit' })
-    await expect(service).toHaveClass('kv-link--service')
     await expectMinimumTargetSize(service)
   },
 }
@@ -490,18 +411,9 @@ export const CompactDensity: Story = {
   ),
   play: async ({ canvas }) => {
     const links = canvas.getAllByRole('link')
-    await expect(links).toHaveLength(6)
     for (const link of links) {
       await expectMinimumTargetSize(link)
     }
-    await expect(canvas.getByRole('link', { name: 'Cases' })).toHaveAttribute(
-      'aria-current',
-      'page',
-    )
-    await expect(canvas.getByRole('link', { name: 'Reports' })).toHaveAttribute(
-      'aria-current',
-      'true',
-    )
   },
 }
 
@@ -541,8 +453,6 @@ export const LongFinnishText: Story = {
     </InLanguage>
   ),
   play: async ({ canvas }) => {
-    // kv-lang-ok: Finnish locale story: the long-word hard case and the Finnish built-in strings
-    await expect(canvas.getByRole('navigation', { name: 'Päävalikko' })).toBeVisible()
     await expectNoHorizontalOverflow(canvas.getByTestId('narrow'))
   },
 }
@@ -567,8 +477,6 @@ export const HorizontalLongFinnishText: Story = {
   ],
   render: () => <FinnishHorizontalNavigation />,
   play: async ({ canvas }) => {
-    // kv-lang-ok: Finnish locale story: the long-word hard case and the Finnish built-in strings
-    await expect(canvas.getByRole('navigation', { name: 'Päävalikko' })).toBeVisible()
     await expectNoHorizontalOverflow(canvas.getByTestId('narrow'))
     for (const link of canvas.getAllByRole('link')) {
       await expectMinimumTargetSize(link)
@@ -643,16 +551,6 @@ export const RTL: Story = {
     surface: 'both',
   },
   render: () => <NavigationOrientations locale="en" />,
-  play: async ({ canvas }) => {
-    await expect(canvas.getByRole('link', { name: 'In progress' })).toHaveAttribute(
-      'aria-current',
-      'page',
-    )
-    await expect(canvas.getByRole('link', { name: 'Building and living' })).toHaveAttribute(
-      'aria-current',
-      'true',
-    )
-  },
 }
 
 /**

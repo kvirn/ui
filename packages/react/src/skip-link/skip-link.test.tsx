@@ -4,7 +4,6 @@ import { fi } from '@kvirn/i18n/fi'
 import { nb } from '@kvirn/i18n/nb'
 import { nn } from '@kvirn/i18n/nn'
 import { sv } from '@kvirn/i18n/sv'
-import { expectNoA11yViolations } from '@kvirn/testing'
 import { createRef } from 'react'
 import type { ComponentPropsWithRef } from 'react'
 import { renderToString } from 'react-dom/server'
@@ -284,25 +283,6 @@ describe('useSkipLink', () => {
     >()
     expectTypeOf<SkipLinkPartProps['className']>().toEqualTypeOf<'kv-skip-link'>()
     expectTypeOf<SkipLinkProps['href']>().toEqualTypeOf<string>()
-  })
-})
-
-describe('SkipLink accessibility', () => {
-  test('has no axe violations', async () => {
-    const { container } = await render(<Page />)
-    await expect
-      .element(page.getByRole('link', { name: 'Skip to main content' }))
-      .toBeInTheDocument()
-    await expectNoA11yViolations(container)
-  })
-
-  test('has no axe violations while focused', async () => {
-    const { container } = await render(<Page />)
-    await userEvent.tab()
-    expect(document.activeElement).toBe(
-      page.getByRole('link', { name: 'Skip to main content' }).element(),
-    )
-    await expectNoA11yViolations(container)
   })
 })
 

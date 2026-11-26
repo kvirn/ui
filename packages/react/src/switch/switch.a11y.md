@@ -87,21 +87,21 @@ None from the component. On focus a screen reader reads the label, "switch" and 
 
 ## AT test record
 
-| AT + browser + OS                                                          | Agent check | Human check | Result  | Notes                                                                                                             |
-| -------------------------------------------------------------------------- | ----------- | ----------- | ------- | ----------------------------------------------------------------------------------------------------------------- |
-| **Automated (re-runnable tests)**                                          |             |             |         |                                                                                                                   |
-| axe, WCAG 2.2 A and AA, every story, 4 themes                              | pass        | n/a         | pass    | switch.stories.tsx, every story, 4 themes                                                                         |
-| Markup and ARIA (roles, names, ids, states)                                | pass        | n/a         | pass    | switch.test.tsx › renders a native <input type="checkbox" role="switch">, outside a Field; expectNoA11yViolations |
-| Keyboard contract rows (Vitest browser)                                    | pass        | n/a         | pass    | 6 rows, each names a test (switch.test.tsx › Tab moves to each switch, one stop each)                             |
-| Focus order and management                                                 | pass        | n/a         | pass    | switch.test.tsx asserts focus (toHaveFocus); first rule: Tab moves to each switch, one stop each                  |
-| Display modes (forced colours, 320px reflow, text spacing, reduced motion) | pass        | n/a         | pass    | the four sweep projects (`storybook-forced-colors`, `-reduced-motion`, `-reflow`, `-text-spacing`), run in CI     |
-| **Core (required for beta)**                                               |             |             |         |                                                                                                                   |
-| NVDA + Chrome + Windows                                                    | pending     | pending     | pending |                                                                                                                   |
-| VoiceOver + Safari + iOS                                                   | pending     | pending     | pending |                                                                                                                   |
-| **Release (before 1.0 and each minor)**                                    |             |             |         |                                                                                                                   |
-| JAWS + Chrome + Windows                                                    | pending     | pending     | pending |                                                                                                                   |
-| TalkBack + Chrome + Android                                                | pending     | pending     | pending |                                                                                                                   |
-| VoiceOver + Safari + macOS                                                 | pending     | pending     | pending |                                                                                                                   |
+| AT + browser + OS                                                          | Agent check | Human check | Result  | Notes                                                                                                         |
+| -------------------------------------------------------------------------- | ----------- | ----------- | ------- | ------------------------------------------------------------------------------------------------------------- |
+| **Automated (re-runnable tests)**                                          |             |             |         |                                                                                                               |
+| axe, WCAG 2.2 A and AA, every story, light theme                           | pass        | n/a         | pass    | switch.stories.tsx, every story, light theme                                                                  |
+| Markup and ARIA (roles, names, ids, states)                                | pass        | n/a         | pass    | switch.test.tsx › renders a native <input type="checkbox" role="switch">, outside a Field                     |
+| Keyboard contract rows (Vitest browser)                                    | pass        | n/a         | pass    | 6 rows, each names a test (switch.test.tsx › Tab moves to each switch, one stop each)                         |
+| Focus order and management                                                 | pass        | n/a         | pass    | switch.test.tsx asserts focus (toHaveFocus); first rule: Tab moves to each switch, one stop each              |
+| Display modes (forced colours, 320px reflow, text spacing, reduced motion) | pass        | n/a         | pass    | the four sweep projects (`storybook-forced-colors`, `-reduced-motion`, `-reflow`, `-text-spacing`), run in CI |
+| **Core (required for beta)**                                               |             |             |         |                                                                                                               |
+| NVDA + Chrome + Windows                                                    | pending     | pending     | pending |                                                                                                               |
+| VoiceOver + Safari + iOS                                                   | pending     | pending     | pending |                                                                                                               |
+| **Release (before 1.0 and each minor)**                                    |             |             |         |                                                                                                               |
+| JAWS + Chrome + Windows                                                    | pending     | pending     | pending |                                                                                                               |
+| TalkBack + Chrome + Android                                                | pending     | pending     | pending |                                                                                                               |
+| VoiceOver + Safari + macOS                                                 | pending     | pending     | pending |                                                                                                               |
 
 ### What to check
 

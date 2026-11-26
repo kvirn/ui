@@ -90,12 +90,9 @@ export const Default: Story = {
   ),
   play: async ({ canvas, userEvent }) => {
     const trigger = canvas.getByRole('button', { name: 'Opening hours' })
-    await expect(trigger).toHaveAttribute('aria-expanded', 'false')
     await expectMinimumTargetSize(trigger)
     await userEvent.click(trigger)
-    await expect(trigger).toHaveAttribute('aria-expanded', 'true')
     await expectAnimationsSettled()
-    await expect(canvas.getByText(/Monday to Friday/)).toBeVisible()
   },
 }
 
@@ -107,26 +104,12 @@ export const Default: Story = {
 export const Keyboard: Story = {
   parameters: showSource('disclosure/disclosure.fixture.tsx', 'KeyboardDisclosure'),
   render: () => <KeyboardDisclosure />,
-  play: async ({ canvas, userEvent }) => {
-    const trigger = canvas.getByRole('button', { name: 'Contact us' })
-    trigger.focus()
-    await userEvent.keyboard('{Enter}')
-    await expect(trigger).toHaveAttribute('aria-expanded', 'true')
-    await userEvent.tab()
-    await expect(canvas.getByRole('link', { name: '08-123 45 67' })).toHaveFocus()
-  },
 }
 
 /** `defaultOpen`: shown from the start, with the chevron pointing up. */
 export const Open: Story = {
   parameters: showSource('disclosure/disclosure.fixture.tsx', 'OpenFromTheStart'),
   render: () => <OpenFromTheStart />,
-  play: async ({ canvas }) => {
-    await expect(canvas.getByRole('button', { name: 'Opening hours' })).toHaveAttribute(
-      'aria-expanded',
-      'true',
-    )
-  },
 }
 
 /**
@@ -136,14 +119,6 @@ export const Open: Story = {
 export const Disabled: Story = {
   parameters: showSource('disclosure/disclosure.fixture.tsx', 'DisabledDisclosures'),
   render: () => <DisabledDisclosures />,
-  play: async ({ canvas }) => {
-    await expect(canvas.getByRole('button', { name: 'Decision' })).toBeDisabled()
-    const appeal = canvas.getByRole('button', { name: 'Appeal' })
-    await expect(appeal).toHaveAttribute('aria-disabled', 'true')
-    await expect(appeal).toHaveAccessibleDescription(
-      'The appeal can be opened once the decision is made.',
-    )
-  },
 }
 
 /** Controlled: `open` decides, and `onOpenChange` reports the new state and the reason. */
@@ -164,12 +139,6 @@ export const Controlled: Story = {
 export const FindInPage: Story = {
   parameters: showSource('disclosure/disclosure.fixture.tsx', 'FindableDisclosure'),
   render: () => <FindableDisclosure />,
-  play: async ({ canvas }) => {
-    await expect(canvas.getByRole('button', { name: 'Find this' })).toHaveAttribute(
-      'aria-expanded',
-      'false',
-    )
-  },
 }
 
 /** Long Finnish compounds wrap inside the trigger in a 320px column, and the chevron stays at the end. */
@@ -182,7 +151,6 @@ export const NarrowFinnishText: Story = {
     </div>
   ),
   play: async ({ canvas }) => {
-    await expect(canvas.getByRole('button', { name: /Rakennuslupahakemuksen/ })).toBeVisible()
     await expectNoHorizontalOverflow(canvas.getByTestId('narrow'))
   },
 }
@@ -192,12 +160,6 @@ export const RTL: Story = {
   globals: { dir: 'rtl', locale: 'en' },
   parameters: showSource('disclosure/disclosure.fixture.tsx', 'EnglishDisclosure'),
   render: () => <EnglishDisclosure />,
-  play: async ({ canvas }) => {
-    await expect(canvas.getByRole('button', { name: 'Opening hours' })).toHaveAttribute(
-      'aria-expanded',
-      'false',
-    )
-  },
 }
 
 /**

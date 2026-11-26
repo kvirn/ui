@@ -28,13 +28,13 @@ The matrix has three tiers. **Automated** rows are proved by re-runnable tests (
 
 **Automated (re-runnable tests)** (maintainer, 2026-10-18):
 
-| Row                                                                        | Proved by                                                            |
-| -------------------------------------------------------------------------- | -------------------------------------------------------------------- |
-| axe, WCAG 2.2 A and AA, every story, 4 themes                              | the Storybook projects                                               |
-| Markup and ARIA (roles, names, ids, states)                                | the component test's role and state tests, and axe's structure rules |
-| Keyboard contract rows (Vitest browser)                                    | the named keyboard tests in `<name>.test.tsx`                        |
-| Focus order and management                                                 | the component test and the `Keyboard` story                          |
-| Display modes (forced colours, 320px reflow, text spacing, reduced motion) | the four sweep projects, for the components in the sweep list        |
+| Row                                                                                    | Proved by                                                            |
+| -------------------------------------------------------------------------------------- | -------------------------------------------------------------------- |
+| axe, WCAG 2.2 A and AA, every story, light theme (contrast in 4 themes: `theme:check`) | the `storybook` project                                              |
+| Markup and ARIA (roles, names, ids, states)                                            | the component test's role and state tests, and axe's structure rules |
+| Keyboard contract rows (Vitest browser)                                                | the named keyboard tests in `<name>.test.tsx`                        |
+| Focus order and management                                                             | the component test and the `Keyboard` story                          |
+| Display modes (forced colours, 320px reflow, text spacing, reduced motion)             | the four sweep projects, for the components in the sweep list        |
 
 | AT        | Browser | OS      | Tier    |
 | --------- | ------- | ------- | ------- |

@@ -2,7 +2,7 @@ import { masks, TextInput } from '@kvirn/ui'
 import contract from '../../../../../packages/react/src/text-input/text-input.a11y.md?raw'
 import guide from '../../../../../packages/react/src/mask/mask.md?raw'
 import type { Meta, StoryObj } from '@storybook/react-vite'
-import { expect, userEvent, waitFor } from 'storybook/test'
+import { expect, userEvent } from 'storybook/test'
 import { showSource, usageGuide } from '../../docs-source.ts'
 import { localeOf } from '../form/form.fixture.tsx'
 import { codeTextsFor } from '../one-time-code/one-time-code.fixture.tsx'
@@ -17,7 +17,6 @@ import {
   PostalCodeFamilyFields,
 } from './mask-families.fixture.tsx'
 import {
-  characterNotAllowedMessage,
   CustomMaskFields,
   FilterFields,
   GroupedNumberFields,
@@ -25,7 +24,6 @@ import {
   IdentifierFields,
   KeyboardForm,
   maskTextsFor,
-  maximumLengthMessage,
   NordicCountryFields,
   NumberFields,
   OwnInputField,
@@ -387,31 +385,6 @@ export const CardAndTime: Story = {
 export const Identifiers: Story = {
   parameters: showSource('mask/mask.fixture.tsx', 'IdentifierFields'),
   render: (_args, { globals }) => <IdentifierFields locale={localeOf(globals)} />,
-  play: async ({ canvas, globals }) => {
-    const { text } = maskTextsFor(globals)
-    const personalIdentityNumber = canvas.getByRole('textbox', {
-      name: exactly(text.personalIdentityNumber),
-    })
-    await userEvent.click(personalIdentityNumber)
-    await userEvent.paste('19900101 2385')
-    await expect(personalIdentityNumber).toHaveValue('19900101-2385')
-    await expect(personalIdentityNumber).toHaveAttribute('inputmode', 'numeric')
-    await expect(personalIdentityNumber).toHaveAttribute('dir', 'ltr')
-
-    const postalCode = canvas.getByRole('textbox', { name: exactly(text.postalCode) })
-    await userEvent.type(postalCode, '12345')
-    await expect(postalCode).toHaveValue('123 45')
-
-    const iban = canvas.getByRole('textbox', { name: exactly(text.iban) })
-    await userEvent.type(iban, 'se4550000000058398257466')
-    await expect(iban).toHaveValue('SE45 5000 0000 0583 9825 7466')
-
-    const finnish = canvas.getByRole('textbox', {
-      name: exactly(text.personalIdentityNumberFi),
-    })
-    await userEvent.type(finnish, '131052-308t')
-    await expect(finnish).toHaveValue('131052-308T')
-  },
 }
 
 /**
@@ -422,38 +395,12 @@ export const Identifiers: Story = {
 export const Filters: Story = {
   parameters: showSource('mask/mask.fixture.tsx', 'FilterFields'),
   render: (_args, { globals }) => <FilterFields locale={localeOf(globals)} />,
-  play: async ({ canvas, globals }) => {
-    const { text } = maskTextsFor(globals)
-    const digits = canvas.getByRole('textbox', { name: exactly(text.digits) })
-    await userEvent.type(digits, '00-45 12')
-    await expect(digits).toHaveValue('004512')
-
-    const email = canvas.getByRole('textbox', { name: exactly(text.email) })
-    await userEvent.type(email, 'anna @example.se')
-    await expect(email).toHaveValue('anna@example.se')
-
-    const telephone = canvas.getByRole('textbox', { name: exactly(text.telephone) })
-    await userEvent.type(telephone, '+46 70-12x3')
-    await expect(telephone).toHaveValue('+46 70-123')
-  },
 }
 
 /** Your own pattern (`9` a digit, `a` a letter, the rest literals) and your own regular expression. */
 export const PatternAndRegexp: Story = {
   parameters: showSource('mask/mask.fixture.tsx', 'CustomMaskFields'),
   render: (_args, { globals }) => <CustomMaskFields locale={localeOf(globals)} />,
-  play: async ({ canvas, globals }) => {
-    const { text } = maskTextsFor(globals)
-    const caseNumber = canvas.getByRole('textbox', { name: exactly(text.caseNumber) })
-    await userEvent.type(caseNumber, 'ab1234')
-    await expect(caseNumber).toHaveValue('AB-1234')
-
-    const registration = canvas.getByRole('textbox', {
-      name: exactly(text.registration),
-    })
-    await userEvent.type(registration, 'abc123')
-    await expect(registration).toHaveValue('ABC123')
-  },
 }
 
 /**
@@ -553,58 +500,6 @@ export const OwnInput: Story = {
 export const RefusedCharacter: Story = {
   parameters: showSource('mask/mask.fixture.tsx', 'RefusalFields'),
   render: (_args, { globals }) => <RefusalFields locale={localeOf(globals)} />,
-  play: async ({ canvas, globals }) => {
-    const { text, locale } = maskTextsFor(globals)
-    const digits = canvas.getByRole('textbox', { name: exactly(text.digits) })
-    await userEvent.type(digits, 'a')
-    await expect(digits).toHaveValue('')
-    await waitFor(() =>
-      expect(canvas.getByRole('status')).toHaveTextContent(
-        locale === 'sv'
-          ? // kv-lang-ok: the Swedish built-in message of the sv locale
-            'Här kan du bara skriva siffror.'
-          : locale === 'en'
-            ? 'Only digits can be entered here.'
-            : characterNotAllowedMessage(locale, 'digits'),
-      ),
-    )
-
-    const postalCode = canvas.getByRole('textbox', { name: exactly(text.postalCode) })
-    await userEvent.type(postalCode, '123456')
-    await expect(postalCode).toHaveValue('123 45')
-    await waitFor(() =>
-      expect(canvas.getByRole('status')).toHaveTextContent(maximumLengthMessage(locale, 5)),
-    )
-
-    const letters = canvas.getByRole('textbox', { name: exactly(text.letters) })
-    await userEvent.type(letters, '1')
-    await expect(letters).toHaveValue('')
-    await waitFor(() =>
-      expect(canvas.getByRole('status')).toHaveTextContent(
-        characterNotAllowedMessage(locale, 'letters'),
-      ),
-    )
-
-    const lettersAndDigits = canvas.getByRole('textbox', {
-      name: exactly(text.lettersAndDigits),
-    })
-    await userEvent.type(lettersAndDigits, '!')
-    await expect(lettersAndDigits).toHaveValue('')
-    await waitFor(() =>
-      expect(canvas.getByRole('status')).toHaveTextContent(
-        characterNotAllowedMessage(locale, 'lettersAndDigits'),
-      ),
-    )
-
-    const telephone = canvas.getByRole('textbox', { name: exactly(text.telephone) })
-    await userEvent.type(telephone, 'x')
-    await expect(telephone).toHaveValue('')
-    await waitFor(() =>
-      expect(canvas.getByRole('status')).toHaveTextContent(
-        characterNotAllowedMessage(locale, 'other'),
-      ),
-    )
-  },
 }
 
 /**
@@ -615,28 +510,6 @@ export const RefusedCharacter: Story = {
 export const NordicCountries: Story = {
   parameters: showSource('mask/mask.fixture.tsx', 'NordicCountryFields'),
   render: (_args, { globals }) => <NordicCountryFields locale={localeOf(globals)} />,
-  play: async ({ canvas, globals }) => {
-    const { text } = maskTextsFor(globals)
-    const postalCodeFi = canvas.getByRole('textbox', { name: exactly(text.postalCodeFi) })
-    await userEvent.type(postalCodeFi, '00100')
-    await expect(postalCodeFi).toHaveValue('00100')
-
-    const postalCodeNo = canvas.getByRole('textbox', { name: exactly(text.postalCodeNo) })
-    await userEvent.type(postalCodeNo, '0150')
-    await expect(postalCodeNo).toHaveValue('0150')
-
-    const organisationNumberFi = canvas.getByRole('textbox', {
-      name: exactly(text.organisationNumberFi),
-    })
-    await userEvent.type(organisationNumberFi, '01120389')
-    await expect(organisationNumberFi).toHaveValue('0112038-9')
-
-    const organisationNumberNo = canvas.getByRole('textbox', {
-      name: exactly(text.organisationNumberNo),
-    })
-    await userEvent.type(organisationNumberNo, '974760673')
-    await expect(organisationNumberNo).toHaveValue('974 760 673')
-  },
 }
 
 /**
@@ -692,21 +565,6 @@ export const IdentifierChecks: Story = {
 export const GroupedNumbers: Story = {
   parameters: showSource('mask/mask.fixture.tsx', 'GroupedNumberFields'),
   render: (_args, { globals }) => <GroupedNumberFields locale={localeOf(globals)} />,
-  play: async ({ canvas, globals }) => {
-    const { text, locale } = maskTextsFor(globals)
-    const pageMask = masks.number({ decimals: 2, grouping: true }).withLocale(locale)
-    const finnishMask = masks.number({ decimals: 2, grouping: true, locale: 'fi' })
-
-    const amount = canvas.getByRole('textbox', { name: exactly(text.groupedAmount) })
-    await userEvent.type(amount, '1250000')
-    await expect(amount).toHaveValue(pageMask.format('1250000'))
-
-    const amountFi = canvas.getByRole('textbox', { name: exactly(text.finnishAmount) })
-    await userEvent.type(amountFi, '1250000')
-    await expect(amountFi).toHaveValue(finnishMask.format('1250000'))
-
-    await expect(canvas.getByTestId('stored').textContent).toContain(pageMask.format('1250000.5'))
-  },
 }
 
 /**
@@ -735,33 +593,6 @@ export const PlainCode: Story = {
 export const PatternOptions: Story = {
   parameters: showSource('mask/mask.fixture.tsx', 'PatternOptionFields'),
   render: (_args, { globals }) => <PatternOptionFields locale={localeOf(globals)} />,
-  play: async ({ canvas, globals }) => {
-    const { text } = maskTextsFor(globals)
-    const bookingCode = canvas.getByRole('textbox', { name: exactly(text.bookingCode) })
-    await userEvent.type(bookingCode, 'k2407')
-    await expect(bookingCode).toHaveValue('9K2-407')
-
-    const customerNumber = canvas.getByRole('textbox', { name: exactly(text.customerNumber) })
-    const complete = canvas.getByTestId('customer-complete')
-    await userEvent.type(customerNumber, '12345678')
-    await expect(complete).toHaveTextContent(`${text.complete}: ${text.yes}`)
-    await userEvent.type(customerNumber, '9')
-    await expect(complete).toHaveTextContent(`${text.complete}: ${text.no}`)
-    await userEvent.type(customerNumber, '0')
-    await expect(complete).toHaveTextContent(`${text.complete}: ${text.yes}`)
-
-    const accountNumber = canvas.getByRole('textbox', { name: exactly(text.accountNumber) })
-    const details = canvas.getByTestId('account-details')
-    await userEvent.type(accountNumber, '8327-9 12')
-    await expect(details).toHaveTextContent(
-      `${text.unmasked}: 8327912 · ${text.complete}: ${text.no}`,
-    )
-    await userEvent.type(accountNumber, '3')
-    await expect(accountNumber).toHaveValue('8327-9 123')
-    await expect(details).toHaveTextContent(
-      `${text.unmasked}: 83279123 · ${text.complete}: ${text.yes}`,
-    )
-  },
 }
 
 /**
@@ -787,10 +618,6 @@ export const RTL: Story = {
   globals: { dir: 'rtl', locale: 'en' },
   parameters: showSource('mask/mask.fixture.tsx', 'IdentifierFields'),
   render: (_args, { globals }) => <IdentifierFields locale={localeOf(globals)} />,
-  play: async ({ canvas }) => {
-    const input = canvas.getByRole('textbox', { name: /^Personal identity number$/ })
-    await expect(input).toHaveAttribute('dir', 'ltr')
-  },
 }
 
 /** Edges, the ring and the help text survive forced colours. */

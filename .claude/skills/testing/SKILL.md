@@ -1,6 +1,6 @@
 ---
 name: testing
-description: KvirnUI testing procedure — Vitest (unit + browser-mode component tests with axe and every keyboard row), Storybook stories, and the quality gates. Use when writing or fixing tests, adding stories, running gates, or debugging a failing check.
+description: KvirnUI testing procedure — Vitest (unit + browser-mode component tests with every keyboard row, axe in stories), Storybook stories, and the quality gates. Use when writing or fixing tests, adding stories, running gates, or debugging a failing check.
 when_to_use: write tests, TDD a component, failing CI, flaky test, add story, run quality gates, verify a change
 ---
 
@@ -15,7 +15,7 @@ We test **behaviour, accessibility and requirements**. We never test CSS. Before
 **Test:**
 
 - Behaviour: state, values, events and callbacks, keys, focus moves, open and close, what's rendered and what isn't (`toBeVisible`, `toBeHidden`).
-- Accessibility: roles, accessible names and descriptions, ARIA states, `aria-describedby` and reading order, focus management, announcements, axe, and strings in at least 2 locales.
+- Accessibility: roles, accessible names and descriptions, ARIA states, `aria-describedby` and reading order, focus management, announcements, and strings in at least 2 locales.
 - Requirements: the public API from the plan (props, `as`, refs, `mergeProps`, dev warnings) and the part-class contract, in **one** test per component.
 
 **Never test:**
@@ -24,32 +24,31 @@ We test **behaviour, accessibility and requirements**. We never test CSS. Before
 - Layout and geometry: whether a part sits above, under or beside another, heights, widths, alignment, bounding boxes.
 - The text of `theme.css`: no parsing it for properties or values. `theme:check` covers contrast and the forced-colour mapping. The only other theme test is that without the `data-kv-*` attributes the page is the light theme.
 - Class lists beyond the one part-class test, `tagName`s that aren't a role, and anything React or the browser already guarantees.
-- The same fact twice. Each fact is proved once, in the cheapest layer that can prove it: core, then component, then story. Keyboard rows are proved in the component test. Patterns (`packages/patterns`) have no unit tests: axe in every story state in every theme is their proof.
-  - One standing exception (maintainer, 2026-10-04): a story's `play` may check the state it renders even when a component test proves it too. Don't delete these as duplicates.
+- The same fact twice. Each fact is proved once, in the cheapest layer that can prove it: core, then component, then story. Keyboard rows are proved in the component test only. Axe runs in stories only (a component test never calls `expectNoA11yViolations`: a state only a test reaches gets a story). A story's `play` proves only what no test does (composition in a real story, a fixture's wiring); one that repeats a test is removed. Contrast is `theme:check`'s, over all four themes. Patterns (`packages/patterns`) have no unit tests: axe in every story state is their proof.
 
 **The one exception: a WCAG criterion that can only be measured visually.** Assert the criterion's threshold on the outcome, never the theme's value, and put the SC number in the test name:
 
-| SC                      | Assert                                                                                                                                                                                                                                        | Never assert                     |
-| ----------------------- | --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | -------------------------------- |
-| 2.5.8 Target size       | the target is at least 24×24 CSS px                                                                                                                                                                                                           | its padding or height            |
-| 2.4.7 Focus visible     | a focused part shows an indicator (outline is not none)                                                                                                                                                                                       | outline width, offset or colour  |
-| 1.4.10 Reflow           | no horizontal scroll at 320px (`storybook-reflow`); a focusable `role="region"` that scrolls sideways may hold wider content (2D layout, e.g. a Table), the region itself must fit (maintainer 2026-10-19)                                    | grid or flex rules               |
-| 1.4.12 Text spacing     | with the SC's spacing applied, no text is clipped (`storybook-text-spacing`)                                                                                                                                                                  | line height or `overflow` values |
-| 1.4.11 / forced colours | a drawn boundary, or text distinct from its background, and a focus outline on the focused part or, for an input in a group, on its nearest outlined wrapper only while focus is inside it (`storybook-forced-colors`; maintainer 2026-10-19) | border width or system colours   |
+| SC                      | Assert                                                                                                                                                                                                                                                                                                                                                                                                                                | Never assert                     |
+| ----------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | -------------------------------- |
+| 2.5.8 Target size       | the target is at least 24×24 CSS px                                                                                                                                                                                                                                                                                                                                                                                                   | its padding or height            |
+| 2.4.7 Focus visible     | a focused part shows an indicator (outline is not none)                                                                                                                                                                                                                                                                                                                                                                               | outline width, offset or colour  |
+| 1.4.10 Reflow           | no horizontal scroll at 320px (`storybook-reflow`); a focusable `role="region"` that scrolls sideways may hold wider content (2D layout, e.g. a Table), the region itself must fit (maintainer 2026-10-19); content is measured only up to the edge of a region the story declares with `parameters.twoDimensional = { selector, reason }` (the map viewport: users pan it), never for any other clipping box (maintainer 2026-11-26) | grid or flex rules               |
+| 1.4.12 Text spacing     | with the SC's spacing applied, no text is clipped (`storybook-text-spacing`); inside a story-declared `twoDimensional` region a clipping box fails only where its overflow is new or grew (a panned map already clips); everywhere else any overflow fails (maintainer 2026-11-26)                                                                                                                                                    | line height or `overflow` values |
+| 1.4.11 / forced colours | a drawn boundary, or text distinct from its background, and a focus outline on the focused part or, for an input in a group, on its nearest outlined wrapper only while focus is inside it (`storybook-forced-colors`; maintainer 2026-10-19)                                                                                                                                                                                         | border width or system colours   |
 
 The look is reviewed by eye in Storybook, never by test. When a test you meet breaks these rules, delete it in the change that touches it, and say so in the summary.
 
 ## Layers and file names
 
-| Layer     | File                                                      | Runner                                                                                                                  | Proves                                                                                             |
-| --------- | --------------------------------------------------------- | ----------------------------------------------------------------------------------------------------------------------- | -------------------------------------------------------------------------------------------------- |
-| Machine   | `packages/core/src/<name>/<name>.test.ts`                 | Vitest (node)                                                                                                           | State transitions, pure logic                                                                      |
-| Component | `packages/react/src/<name>/<name>.test.tsx`               | Vitest browser mode (Playwright provider)                                                                               | Rendering, ARIA, props, **axe**, **every keyboard-table row** (incl. Shift+Tab, RTL arrows), focus |
-| Stories   | `apps/storybook/src/components/<name>/<name>.stories.tsx` | `vp test run` (Storybook `addon-vitest`, a11y addon: axe violations fail), once per theme in four `storybook*` projects | Every visual state, plus play functions, in every theme                                            |
+| Layer     | File                                                      | Runner                                                                                              | Proves                                                                                    |
+| --------- | --------------------------------------------------------- | --------------------------------------------------------------------------------------------------- | ----------------------------------------------------------------------------------------- |
+| Machine   | `packages/core/src/<name>/<name>.test.ts`                 | Vitest (node)                                                                                       | State transitions, pure logic                                                             |
+| Component | `packages/react/src/<name>/<name>.test.tsx`               | Vitest browser mode (Playwright provider)                                                           | Rendering, ARIA, props, **every keyboard-table row** (incl. Shift+Tab, RTL arrows), focus |
+| Stories   | `apps/storybook/src/components/<name>/<name>.stories.tsx` | `vp test run` (Storybook `addon-vitest`, a11y addon: axe violations fail), once, in the light theme | Every visual state with **axe**, plus play functions only for what no test proves         |
 
 **Where tests are allowed:** `packages/*/src`, `tooling/` and Storybook stories. Not in `apps/docs`: never add a test for a docs page, the site shell, navigation, an example or a docs helper. Test the library component it shows.
 
-Vitest projects (root `vite.config.ts`): `node` (core, i18n, theme, tooling), `browser` (react, testing, rich-text, map and patterns, in Chromium) and the four `storybook*` projects. Stories live in the Storybook app, not the package. They import components the way an adopter does (`@kvirn/ui`). A fixture that the package's own tests also use stays in the package, and the story imports it by relative source path. It's never exported.
+Vitest projects (root `vite.config.ts`): `node` (core, i18n, theme, tooling), `browser` (react, testing, rich-text, map and patterns, in Chromium) and `storybook` (light, standard). Stories live in the Storybook app, not the package. They import components the way an adopter does (`@kvirn/ui`). A fixture that the package's own tests also use stays in the package, and the story imports it by relative source path. It's never exported.
 
 ## TDD loop
 
@@ -60,12 +59,12 @@ Vitest projects (root `vite.config.ts`): `node` (core, i18n, theme, tooling), `b
 ## Rules
 
 - **Query by role and name** (`getByRole('button', { name: 'Close' })`). Only use `data-testid` for things that have no role.
-- **Every story state gets an axe run** with the tags `wcag2a`, `wcag2aa`, `wcag21a`, `wcag21aa`, `wcag22aa`.
+- **Every story state gets an axe run**, in the story layer only, with the tags `wcag2a`, `wcag2aa`, `wcag21a`, `wcag21aa`, `wcag22aa`.
 - **Assert the accessibility tree** with `expect(locator).toMatchAriaSnapshot(...)` for complex widgets.
 - **Assert what is read aloud** with `readAloud(container)` and `readAnnouncements(container, act, { timeout? })` from `@kvirn/testing/read-aloud`, one named test per row of the contract's Read aloud table. Use `toMatchAriaSnapshot` for role, name and state (no dependency), axe for rule violations, and these two for spoken phrases, order and live-region text. Limits: built on `@guidepup/virtual-screen-reader` (MIT, optional peer of the sub-entry, pre-1.0, phrases can change between versions); its own approximation of an accessibility tree, not NVDA or JAWS wording; it doesn't enforce or prove modality or focus containment; label and description text can be read as extra stops. Assert the key phrase, not the whole transcript.
 - **Test focus explicitly**: `toBeFocused()` after every interaction that moves focus, and restore on close.
-- **Test RTL in the component test** (`dir="rtl"` in the render). The display-mode sweep is four projects on the stories of the components in `sweepComponents` in `vite.config.ts` (`vp test run --project storybook-forced-colors | storybook-reduced-motion | storybook-reflow | storybook-text-spacing`), outside `vp run test` but run by CI in one serial step, with their assertions in `theme-story-assertions.ts`; run them on a component's stories when you change its display-mode behaviour, and add a component to `sweepComponents` only when all four are green for it. Run them one project at a time, under the gate lock. A box clipped to 1 CSS px or less, with its subtree, is exempt from the reflow overflow and text-spacing checks: it is hidden until focus (technique C7, the SkipPanel), not clipped text; anything larger is checked. The reflow sweep also expects a 320 px viewport: a story that pins a wide one on purpose sets the parameter `reflowOptOut` to a reason string (the SkipPanel stories, whose floating card is fixed only from 40rem) and keeps one 320 px story swept. Assert the outcome (keys still work, nothing scrolls sideways, the boundary is visible), not CSS values.
-- **Live smoke tests** are the `smoke` project (`tooling/geo-smoke/*.smoke.ts`, never `*.test.ts`): a few requests to geo.kvirn.com so a broken request fails CI. CI runs it after `vp run test`; it is never part of `vp run test`. Run it locally with `vp test run --project smoke` (network to geo.kvirn.com only). It asserts status, JSON shape and the countries in the repo's geocoder configs, never data content or counts, and has no retries.
+- **Test RTL in the component test** (`dir="rtl"` in the render). The display-mode sweep is four projects on the stories of the components in `sweepComponents` in `vite.config.ts` (`vp test run --project storybook-forced-colors | storybook-reduced-motion | storybook-reflow | storybook-text-spacing`), outside `pnpm run test` but run by `pnpm run ci` (`pnpm run sweep`), with their assertions in `theme-story-assertions.ts`; run them on a component's stories when you change its display-mode behaviour, and add a component to `sweepComponents` only when all four are green for it. Run them one project at a time, under the gate lock. A box clipped to 1 CSS px or less, with its subtree, is exempt from the reflow overflow and text-spacing checks: it is hidden until focus (technique C7, the SkipPanel), not clipped text; anything larger is checked. The reflow sweep also expects a 320 px viewport: a story that pins a wide one on purpose sets the parameter `reflowOptOut` to a reason string (the SkipPanel stories, whose floating card is fixed only from 40rem) and keeps one 320 px story swept. Assert the outcome (keys still work, nothing scrolls sideways, the boundary is visible), not CSS values.
+- **Live smoke tests** are the `smoke` project (`tooling/geo-smoke/*.smoke.ts`, never `*.test.ts`): a few requests to geo.kvirn.com so a broken request shows up. A nightly CI job runs it (`pnpm run smoke`); it is never part of `test` or `ci`. Run it locally with `pnpm run smoke` (network to geo.kvirn.com only). It asserts status, JSON shape and the countries in the repo's geocoder configs, never data content or counts, and has no retries.
 - **Test in at least 2 locales** (`sv` + `en`) so hard-coded strings get caught.
 - **Fake timers and actions (Vitest 5.1+).** Locator actions (`click`, `hover`, `fill`, `type`, …), `expect.element` and `expect.poll` advance fake timers in 50ms steps while they wait, so a test that proves a timer's length starts it with `userEvent.keyboard` (after `.element().focus()`) or measures from the event that starts the timer (record `performance.now()` in a listener on that event, then advance the bound minus the time since).
 - **No mocking of the DOM or of focus.** Use browser mode, not jsdom, for components.
@@ -77,7 +76,7 @@ Vitest projects (root `vite.config.ts`): `node` (core, i18n, theme, tooling), `b
 
 ## Stories and themes
 
-Every story runs once per theme in four Vitest projects (`storybook`, `storybook-dark`, `storybook-light-contrast`, `storybook-dark-contrast`), and the initial toolbar globals come from `VITE_STORYBOOK_MODE` and `VITE_STORYBOOK_CONTRAST`. So a story state is checked with axe in all four themes, and story tests take about four times as long as one project. `vp run test` runs them through `tooling/storybook-run`: each project in shards of one worker, one after another, because one long Chromium session fails to load story files at random on Linux (the count is `KVIRN_STORYBOOK_SHARDS`, default 8); a file that failed to load is re-run in its own process (`KVIRN_STORYBOOK_RERUN_BATCH`, default 1). It re-runs a story file once only when it failed to load (an environmental Chromium failure on Linux), never when a test or axe check failed; a second load failure fails the gate. Docs pages share one `<html>`.
+Every story runs once, in the light, standard theme, in the `storybook` Vitest project. The other themes stay in the toolbar for people; contrast in all four is proved by `theme:check`, and `raw-colours` lints out every colour that isn't a token. `pnpm run test` runs it through `tooling/storybook-run`: in shards of one worker, one after another, because one long Chromium session fails to load story files at random on Linux (the count is `KVIRN_STORYBOOK_SHARDS`, default 8); a file that failed to load is re-run in its own process (`KVIRN_STORYBOOK_RERUN_BATCH`, default 1). It re-runs a story file once only when it failed to load (an environmental Chromium failure on Linux), never when a test or axe check failed; a second load failure fails the gate. Docs pages share one `<html>`.
 
 - **No fixed-theme exports** (`Light`, `Dark`, …). A story that is only valid in one theme pins it with `globals` and a play check, and says why.
 - **Toolbars** are Mode (light, dark, system) and Contrast (standard, more). The shared play checks for the visual WCAG thresholds (`expectMinimumTargetSize`, 2.5.8, and `expectNoHorizontalOverflow`, 1.4.10) are in `apps/storybook/src/components/theme-story-assertions.ts`: use them instead of measuring by hand.
@@ -95,7 +94,7 @@ Run the smallest thing that proves the point. Each full gate run happens **once 
   - `vp test run <file>`
   - `vp test run --project browser <file> -t "<name>"`
 - No full-suite runs, and no `--changed` sweeps after every edit.
-- **Pass paths while working** (AGENTS.md rule 11): `vp check <files>` and `vp test run <files>`, or `vp test related <files>`. Never run `vp check --fix` or `vp fmt` without paths. Run the whole-tree gates once, at the end.
+- **Pass paths while working** (AGENTS.md rule 11): `vp lint <files>`, `vp check <files>` and `vp test run <files>`, or `vp test related <files>`. Never run `vp check --fix` or `vp fmt` without paths. Run `pnpm run ci` once, at the end.
 - A failure that predates your branch isn't caused by you, but the tree has one owner: fix it if it blocks the gates, or report it with the file names. Never skip or disable it.
 - No stress or repeat runs, unless a test actually flaked and you're investigating it.
 - **One run at a time.** Never run two checks, tests, sweeps or builds at once, even from different agents: parallel runs flake on dynamic imports and timing. Every `vp check`, `vp test`, `vp run`, `vp pack` and build goes through `flock -w 1800 /tmp/kvirn-gate.lock <command>` (it waits, never skips). If a test flakes, first check that nothing else was running. The `gate-guard` hook blocks a gate without the lock, in a loop or in the background of one, and an identical re-run on an unchanged tree (`KVIRN_GATE_RERUN=1` for a deliberate one): run each gate once and diagnose a failure from its output. CI runs one job at a time per step.
@@ -105,12 +104,12 @@ Run the smallest thing that proves the point. Each full gate run happens **once 
 
 **Final gates:** the orchestrator runs them once, at the end, in this order, stopping at the first failure:
 
-1. `vp check` (lint and types block, formatting is advisory; on your files while others may be editing; the whole tree only when you're the only one working)
-2. `vp run test` (whole tree)
+1. `pnpm run lint` and `pnpm run check` (lint and types block; on your files while others may be editing)
+2. `pnpm run test` (whole tree)
 3. `vp run i18n:check`
 4. `vp run theme:check`
 
-Run `vp run build` only if package config or exports changed.
+`pnpm run ci` runs all of them, with `vp fmt --check`, the build and the four sweeps, and stops at the first failure.
 
 **No one repeats it:**
 
@@ -131,4 +130,4 @@ Run `vp run build` only if package config or exports changed.
 
 ## Templates
 
-See [references/templates.md](references/templates.md) for machine, component+axe, and story skeletons.
+See [references/templates.md](references/templates.md) for machine, component, and story skeletons.

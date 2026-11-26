@@ -1,4 +1,3 @@
-import { expectNoA11yViolations } from '@kvirn/testing'
 import { createRef } from 'react'
 import { renderToString } from 'react-dom/server'
 import { afterEach, beforeEach, describe, expect, expectTypeOf, test, vi } from 'vite-plus/test'
@@ -95,7 +94,7 @@ describe('rendering', () => {
 
 describe('as and ref', () => {
   test('an element changes the element and keeps the children', async () => {
-    const { container } = await render(
+    await render(
       <main>
         <Stack as="section" aria-label="Services">
           <h1>Kvirnby kommun</h1>
@@ -106,10 +105,9 @@ describe('as and ref', () => {
     await expect
       .element(page.getByRole('heading', { name: 'Kvirnby kommun', level: 1 }))
       .toBeVisible()
-    await expectNoA11yViolations(container)
   })
   test('as="ul" with <li> children makes a list with an announced count', async () => {
-    const { container } = await render(
+    await render(
       <Stack as="ul">
         <li>Waste collection</li>
         <li>Winter road maintenance</li>
@@ -118,7 +116,6 @@ describe('as and ref', () => {
     )
     expect(page.getByRole('list').elements()).toHaveLength(1)
     expect(page.getByRole('listitem').elements()).toHaveLength(3)
-    await expectNoA11yViolations(container)
   })
 
   test('ul, ol and a div render their element and keep the class', async () => {
@@ -217,20 +214,6 @@ describe('types', () => {
 })
 
 describe('accessibility', () => {
-  test('has no axe violations around real content', async () => {
-    const { container } = await render(
-      <main>
-        <Stack>
-          <h1>Kvirnby kommun</h1>
-          <p>Vi svarar vardagar 9–16.</p>
-          <Link.Root href="#contact">Contact us</Link.Root>
-        </Stack>
-      </main>,
-    )
-    await expect.element(page.getByRole('main')).toBeVisible()
-    await expectNoA11yViolations(container)
-  })
-
   test('RTL: the children stay in DOM order', async () => {
     await render(
       <div dir="rtl" lang="ar">

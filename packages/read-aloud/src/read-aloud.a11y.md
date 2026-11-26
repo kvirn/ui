@@ -149,7 +149,7 @@ Headless: no CSS. Classes `kv-read-aloud`, `kv-read-aloud-progress`, `kv-read-al
 | AT + browser + OS                                                          | Agent check | Human check | Result  | Notes                                                                                |
 | -------------------------------------------------------------------------- | ----------- | ----------- | ------- | ------------------------------------------------------------------------------------ |
 | **Automated (re-runnable tests)**                                          |             |             |         |                                                                                      |
-| axe, WCAG 2.2 A and AA, every story, 4 themes                              | pending     | n/a         | pending | read-aloud.stories.tsx, every story state, 4 themes (T7)                             |
+| axe, WCAG 2.2 A and AA, every story, light theme                           | pending     | n/a         | pending | read-aloud.stories.tsx, every story state, light theme (T7)                          |
 | Markup and ARIA (roles, names, ids, states)                                | pending     | n/a         | pending | read-aloud.test.tsx (T7)                                                             |
 | Keyboard contract rows (Vitest browser)                                    | pending     | n/a         | pending | the 10 rows above, each its own named test (T7)                                      |
 | Focus order and management                                                 | pending     | n/a         | pending | read-aloud.test.tsx (T7)                                                             |

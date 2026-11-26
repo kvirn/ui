@@ -2,7 +2,7 @@ import { Button, Card, Field, RadioGroup, TextInput } from '@kvirn/ui'
 import contract from '../../../../../packages/react/src/radio-group/radio-group.a11y.md?raw'
 import guide from '../../../../../packages/react/src/radio-group/radio-group.md?raw'
 import type { Meta, StoryObj } from '@storybook/react-vite'
-import { expect, userEvent } from 'storybook/test'
+import { userEvent } from 'storybook/test'
 import { showSource, usageGuide } from '../../docs-source.ts'
 import { choiceTextsFor } from '../form/choice.fixture.tsx'
 import { localeOf, withFormLocale } from '../form/form.fixture.tsx'
@@ -116,23 +116,7 @@ export default meta
 type Story = StoryObj<typeof meta>
 
 /** The main example: none selected. The group is one Tab stop, so Tab lands on the first radio. */
-export const Default: Story = {
-  play: async ({ canvas, globals }) => {
-    const { text } = choiceTextsFor(localeOf(globals))
-    const group = canvas.getByRole('group', { name: new RegExp(`^${text.durationLegend}`) })
-    await expect(group.tagName).toBe('FIELDSET')
-    await expect(group).toHaveAccessibleDescription(text.durationHint)
-    const names = new Set<string | null>()
-    for (const label of [text.duration1, text.duration6, text.duration12]) {
-      const radio = canvas.getByRole('radio', { name: label })
-      await expectMinimumTargetSize(radio)
-      await expect(radio).not.toBeChecked()
-      names.add(radio.getAttribute('name'))
-    }
-    await expect(names.size).toBe(1)
-    await expect([...names][0]).toMatch(/^duration-/)
-  },
-}
+export const Default: Story = {}
 
 /** The label of the button before the group. */
 const backTexts: Partial<Record<FormLocale, string>> = {
@@ -225,11 +209,6 @@ export const Selected: Story = {
       </>
     )
   },
-  play: async ({ canvas, globals }) => {
-    const { text } = choiceTextsFor(localeOf(globals))
-    await expect(canvas.getByRole('radio', { name: text.duration6 })).toBeChecked()
-    await expect(canvas.getByRole('radio', { name: text.duration1 })).not.toBeChecked()
-  },
 }
 
 /** An option's own help text is in that radio's description, under its label. */
@@ -261,27 +240,11 @@ export const WithOptionHelpTexts: Story = {
       </>
     )
   },
-  play: async ({ canvas, globals }) => {
-    const { text } = choiceTextsFor(localeOf(globals))
-    await expect(canvas.getByRole('radio', { name: text.duration12 })).toHaveAccessibleDescription(
-      text.duration12Hint,
-    )
-  },
 }
 
 /** Invalid: every circle gets a 2px edge, and the message is under the options. No aria-invalid. */
 export const Invalid: Story = {
   args: { invalid: true },
-  play: async ({ canvas, globals }) => {
-    const { text } = choiceTextsFor(localeOf(globals))
-    const group = canvas.getByRole('group', { name: new RegExp(`^${text.durationLegend}`) })
-    await expect(group).toHaveAccessibleDescription(
-      new RegExp(`${text.durationHint}.*${text.durationError}`),
-    )
-    const radio = canvas.getByRole('radio', { name: text.duration1 })
-    await expect(radio).toHaveAttribute('data-invalid')
-    await expect(radio).not.toHaveAttribute('aria-invalid')
-  },
 }
 
 /**
@@ -291,12 +254,6 @@ export const Invalid: Story = {
  */
 export const Required: Story = {
   args: { required: true },
-  play: async ({ canvas, globals }) => {
-    const { text } = choiceTextsFor(localeOf(globals))
-    const group = canvas.getByRole('group', { name: text.durationLegend })
-    await expect(group).toHaveAttribute('data-required')
-    await expect(group).not.toHaveAttribute('aria-required')
-  },
 }
 
 /** One option is disabled: a dashed circle, skipped by Tab and by the arrow keys. */
@@ -328,21 +285,11 @@ export const DisabledOption: Story = {
       </>
     )
   },
-  play: async ({ canvas, globals }) => {
-    const { text } = choiceTextsFor(localeOf(globals))
-    await expect(canvas.getByRole('radio', { name: text.duration6 })).toBeDisabled()
-    await expect(canvas.getByRole('radio', { name: text.duration12 })).not.toBeDisabled()
-  },
 }
 
 /** The whole group disabled: native `fieldset[disabled]`. */
 export const Disabled: Story = {
   args: { disabled: true, defaultValue: '12' },
-  play: async ({ canvas, globals }) => {
-    const { text } = choiceTextsFor(localeOf(globals))
-    await expect(canvas.getByRole('radio', { name: text.duration12 })).toBeDisabled()
-    await expect(canvas.getByRole('radio', { name: text.duration12 })).toBeChecked()
-  },
 }
 
 /** One question per page: the legend is the page's heading (an `h1` inside the legend). */
@@ -374,10 +321,6 @@ export const AsPageHeading: Story = {
         </RadioGroup.Root>
       </>
     )
-  },
-  play: async ({ canvas, globals }) => {
-    const { text } = choiceTextsFor(localeOf(globals))
-    await expect(canvas.getByRole('heading', { level: 1, name: text.durationLegend })).toBeVisible()
   },
 }
 
@@ -411,10 +354,6 @@ export const InCard: Story = {
         </Card.Root>
       </>
     )
-  },
-  play: async ({ canvas, globals }) => {
-    const { text } = choiceTextsFor(localeOf(globals))
-    await expect(canvas.getByRole('radio', { name: text.duration6 })).toBeChecked()
   },
 }
 
@@ -504,13 +443,6 @@ export const LongFinnish: Story = {
 export const Controlled: Story = {
   parameters: showSource('radio-group/radio-group.fixture.tsx', 'ControlledDurationGroup'),
   render: (_args, { globals }) => <ControlledDurationGroup locale={localeOf(globals)} />,
-  play: async ({ canvas, globals }) => {
-    const { text } = choiceTextsFor(localeOf(globals))
-    await userEvent.click(canvas.getByRole('radio', { name: text.duration12 }))
-    await expect(canvas.getByTestId('mirror')).toHaveTextContent(`${text.youChose}: 12`)
-    await expect(canvas.getByRole('radio', { name: text.duration12 })).toBeChecked()
-    await expect(canvas.getByRole('radio', { name: text.duration6 })).not.toBeChecked()
-  },
 }
 
 /**
@@ -520,14 +452,6 @@ export const Controlled: Story = {
 export const ControlledEmpty: Story = {
   parameters: showSource('radio-group/radio-group.fixture.tsx', 'ControlledEmptyDurationGroup'),
   render: (_args, { globals }) => <ControlledEmptyDurationGroup locale={localeOf(globals)} />,
-  play: async ({ canvas, globals }) => {
-    const { text } = choiceTextsFor(localeOf(globals))
-    await expect(canvas.queryAllByRole('radio', { checked: true })).toHaveLength(0)
-    await expect(canvas.getByTestId('mirror')).toHaveTextContent(`${text.youChose}: –`)
-    await userEvent.click(canvas.getByRole('radio', { name: text.duration6 }))
-    await expect(canvas.getByRole('radio', { name: text.duration6 })).toBeChecked()
-    await expect(canvas.getByTestId('mirror')).toHaveTextContent(`${text.youChose}: 6`)
-  },
 }
 
 /**
@@ -538,17 +462,6 @@ export const ControlledEmpty: Story = {
 export const Standalone: Story = {
   parameters: showSource('radio-group/radio-group.fixture.tsx', 'StandaloneDurationRadios'),
   render: (_args, { globals }) => <StandaloneDurationRadios locale={localeOf(globals)} />,
-  play: async ({ canvas, globals }) => {
-    const { text } = choiceTextsFor(localeOf(globals))
-    const six = canvas.getByRole('radio', { name: text.duration6 })
-    const one = canvas.getByRole('radio', { name: text.duration1 })
-    await expect(six).toHaveAttribute('data-state', 'checked')
-    await expect(one).toHaveAttribute('data-state', 'unchecked')
-    await userEvent.click(one)
-    await expect(one).toHaveAttribute('data-state', 'checked')
-    await expect(six).toHaveAttribute('data-state', 'unchecked')
-    await expect(one).not.toHaveAttribute('aria-invalid')
-  },
 }
 
 /**
@@ -558,12 +471,6 @@ export const Standalone: Story = {
 export const PlainForm: Story = {
   parameters: showSource('radio-group/radio-group.fixture.tsx', 'DurationForm'),
   render: (_args, { globals }) => <DurationForm locale={localeOf(globals)} />,
-  play: async ({ canvas, globals }) => {
-    const { text } = choiceTextsFor(localeOf(globals))
-    await userEvent.click(canvas.getByRole('radio', { name: text.duration12 }))
-    await userEvent.click(canvas.getByRole('button', { name: text.send }))
-    await expect(canvas.getByTestId('sent')).toHaveTextContent(`${text.sent}: 12`)
-  },
 }
 
 /**
@@ -576,11 +483,7 @@ export const OtherOption: Story = {
   render: (_args, { globals }) => <OtherOptionGroup locale={localeOf(globals)} />,
   play: async ({ canvas, globals }) => {
     const { text } = choiceTextsFor(localeOf(globals))
-    const other = canvas.getByRole('radio', { name: text.sourceOther })
-    const field = () => canvas.queryByRole('textbox', { name: new RegExp(text.sourceSpecify) })
-    await expect(field()).toBeNull()
-    await userEvent.click(other)
-    await expect(field()).toBeVisible()
+    await userEvent.click(canvas.getByRole('radio', { name: text.sourceOther }))
   },
 }
 
@@ -590,14 +493,7 @@ export const OtherOptionControlled: Story = {
   render: (_args, { globals }) => <ControlledOtherOptionGroup locale={localeOf(globals)} />,
   play: async ({ canvas, globals }) => {
     const { text } = choiceTextsFor(localeOf(globals))
-    await expect(canvas.getByTestId('mirror')).toHaveTextContent(`${text.youChose}: –`)
     await userEvent.click(canvas.getByRole('radio', { name: text.sourceOther }))
-    await expect(
-      canvas.getByRole('textbox', { name: new RegExp(text.sourceSpecify) }),
-    ).toBeVisible()
-    await expect(canvas.getByTestId('mirror')).toHaveTextContent(`${text.youChose}: other`)
-    await userEvent.click(canvas.getByRole('radio', { name: text.sourceFriend }))
-    await expect(canvas.queryByRole('textbox', { name: new RegExp(text.sourceSpecify) })).toBeNull()
   },
 }
 

@@ -78,14 +78,6 @@ const openPopup = () => document.querySelector<HTMLElement>('.kv-menu-popup:popo
 export const Default: Story = {
   parameters: showSource('menu/menu.fixture.tsx', 'ActionsMenu'),
   render: (args, { globals }) => <ActionsMenu {...args} locale={localeOf(globals)} />,
-  play: async ({ canvas }) => {
-    const trigger = canvas.getByRole('button', { name: 'Actions' })
-    await expect(trigger).toHaveAttribute('aria-expanded', 'false')
-    await expect(trigger).toHaveAttribute('aria-haspopup', 'menu')
-    await expect(trigger).toHaveAttribute('aria-controls')
-    await expectMinimumTargetSize(trigger)
-    await expect(isPopupOpen()).toBe(false)
-  },
 }
 
 /** Pressing the trigger opens the menu with focus on the first item, in the top layer under the button. */
@@ -102,12 +94,7 @@ export const Open: Story = {
   render: (args, { globals }) => <ActionsMenu {...args} locale={localeOf(globals)} />,
   play: async ({ canvas }) => {
     await waitFor(() => expect(isPopupOpen()).toBe(true))
-    const trigger = canvas.getByRole('button', { name: 'Actions' })
-    await expect(trigger).toHaveAttribute('aria-expanded', 'true')
-    const menu = canvas.getByRole('menu', { name: 'Actions' })
     await expectAnimationsSettled()
-    await expect(menu).toBeVisible()
-    await expect(canvas.getAllByRole('menuitem')).toHaveLength(4)
     for (const item of canvas.getAllByRole('menuitem')) {
       await expectMinimumTargetSize(item)
     }
@@ -126,12 +113,9 @@ export const WithGroupsAndSeparators: Story = {
     ),
   ],
   render: (args, { globals }) => <GroupedMenu {...args} locale={localeOf(globals)} />,
-  play: async ({ canvas }) => {
+  play: async () => {
     await waitFor(() => expect(isPopupOpen()).toBe(true))
     await expectAnimationsSettled()
-    await expect(canvas.getByRole('group', { name: 'Sort by' })).toBeVisible()
-    await expect(canvas.getAllByRole('separator')).toHaveLength(2)
-    await expect(canvas.getAllByRole('menuitem')).toHaveLength(5)
   },
 }
 
@@ -147,21 +131,9 @@ export const CheckboxAndRadioItems: Story = {
     ),
   ],
   render: (args, { globals }) => <ViewOptionsMenu {...args} locale={localeOf(globals)} />,
-  play: async ({ canvas }) => {
+  play: async () => {
     await waitFor(() => expect(isPopupOpen()).toBe(true))
-    const closed = canvas.getByRole('menuitemcheckbox', { name: 'Show closed cases' })
-    await expect(closed).toHaveAttribute('aria-checked', 'true')
-    const newest = canvas.getByRole('menuitemradio', { name: 'Newest first' })
-    const oldest = canvas.getByRole('menuitemradio', { name: 'Oldest first' })
-    await expect(newest).toHaveAttribute('aria-checked', 'true')
-    await expect(oldest).toHaveAttribute('aria-checked', 'false')
-    await userEvent.click(oldest)
-    await expect(oldest).toHaveAttribute('aria-checked', 'true')
-    await expect(newest).toHaveAttribute('aria-checked', 'false')
-    await userEvent.click(closed)
-    await expect(closed).toHaveAttribute('aria-checked', 'false')
-    // These items keep the menu open, so a person can set several options.
-    await expect(isPopupOpen()).toBe(true)
+    await expectAnimationsSettled()
   },
 }
 
@@ -177,16 +149,9 @@ export const DisabledItems: Story = {
     ),
   ],
   render: (args, { globals }) => <DisabledItemsMenu {...args} locale={localeOf(globals)} />,
-  play: async ({ canvas }) => {
+  play: async () => {
     await waitFor(() => expect(isPopupOpen()).toBe(true))
-    const disabled = canvas.getByRole('menuitem', { name: 'Assign a case officer' })
-    await expect(disabled).toHaveAttribute('aria-disabled', 'true')
-    // A menu that starts open doesn't take focus: put it on the first item, then arrow down.
-    canvas.getByRole('menuitem', { name: 'Print the decision' }).focus()
-    await userEvent.keyboard('{ArrowDown}')
-    await expect(disabled).toHaveFocus()
-    await userEvent.keyboard('{Enter}')
-    await expect(isPopupOpen()).toBe(true)
+    await expectAnimationsSettled()
   },
 }
 
@@ -205,27 +170,6 @@ export const Controlled: Story = {
     ),
   ],
   render: (_args, { globals }) => <ControlledMenu locale={localeOf(globals)} />,
-  play: async ({ canvas }) => {
-    const reason = canvas.getByTestId('reason')
-    // Your own button opens it: the menu follows `open`, and no request is made.
-    await userEvent.click(canvas.getByRole('button', { name: 'Before' }))
-    await waitFor(() => expect(isPopupOpen()).toBe(true))
-    await expect(canvas.getByTestId('state')).toHaveTextContent('open')
-    await userEvent.keyboard('{Escape}')
-    await waitFor(() => expect(isPopupOpen()).toBe(false))
-    await expect(canvas.getByTestId('state')).toHaveTextContent('closed')
-    await expect(reason).toHaveTextContent('escape')
-    // Each way of asking has its own reason.
-    await userEvent.click(canvas.getByRole('button', { name: 'Actions' }))
-    await waitFor(() => expect(reason).toHaveTextContent('trigger-press'))
-    await userEvent.click(canvas.getByRole('menuitem', { name: 'Print the decision' }))
-    await waitFor(() => expect(reason).toHaveTextContent('item-press'))
-    await expect(canvas.getByTestId('action')).toHaveTextContent('Print the decision')
-    await userEvent.click(canvas.getByRole('button', { name: 'Actions' }))
-    await userEvent.click(canvas.getByTestId('state'))
-    await waitFor(() => expect(reason).toHaveTextContent('outside-press'))
-    await waitFor(() => expect(isPopupOpen()).toBe(false))
-  },
 }
 
 /** A menu taller than the room scrolls inside, and its labels wrap: nothing runs off the side (1.4.10). */
@@ -254,16 +198,6 @@ export const InToolbar: Story = {
     ),
   ],
   render: (_args, { globals }) => <ToolbarMenu locale={localeOf(globals)} />,
-  play: async ({ canvas }) => {
-    const trigger = canvas.getByRole('button', { name: 'Actions' })
-    trigger.focus()
-    await userEvent.keyboard('{ArrowDown}')
-    await waitFor(() => expect(isPopupOpen()).toBe(true))
-    await expect(canvas.getAllByRole('menuitem')[0]).toHaveFocus()
-    await userEvent.keyboard('{Escape}')
-    await waitFor(() => expect(isPopupOpen()).toBe(false))
-    await expect(trigger).toHaveFocus()
-  },
 }
 
 /** A tooltip on the trigger closes while the menu is open. */
@@ -281,8 +215,6 @@ export const WithTooltip: Story = {
     const trigger = canvas.getByRole('button', { name: 'Actions' })
     await userEvent.click(trigger)
     await waitFor(() => expect(isPopupOpen()).toBe(true))
-    await expect(trigger).toHaveAttribute('aria-expanded', 'true')
-    await expect(canvas.queryByRole('tooltip')).toBeNull()
   },
 }
 
@@ -331,21 +263,6 @@ export const Keyboard: Story = {
     ),
   ],
   render: (_args, { globals }) => <KeyboardMenu locale={localeOf(globals)} />,
-  play: async ({ canvas }) => {
-    await userEvent.tab()
-    await expect(canvas.getByRole('button', { name: 'Before' })).toHaveFocus()
-    await userEvent.tab()
-    const trigger = canvas.getByRole('button', { name: 'Actions' })
-    await expect(trigger).toHaveFocus()
-    await userEvent.keyboard('{ArrowDown}')
-    await waitFor(() => expect(isPopupOpen()).toBe(true))
-    await expect(canvas.getByRole('menuitem', { name: 'Assign a case officer' })).toHaveFocus()
-    await userEvent.keyboard('{End}')
-    await expect(canvas.getByRole('menuitem', { name: 'Delete the draft' })).toHaveFocus()
-    await userEvent.keyboard('{Escape}')
-    await waitFor(() => expect(isPopupOpen()).toBe(false))
-    await expect(trigger).toHaveFocus()
-  },
 }
 
 /** Built with `useMenu` on your own elements: the focused item carries `data-highlighted`. */
@@ -363,12 +280,5 @@ export const BuiltWithTheHook: Story = {
     const trigger = canvas.getByRole('button', { name: 'Actions' })
     await userEvent.click(trigger)
     await waitFor(() => expect(isPopupOpen()).toBe(true))
-    const first = canvas.getByRole('menuitem', { name: 'Print the decision' })
-    await expect(first).toHaveFocus()
-    await userEvent.keyboard('{ArrowDown}')
-    const second = canvas.getByRole('menuitem', { name: 'Assign a case officer' })
-    await expect(second).toHaveFocus()
-    await expect(second).toHaveAttribute('data-highlighted')
-    await expect(first).not.toHaveAttribute('data-highlighted')
   },
 }

@@ -1,6 +1,5 @@
 import { fi } from '@kvirn/i18n/fi'
 import { sv } from '@kvirn/i18n/sv'
-import { expectNoA11yViolations } from '@kvirn/testing'
 import { useEffect, useState } from 'react'
 import { afterEach, beforeEach, describe, expect, expectTypeOf, test, vi } from 'vite-plus/test'
 import type { MockInstance } from 'vite-plus/test'
@@ -697,17 +696,6 @@ describe('announcing rejections', () => {
       String(message).includes('useAnnouncer()'),
     )
     expect(announcerWarnings).toHaveLength(1)
-  })
-
-  test('axe: no violations with the live region filled', async () => {
-    const { container } = await render(
-      <KvirnProvider>
-        <MaskedInput options={{ mask: masks.digits() }} />
-      </KvirnProvider>,
-    )
-    await userEvent.type(field(), 'a')
-    await expect.element(status()).toHaveTextContent('Only digits can be entered here.')
-    await expectNoA11yViolations(container)
   })
 })
 

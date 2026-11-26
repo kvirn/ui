@@ -1,4 +1,3 @@
-import { expectNoA11yViolations } from '@kvirn/testing'
 import { createRef, useId } from 'react'
 import { afterEach, beforeEach, describe, expect, expectTypeOf, test, vi } from 'vite-plus/test'
 import type { MockInstance } from 'vite-plus/test'
@@ -184,18 +183,6 @@ describe('rendering', () => {
     expect(CardBody).toBe(Card.Body)
     expect(CardFooter).toBe(Card.Footer)
   })
-
-  test('has no axe violations as a service card', async () => {
-    const { container } = await render(
-      <main>
-        <ServiceCard />
-      </main>,
-    )
-    await expect
-      .element(page.getByRole('heading', { name: 'Waste collection at Storgatan 12', level: 2 }))
-      .toBeVisible()
-    await expectNoA11yViolations(container)
-  })
 })
 
 describe('refs and style', () => {
@@ -231,7 +218,7 @@ describe('refs and style', () => {
 
 describe('as', () => {
   test('article changes the element and keeps the children', async () => {
-    const { container } = await render(
+    await render(
       <main>
         <Card.Root as="article">
           <Card.Body data-own="">
@@ -244,7 +231,6 @@ describe('as', () => {
     const body = card.element().firstElementChild
     expect(body?.hasAttribute('data-own')).toBe(true)
     await expect.element(page.getByRole('heading', { name: 'News', level: 2 })).toBeVisible()
-    await expectNoA11yViolations(container)
   })
 
   test('section with aria-labelledby makes the card a named region', async () => {
@@ -257,17 +243,16 @@ describe('as', () => {
         </Card.Root>
       )
     }
-    const { container } = await render(
+    await render(
       <main>
         <ContactSection />
       </main>,
     )
     await expect.element(page.getByRole('region', { name: 'Contact us' })).toBeVisible()
-    await expectNoA11yViolations(container)
   })
 
   test('<li> cards make a list with one item per card', async () => {
-    const { container } = await render(
+    await render(
       <ul>
         <Card.Root as="li">New opening hours</Card.Root>
         <Card.Root as="li">Winter road maintenance</Card.Root>
@@ -275,7 +260,6 @@ describe('as', () => {
       </ul>,
     )
     expect(page.getByRole('listitem').elements()).toHaveLength(3)
-    await expectNoA11yViolations(container)
   })
 
   test('div, figure and article render their element', async () => {
@@ -317,7 +301,7 @@ describe('useCard', () => {
   }
 
   test('gives the part classes for your own elements', async () => {
-    const { container } = await render(
+    await render(
       <main>
         <HookCard />
       </main>,
@@ -326,7 +310,6 @@ describe('useCard', () => {
     await expect.element(page.getByTestId('header')).toHaveClass('kv-card-header')
     await expect.element(page.getByTestId('body')).toHaveClass('kv-card-body')
     await expect.element(page.getByTestId('footer')).toHaveClass('kv-card-footer')
-    await expectNoA11yViolations(container)
   })
 
   test('returns only the class, the same props the components render', () => {

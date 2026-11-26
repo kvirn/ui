@@ -1,4 +1,3 @@
-import { expectNoA11yViolations } from '@kvirn/testing'
 import { createRef, useState } from 'react'
 import type { ReactNode } from 'react'
 import { renderToString } from 'react-dom/server'
@@ -32,13 +31,12 @@ afterEach(() => {
 
 describe('rendering', () => {
   test('is a native button with aria-pressed, off by default, and the part classes', async () => {
-    const { container } = await render(<Toggle>Show only unread</Toggle>)
+    await render(<Toggle>Show only unread</Toggle>)
     const toggle = page.getByRole('button', { name: 'Show only unread' })
     await expect.element(toggle).toHaveAttribute('type', 'button')
     await expect.element(toggle).toHaveAttribute('aria-pressed', 'false')
     await expect.element(toggle).not.toHaveAttribute('data-pressed')
     expect(toggle.element().className).toBe('kv-button kv-toggle')
-    await expectNoA11yViolations(container)
     expect(consoleWarn).not.toHaveBeenCalled()
   })
 
@@ -63,11 +61,10 @@ describe('rendering', () => {
 
 describe('uncontrolled', () => {
   test('defaultPressed starts it on, and a press switches it, with data-pressed', async () => {
-    const { container } = await render(<Toggle defaultPressed>Show only unread</Toggle>)
+    await render(<Toggle defaultPressed>Show only unread</Toggle>)
     const toggle = page.getByRole('button', { name: 'Show only unread' })
     await expect.element(toggle).toHaveAttribute('aria-pressed', 'true')
     await expect.element(toggle).toHaveAttribute('data-pressed', '')
-    await expectNoA11yViolations(container)
     await userEvent.click(toggle)
     await expect.element(toggle).toHaveAttribute('aria-pressed', 'false')
     await expect.element(toggle).not.toHaveAttribute('data-pressed')
@@ -155,7 +152,7 @@ describe('controlled', () => {
 
 describe('disabled', () => {
   test('is natively disabled, keeps aria-pressed and is skipped by Tab', async () => {
-    const { container } = await render(
+    await render(
       <>
         <Toggle disabled defaultPressed>
           Show only unread
@@ -169,12 +166,11 @@ describe('disabled', () => {
     await expect.element(toggle).toHaveAttribute('data-disabled', '')
     await userEvent.keyboard('{Tab}')
     await expect.element(page.getByRole('button', { name: 'After' })).toHaveFocus()
-    await expectNoA11yViolations(container)
   })
 
   test('a focusable disabled toggle uses aria-disabled, stays in the Tab order, and ignores press, Enter and Space', async () => {
     const onPressedChange = vi.fn<PressedChange>()
-    const { container } = await render(
+    await render(
       <Toggle disabled focusableWhenDisabled onPressedChange={onPressedChange}>
         Show only unread
       </Toggle>,
@@ -190,7 +186,6 @@ describe('disabled', () => {
     expect(onPressedChange).not.toHaveBeenCalled()
     await expect.element(toggle).toHaveAttribute('aria-pressed', 'false')
     await expect.element(toggle).toHaveFocus()
-    await expectNoA11yViolations(container)
   })
 })
 
@@ -290,9 +285,7 @@ describe('useToggle', () => {
 
   test('gives spreadable toggleProps with the same behaviour', async () => {
     const onPressedChange = vi.fn<PressedChange>()
-    const { container } = await render(
-      <HookToggle onPressedChange={onPressedChange}>Fet</HookToggle>,
-    )
+    await render(<HookToggle onPressedChange={onPressedChange}>Fet</HookToggle>)
     const toggle = page.getByRole('button', { name: /Fet/ })
     await expect.element(toggle).toHaveAttribute('aria-pressed', 'false')
     await userEvent.click(toggle)
@@ -302,7 +295,6 @@ describe('useToggle', () => {
       true,
       expect.objectContaining({ event: expect.anything() }),
     )
-    await expectNoA11yViolations(container)
   })
 
   test('a focusable disabled hook toggle blocks the press', async () => {

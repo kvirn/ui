@@ -1,4 +1,3 @@
-import { expectNoA11yViolations } from '@kvirn/testing'
 import { createRef } from 'react'
 import { afterEach, beforeEach, describe, expect, test, vi } from 'vite-plus/test'
 import type { MockInstance } from 'vite-plus/test'
@@ -7,7 +6,6 @@ import { render } from 'vitest-browser-react'
 import { resetDevWarnings } from '../dev/dev-warning.ts'
 import { Field } from '../field/field.tsx'
 import { Fieldset } from '../fieldset/fieldset.tsx'
-import { Heading } from '../heading/heading.tsx'
 import { TextInput } from '../text-input/text-input.tsx'
 import { Prose, ProseRoot } from './prose.tsx'
 import { useProse } from './use-prose.ts'
@@ -74,19 +72,6 @@ describe('Prose', () => {
     expect(Prose.Root).toBe(ProseRoot)
     expect(Prose).toBe(ProseRoot)
     expect(useProse().rootProps).toEqual({ className: 'kv-prose' })
-  })
-
-  test('has no axe violations', async () => {
-    const { container } = await render(
-      <main>
-        <Prose>
-          <Heading as="h1">Contact us</Heading>
-          <p>Vi svarar vardagar 9–16.</p>
-        </Prose>
-      </main>,
-    )
-    await expect.element(page.getByRole('heading', { level: 1 })).toBeVisible()
-    await expectNoA11yViolations(container)
   })
 })
 
@@ -249,38 +234,6 @@ describe('Prose as the description of a Field or Fieldset', () => {
     await new Promise((resolve) => setTimeout(resolve, 50))
     expect(consoleWarn).not.toHaveBeenCalled()
   })
-
-  test('a Field with a Prose help text has no axe violations', async () => {
-    const { container } = await render(
-      <Field.Root invalid>
-        <Field.Label>Personnummer</Field.Label>
-        <Field.Prose>
-          <p>12 digits, without a hyphen.</p>
-        </Field.Prose>
-        <TextInput name="pnr" />
-        <Field.ErrorMessage>Enter your personal identity number</Field.ErrorMessage>
-      </Field.Root>,
-    )
-    await expect.element(page.getByRole('textbox')).toBeVisible()
-    await expectNoA11yViolations(container)
-  })
-
-  test('a Fieldset with a Prose help text has no axe violations', async () => {
-    const { container } = await render(
-      <Fieldset.Root group>
-        <Fieldset.Legend>How do you want to be contacted?</Fieldset.Legend>
-        <Fieldset.Prose>
-          <p>Select all that apply.</p>
-        </Fieldset.Prose>
-        <Field.Root>
-          <Field.Label marker="none">Email</Field.Label>
-          <TextInput type="email" />
-        </Field.Root>
-      </Fieldset.Root>,
-    )
-    await expect.element(page.getByRole('group')).toBeVisible()
-    await expectNoA11yViolations(container)
-  })
 })
 
 describe('Prose content classes: kv-inset and kv-steps', () => {
@@ -340,42 +293,5 @@ describe('Prose content classes: kv-inset and kv-steps', () => {
     expect(inset.querySelector('[tabindex], a, button')).toBeNull()
     expect(page.getByRole('complementary').elements()).toHaveLength(0)
     await expect.element(page.getByText('Note:')).toBeVisible()
-  })
-
-  test('an article with an inset, steps and a figure with alt text has no axe violations', async () => {
-    const { container } = await render(
-      <main>
-        <Prose as="article">
-          <h1>Apply for a home adaptation</h1>
-          <div className="kv-inset">
-            <p>
-              <strong>Note:</strong> Bring ID to the meeting.
-            </p>
-          </div>
-          <h2>How it works</h2>
-          <ol className="kv-steps">
-            <li>
-              <h3>Apply in the e-service</h3>
-              <p>Fill in the form.</p>
-            </li>
-            <li>
-              <h3>You get a decision</h3>
-              <p>The decision comes by post.</p>
-            </li>
-          </ol>
-          <figure>
-            <img
-              alt="Drawing of the bathroom"
-              src="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='4' height='4'/%3E"
-              width={4}
-              height={4}
-            />
-            <figcaption>Kvirnby kommun, 2025</figcaption>
-          </figure>
-        </Prose>
-      </main>,
-    )
-    await expect.element(page.getByRole('figure', { name: 'Kvirnby kommun, 2025' })).toBeVisible()
-    await expectNoA11yViolations(container)
   })
 })

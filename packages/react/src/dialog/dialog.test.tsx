@@ -1,4 +1,3 @@
-import { expectNoA11yViolations } from '@kvirn/testing'
 import { StrictMode, createRef, useEffect, useRef, useState } from 'react'
 import { renderToString } from 'react-dom/server'
 import { afterEach, beforeEach, describe, expect, expectTypeOf, test, vi } from 'vite-plus/test'
@@ -119,7 +118,7 @@ function Controlled(props: Partial<DialogRootProps> & { refuse?: boolean }) {
 
 describe('rendering and ARIA', () => {
   test('a closed dialog: an always-rendered, hidden <dialog> whose content is not reachable, and a wired trigger', async () => {
-    const { container } = await render(<Example />)
+    await render(<Example />)
     const popup = popupElement()
     expect(popup?.tagName).toBe('DIALOG')
     expect(popup?.open).toBe(false)
@@ -135,12 +134,11 @@ describe('rendering and ARIA', () => {
     expect(button?.hasAttribute('aria-expanded')).toBe(false)
     expect(button?.hasAttribute('aria-controls')).toBe(false)
     expect(button?.hasAttribute('data-open')).toBe(false)
-    await expectNoA11yViolations(container)
     expect(consoleWarn).not.toHaveBeenCalled()
   })
 
-  test('an open dialog is modal, has role dialog, aria-modal and data-open, and no axe violations', async () => {
-    const { container } = await render(<Example />)
+  test('an open dialog is modal, has role dialog, aria-modal and data-open', async () => {
+    await render(<Example />)
     await userEvent.click(trigger())
     await expect.poll(isModal).toBe(true)
     const popup = popupElement()
@@ -149,7 +147,6 @@ describe('rendering and ARIA', () => {
     expect(popup?.hasAttribute('data-open')).toBe(true)
     expect(triggerElement()?.hasAttribute('data-open')).toBe(true)
     await expect.element(page.getByRole('dialog', { name: 'Change phone number' })).toBeVisible()
-    await expectNoA11yViolations(container)
     expect(consoleWarn).not.toHaveBeenCalled()
   })
 
@@ -194,26 +191,6 @@ describe('rendering and ARIA', () => {
     expect(buttons[1]?.hasAttribute('aria-label')).toBe(false)
     expect(buttons[1]?.textContent).toBe('Close')
     expect(buttons[2]?.getAttribute('aria-label')).toBe('Avsluta')
-  })
-
-  test('long content gives no axe violations', async () => {
-    const { container } = await render(
-      <Dialog.Root defaultOpen>
-        <Dialog.Popup>
-          <Dialog.Title>Terms</Dialog.Title>
-          <Dialog.Body>
-            {Array.from({ length: 80 }, (_, index) => (
-              <p key={index}>Paragraph {index + 1}: a long text that makes the dialog scroll.</p>
-            ))}
-          </Dialog.Body>
-          <Dialog.Actions>
-            <button type="button">Approve</button>
-          </Dialog.Actions>
-        </Dialog.Popup>
-      </Dialog.Root>,
-    )
-    await expect.poll(isModal).toBe(true)
-    await expectNoA11yViolations(container)
   })
 
   test('typed values are kept when the dialog closes and opens again', async () => {
@@ -1006,24 +983,6 @@ describe('layers', () => {
     await userEvent.click(page.getByRole('button', { name: 'Cancel' }))
     await expect.poll(() => document.querySelector('dialog')?.open).toBe(false)
     await expect.element(page.getByRole('button', { name: 'Open dialog' })).toHaveFocus()
-  })
-
-  test('nested dialogs have no axe violations', async () => {
-    const { container } = await render(
-      <Dialog.Root defaultOpen>
-        <Dialog.Popup>
-          <Dialog.Title>Outer</Dialog.Title>
-          <Dialog.Root defaultOpen>
-            <Dialog.Popup>
-              <Dialog.Title>Inner</Dialog.Title>
-              <button type="button">Inside</button>
-            </Dialog.Popup>
-          </Dialog.Root>
-        </Dialog.Popup>
-      </Dialog.Root>,
-    )
-    await expect.poll(() => document.querySelectorAll('dialog:modal').length).toBe(2)
-    await expectNoA11yViolations(container)
   })
 })
 

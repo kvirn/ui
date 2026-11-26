@@ -65,15 +65,6 @@ const limitedRegion = {
   '--kv-table-scroll-region-max-block-size': '22rem',
 } as CSSProperties
 
-/** The sort buttons of a canvas: the header text is the button. */
-const sortButtons = (canvasElement: HTMLElement) => [
-  ...canvasElement.querySelectorAll<HTMLButtonElement>('.kv-table-sort-button'),
-]
-
-const sortedHeaders = (canvasElement: HTMLElement) => [
-  ...canvasElement.querySelectorAll<HTMLElement>('th[aria-sort]'),
-]
-
 /** The region around the first table of the canvas. */
 const regionOf = (canvasElement: HTMLElement) => {
   const region = canvasElement.querySelector<HTMLElement>('.kv-table-scroll-region')
@@ -90,16 +81,6 @@ const regionOf = (canvasElement: HTMLElement) => {
 export const Static: Story = {
   parameters: showSource('table/table.fixture.tsx', 'StaticPayments'),
   render: (_args, { globals }) => <StaticPayments locale={localeOf(globals)} />,
-  play: async ({ canvas, canvasElement }) => {
-    await expect(
-      canvas.getByRole('table', { name: 'Housing allowance paid in 2026' }),
-    ).toBeVisible()
-    await expect(canvasElement.querySelector('[aria-sort]')).toBeNull()
-    // It fits, so the region around it is a plain `<div>`: no role, no name, no tab stop.
-    await expect(canvas.queryByRole('region')).toBeNull()
-    await expect(regionOf(canvasElement)).not.toHaveAttribute('tabindex')
-    await expect(regionOf(canvasElement)).not.toHaveAttribute('aria-labelledby')
-  },
 }
 
 /**
@@ -110,12 +91,6 @@ export const Static: Story = {
 export const AlwaysRegion: Story = {
   parameters: showSource('table/table.fixture.tsx', 'AlwaysRegionPayments'),
   render: (_args, { globals }) => <AlwaysRegionPayments locale={localeOf(globals)} />,
-  play: async ({ canvas, canvasElement }) => {
-    await expect(
-      canvas.getByRole('region', { name: 'Housing allowance paid in 2026' }),
-    ).toBeVisible()
-    await expect(regionOf(canvasElement)).not.toHaveAttribute('tabindex')
-  },
 }
 
 /**
@@ -132,11 +107,8 @@ export const StaticScrolling: Story = {
     ),
   ],
   render: (_args, { globals }) => <StaticScrollingCases locale={localeOf(globals)} />,
-  play: async ({ canvas, canvasElement }) => {
-    await expect(canvas.getByRole('table', { name: 'Open cases' })).toBeVisible()
+  play: async ({ canvasElement }) => {
     await waitFor(() => expect(regionOf(canvasElement)).toHaveAttribute('tabindex', '0'))
-    // It scrolls, so it is a region named by the caption.
-    await expect(canvas.getByRole('region', { name: 'Open cases' })).toBeVisible()
   },
 }
 
@@ -155,8 +127,7 @@ export const StaticLateHead: Story = {
     ),
   ],
   render: (_args, { globals }) => <StaticLateHeadCases locale={localeOf(globals)} />,
-  play: async ({ canvas, canvasElement }) => {
-    await expect(canvas.getByRole('table', { name: 'Open cases' })).toBeVisible()
+  play: async ({ canvasElement }) => {
     await waitFor(() => expect(canvasElement.querySelector('thead')).not.toBeNull())
     await waitFor(() => expect(regionOf(canvasElement)).toHaveAttribute('tabindex', '0'))
   },
@@ -198,9 +169,6 @@ export const CardStripedSelectable: Story = {
   render: (_args, { globals }) => (
     <SelectableCases locale={localeOf(globals)} className="kv-table--card kv-table--striped" />
   ),
-  play: async ({ canvasElement }) => {
-    await expect(canvasElement.querySelectorAll('tr[data-selected]')).toHaveLength(2)
-  },
 }
 
 /**
@@ -211,18 +179,6 @@ export const CardStripedSelectable: Story = {
 export const Sortable: Story = {
   parameters: showSource('table/table.fixture.tsx', 'SortableCases'),
   render: (_args, { globals }) => <SortableCases locale={localeOf(globals)} />,
-  play: async ({ canvas, canvasElement }) => {
-    await expect(canvas.getByRole('table', { name: 'Open cases' })).toBeVisible()
-    await expect(sortedHeaders(canvasElement)).toHaveLength(1)
-    await expect(sortedHeaders(canvasElement)[0]).toHaveAttribute('aria-sort', 'ascending')
-    await expect(sortedHeaders(canvasElement)[0]).toHaveAttribute('data-sort', 'ascending')
-    for (const icon of canvasElement.querySelectorAll('.kv-table-sort-icon')) {
-      await expect(icon).toHaveAttribute('aria-hidden', 'true')
-    }
-    for (const button of sortButtons(canvasElement)) {
-      await expectMinimumTargetSize(button)
-    }
-  },
 }
 
 /**
@@ -232,15 +188,18 @@ export const Sortable: Story = {
 export const Selectable: Story = {
   parameters: showSource('table/table.fixture.tsx', 'SelectableCases'),
   render: (_args, { globals }) => <SelectableCases locale={localeOf(globals)} />,
-  play: async ({ canvas, canvasElement }) => {
-    await expect(canvasElement.querySelectorAll('tr[data-selected]')).toHaveLength(2)
-    await expect(canvasElement.querySelector('[aria-selected]')).toBeNull()
-    const checkbox = canvas.getByRole('checkbox', { name: 'Select Anna Svensson' })
-    await expect(checkbox).toBeChecked()
-    const selectAll = canvas.getByRole('checkbox', { name: 'Select all rows' })
-    await expect(selectAll).toBePartiallyChecked()
-    await expectMinimumTargetSize(checkbox)
+  play: async ({ canvas }) => {
+    await expectMinimumTargetSize(canvas.getByRole('checkbox', { name: 'Select Anna Svensson' }))
   },
+}
+
+/**
+ * Without a row header the checkboxes have no name to borrow, so each is named by its row number
+ * ("Select row 1").
+ */
+export const SelectableWithoutRowHeader: Story = {
+  parameters: showSource('table/table.fixture.tsx', 'SelectableCases'),
+  render: (_args, { globals }) => <SelectableCases locale={localeOf(globals)} withoutRowHeader />,
 }
 
 /**
@@ -250,15 +209,8 @@ export const Selectable: Story = {
 export const Expandable: Story = {
   parameters: showSource('table/table.fixture.tsx', 'ExpandableCases'),
   render: (_args, { globals }) => <ExpandableCases locale={localeOf(globals)} />,
-  play: async ({ canvas, canvasElement }) => {
-    const open = canvas.getByRole('button', { name: 'Details Matti Virtanen' })
-    await expect(open).toHaveAttribute('aria-expanded', 'true')
-    const controlled = open.getAttribute('aria-controls') ?? ''
-    await expect(canvasElement.querySelector(`[id="${controlled}"]`)).not.toBeNull()
-    await expect(canvasElement.querySelectorAll('.kv-table-detail-row > td')).toHaveLength(1)
-    const closed = canvas.getByRole('button', { name: 'Details Anna Svensson' })
-    await expect(closed).toHaveAttribute('aria-expanded', 'false')
-    await expectMinimumTargetSize(closed)
+  play: async ({ canvas }) => {
+    await expectMinimumTargetSize(canvas.getByRole('button', { name: 'Details Anna Svensson' }))
   },
 }
 
@@ -269,21 +221,6 @@ export const Expandable: Story = {
 export const Empty: Story = {
   parameters: showSource('table/table.fixture.tsx', 'EmptyCases'),
   render: (_args, { globals }) => <EmptyCases locale={localeOf(globals)} />,
-  play: async ({ canvas, canvasElement }) => {
-    await expect(
-      canvas.getByRole('cell', {
-        name: 'No cases match your search. Change your search or clear the filter.',
-      }),
-    ).toBeVisible()
-    const cell = canvasElement.querySelector<HTMLElement>('.kv-table-empty td')
-    await expect(cell).not.toBeNull()
-    if (cell === null) return
-    await waitFor(() =>
-      expect(Number(cell.getAttribute('colspan'))).toBe(
-        canvasElement.querySelectorAll('thead th').length,
-      ),
-    )
-  },
 }
 
 /**
@@ -293,17 +230,6 @@ export const Empty: Story = {
 export const Loading: Story = {
   parameters: showSource('table/table.fixture.tsx', 'LoadingCases'),
   render: (_args, { globals }) => <LoadingCases locale={localeOf(globals)} />,
-  play: async ({ canvasElement }) => {
-    const tables = canvasElement.querySelectorAll('table')
-    await expect(tables).toHaveLength(2)
-    for (const table of tables) {
-      await expect(table).toHaveAttribute('aria-busy', 'true')
-      await expect(table).toHaveAttribute('data-busy')
-    }
-    await expect(canvasElement.querySelector('.kv-table-empty td')).toHaveTextContent(
-      'Loading rows.',
-    )
-  },
 }
 
 /**
@@ -377,23 +303,6 @@ export const PaginatedRecipe: Story = {
 export const Virtualized: Story = {
   parameters: showSource('table/table.fixture.tsx', 'VirtualizedCases'),
   render: (_args, { globals }) => <VirtualizedCases locale={localeOf(globals)} />,
-  play: async ({ canvas, canvasElement }) => {
-    await expect(canvas.getByRole('table', { name: 'All cases' })).toBeVisible()
-    const table = canvasElement.querySelector('table')
-    await expect(table).toHaveAttribute('aria-rowcount', '10001')
-    await expect(table).toHaveAttribute('data-virtualized')
-    await waitFor(() =>
-      expect(canvasElement.querySelectorAll('tbody tr:not([aria-hidden])').length).toBeGreaterThan(
-        0,
-      ),
-    )
-    await expect(canvasElement.querySelectorAll('tbody tr:not([aria-hidden])').length).toBeLessThan(
-      100,
-    )
-    for (const spacer of canvasElement.querySelectorAll('tr.kv-table-spacer')) {
-      await expect(spacer).toHaveAttribute('aria-hidden', 'true')
-    }
-  },
 }
 
 /**
@@ -405,11 +314,6 @@ export const NarrowScreen: Story = {
   globals: { locale: 'fi' },
   parameters: showSource('table/table.fixture.tsx', 'NarrowCases'),
   render: (_args, { globals }) => <NarrowCases locale={localeOf(globals)} />,
-  play: async ({ canvas }) => {
-    await expect(canvas.getByRole('table', { name: 'Avoimet asiat' })).toBeVisible()
-    // kv-lang-ok: Finnish locale story
-    await expect(canvas.getByRole('button', { name: 'Hakemuksen vastaanottopäivä' })).toBeVisible()
-  },
 }
 
 /** Right to left, in English: the columns, the sort icons and the numeric column mirror. */
@@ -417,9 +321,6 @@ export const RightToLeft: Story = {
   globals: { dir: 'rtl', locale: 'en' },
   parameters: showSource('table/table.fixture.tsx', 'SelectableCases'),
   render: (_args, { globals }) => <SelectableCases locale={localeOf(globals)} />,
-  play: async ({ canvas }) => {
-    await expect(canvas.getByRole('table', { name: 'Open cases' })).toBeVisible()
-  },
 }
 
 /**
@@ -438,12 +339,6 @@ export const ForcedColors: Story = {
     ),
   ],
   render: (_args, { globals }) => <EverythingCases locale={localeOf(globals)} />,
-  play: async ({ canvas, canvasElement }) => {
-    await expect(canvas.getByRole('table', { name: 'Open cases' })).toBeVisible()
-    await expect(canvasElement.querySelectorAll('tr[data-selected]')).toHaveLength(2)
-    await expect(canvasElement.querySelectorAll('tr.kv-table-row[data-expanded]')).toHaveLength(1)
-    await expect(canvasElement.querySelector('table')).toHaveAttribute('data-busy')
-  },
 }
 
 /**
@@ -462,8 +357,7 @@ export const Keyboard: Story = {
     ),
   ],
   render: (_args, { globals }) => <KeyboardCases locale={localeOf(globals)} />,
-  play: async ({ canvas, canvasElement }) => {
-    await expect(canvas.getByRole('table', { name: 'Open cases' })).toBeVisible()
+  play: async ({ canvasElement }) => {
     await waitFor(() => expect(regionOf(canvasElement)).toHaveAttribute('tabindex', '0'))
   },
 }

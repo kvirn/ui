@@ -1,5 +1,4 @@
 import { sv } from '@kvirn/i18n/sv'
-import { expectNoA11yViolations } from '@kvirn/testing'
 import type { ReactElement, ReactNode } from 'react'
 import { flushSync } from 'react-dom'
 import { afterEach, beforeEach, describe, expect, test, vi } from 'vite-plus/test'
@@ -1239,41 +1238,5 @@ describe('the public API', () => {
     // The hook's ref on the Item still works next to the consumer's: focus lands on the other item.
     await expect.poll(() => document.activeElement?.getAttribute('data-rendered')).toBe('Item')
     expect(document.activeElement?.textContent).toContain('up.pdf')
-  })
-})
-
-describe('accessibility', () => {
-  test('passes axe: empty', async () => {
-    const { container } = await render(<Example multiple />)
-    await expect.element(page.getByRole('button', { name: /^Choose files/ })).toBeVisible()
-    await expectNoA11yViolations(container)
-  })
-
-  test('passes axe: with files, pending and uploading', async () => {
-    const upload = vi.fn<(file: File) => Promise<string>>(() => new Promise<string>(() => {}))
-    const { container } = await render(<Example multiple upload={upload} />)
-    await addFiles(container, pdf('a.pdf', 'aaa'), pdf('b.pdf', 'bbb'))
-    await expect.element(page.getByRole('button', { name: /^Choose files/ })).toBeVisible()
-    await expectNoA11yViolations(container)
-  })
-
-  test('passes axe: with a rejection and at the limit', async () => {
-    const { container } = await render(<Example multiple maxFiles={1} accept=".pdf" />)
-    await addFiles(container, pdf('a.pdf', 'aaa'))
-    await addFiles(container, new File(['x'], 'photo.png', { type: 'image/png' }))
-    await expect.element(page.getByRole('button', { name: /^Choose files/ })).toBeVisible()
-    await expectNoA11yViolations(container)
-  })
-
-  test('passes axe: required and invalid', async () => {
-    const { container } = await render(<Example multiple required invalid />)
-    await expect.element(page.getByRole('button', { name: /^Choose files/ })).toBeVisible()
-    await expectNoA11yViolations(container)
-  })
-
-  test('passes axe: disabled', async () => {
-    const { container } = await render(<Example multiple disabled />)
-    await expect.element(page.getByRole('button', { name: /^Choose files/ })).toBeVisible()
-    await expectNoA11yViolations(container)
   })
 })

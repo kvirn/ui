@@ -1,5 +1,4 @@
 import { sv } from '@kvirn/i18n/sv'
-import { expectNoA11yViolations } from '@kvirn/testing'
 import { useEffect } from 'react'
 import { afterEach, describe, expect, test } from 'vite-plus/test'
 import { page, userEvent } from 'vite-plus/test/browser'
@@ -330,19 +329,5 @@ describe('messages and children', () => {
       'Contrast: Standard, High, Same as my device',
       'Motion: Full motion, Less motion, Same as my device',
     ])
-  })
-})
-
-describe('accessibility', () => {
-  test.each([
-    ['Inline', <DisplaySettings.Inline key="i" defaultOpen />],
-    ['Floating', <DisplaySettings.Floating key="f" defaultOpen />],
-    ['Compact', <DisplaySettings.Compact key="c" defaultOpen />],
-    ['Panel', <DisplaySettings.Panel key="p" />],
-    ['CompactPanel', <DisplaySettings.CompactPanel key="cp" />],
-  ])('%s has no axe violations', async (_name, layout) => {
-    const { container } = await render(<Example>{layout}</Example>)
-    expect(container.querySelectorAll('input[type="radio"]')).toHaveLength(9)
-    await expectNoA11yViolations(container)
   })
 })

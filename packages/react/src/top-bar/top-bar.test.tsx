@@ -1,4 +1,3 @@
-import { expectNoA11yViolations } from '@kvirn/testing'
 import { mergeProps } from '../merge-props/merge-props.ts'
 import { readAloud } from '@kvirn/testing/read-aloud'
 import { createRef } from 'react'
@@ -205,21 +204,6 @@ describe('keyboard', () => {
       await expect.element(first).toHaveFocus()
     }
   })
-})
-
-describe('axe', () => {
-  test.each([undefined, 'primary', 'secondary', 'accent'] as const)(
-    'has no axe violations with variant %s',
-    async (variant) => {
-      const { container } = await render(
-        <main>
-          <ReferenceBar variant={variant} />
-        </main>,
-      )
-      await expect.element(page.getByRole('navigation', { name: 'Verktyg' })).toBeVisible()
-      await expectNoA11yViolations(container)
-    },
-  )
 })
 
 describe('useTopBar', () => {

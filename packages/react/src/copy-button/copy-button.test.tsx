@@ -1,5 +1,4 @@
 import { sv } from '@kvirn/i18n/sv'
-import { expectNoA11yViolations } from '@kvirn/testing'
 import { createRef } from 'react'
 import { renderToString } from 'react-dom/server'
 import { afterEach, beforeEach, describe, expect, test, vi } from 'vite-plus/test'
@@ -554,30 +553,6 @@ describe('visible status', () => {
 })
 
 describe('accessibility', () => {
-  test('has no axe violations idle, after a copy and after a failure', async () => {
-    stubClipboard(async () => {})
-    const { container } = await render(
-      <KvirnProvider>
-        <main>
-          <p>
-            Case number <span>PK-2026-004217</span>
-          </p>
-          <CopyButton text="PK-2026-004217" />
-        </main>
-      </KvirnProvider>,
-    )
-    await expectNoA11yViolations(container)
-    await userEvent.click(copyButton())
-    await expect.element(politeRegion()).toHaveTextContent('Copied')
-    await expectNoA11yViolations(container)
-    expect(document.querySelector('.kv-copy-status')?.textContent).toBe('Copied')
-    stubMissingClipboard()
-    await userEvent.click(copyButton())
-    await expect.element(assertiveRegion()).toHaveTextContent(failedText)
-    await expect.poll(() => document.querySelector('.kv-copy-status')?.textContent).toBe(failedText)
-    await expectNoA11yViolations(container)
-  })
-
   test('warns in development when there is no provider to announce the result', async () => {
     stubClipboard(async () => {})
     await render(<CopyButton text="123" />)

@@ -1,4 +1,3 @@
-import { expectNoA11yViolations } from '@kvirn/testing'
 import { expect, test } from 'vite-plus/test'
 import { page } from 'vite-plus/test/browser'
 import { render } from 'vitest-browser-react'
@@ -8,7 +7,7 @@ import { List } from './list.tsx'
 // Contract: list.a11y.md.
 
 test('renders a ul or an ol with li items and keeps its class next to a consumer className', async () => {
-  const { container } = await render(
+  await render(
     <>
       <List.Root data-testid="unordered" className="kv-list--gap-8 annat" id="tjanster">
         <List.Item>
@@ -28,7 +27,6 @@ test('renders a ul or an ol with li items and keeps its class next to a consumer
   expect(page.getByRole('listitem').elements()).toHaveLength(4)
   await expect.element(unordered).toHaveClass('kv-list', 'kv-list--gap-8', 'annat')
   await expect.element(unordered).toHaveAttribute('id', 'tjanster')
-  await expectNoA11yViolations(container)
   for (const list of [unordered, page.getByTestId('ordered')]) {
     expect(list.element().hasAttribute('tabindex')).toBe(false)
   }

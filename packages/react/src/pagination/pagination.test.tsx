@@ -3,7 +3,6 @@ import { fi } from '@kvirn/i18n/fi'
 import { nb } from '@kvirn/i18n/nb'
 import { nn } from '@kvirn/i18n/nn'
 import { sv } from '@kvirn/i18n/sv'
-import { expectNoA11yViolations } from '@kvirn/testing'
 import { createRef } from 'react'
 import { renderToString } from 'react-dom/server'
 import { afterEach, beforeEach, describe, expect, expectTypeOf, test, vi } from 'vite-plus/test'
@@ -142,9 +141,8 @@ describe('Pagination keyboard', () => {
 
 describe('Pagination', () => {
   test('is a navigation landmark named by the message pagination.label', async () => {
-    const { container } = await render(<Pages />)
+    await render(<Pages />)
     await expect.element(page.getByRole('navigation', { name: 'Pages' })).toBeVisible()
-    await expectNoA11yViolations(container)
     expect(consoleWarn).not.toHaveBeenCalled()
   })
 
@@ -399,11 +397,10 @@ describe('usePagination', () => {
   }
 
   test('returns the part props, the name and the words for your own elements', async () => {
-    const { container } = await render(<Probe />)
+    await render(<Probe />)
     await expect.element(page.getByRole('navigation', { name: 'Pages' })).toBeVisible()
     await expect.element(page.getByRole('link', { name: 'Page 3' })).toBeVisible()
     await expect.element(page.getByText('Page 3 of 9')).toBeVisible()
-    await expectNoA11yViolations(container)
   })
 
   test('an empty label falls back to the message', async () => {

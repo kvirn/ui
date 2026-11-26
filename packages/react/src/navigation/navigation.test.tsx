@@ -1,4 +1,3 @@
-import { expectNoA11yViolations } from '@kvirn/testing'
 import { createRef } from 'react'
 import { renderToString } from 'react-dom/server'
 import { afterEach, beforeEach, describe, expect, expectTypeOf, test, vi } from 'vite-plus/test'
@@ -77,14 +76,13 @@ function MainMenu() {
 
 describe('rendering', () => {
   test('renders a named navigation landmark with a list of list items', async () => {
-    const { container } = await render(<MainMenu />)
+    await render(<MainMenu />)
     const navigation = page.getByRole('navigation', { name: 'Main menu' })
     await expect.element(navigation).toBeVisible()
     await expect.element(navigation).toHaveAttribute('aria-label', 'Main menu')
     expect(navigation.element().tagName).toBe('NAV')
     expect(page.getByRole('list').all()).toHaveLength(2)
     expect(page.getByRole('listitem').all()).toHaveLength(4)
-    await expectNoA11yViolations(container)
     expect(consoleWarn).not.toHaveBeenCalled()
   })
 
@@ -124,7 +122,7 @@ describe('rendering', () => {
   })
 
   test('aria-labelledby names it instead of label, without a warning', async () => {
-    const { container } = await render(
+    await render(
       <>
         <h2 id="section">In this section</h2>
         <Navigation.Root aria-labelledby="section">
@@ -139,7 +137,6 @@ describe('rendering', () => {
     const navigation = page.getByRole('navigation', { name: 'In this section' })
     await expect.element(navigation).toBeVisible()
     await expect.element(navigation).not.toHaveAttribute('aria-label')
-    await expectNoA11yViolations(container)
     expect(consoleWarn).not.toHaveBeenCalled()
   })
 
@@ -723,11 +720,6 @@ describe('Navigation.Label', () => {
     await expect
       .poll(() => warnings().some((message) => message.includes('outside a Navigation.Item')))
       .toBe(true)
-  })
-
-  test('has no axe violations', async () => {
-    const { container } = await render(<GroupedMenu />)
-    await expect(expectNoA11yViolations(container)).resolves.toBeUndefined()
   })
 
   test('server rendering gives the label its id; the list is named once it hydrates', () => {

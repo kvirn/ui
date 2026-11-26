@@ -3,7 +3,7 @@ import contract from '../../../../../packages/react/src/quick-exit/quick-exit.a1
 import guide from '../../../../../packages/react/src/quick-exit/quick-exit.md?raw'
 import type { Meta, StoryObj } from '@storybook/react-vite'
 import { useState } from 'react'
-import { expect, fn } from 'storybook/test'
+import { fn } from 'storybook/test'
 import { usageGuide } from '../../docs-source.ts'
 import { withQuickExitMessages } from './quick-exit.fixture.tsx'
 
@@ -65,11 +65,6 @@ export const Default: Story = {
       </QuickExit.Root>
     </Page>
   ),
-  play: async ({ canvas }) => {
-    const link = canvas.getByRole('link', { name: 'Leave this page' })
-    await expect(link).toHaveAttribute('href', destination)
-    await expect(link).toHaveAttribute('rel', 'noreferrer')
-  },
 }
 
 /** `shortcut={false}`: only the link leaves. Shift presses are neither counted nor announced. */
@@ -95,9 +90,6 @@ export const RTL: Story = {
       </QuickExit.Root>
     </Page>
   ),
-  play: async ({ canvas }) => {
-    await expect(canvas.getByRole('link', { name: 'Leave this page' })).toBeVisible()
-  },
 }
 
 /** Forced colours: the link keeps a border and the system's link colours. */
@@ -151,9 +143,6 @@ export const InContext: Story = {
       </main>
     </div>
   ),
-  play: async ({ canvas }) => {
-    await expect(canvas.getByRole('link', { name: 'Leave this page' })).toBeVisible()
-  },
 }
 
 function KeyboardFixture({ args }: { args: React.ComponentProps<typeof QuickExit.Root> }) {

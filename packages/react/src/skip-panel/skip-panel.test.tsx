@@ -1,5 +1,4 @@
 import { sv } from '@kvirn/i18n/sv'
-import { expectNoA11yViolations } from '@kvirn/testing'
 import { readAloud, readAnnouncements } from '@kvirn/testing/read-aloud'
 import { createRef } from 'react'
 import type { ComponentPropsWithRef } from 'react'
@@ -879,21 +878,6 @@ describe('SkipPanel development warnings', () => {
   test('good chords do not warn', async () => {
     await render(<Page />)
     expect(warnings()).toEqual([])
-  })
-})
-
-describe('SkipPanel accessibility', () => {
-  test('has no axe violations', async () => {
-    const { container } = await render(<Page />)
-    await expect.element(page.getByRole('group', { name: 'Skip to' })).toBeInTheDocument()
-    await expectNoA11yViolations(container)
-  })
-
-  test('has no axe violations while focused and with shortcuts off', async () => {
-    const { container } = await render(<Page options={{ shortcutsEnabled: false }} />)
-    await userEvent.tab()
-    expect(root().contains(document.activeElement)).toBe(true)
-    await expectNoA11yViolations(container)
   })
 })
 

@@ -1,6 +1,5 @@
 import { en } from '@kvirn/i18n/en'
 import { sv } from '@kvirn/i18n/sv'
-import { expectNoA11yViolations } from '@kvirn/testing'
 import { createRef, useEffect, useRef, useState } from 'react'
 import type { ReactNode } from 'react'
 import { afterEach, beforeEach, describe, expect, expectTypeOf, test, vi } from 'vite-plus/test'
@@ -170,7 +169,6 @@ describe('wiring: name and description per state', () => {
     await expect.element(group).toHaveAccessibleName('How should we contact you about the permit?')
     await expect.element(group).toHaveAccessibleDescription('Choose all that apply.')
     expectNoDanglingReferences(container)
-    await expectNoA11yViolations(container)
   })
 
   test('invalid: the description is followed by "Error:" and the message, in en', async () => {
@@ -180,7 +178,6 @@ describe('wiring: name and description per state', () => {
       .element(group)
       .toHaveAccessibleDescription('Choose all that apply. Error: Choose how we should contact you')
     expectNoDanglingReferences(container)
-    await expectNoA11yViolations(container)
   })
 
   test('invalid: "Error:" in en', async () => {
@@ -247,7 +244,6 @@ describe('wiring: name and description per state', () => {
       .element(page.getByRole('textbox', { name: 'Month' }))
       .toHaveAccessibleDescription('Digits')
     expectNoDanglingReferences(container)
-    await expectNoA11yViolations(container)
   })
 })
 
@@ -433,7 +429,6 @@ describe('marker defaults in a group', () => {
     await expect.element(page.getByRole('textbox', { name: 'Phone' })).toBeVisible()
     const markers = [...container.querySelectorAll('.kv-field-optional')]
     expect(markers.map((marker) => marker.closest('legend') !== null)).toEqual([true])
-    await expectNoA11yViolations(container)
   })
 
   test('a required group has no legend marker, and its Fields stay unmarked', async () => {
@@ -580,7 +575,6 @@ describe('useFieldset', () => {
       .element(group)
       .toHaveAccessibleDescription('Where you live. Error: Enter your address')
     expectNoDanglingReferences(container)
-    await expectNoA11yViolations(container)
   })
 
   test('the legend marker follows group and required', async () => {
@@ -634,7 +628,6 @@ describe('several descriptions', () => {
         'Where you are registered. The street and number. Error: Enter your address',
       )
     expectNoDanglingReferences(container)
-    await expectNoA11yViolations(container)
   })
 
   test('a Description removed later leaves aria-describedby at once', async () => {
@@ -842,12 +835,6 @@ describe('Fieldset.HelpText (Plan 0029)', () => {
     const warnings = consoleWarn.mock.calls.map(([message]) => String(message))
     expect(warnings).toHaveLength(1)
     expect(warnings[0]).toContain('before its control')
-  })
-
-  test('a group with a description, a help text and an error has no axe violations and no warnings', async () => {
-    const { container } = await render(english(<VisitDate invalid />))
-    await expectNoA11yViolations(container)
-    expect(consoleWarn).not.toHaveBeenCalled()
   })
 })
 

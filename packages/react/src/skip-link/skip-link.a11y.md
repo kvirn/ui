@@ -76,15 +76,15 @@ It reflows with the page (1.4.10 Reflow, AA): the reflow sweep checks every stor
 - 1.4.1 Use of Color (A): the link is underlined, so colour is not the only cue (a theme property, not a test).
 - 3.1.2 Language of Parts (AA): a custom label in another language is marked by the consumer (see Consumer responsibilities).
 - 2.5.8 Target Size (Minimum) (AA), 1.4.10 Reflow (AA), 1.4.3 Contrast (Minimum) (AA) and 1.4.11 Non-text Contrast (AA): the default theme; the contrast is measured by an automated check.
-- 4.1.2 Name, Role, Value (A): `link` named by its text, and axe finds no violation.
+- 4.1.2 Name, Role, Value (A): `link` named by its text, and the stories pass axe.
 
 ## AT test record
 
 | AT + browser + OS                                                          | Agent check | Human check | Result  | Notes                                                                                                                          |
 | -------------------------------------------------------------------------- | ----------- | ----------- | ------- | ------------------------------------------------------------------------------------------------------------------------------ |
 | **Automated (re-runnable tests)**                                          |             |             |         |                                                                                                                                |
-| axe, WCAG 2.2 A and AA, every story, 4 themes                              | pass        | n/a         | pass    | skip-link.stories.tsx, every story, 4 themes                                                                                   |
-| Markup and ARIA (roles, names, ids, states)                                | pass        | n/a         | pass    | skip-link.test.tsx › the name is the default label, rendered as text with no ARIA added; expectNoA11yViolations                |
+| axe, WCAG 2.2 A and AA, every story, light theme                           | pass        | n/a         | pass    | skip-link.stories.tsx, every story, light theme                                                                                |
+| Markup and ARIA (roles, names, ids, states)                                | pass        | n/a         | pass    | skip-link.test.tsx › the name is the default label, rendered as text with no ARIA added                                        |
 | Keyboard contract rows (Vitest browser)                                    | pass        | n/a         | pass    | 5 rows, each names a test (skip-link.test.tsx › SkipLink keyboard › the first Tab stop is the skip link)                       |
 | Focus order and management                                                 | pass        | n/a         | pass    | skip-link.test.tsx asserts focus (document.activeElement); first rule: SkipLink keyboard › the first Tab stop is the skip link |
 | Display modes (forced colours, 320px reflow, text spacing, reduced motion) | pass        | n/a         | pass    | the four sweep projects (`storybook-forced-colors`, `-reduced-motion`, `-reflow`, `-text-spacing`), run in CI                  |

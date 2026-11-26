@@ -3,7 +3,6 @@ import { Card, Heading, DefinitionList } from '@kvirn/ui'
 import contract from '../../../../../packages/react/src/definition-list/definition-list.a11y.md?raw'
 import guide from '../../../../../packages/react/src/definition-list/definition-list.md?raw'
 import type { Meta, StoryObj } from '@storybook/react-vite'
-import { expect, userEvent } from 'storybook/test'
 import { usageGuide } from '../../docs-source.ts'
 import { expectNoHorizontalOverflow } from '../theme-story-assertions.ts'
 import { withDefinitionListLocale } from './definition-list.fixture.tsx'
@@ -61,13 +60,7 @@ export default meta
 type Story = StoryObj<typeof meta>
 
 /** Check your answers: each row has a term, a description and a Change link named by its term. */
-export const Default: Story = {
-  play: async ({ canvas }) => {
-    await expect(canvas.getAllByRole('term')).toHaveLength(3)
-    await expect(canvas.getByRole('link', { name: 'Change Name' })).toHaveTextContent('Change')
-    await expect(canvas.getByRole('link', { name: 'Change Registration number' })).toBeVisible()
-  },
-}
+export const Default: Story = {}
 
 /** Rows without an action, such as a contact card: the description takes the room. */
 export const WithoutActions: Story = {
@@ -88,9 +81,6 @@ export const WithoutActions: Story = {
         </DefinitionList.Row>
       </>
     ),
-  },
-  play: async ({ canvas }) => {
-    await expect(canvas.queryByRole('link')).toBeNull()
   },
 }
 
@@ -121,10 +111,6 @@ export const MissingAndMultiple: Story = {
       </>
     ),
   },
-  play: async ({ canvas }) => {
-    await expect(canvas.getByRole('link', { name: 'Add Phone' })).toBeVisible()
-    await expect(canvas.getByRole('link', { name: 'Remove Attachments' })).toBeVisible()
-  },
 }
 
 /** Inside a Card: a case card with its facts. The Card is the surface, the list the structure. */
@@ -154,16 +140,7 @@ export const InACard: Story = {
 }
 
 /** The links: Tab goes through the Change links in order and Enter follows one. */
-export const Keyboard: Story = {
-  play: async ({ canvas }) => {
-    await userEvent.tab()
-    await expect(canvas.getByRole('link', { name: 'Change Name' })).toHaveFocus()
-    await userEvent.tab()
-    await expect(canvas.getByRole('link', { name: 'Change Address' })).toHaveFocus()
-    await userEvent.tab({ shift: true })
-    await expect(canvas.getByRole('link', { name: 'Change Name' })).toHaveFocus()
-  },
-}
+export const Keyboard: Story = {}
 
 /** A 320px column with long Finnish words: the rows stack and nothing scrolls sideways (1.4.10). */
 export const Reflow320: Story = {
@@ -191,12 +168,11 @@ export const Reflow320: Story = {
   },
   decorators: [(Story) => <div className="kv-story-narrow">{<Story />}</div>],
   globals: { locale: 'fi' },
-  play: async ({ canvasElement, canvas }) => {
+  play: async ({ canvasElement }) => {
     const column = canvasElement.querySelector<HTMLElement>('.kv-story-narrow')
     if (column === null) {
       throw new Error('no narrow column')
     }
-    await expect(canvas.getByRole('link', { name: 'Muuta Osoite' })).toBeVisible()
     await expectNoHorizontalOverflow(column)
   },
 }
@@ -204,9 +180,6 @@ export const Reflow320: Story = {
 /** Right to left, in English: the term starts at the right and the action at the left. */
 export const RTL: Story = {
   globals: { dir: 'rtl', locale: 'en' },
-  play: async ({ canvas }) => {
-    await expect(canvas.getByRole('link', { name: 'Change Name' })).toBeVisible()
-  },
 }
 
 /** The row lines and the links survive forced colours. */

@@ -1,4 +1,3 @@
-import { expectNoA11yViolations } from '@kvirn/testing'
 import { createRef } from 'react'
 import type { ReactNode } from 'react'
 import { renderToString } from 'react-dom/server'
@@ -69,7 +68,6 @@ describe('rendering', () => {
     expect(area.hasAttribute('tabindex')).toBe(false)
     expect(area.hasAttribute('data-overflowing')).toBe(false)
     expect(page.getByRole('region').elements()).toEqual([])
-    await expectNoA11yViolations(container)
   })
 
   test('content that overflows is a named region and a Tab stop with data-overflowing', async () => {
@@ -78,14 +76,12 @@ describe('rendering', () => {
     const area = areaOf(container)
     await expect.poll(() => area.getAttribute('tabindex')).toBe('0')
     expect(area.hasAttribute('data-overflowing')).toBe(true)
-    await expectNoA11yViolations(container)
   })
 
   test('region="always" is a named region that fits, and not a Tab stop', async () => {
     const { container } = await renderInProvider(<Fitting region="always" />)
     await expect.element(page.getByRole('region', { name: 'Fees' })).toBeVisible()
     expect(areaOf(container).hasAttribute('tabindex')).toBe(false)
-    await expectNoA11yViolations(container)
   })
 
   test('region="always" that overflows is a region and a Tab stop', async () => {

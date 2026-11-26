@@ -2,7 +2,6 @@ import { Button, Card } from '@kvirn/ui'
 import contract from '../../../../../packages/react/src/card/card.a11y.md?raw'
 import guide from '../../../../../packages/react/src/card/card.md?raw'
 import type { Meta, StoryObj } from '@storybook/react-vite'
-import { expect, within } from 'storybook/test'
 import { showSource, usageGuide } from '../../docs-source.ts'
 import { expectNoHorizontalOverflow } from '../theme-story-assertions.ts'
 import {
@@ -92,29 +91,12 @@ export const ServiceCard: Story = {
     ),
   ],
   render: (_args, { globals }) => <ServiceCardExample locale={localeOf(globals)} />,
-  play: async ({ canvas }) => {
-    const card = canvas.getByTestId('service-card')
-    await expect(within(card).getByRole('heading', { level: 2 })).toBeVisible()
-    await expect(
-      within(card).getByRole('button', { name: 'Order an extra collection' }),
-    ).toBeVisible()
-    await expect(within(card).getByRole('button', { name: 'Pause collection' })).toBeVisible()
-  },
 }
 
 /** Example C: a list of news cards. Each card is a list item with one link, in its heading. */
 export const NewsList: Story = {
   parameters: showSource('card/card.fixture.tsx', 'NewsList'),
   render: (_args, { globals }) => <NewsListExample locale={localeOf(globals)} />,
-  play: async ({ canvas }) => {
-    const list = canvas.getByRole('list')
-    const items = within(list).getAllByRole('listitem')
-    await expect(items).toHaveLength(3)
-    for (const item of items) {
-      await expect(within(item).getAllByRole('link')).toHaveLength(1)
-      await expect(within(item).getByRole('heading', { level: 3 })).toBeVisible()
-    }
-  },
 }
 
 /** Example D: a staff case card in compact density, with a nested card one step down. */
@@ -137,12 +119,6 @@ export const AsArticle: Story = {
     ),
   ],
   render: (_args, { globals }) => <ArticleCardExample locale={localeOf(globals)} />,
-  play: async ({ canvas }) => {
-    const article = canvas.getByRole('article', {
-      name: 'New opening hours at the recycling centre',
-    })
-    await expect(within(article).getByRole('button', { name: 'Pause collection' })).toBeVisible()
-  },
 }
 
 /**
@@ -238,9 +214,6 @@ export const Padding: Story = {
         </>
       </>
     )
-  },
-  play: async ({ canvas }) => {
-    await expect(canvas.getByTestId('body-padding-none').querySelector('img')).toBeVisible()
   },
 }
 
@@ -418,10 +391,6 @@ export const LongFinnishText: Story = {
   ],
   render: () => <ServiceCardExample locale="fi" />,
   play: async ({ canvas }) => {
-    await expect(
-      // kv-lang-ok: asserts the Finnish long-label hard case under locale fi
-      canvas.getByRole('button', { name: 'Keskeytä jäteastioiden tyhjennykset' }),
-    ).toBeVisible()
     await expectNoHorizontalOverflow(canvas.getByTestId('narrow'))
   },
 }

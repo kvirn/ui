@@ -94,21 +94,21 @@ These rows follow from the area's role, name and state. What a screen reader say
 
 ## AT test record
 
-| AT + browser + OS                                                          | Agent check | Human check | Result  | Notes                                                                                                                               |
-| -------------------------------------------------------------------------- | ----------- | ----------- | ------- | ----------------------------------------------------------------------------------------------------------------------------------- |
-| **Automated (re-runnable tests)**                                          |             |             |         |                                                                                                                                     |
-| axe, WCAG 2.2 A and AA, every story, 4 themes                              | pass        | n/a         | pass    | scroll-area.stories.tsx, every story, 4 themes                                                                                      |
-| Markup and ARIA (roles, names, ids, states)                                | pass        | n/a         | pass    | scroll-area.test.tsx › content that fits is a plain div: no role, no name, no tabindex, no data-overflowing; expectNoA11yViolations |
-| Keyboard contract rows (Vitest browser)                                    | pass        | n/a         | pass    | 8 rows, each names a test (scroll-area.test.tsx › Tab focuses the area when it overflows)                                           |
-| Focus order and management                                                 | pass        | n/a         | pass    | scroll-area.test.tsx asserts focus (toHaveFocus); first rule: Tab focuses the area when it overflows                                |
-| Display modes (forced colours, 320px reflow, text spacing, reduced motion) | pass        | n/a         | pass    | the four sweep projects (`storybook-forced-colors`, `-reduced-motion`, `-reflow`, `-text-spacing`), run in CI                       |
-| **Core (required for beta)**                                               |             |             |         |                                                                                                                                     |
-| NVDA + Chrome + Windows                                                    | pending     | pending     | pending |                                                                                                                                     |
-| VoiceOver + Safari + iOS                                                   | pending     | pending     | pending |                                                                                                                                     |
-| **Release (before 1.0 and each minor)**                                    |             |             |         |                                                                                                                                     |
-| JAWS + Chrome + Windows                                                    | pending     | pending     | pending |                                                                                                                                     |
-| TalkBack + Chrome + Android                                                | pending     | pending     | pending |                                                                                                                                     |
-| VoiceOver + Safari + macOS                                                 | pending     | pending     | pending |                                                                                                                                     |
+| AT + browser + OS                                                          | Agent check | Human check | Result  | Notes                                                                                                         |
+| -------------------------------------------------------------------------- | ----------- | ----------- | ------- | ------------------------------------------------------------------------------------------------------------- |
+| **Automated (re-runnable tests)**                                          |             |             |         |                                                                                                               |
+| axe, WCAG 2.2 A and AA, every story, light theme                           | pass        | n/a         | pass    | scroll-area.stories.tsx, every story, light theme                                                             |
+| Markup and ARIA (roles, names, ids, states)                                | pass        | n/a         | pass    | scroll-area.test.tsx › content that fits is a plain div: no role, no name, no tabindex, no data-overflowing   |
+| Keyboard contract rows (Vitest browser)                                    | pass        | n/a         | pass    | 8 rows, each names a test (scroll-area.test.tsx › Tab focuses the area when it overflows)                     |
+| Focus order and management                                                 | pass        | n/a         | pass    | scroll-area.test.tsx asserts focus (toHaveFocus); first rule: Tab focuses the area when it overflows          |
+| Display modes (forced colours, 320px reflow, text spacing, reduced motion) | pass        | n/a         | pass    | the four sweep projects (`storybook-forced-colors`, `-reduced-motion`, `-reflow`, `-text-spacing`), run in CI |
+| **Core (required for beta)**                                               |             |             |         |                                                                                                               |
+| NVDA + Chrome + Windows                                                    | pending     | pending     | pending |                                                                                                               |
+| VoiceOver + Safari + iOS                                                   | pending     | pending     | pending |                                                                                                               |
+| **Release (before 1.0 and each minor)**                                    |             |             |         |                                                                                                               |
+| JAWS + Chrome + Windows                                                    | pending     | pending     | pending |                                                                                                               |
+| TalkBack + Chrome + Android                                                | pending     | pending     | pending |                                                                                                               |
+| VoiceOver + Safari + macOS                                                 | pending     | pending     | pending |                                                                                                               |
 
 ### What to check
 

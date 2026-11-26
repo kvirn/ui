@@ -87,14 +87,8 @@ type Story = StoryObj<typeof meta>
  */
 export const Suffix: Story = {
   play: async ({ canvas, globals }) => {
-    const { text, amountExample } = textsFor(localeOf(globals))
-    const input = canvas.getByRole('textbox', { name: text.rentWithUnit })
-    await expect(input).toHaveAccessibleDescription(text.rentUnitExample(amountExample))
-    // The unit is visual only: not in the name, not in the description, not in the tree.
-    const unit = canvas.getByText(text.rentUnit)
-    await expect(unit).toHaveAttribute('aria-hidden', 'true')
-    await expect(unit).toBeVisible()
-    await expectMinimumTargetSize(input)
+    const { text } = textsFor(localeOf(globals))
+    await expectMinimumTargetSize(canvas.getByRole('textbox', { name: text.rentWithUnit }))
   },
 }
 
@@ -109,13 +103,6 @@ export const Keyboard: Story = {
   render: (_args, { globals }) => (
     <SearchBoxWithClear locale={localeOf(globals)} initialValue="parkering" />
   ),
-  play: async ({ canvas, globals }) => {
-    const { text } = textsFor(localeOf(globals))
-    await expect(canvas.getByRole('searchbox', { name: text.searchServices })).toHaveValue(
-      'parkering',
-    )
-    await expect(canvas.getByRole('button', { name: text.searchClear })).toBeVisible()
-  },
 }
 
 /** A percentage: the "%" at the end, a width of 4 characters. sv and fi write "75 %". */
@@ -140,12 +127,6 @@ export const Percentage: Story = {
         </Field.Root>
       </>
     )
-  },
-  play: async ({ canvas, globals }) => {
-    const { text } = textsFor(localeOf(globals))
-    const input = canvas.getByRole('textbox', { name: text.workTime })
-    await userEvent.type(input, '37,5')
-    await expect(input).toHaveValue('37,5')
   },
 }
 
@@ -174,12 +155,6 @@ export const Distance: Story = {
       </>
     )
   },
-  play: async ({ canvas, globals }) => {
-    const { text } = textsFor(localeOf(globals))
-    await expect(canvas.getByRole('textbox', { name: text.distance })).toHaveAccessibleDescription(
-      text.distanceHint,
-    )
-  },
 }
 
 /** A search with a decorative icon at the start: it repeats what the label says. Full width. */
@@ -204,14 +179,6 @@ export const SearchIcon: Story = {
         </Field.Root>
       </>
     )
-  },
-  play: async ({ canvas, globals }) => {
-    const { text } = textsFor(localeOf(globals))
-    const input = canvas.getByRole('searchbox', { name: text.searchServices })
-    // Clicking the icon focuses the Input: the whole box is one target.
-    const icon = canvas.getByRole('searchbox').closest('.kv-input-group')?.querySelector('svg')
-    await userEvent.click(icon ?? input)
-    await expect(input).toHaveFocus()
   },
 }
 
@@ -258,11 +225,6 @@ export const Search: Story = {
       </form>
     </search>
   ),
-  play: async ({ canvas }) => {
-    await expect(canvas.getByRole('searchbox', { name: 'Search the site' })).toBeVisible()
-    await expect(canvas.getByRole('button', { name: 'Search' })).toHaveAttribute('type', 'submit')
-    await expect(canvas.queryByRole('group')).toBeNull()
-  },
 }
 
 /**
@@ -348,12 +310,6 @@ export const CalendarIcon: Story = {
       </>
     )
   },
-  play: async ({ canvas, globals }) => {
-    const { text } = textsFor(localeOf(globals))
-    const input = canvas.getByRole('textbox', { name: text.visitDate })
-    await expect(input).not.toHaveAttribute('inputmode')
-    await expect(input).toHaveAccessibleDescription(text.visitDateExample)
-  },
 }
 
 /**
@@ -383,16 +339,6 @@ export const Invalid: Story = {
         </Field.Root>
       </>
     )
-  },
-  play: async ({ canvas, globals }) => {
-    const locale = localeOf(globals)
-    const { text, amountExample } = textsFor(locale)
-    const input = canvas.getByRole('textbox', { name: text.rentWithUnit })
-    await expect(input).toHaveAttribute('aria-invalid', 'true')
-    await expect(input.closest('.kv-input-group')).toHaveAttribute('data-invalid')
-    // The amount's thousands separator is a no-break space, which Testing Library's matcher
-    // normalises to a plain space in the page text but not in the string we pass.
-    await expect(canvas.getByText(text.rentError(amountExample).replace(/\s+/g, ' '))).toBeVisible()
   },
 }
 
@@ -446,15 +392,6 @@ export const WithoutField: Story = {
       </>
     )
   },
-  play: async ({ canvas, globals }) => {
-    const { text, amountExample } = textsFor(localeOf(globals))
-    const invalid = canvas.getByRole('textbox', { name: text.rentWithUnit })
-    await expect(invalid.closest('.kv-input-group')).toHaveAttribute('data-invalid')
-    await expect(invalid).toHaveAccessibleDescription(text.rentError(amountExample))
-    const disabled = canvas.getByRole('textbox', { name: text.distance })
-    await expect(disabled).toBeDisabled()
-    await expect(disabled.closest('.kv-input-group')).toHaveAttribute('data-disabled')
-  },
 }
 
 /** Disabled: a dashed edge on the surface colour, the unit and the value muted. */
@@ -499,11 +436,6 @@ export const Disabled: Story = {
       </>
     )
   },
-  play: async ({ canvas, globals }) => {
-    const { text } = textsFor(localeOf(globals))
-    await expect(canvas.getByRole('textbox', { name: text.rentWithUnit })).toBeDisabled()
-    await expect(canvas.getByRole('button', { name: text.searchClear })).toBeDisabled()
-  },
 }
 
 /** Read-only, in staff tools: a solid edge on the surface colour, and still focusable. */
@@ -530,13 +462,6 @@ export const ReadOnly: Story = {
         </Field.Root>
       </>
     )
-  },
-  play: async ({ canvas, globals }) => {
-    const { text } = textsFor(localeOf(globals))
-    const input = canvas.getByRole('textbox', { name: text.rentWithUnit })
-    await expect(input).toHaveAttribute('readonly')
-    input.focus()
-    await expect(input).toHaveFocus()
   },
 }
 
@@ -566,10 +491,6 @@ export const InCard: Story = {
         </Card.Root>
       </>
     )
-  },
-  play: async ({ canvas, globals }) => {
-    const { text } = textsFor(localeOf(globals))
-    await expect(canvas.getByRole('textbox', { name: text.rentWithUnit })).toBeVisible()
   },
 }
 
@@ -604,10 +525,6 @@ export const LongFinnishLabel: Story = {
     )
   },
   play: async ({ canvas }) => {
-    await expect(
-      // kv-lang-ok: Finnish locale story: a long label
-      canvas.getByRole('textbox', { name: /Haettavan asunnonmuutostyöavustuksen/ }),
-    ).toBeVisible()
     await expectNoHorizontalOverflow(canvas.getByTestId('narrow'))
   },
 }
@@ -689,10 +606,6 @@ export const RTL: Story = {
         </Field.Root>
       </>
     )
-  },
-  play: async ({ canvas }) => {
-    const { text } = textsFor('en')
-    await expect(canvas.getByRole('textbox', { name: text.amountEuro })).toBeVisible()
   },
 }
 

@@ -1,5 +1,4 @@
 import { sv } from '@kvirn/i18n/sv'
-import { expectNoA11yViolations } from '@kvirn/testing'
 import { useState } from 'react'
 import type { ReactElement } from 'react'
 import { afterEach, beforeEach, describe, expect, test, vi } from 'vite-plus/test'
@@ -294,18 +293,4 @@ describe('Tag announcements', () => {
     await new Promise((resolve) => setTimeout(resolve, 250))
     await expect.element(politeRegion()).not.toHaveTextContent('removed')
   })
-})
-
-test('has no axe violations with tags, and with none', async () => {
-  const { container } = await render(
-    <main>
-      <h1>News</h1>
-      <Filters />
-    </main>,
-  )
-  await expect.element(removeButton('Barn')).toBeVisible()
-  await expectNoA11yViolations(container)
-  await clearAll().click()
-  await expect.element(page.getByText('No filters selected')).toBeVisible()
-  await expectNoA11yViolations(container)
 })

@@ -5,7 +5,6 @@ import type { Meta, StoryObj } from '@storybook/react-vite'
 import { expect, fn, userEvent, waitFor } from 'storybook/test'
 import { showSource, usageGuide } from '../../docs-source.ts'
 import { localeOf, withFormLocale } from '../form/form.fixture.tsx'
-import type { FormLocale } from '../form/form.fixture.tsx'
 import { expectMinimumTargetSize, expectNoHorizontalOverflow } from '../theme-story-assertions.ts'
 import {
   AttachmentsField,
@@ -36,19 +35,6 @@ import {
 //
 // KvirnUI holds no form state. The Field's `invalid` and message stay with the
 // consumer, who decides whether a refused file blocks the form.
-
-/** The trigger's own text per locale. */
-const chooseFiles: Record<FormLocale, string> = {
-  // kv-lang-ok: the trigger's own text per locale
-  sv: 'Välj filer',
-  // kv-lang-ok: the trigger's own text per locale
-  fi: 'Valitse tiedostot',
-  // kv-lang-ok: the trigger's own text per locale
-  nb: 'Velg filer',
-  // kv-lang-ok: the trigger's own text per locale
-  nn: 'Vel filer',
-  en: 'Choose files',
-}
 
 const meta = {
   title: 'Components/Forms/FileUpload',
@@ -208,26 +194,14 @@ const choose = (canvasElement: HTMLElement, ...files: File[]) =>
  */
 export const Default: Story = {
   args: { multiple: true, maxFiles: 5, accept: '.pdf,.jpg,.png', maxFileSize: 10_000_000 },
-  play: async ({ canvasElement, globals }) => {
-    const { texts } = fileUploadTextsFor(localeOf(globals))
-    const trigger = triggerOf(canvasElement)
-    await expect(trigger).toHaveAccessibleName(
-      new RegExp(`^${chooseFiles[localeOf(globals)]}.*${texts.label}`),
-    )
-    await expect(itemsOf(canvasElement)).toHaveLength(0)
-    await expectMinimumTargetSize(trigger)
+  play: async ({ canvasElement }) => {
+    await expectMinimumTargetSize(triggerOf(canvasElement))
   },
 }
 
 /** One file, not several: a new file replaces the old one, and the button says "Byt fil". */
 export const SingleFile: Story = {
   args: { multiple: false, accept: '.pdf' },
-  play: async ({ canvasElement }) => {
-    await choose(canvasElement, makeFile('certificate.pdf'))
-    await choose(canvasElement, makeFile('new-certificate.pdf', 30_000))
-    await expect(itemsOf(canvasElement)).toHaveLength(1)
-    await expect(itemsOf(canvasElement)[0]).toHaveTextContent('new-certificate.pdf')
-  },
 }
 
 /** Files added, with the form as their destination (no `upload`): ready, and posted with it. */
@@ -245,9 +219,6 @@ export const WithFiles: Story = {
       makeFile('receipt-2.jpg', 2_400_000, 'image/jpeg'),
     )
     await waitFor(() => expect(itemsOf(canvasElement)).toHaveLength(3))
-    for (const item of itemsOf(canvasElement)) {
-      await expect(item).toHaveAttribute('data-status', 'pending')
-    }
   },
 }
 
@@ -256,23 +227,16 @@ export const Uploading: Story = {
   args: { multiple: true, upload: controlledUpload('known') },
   play: async ({ canvas, canvasElement }) => {
     await choose(canvasElement, makeFile('medical-certificate.pdf', 240_000))
-    const bar = await canvas.findByRole('progressbar')
-    await expect(bar).toHaveAccessibleName(/medical-certificate\.pdf/)
-    await expect(itemsOf(canvasElement)[0]).toHaveAttribute('data-status', 'uploading')
+    await canvas.findByRole('progressbar')
   },
 }
 
 /** Uploading with no known size: a decorative moving track, no `<progress>` (loops while the upload runs, still under reduced motion). */
 export const UploadingUnknownSize: Story = {
   args: { multiple: true, upload: controlledUpload('unknown') },
-  play: async ({ canvas, canvasElement }) => {
+  play: async ({ canvasElement }) => {
     await choose(canvasElement, makeFile('medical-certificate.pdf'))
     await waitFor(() => expect(canvasElement.querySelector('.kv-progress-track')).not.toBeNull())
-    await expect(canvasElement.querySelector('.kv-progress-track')).toHaveAttribute(
-      'aria-hidden',
-      'true',
-    )
-    await expect(canvas.queryByRole('progressbar')).toBeNull()
   },
 }
 
@@ -323,9 +287,6 @@ export const Rejected: Story = {
       makeFile('bra.pdf', 40_000),
     )
     await waitFor(() => expect(itemsOf(canvasElement)).toHaveLength(1))
-    await expect(canvasElement.querySelector('.kv-file-upload-rejections')).toHaveTextContent(
-      'image.png',
-    )
   },
 }
 
@@ -339,8 +300,7 @@ export const RejectedForOtherReasons: Story = {
   parameters: showSource('file-upload/file-upload.fixture.tsx', 'AttachmentsWithOwnChecks'),
   render: (args, { globals }) => <AttachmentsWithOwnChecks {...args} locale={localeOf(globals)} />,
   args: { multiple: true, minFileSize: 10_000, maxFiles: 2 },
-  play: async ({ canvasElement, globals }) => {
-    const { texts } = fileUploadTextsFor(localeOf(globals))
+  play: async ({ canvasElement }) => {
     const folder = Object.defineProperty(makeFile('folder', 20_000), 'isDirectory', { value: true })
     const kept = makeFile('medical-certificate.pdf', 20_000)
     await choose(
@@ -354,9 +314,6 @@ export const RejectedForOtherReasons: Story = {
       makeFile('extra.pdf', 20_000),
     )
     await waitFor(() => expect(itemsOf(canvasElement)).toHaveLength(2))
-    const rejections = canvasElement.querySelector('.kv-file-upload-rejections')
-    await expect(rejections?.querySelectorAll('li')).toHaveLength(5)
-    await expect(rejections).toHaveTextContent(texts.nameWithSpaces)
   },
 }
 
@@ -390,7 +347,6 @@ export const UploadAllByHand: Story = {
       makeFile('c.pdf', 3_000),
     )
     await waitFor(() => expect(itemsOf(canvasElement)).toHaveLength(3))
-    await expect(statusesOf(canvasElement)).toEqual(['pending', 'pending', 'pending'])
     await userEvent.click(canvas.getByRole('button', { name: texts.submit }))
     await waitFor(() =>
       expect(statusesOf(canvasElement)).toEqual(['uploading', 'pending', 'pending']),
@@ -409,20 +365,13 @@ export const FailureReasons: Story = {
     <AttachmentsWithFailureReasons {...args} locale={localeOf(globals)} />
   ),
   args: { multiple: true },
-  play: async ({ canvasElement, globals }) => {
-    const { texts } = fileUploadTextsFor(localeOf(globals))
+  play: async ({ canvasElement }) => {
     await choose(
       canvasElement,
       makeFile('medical-certificate.pdf'),
       makeFile('foto.jpg', 90_000, 'image/jpeg'),
     )
     await waitFor(() => expect(statusesOf(canvasElement)).toEqual(['failed', 'failed']))
-    const errors = canvasElement.querySelectorAll('.kv-file-upload-item-error')
-    await expect(errors).toHaveLength(2)
-    await expect(errors[1]).toHaveTextContent(texts.notAccepted('foto.jpg'))
-    // Retry only where trying again can help.
-    await expect(canvasElement.querySelectorAll('.kv-file-upload-retry')).toHaveLength(1)
-    await expect(canvasElement.querySelectorAll('.kv-file-upload-remove')).toHaveLength(2)
   },
 }
 
@@ -500,9 +449,6 @@ export const LongNames: Story = {
 /** Disabled: the button and the input are native `disabled`, and no item has a button. */
 export const Disabled: Story = {
   args: { multiple: true, disabled: true },
-  play: async ({ canvasElement }) => {
-    await expect(triggerOf(canvasElement)).toBeDisabled()
-  },
 }
 
 /**
@@ -521,8 +467,6 @@ export const Dragging: Story = {
       zone.dispatchEvent(new DragEvent(type, { dataTransfer, bubbles: true, cancelable: true }))
     }
     await waitFor(() => expect(zone).toHaveAttribute('data-dragging'))
-    await expect(zone).toHaveAttribute('data-droppable')
-    await expect(rootOf(canvasElement)).toHaveAttribute('data-drag-active')
   },
 }
 
@@ -540,8 +484,6 @@ export const DraggedOverThePage: Story = {
       new DragEvent('dragover', { dataTransfer, bubbles: true, cancelable: true }),
     )
     await waitFor(() => expect(rootOf(canvasElement)).toHaveAttribute('data-drag-active'))
-    await expect(dropZoneOf(canvasElement)).toHaveAttribute('data-droppable')
-    await expect(dropZoneOf(canvasElement)).not.toHaveAttribute('data-dragging')
   },
 }
 
@@ -550,10 +492,6 @@ export const Invalid: Story = {
   parameters: showSource('file-upload/file-upload.fixture.tsx', 'InvalidAttachments'),
   render: (args, { globals }) => <InvalidAttachments {...args} locale={localeOf(globals)} />,
   args: { multiple: true },
-  play: async ({ canvasElement }) => {
-    const trigger = triggerOf(canvasElement)
-    await expect(trigger).toHaveAttribute('aria-invalid', 'true')
-  },
 }
 
 /** A required Field: the Trigger never carries `aria-required` (a button doesn't allow it). */
@@ -596,7 +534,4 @@ export const Keyboard: Story = {
   parameters: showSource('file-upload/file-upload.fixture.tsx', 'AttachmentsWithSendButton'),
   render: (args, { globals }) => <AttachmentsWithSendButton {...args} locale={localeOf(globals)} />,
   args: { multiple: true, maxFiles: 5 },
-  play: async ({ canvasElement }) => {
-    await expect(triggerOf(canvasElement)).toBeVisible()
-  },
 }

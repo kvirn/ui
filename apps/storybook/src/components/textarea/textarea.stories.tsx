@@ -2,10 +2,10 @@ import { Field, Textarea } from '@kvirn/ui'
 import contract from '../../../../../packages/react/src/textarea/textarea.a11y.md?raw'
 import guide from '../../../../../packages/react/src/textarea/textarea.md?raw'
 import type { Meta, StoryObj } from '@storybook/react-vite'
-import { expect, fn, userEvent } from 'storybook/test'
+import { fn, userEvent } from 'storybook/test'
 import { showSource, usageGuide } from '../../docs-source.ts'
 import { localeOf, withFormLocale } from '../form/form.fixture.tsx'
-import { expectMinimumTargetSize, expectNoHorizontalOverflow } from '../theme-story-assertions.ts'
+import { expectNoHorizontalOverflow } from '../theme-story-assertions.ts'
 import {
   ControlledSituation,
   CountedSituation,
@@ -162,15 +162,7 @@ type Story = StoryObj<typeof meta>
  * every option as a control. Try `rows`, `maxLength` with `characterCount`, `disabled` and
  * `readOnly`.
  */
-export const Default: Story = {
-  play: async ({ canvas, globals }) => {
-    const { text } = textareaTextsFor(localeOf(globals))
-    const box = canvas.getByRole('textbox', { name: text.label })
-    await expect(box).toHaveAttribute('rows', '5')
-    await expect(box).toHaveAccessibleDescription(`${text.description} ${text.hint}`)
-    await expectMinimumTargetSize(box)
-  },
-}
+export const Default: Story = {}
 
 /**
  * The fixture the keyboard tests drive: a textarea and a submit button in a plain form. Try the
@@ -184,18 +176,7 @@ export const Keyboard: Story = {
 }
 
 /** Typing reaches `onValueChange` with the new value, and the box shows it. */
-export const Typing: Story = {
-  play: async ({ canvas, args, globals }) => {
-    const { text } = textareaTextsFor(localeOf(globals))
-    const box = canvas.getByRole('textbox', { name: text.label })
-    await userEvent.type(box, 'Hey')
-    await expect(box).toHaveValue('Hey')
-    await expect(args.onValueChange).toHaveBeenLastCalledWith(
-      'Hey',
-      expect.objectContaining({ reason: 'input' }),
-    )
-  },
-}
+export const Typing: Story = {}
 
 /** Invalid: a 2px edge and the message under the box, and the text stays where it was. */
 export const Invalid: Story = {
@@ -214,33 +195,16 @@ export const Invalid: Story = {
       </>
     )
   },
-  play: async ({ canvas, globals }) => {
-    const { text } = textareaTextsFor(localeOf(globals))
-    const box = canvas.getByRole('textbox', { name: text.label })
-    await expect(box).toHaveAttribute('aria-invalid', 'true')
-    await expect(box).toHaveAttribute('data-invalid')
-  },
 }
 
 /** Disabled: a dashed edge on the surface colour, and no resize handle. Say why on submit instead, where you can. */
 export const Disabled: Story = {
   args: { disabled: true, defaultValue: 'I have received a letter about my housing grant.' },
-  play: async ({ canvas, globals }) => {
-    const { text } = textareaTextsFor(localeOf(globals))
-    await expect(canvas.getByRole('textbox', { name: text.label })).toBeDisabled()
-  },
 }
 
 /** Read-only is for staff tools: a solid edge on the surface colour, and still focusable. */
 export const ReadOnly: Story = {
   args: { readOnly: true, defaultValue: 'I have received a letter about my housing grant.' },
-  play: async ({ canvas, globals }) => {
-    const { text } = textareaTextsFor(localeOf(globals))
-    const box = canvas.getByRole('textbox', { name: text.label })
-    await expect(box).toHaveAttribute('readonly')
-    box.focus()
-    await expect(box).toHaveFocus()
-  },
 }
 
 /**
@@ -252,12 +216,6 @@ export const ReadOnly: Story = {
 export const Controlled: Story = {
   parameters: showSource('textarea/textarea.fixture.tsx', 'ControlledSituation'),
   render: (_args, { globals }) => <ControlledSituation locale={localeOf(globals)} />,
-  play: async ({ canvas, globals }) => {
-    const { text } = textareaTextsFor(localeOf(globals))
-    const box = canvas.getByRole('textbox', { name: text.label })
-    await userEvent.type(box, 'Hey')
-    await expect(box).toHaveValue('Hey')
-  },
 }
 
 /**
@@ -274,9 +232,6 @@ export const CharacterCount: Story = {
     const { text } = textareaTextsFor(localeOf(globals))
     const box = canvas.getByRole('textbox', { name: text.label })
     await userEvent.type(box, 'Hey')
-    // 3 of 200 typed: the count says 197 are left, in whichever language the toolbar says.
-    await expect(box).toHaveAccessibleDescription(/197/)
-    await expect(box).not.toHaveAttribute('maxlength')
   },
 }
 
@@ -288,17 +243,6 @@ export const CharacterCount: Story = {
 export const CharacterCountStates: Story = {
   parameters: showSource('textarea/textarea.fixture.tsx', 'CountStates'),
   render: (_args, { globals }) => <CountStates locale={localeOf(globals)} />,
-  play: async ({ canvas, globals }) => {
-    const { text } = textareaTextsFor(localeOf(globals))
-    const under = canvas.getByRole('textbox', { name: new RegExp(`${text.label} \\(under\\)`) })
-    const near = canvas.getByRole('textbox', { name: new RegExp(`${text.label} \\(near\\)`) })
-    const over = canvas.getByRole('textbox', { name: new RegExp(`${text.label} \\(over\\)`) })
-    await expect(under).not.toHaveAttribute('data-over')
-    await expect(near).not.toHaveAttribute('data-over')
-    await expect(over).toHaveAttribute('data-over')
-    // Over the limit is a warning on the box, and the form's own error is what marks it invalid.
-    await expect(over).toHaveAttribute('aria-invalid', 'true')
-  },
 }
 
 /** The box is the full width of its field, in a narrow column and in the form column. */

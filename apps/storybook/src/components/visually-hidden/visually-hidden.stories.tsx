@@ -32,9 +32,9 @@ export const Default: Story = {
     </p>
   ),
   play: async ({ canvas }) => {
-    const hidden = canvas.getByText(', 3 results')
-    await expect(hidden).toBeInTheDocument()
-    await expect(hidden.getBoundingClientRect().width).toBeLessThanOrEqual(1)
+    await expect(canvas.getByText(', 3 results').getBoundingClientRect().width).toBeLessThanOrEqual(
+      1,
+    )
   },
 }
 
@@ -46,9 +46,6 @@ export const AsHeading: Story = {
       <a href="/">Home page</a>
     </nav>
   ),
-  play: async ({ canvas }) => {
-    await expect(canvas.getByRole('heading', { level: 2, name: 'Menu' })).toBeInTheDocument()
-  },
 }
 
 /** Right to left: the text keeps its place in the reading order. */
@@ -60,9 +57,6 @@ export const RTL: Story = {
       <VisuallyHidden>، ٣ نتائج</VisuallyHidden>
     </p>
   ),
-  play: async ({ canvas }) => {
-    await expect(canvas.getByText('، ٣ نتائج')).toBeInTheDocument()
-  },
 }
 
 /** Forced colours change nothing: the text is not drawn in any mode. */

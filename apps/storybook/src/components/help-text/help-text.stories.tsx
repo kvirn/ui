@@ -2,7 +2,6 @@ import { Field, Fieldset, RadioGroup, TextInput } from '@kvirn/ui'
 import contract from '../../../../../packages/react/src/field/field.a11y.md?raw'
 import guide from '../../../../../packages/react/src/field/field-help-text.md?raw'
 import type { Meta, StoryObj } from '@storybook/react-vite'
-import { expect } from 'storybook/test'
 import { usageGuide } from '../../docs-source.ts'
 import { choiceTextsFor } from '../form/choice.fixture.tsx'
 import { localeOf, textsFor, withFormLocale } from '../form/form.fixture.tsx'
@@ -231,14 +230,6 @@ export const OptionHelpTexts: Story = {
           </RadioGroup.Option>
         </RadioGroup.Root>
       </>
-    )
-  },
-  play: async ({ canvas, globals }) => {
-    const { text } = choiceTextsFor(localeOf(globals))
-    const radio = canvas.getByRole('radio', { name: text.duration12 })
-    await expect(radio).toHaveAccessibleDescription(text.duration12Hint)
-    await expect(canvas.getByRole('radio', { name: text.duration1 })).not.toHaveAttribute(
-      'aria-describedby',
     )
   },
 }

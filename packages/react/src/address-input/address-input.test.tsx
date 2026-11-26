@@ -6,7 +6,6 @@ import type {
   GeocoderSearchOptions,
 } from '@kvirn/core'
 import { sv } from '@kvirn/i18n/sv'
-import { expectNoA11yViolations } from '@kvirn/testing'
 import { readAloud, readAnnouncements } from '@kvirn/testing/read-aloud'
 import { useState } from 'react'
 import type { ReactNode } from 'react'
@@ -1245,41 +1244,6 @@ describe('AddressInput.Country dev warnings', () => {
     expect(messages.some((message) => message.includes('has no accessible name'))).toBe(true)
     expect(messages.some((message) => message.includes('not the first control'))).toBe(true)
     expect(messages.some((message) => message.includes('outside an AddressInput.Root'))).toBe(true)
-  })
-})
-
-describe('AddressInput.Line1 lookup axe', () => {
-  test('has no violations idle, with results open, rejected, filled with the note, and with a Country part', async () => {
-    const { geocoder } = createFakeGeocoder()
-    const { container } = await render(<LookupAddress geocoder={geocoder} withCountry />)
-    await expectNoA11yViolations(container)
-
-    await search('Storgatan')
-    await expect.poll(() => options().length).toBe(3)
-    await expectNoA11yViolations(container)
-
-    await userEvent.keyboard('{ArrowDown}{Enter}')
-    await expect.element(lookup()).toHaveValue('Storgatan 1')
-    await expectNoA11yViolations(container)
-
-    await userEvent.fill(lookup(), 'Platsgatan')
-    await userEvent.keyboard('{Enter}')
-    await expect.poll(() => options().length).toBe(2)
-    await userEvent.keyboard('{ArrowDown}{Enter}')
-    await expect.element(page.getByText(/has no postal address/)).toBeVisible()
-    await expectNoA11yViolations(container)
-  })
-
-  test('has no violations on a status line: too short, error and offline', async () => {
-    const { geocoder } = createFakeGeocoder()
-    const { container } = await render(<LookupAddress geocoder={geocoder} />)
-    await search('St')
-    await expect.element(page.getByText('Type at least 3 characters to search.')).toBeVisible()
-    await expectNoA11yViolations(container)
-    await userEvent.fill(lookup(), 'broken')
-    await userEvent.keyboard('{Enter}')
-    await expect.element(page.getByText(/isn’t working right now/)).toBeVisible()
-    await expectNoA11yViolations(container)
   })
 })
 

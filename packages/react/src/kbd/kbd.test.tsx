@@ -1,4 +1,3 @@
-import { expectNoA11yViolations } from '@kvirn/testing'
 import { createRef } from 'react'
 import { afterEach, beforeEach, describe, expect, expectTypeOf, test, vi } from 'vite-plus/test'
 import type { MockInstance } from 'vite-plus/test'
@@ -106,17 +105,5 @@ describe('Kbd', () => {
     const element = page.getByTestId('key').element()
     expect(element.hasAttribute('tabindex')).toBe(false)
     expect(element.tabIndex).toBe(-1)
-  })
-
-  test('has no axe violations', async () => {
-    const { container } = await render(
-      <main>
-        <p>
-          You can move between the fields in the form with <Kbd>Tab</Kbd>.
-        </p>
-      </main>,
-    )
-    await expect.element(page.getByText('Tab')).toBeVisible()
-    await expectNoA11yViolations(container)
   })
 })

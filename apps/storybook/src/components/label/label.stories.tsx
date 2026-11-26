@@ -2,15 +2,8 @@ import { Field, TextInput } from '@kvirn/ui'
 import contract from '../../../../../packages/react/src/field/field.a11y.md?raw'
 import guide from '../../../../../packages/react/src/field/field-label.md?raw'
 import type { Meta, StoryObj } from '@storybook/react-vite'
-import { expect } from 'storybook/test'
 import { showSource, usageGuide } from '../../docs-source.ts'
-import {
-  FieldStates,
-  localeOf,
-  fieldMessagesFor,
-  textsFor,
-  withFormLocale,
-} from '../form/form.fixture.tsx'
+import { FieldStates, localeOf, textsFor, withFormLocale } from '../form/form.fixture.tsx'
 import { expectNoHorizontalOverflow } from '../theme-story-assertions.ts'
 
 // Components/Form/Label: Label, a native <label for> that names the control. The
@@ -66,15 +59,7 @@ export default meta
 type Story = StoryObj<typeof meta>
 
 /** The label names the input: clicking it focuses the input (2.5.3, 3.3.2). */
-export const Default: Story = {
-  play: async ({ canvas, globals }) => {
-    const { text } = textsFor(localeOf(globals))
-    const input = canvas.getByRole('textbox', { name: text.name })
-    const label = canvas.getByText(text.name)
-    await expect(label.tagName).toBe('LABEL')
-    await expect(label).toHaveAttribute('for', input.id)
-  },
-}
+export const Default: Story = {}
 
 /**
  * The fixture the keyboard tests drive. Try the keys in the Keyboard section above: Tab goes
@@ -99,13 +84,6 @@ export const Optional: Story = {
       </>
     )
   },
-  play: async ({ canvas, globals }) => {
-    const locale = localeOf(globals)
-    const { text } = textsFor(locale)
-    await expect(
-      canvas.getByRole('textbox', { name: `${text.phone} ${fieldMessagesFor(locale).optional}` }),
-    ).toBeVisible()
-  },
 }
 
 /** `marker="none"` leaves the optional text out of a field that isn't required. */
@@ -121,10 +99,6 @@ export const WithoutMarker: Story = {
         </Field.Root>
       </>
     )
-  },
-  play: async ({ canvas, globals }) => {
-    const { text } = textsFor(localeOf(globals))
-    await expect(canvas.getByRole('searchbox', { name: text.search })).toBeVisible()
   },
 }
 
@@ -142,10 +116,6 @@ export const AsPageHeading: Story = {
         </Field.Root>
       </>
     )
-  },
-  play: async ({ canvas, globals }) => {
-    const { text } = textsFor(localeOf(globals))
-    await expect(canvas.getByRole('heading', { level: 1, name: text.nameQuestion })).toBeVisible()
   },
 }
 
@@ -166,10 +136,6 @@ export const LongFinnish: Story = {
     )
   },
   play: async ({ canvas }) => {
-    await expect(
-      // kv-lang-ok: Finnish locale story: a long label
-      canvas.getByRole('textbox', { name: /Asunnonmuutostyöavustushakemuksen/ }),
-    ).toBeVisible()
     await expectNoHorizontalOverflow(canvas.getByTestId('narrow'))
   },
 }

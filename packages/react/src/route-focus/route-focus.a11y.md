@@ -77,15 +77,15 @@ The focused `h1` is read by the screen reader. `announce` is off by default, so 
 - 2.4.7 Focus Visible (AA), 2.4.11 Focus Not Obscured (Minimum) (AA): the title is focused and scrolled in. The ring is the default theme's.
 - 3.2.1 On Focus (A): no move on the first load, a hash change or while typing (`route focus: when it moves › typing in a text field skips the move`).
 - 4.1.3 Status Messages (AA): the optional `announce` through the Announcer.
-- Axe: no violations with the title focused (`accessibility › no axe violations with the title focused`).
+- Axe: no violations with the title focused (`route-focus.stories.tsx`, every story).
 
 ## AT test record
 
 | AT + browser + OS                                                          | Agent check | Human check | Result  | Notes                                                                                                                         |
 | -------------------------------------------------------------------------- | ----------- | ----------- | ------- | ----------------------------------------------------------------------------------------------------------------------------- |
 | **Automated (re-runnable tests)**                                          |             |             |         |                                                                                                                               |
-| axe, WCAG 2.2 A and AA, every story, 4 themes                              | pass        | n/a         | pass    | route-focus.stories.tsx, every story, 4 themes (apps/storybook/src/components/focus/)                                         |
-| Markup and ARIA (roles, names, ids, states)                                | pass        | n/a         | pass    | use-route-focus.test.tsx › first load does not move focus or touch the title; expectNoA11yViolations                          |
+| axe, WCAG 2.2 A and AA, every story, light theme                           | pass        | n/a         | pass    | route-focus.stories.tsx, every story, light theme (apps/storybook/src/components/focus/)                                      |
+| Markup and ARIA (roles, names, ids, states)                                | pass        | n/a         | pass    | use-route-focus.test.tsx › first load does not move focus or touch the title                                                  |
 | Keyboard contract rows (Vitest browser)                                    | pass        | n/a         | pass    | 3 rows, each names a test (use-route-focus.test.tsx › keyboard › Tab after a navigation continues after the title)            |
 | Focus order and management                                                 | pass        | n/a         | pass    | use-route-focus.test.tsx asserts focus (toHaveFocus); first rule: keyboard › Tab after a navigation continues after the title |
 | Display modes (forced colours, 320px reflow, text spacing, reduced motion) | n/a         | n/a         | n/a     | draws nothing itself; the focus ring on the focused h1 is the theme's general focus rule                                      |

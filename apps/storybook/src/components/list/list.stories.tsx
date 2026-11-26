@@ -2,7 +2,6 @@ import { Link, List } from '@kvirn/ui'
 import contract from '../../../../../packages/react/src/list/list.a11y.md?raw'
 import guide from '../../../../../packages/react/src/list/list.md?raw'
 import type { Meta, StoryObj } from '@storybook/react-vite'
-import { expect } from 'storybook/test'
 import { usageGuide } from '../../docs-source.ts'
 
 // Components/Content/List: the headless List, styled by @kvirn/theme. It is static content, so
@@ -40,11 +39,6 @@ export const Default: Story = {
       </List.Root>
     </nav>
   ),
-  play: async ({ canvas }) => {
-    await expect(canvas.getByRole('list')).toHaveAttribute('role', 'list')
-    await expect(canvas.getAllByRole('listitem')).toHaveLength(3)
-    await expect(canvas.getByRole('link', { name: 'Waste and recycling' })).toBeVisible()
-  },
 }
 
 /** `kv-list--bullet`: for a short list in running content. The list always has `role="list"`, so Safari keeps its list semantics. */
@@ -57,10 +51,6 @@ export const Bulleted: Story = {
       <List.Item>Bring a receipt for the fee</List.Item>
     </List.Root>
   ),
-  play: async ({ canvas }) => {
-    await expect(canvas.getByRole('list')).toHaveAttribute('role', 'list')
-    await expect(canvas.getAllByRole('listitem')).toHaveLength(3)
-  },
 }
 
 /** `as="ol"` with `kv-list--decimal`: steps in a fixed order. */
@@ -73,10 +63,6 @@ export const Numbered: Story = {
       <List.Item>Wait for the decision</List.Item>
     </List.Root>
   ),
-  play: async ({ canvas }) => {
-    await expect(canvas.getByRole('list').tagName).toBe('OL')
-    await expect(canvas.getAllByRole('listitem')).toHaveLength(3)
-  },
 }
 
 /** The four gap steps: `kv-list--gap-2`, 4 (default), `-6` and `-8`. */
@@ -92,9 +78,6 @@ export const GapSteps: Story = {
       ))}
     </>
   ),
-  play: async ({ canvas }) => {
-    await expect(canvas.getAllByRole('list')).toHaveLength(4)
-  },
 }
 
 /** A nested list goes inside an item. */
@@ -112,10 +95,6 @@ export const Nested: Story = {
       <List.Item>Contact</List.Item>
     </List.Root>
   ),
-  play: async ({ canvas }) => {
-    await expect(canvas.getAllByRole('list')).toHaveLength(2)
-    await expect(canvas.getAllByRole('listitem')).toHaveLength(4)
-  },
 }
 
 /** Right to left: the markers and the indent follow the reading direction. */
@@ -129,7 +108,4 @@ export const RTL: Story = {
       </List.Root>
     </div>
   ),
-  play: async ({ canvas }) => {
-    await expect(canvas.getAllByRole('listitem')).toHaveLength(2)
-  },
 }

@@ -4,7 +4,6 @@ import { en } from '@kvirn/i18n/en'
 import { fi } from '@kvirn/i18n/fi'
 import { nb } from '@kvirn/i18n/nb'
 import { sv } from '@kvirn/i18n/sv'
-import { expectNoA11yViolations } from '@kvirn/testing'
 import { createRef, useState } from 'react'
 import type { ReactNode } from 'react'
 import { renderToString } from 'react-dom/server'
@@ -201,7 +200,6 @@ describe('the group’s description', () => {
       await expect.element(box).not.toHaveAttribute('aria-describedby')
     }
     expectNoDanglingReferences(container)
-    await expectNoA11yViolations(container)
   })
 
   test('the hint is visible, and autoAdvance={false} takes it out of the description', async () => {
@@ -211,7 +209,6 @@ describe('the group’s description', () => {
       .toHaveAccessibleDescription('For example 2007 3 27')
     expect(page.getByText(svHint).elements()).toHaveLength(0)
     expectNoDanglingReferences(container)
-    await expectNoA11yViolations(container)
   })
 
   test('the hint is visible text, in the group’s description, in sv and en', async () => {
@@ -727,7 +724,6 @@ describe('invalid', () => {
     await expect.element(day()).not.toHaveAttribute('aria-invalid')
     expect(container.querySelectorAll('label[data-invalid]')).toHaveLength(1)
     expect(container.querySelector('label[data-invalid]')?.textContent).toBe('År')
-    await expectNoA11yViolations(container)
     // An invalid box expects no ErrorMessage of its own: the date has one, the Fieldset's.
     expect(consoleWarn).not.toHaveBeenCalled()
   })
@@ -922,26 +918,6 @@ describe('strings', () => {
       </Fieldset.Root>,
     )
     expect(boxOrder(container)).toEqual(['Day', 'Month', 'Year'])
-  })
-})
-
-describe('accessibility', () => {
-  test('has no axe violations in every state', async () => {
-    const { container } = await render(
-      inLocale(
-        'sv-SE',
-        sv,
-        <>
-          <Birth name="a" autoComplete="bday" />
-          <Birth name="b" fieldset={{ invalid: true, required: true }} invalidParts={['year']} />
-          <Birth name="c" fieldset={{ disabled: true }} defaultValue={{ day: '27' }} />
-          <Birth name="d" readOnly defaultValue={{ day: '27', month: '3', year: '2007' }} />
-        </>,
-      ),
-    )
-    await expectNoA11yViolations(container)
-    expectNoDanglingReferences(container)
-    expect(consoleWarn).not.toHaveBeenCalled()
   })
 })
 

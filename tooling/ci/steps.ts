@@ -1,4 +1,5 @@
-// The `gates` job of .github/workflows/ci.yml, in order. A test keeps this list equal to the workflow.
+// The `ci` script of package.json, which the `gates` job of .github/workflows/ci.yml runs, split at `&&`.
+// A test keeps this list equal to the script.
 
 export interface CiStep {
   name: string
@@ -11,20 +12,17 @@ export interface CiStep {
 export const setupCommands = ['vp install', 'pnpm exec playwright install --with-deps chromium']
 
 export const ciSteps: CiStep[] = [
+  { name: 'fmt', command: 'vp fmt --check' },
+  { name: 'lint', command: 'vp lint' },
   { name: 'build', command: 'vp run build' },
-  { name: 'check', command: 'vp check --no-fmt' },
-  { name: 'fmt', command: 'vp fmt --check', advisory: true },
-  { name: 'test', command: 'vp run test' },
-  {
-    name: 'sweep',
-    command:
-      'node tooling/storybook-run/storybook-run.ts storybook-forced-colors storybook-reduced-motion storybook-reflow storybook-text-spacing',
-  },
-  { name: 'i18n:check', command: 'vp run i18n:check' },
-  { name: 'theme:check', command: 'vp run theme:check' },
+  { name: 'check', command: 'pnpm run check' },
+  { name: 'test', command: 'pnpm run test' },
+  { name: 'i18n:check', command: 'pnpm run i18n:check' },
+  { name: 'theme:check', command: 'pnpm run theme:check' },
+  { name: 'sweep', command: 'pnpm run sweep' },
 ]
 
-// The same work as the workflow's `vp run build` (root script `vp run -r build`) with a lower task
+// The same work as the script's `vp run build` (root script `vp run -r build`) with a lower task
 // concurrency: four parallel `tsgo` declaration builds need more than the 6 GB a container gets on a
 // 7.75 GiB Docker VM and are OOM-killed (SIGKILL). Fewer at a time is slower and never red for memory.
 export const buildConcurrency = process.env.KVIRN_CI_BUILD_CONCURRENCY ?? '2'
@@ -35,22 +33,23 @@ export const containerCommands: Record<string, string> = {
 
 // Chromium drops its connection in one Storybook file per container run, so the Storybook projects run
 // on the host checkout under the gate lock. Together with `containerCommands.test` they are the
-// workflow's `vp run test`; `sweep` is the workflow's command, split at `&&`.
+// script's `pnpm run test`; `sweep` is the script's `sweep` command, split at `&&`.
 export interface HostStep {
   name: string
   commands: string[]
 }
 
+const sweepCommand =
+  'node tooling/storybook-run/storybook-run.ts storybook-forced-colors storybook-reduced-motion storybook-reflow storybook-text-spacing'
+
 export const hostSteps: HostStep[] = [
   {
     name: 'storybook',
-    commands: [
-      'node tooling/storybook-run/storybook-run.ts storybook storybook-dark storybook-light-contrast storybook-dark-contrast',
-    ],
+    commands: ['node tooling/storybook-run/storybook-run.ts storybook'],
   },
   {
     name: 'sweep',
-    commands: ciSteps.find((step) => step.name === 'sweep')!.command.split(' && '),
+    commands: [sweepCommand],
   },
 ]
 

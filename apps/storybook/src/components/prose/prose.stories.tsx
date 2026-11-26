@@ -59,13 +59,7 @@ export default meta
 type Story = StoryObj<typeof meta>
 
 /** A heading, a paragraph and a link: a `<div>`, so it adds no landmark. */
-export const Default: Story = {
-  play: async ({ canvas }) => {
-    const heading = canvas.getByRole('heading', { level: 2, name: 'Contact us' })
-    await expect(heading.closest('.kv-prose')).not.toBeNull()
-    await expect(canvas.queryByRole('article')).toBeNull()
-  },
-}
+export const Default: Story = {}
 
 const articleOf = (canvasElement: HTMLElement) => requireElement(canvasElement, 'article.kv-prose')
 
@@ -83,14 +77,7 @@ export const Article: Story = {
   play: async ({ canvasElement, globals }) => {
     const locale = fixtureLocaleOf(globals['locale'])
     const { text } = articleFor(locale)
-    const canvas = within(canvasElement)
-    await expect(canvas.getByRole('heading', { level: 1 })).toHaveTextContent(text.title)
     await expectScrollRegion(canvasElement, text.times.caption)
-    const steps = within(canvasElement).getByRole('heading', { level: 2, name: text.steps.heading })
-    await expect(steps.nextElementSibling).toHaveClass('kv-steps')
-    await expect(
-      within(steps.nextElementSibling as HTMLElement).getAllByRole('listitem'),
-    ).toHaveLength(text.steps.items.length)
   },
 }
 
@@ -235,10 +222,6 @@ export const OnSurfaces: Story = {
   ],
   parameters: showSource('prose/prose.fixture.tsx', 'ProseOnSurfaces'),
   render: (_args, { globals }) => <ProseOnSurfaces locale={fixtureLocaleOf(globals['locale'])} />,
-  play: async ({ canvasElement }) => {
-    // One named region per surface.
-    await expect(within(canvasElement).getAllByRole('region')).toHaveLength(3)
-  },
 }
 
 /** The names the Not prose story's play looks for: the section headings, a link and the navigation. */

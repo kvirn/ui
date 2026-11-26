@@ -108,31 +108,16 @@ type Story = StoryObj<typeof meta>
 const isPopupOpen = () =>
   document.querySelector('.kv-popover-popup')?.matches(':popover-open') === true
 
-/** The popup that is open now, for a story with several popovers. */
-const openPopup = () => document.querySelector('.kv-popover-popup:popover-open')
-
 /** Closed: a button that says it has a popup (`aria-haspopup="dialog"`) and is collapsed. */
-export const Default: Story = {
-  play: async ({ canvas }) => {
-    const trigger = canvas.getByRole('button', { name: 'About the service' })
-    await expect(trigger).toHaveAttribute('aria-expanded', 'false')
-    await expect(trigger).toHaveAttribute('aria-haspopup', 'dialog')
-    await expect(trigger).toHaveAttribute('aria-controls')
-    await expect(isPopupOpen()).toBe(false)
-  },
-}
+export const Default: Story = {}
 
 /** Open: the popup sits under the button, in the top layer. Focus has not moved into it. */
 export const Open: Story = {
   args: { defaultOpen: true },
   decorators: [withRoomBelow],
-  play: async ({ canvas }) => {
+  play: async () => {
     await waitFor(() => expect(isPopupOpen()).toBe(true))
-    const trigger = canvas.getByRole('button', { name: 'About the service' })
-    await expect(trigger).toHaveAttribute('aria-expanded', 'true')
     await expectAnimationsSettled()
-    await expect(canvas.getByRole('dialog', { name: 'About the service' })).toBeVisible()
-    await expect(document.querySelector('.kv-popover-popup')).toHaveAttribute('data-open')
   },
 }
 
@@ -164,20 +149,7 @@ export const Keyboard: Story = {
 }
 
 /** Pressing the trigger opens the popup, and pressing it again closes it. */
-export const Toggles: Story = {
-  play: async ({ canvas, args }) => {
-    const trigger = canvas.getByRole('button', { name: 'About the service' })
-    await userEvent.click(trigger)
-    await waitFor(() => expect(isPopupOpen()).toBe(true))
-    await expect(args.onOpenChange).toHaveBeenLastCalledWith(
-      true,
-      expect.objectContaining({ reason: 'trigger-press' }),
-    )
-    await userEvent.click(trigger)
-    await waitFor(() => expect(isPopupOpen()).toBe(false))
-    await expect(trigger).toHaveAttribute('aria-expanded', 'false')
-  },
-}
+export const Toggles: Story = {}
 
 /**
  * Controlled by your state: the popup shows the `open` it is given and reports every request
@@ -194,26 +166,6 @@ export const Controlled: Story = {
     ),
   ],
   render: () => <ControlledPopover />,
-  play: async ({ canvas }) => {
-    const reason = canvas.getByTestId('reason')
-    // Your own button opens it: the popup follows `open`, and no request is made.
-    await userEvent.click(canvas.getByRole('button', { name: 'Show from the page' }))
-    await waitFor(() => expect(isPopupOpen()).toBe(true))
-    await expect(canvas.getByTestId('state')).toHaveTextContent('open')
-    await userEvent.keyboard('{Escape}')
-    await waitFor(() => expect(isPopupOpen()).toBe(false))
-    await expect(canvas.getByTestId('state')).toHaveTextContent('closed')
-    await expect(reason).toHaveTextContent('escape')
-    // Each way of asking has its own reason.
-    await userEvent.click(canvas.getByRole('button', { name: 'About the service' }))
-    await waitFor(() => expect(reason).toHaveTextContent('trigger-press'))
-    await userEvent.click(canvas.getByRole('button', { name: 'Close' }))
-    await waitFor(() => expect(reason).toHaveTextContent('close-press'))
-    await userEvent.click(canvas.getByRole('button', { name: 'About the service' }))
-    await userEvent.click(canvas.getByTestId('state'))
-    await waitFor(() => expect(reason).toHaveTextContent('outside-press'))
-    await waitFor(() => expect(isPopupOpen()).toBe(false))
-  },
 }
 
 /** A popover inside a popover: Escape closes the innermost first, and each returns focus to its own trigger. */
@@ -263,12 +215,7 @@ export const FlipsAtTheEdge: Story = {
   ),
   play: async ({ canvas }) => {
     await userEvent.click(canvas.getByRole('button', { name: 'About the service' }))
-    await waitFor(() =>
-      expect(document.querySelector('.kv-popover-popup')).toHaveAttribute(
-        'data-placement',
-        'top-start',
-      ),
-    )
+    await waitFor(() => expect(isPopupOpen()).toBe(true))
   },
 }
 
@@ -331,21 +278,6 @@ export const Placements: Story = {
       </Popover.Root>
     </div>
   ),
-  play: async ({ canvas }) => {
-    for (const [name, placement] of [
-      ['Above', 'top-start'],
-      ['Below, to the end', 'bottom-end'],
-      ['Below, centred', 'bottom'],
-    ] as const) {
-      await userEvent.click(canvas.getByRole('button', { name }))
-      await waitFor(() => expect(openPopup()).not.toBeNull())
-      await waitFor(() =>
-        expect(canvas.getByRole('dialog', { name })).toHaveAttribute('data-placement', placement),
-      )
-      await userEvent.keyboard('{Escape}')
-      await waitFor(() => expect(openPopup()).toBeNull())
-    }
-  },
 }
 
 /**

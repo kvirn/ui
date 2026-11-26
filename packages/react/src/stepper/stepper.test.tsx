@@ -3,7 +3,6 @@ import { fi } from '@kvirn/i18n/fi'
 import { nb } from '@kvirn/i18n/nb'
 import { nn } from '@kvirn/i18n/nn'
 import { sv } from '@kvirn/i18n/sv'
-import { expectNoA11yViolations } from '@kvirn/testing'
 import { readAloud } from '@kvirn/testing/read-aloud'
 import { createRef } from 'react'
 import { afterEach, beforeEach, describe, expect, test, vi } from 'vite-plus/test'
@@ -269,16 +268,5 @@ describe('Stepper', () => {
       await userEvent.keyboard('{Shift>}{Tab}{/Shift}')
       await expect.element(page.getByRole('button', { name: 'Back' })).toHaveFocus()
     })
-  })
-
-  test('has no axe violations', async () => {
-    const { container } = await render(
-      <main>
-        <h1>Which vehicle is the permit for?</h1>
-        <Stepper current={2} total={5} name="Your vehicle" />
-      </main>,
-    )
-    await expect.element(page.getByText('Step 2 of 5: Your vehicle')).toBeVisible()
-    await expectNoA11yViolations(container)
   })
 })

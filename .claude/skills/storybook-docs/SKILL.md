@@ -164,7 +164,7 @@ Notes in prose: choices, pitfalls, combinations. Code blocks here are for packag
 
 - Add a story only if it shows something the others don't: a state, a composition, a hard case (a long Finnish string at 320px, a marked exception; RTL, forced colours), a way to build your own. Don't add one to have one.
 - One-line JSDoc per story says what it shows and when to use it.
-- Every state gets axe in the four theme projects, the component test covers the keyboard rows, and the display-mode sweep covers reflow and forced colours (testing skill).
+- Every state gets axe in the `storybook` project (light theme; `theme:check` proves contrast in all four), the component test covers the keyboard rows (a `play` proves only what no test does, never a keyboard row a test already has), and the display-mode sweep covers reflow and forced colours (testing skill).
 - Strings in the story are real: a sentence a resident would read, in `en` by default, with the locale toolbar switching them.
 - Text in another language than the story's locale (a marked case) renders inside the fixture-language helper (a nested `KvirnProvider` with that locale), never `lang` on a part.
 
@@ -176,7 +176,7 @@ Cross-component guidance lives once on a Foundation page (`apps/storybook/src/fo
 - **`tooling/foundation-docs/foundation-docs.test.ts` guards the tables.** Every token in a `## Tokens` table must exist on `:root` in `theme.css`, and the first code cell of its row must be its value (a `var()` resolved). A renamed or changed token fails `vp test run` instead of drifting.
 - **Colors, Typography, Prose and KvirnProvider stay stories.** A single-story Foundation page uses `tags: ['!autodocs']` and names its story like its title, so Storybook hoists it.
 - `remark-gfm` (a pinned dev dependency of `apps/storybook` only) enables tables, through `mdxPluginOptions`.
-- MDX pages are not axe-tested, so review them by hand in the four themes.
+- MDX pages are not axe-tested, so review them by hand in the four themes (the toolbar).
 
 ## Maintainer preferences
 

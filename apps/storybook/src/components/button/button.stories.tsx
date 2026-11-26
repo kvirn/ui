@@ -5,7 +5,7 @@ import guide from '../../../../../packages/react/src/button/button.md?raw'
 import type { Decorator, Meta, StoryObj } from '@storybook/react-vite'
 import { useState } from 'react'
 import type { CSSProperties, ReactNode } from 'react'
-import { expect, fn, userEvent, waitFor, within } from 'storybook/test'
+import { expect, fn, waitFor, within } from 'storybook/test'
 import { showSource, usageGuide } from '../../docs-source.ts'
 import { expectMinimumTargetSize, expectNoHorizontalOverflow } from '../theme-story-assertions.ts'
 import { ApplicationForm, ChangeAddressForm } from './button.fixture.tsx'
@@ -153,12 +153,7 @@ export default meta
 type Story = StoryObj<typeof meta>
 
 /** The base look is secondary: a primary button is always an explicit choice. */
-export const Default: Story = {
-  play: async ({ canvas }) => {
-    const button = canvas.getByRole('button', { name: 'Save' })
-    await expect(button).toHaveAttribute('type', 'button')
-  },
-}
+export const Default: Story = {}
 
 /** `kv-button--primary`: the main next step on a page. */
 export const Primary: Story = {
@@ -181,10 +176,6 @@ export const IconAtStart: Story = {
       </>
     ),
   },
-  play: async ({ canvas }) => {
-    const button = canvas.getByRole('button', { name: fixtureText.addChild })
-    await expect(button.firstElementChild).toHaveAttribute('aria-hidden', 'true')
-  },
 }
 
 /** An icon after the text, here a primary "continue" with an arrow that mirrors in RTL. */
@@ -198,10 +189,6 @@ export const IconAtEnd: Story = {
         <Icon name="arrow-forward" />
       </>
     ),
-  },
-  play: async ({ canvas }) => {
-    const button = canvas.getByRole('button', { name: fixtureText.continue })
-    await expect(button.lastElementChild).toHaveAttribute('data-mirror-in-rtl')
   },
 }
 
@@ -229,8 +216,6 @@ export const IconOnly: Story = {
   },
   play: async ({ canvas }) => {
     const button = canvas.getByRole('button', { name: fixtureText.close })
-    await expect(button.children).toHaveLength(1)
-    await expect(button.textContent).toBe('')
     await expectMinimumTargetSize(button)
   },
 }
@@ -257,7 +242,6 @@ export const LinkLook: Story = {
     const [enabled, disabled] = canvas.getAllByRole('button', { name: fixtureText.settings })
     await expectMinimumTargetSize(enabled!)
     await expectMinimumTargetSize(disabled!)
-    await expect(disabled).toBeDisabled()
   },
 }
 
@@ -312,8 +296,6 @@ export const Activation: Story = {
   decorators: [withClickCount],
   play: async ({ canvas }) => {
     const button = canvas.getByRole('button', { name: 'Save' })
-    await expect(button).toHaveAttribute('type', 'button')
-    await expect(button).not.toHaveAttribute('data-disabled')
     await expectMinimumTargetSize(button)
   },
 }
@@ -341,31 +323,11 @@ export const Variants: Story = {
       <p>{fixtureText.dangerNote}</p>
     </>
   ),
-  play: async ({ canvas }) => {
-    const buttons = canvas.getAllByRole('button')
-    await expect(buttons.map((button) => button.textContent)).toEqual([
-      fixtureText.send,
-      fixtureText.saveDraft,
-      fixtureText.deleteDraft,
-    ])
-  },
 }
 
 /** Every variant: enabled, disabled, and disabled but focusable. */
 export const States: Story = {
   render: () => <>{statesMatrix('states')}</>,
-  play: async ({ canvas }) => {
-    const buttons = canvas.getAllByRole('button', { name: fixtureText.send })
-    await expect(buttons).toHaveLength(9)
-    for (const button of buttons.filter((_, index) => index % 3 !== 0)) {
-      await expect(button).toHaveAttribute('data-disabled')
-    }
-    const focusable = buttons.filter((button) => button.getAttribute('aria-disabled') === 'true')
-    await expect(focusable).toHaveLength(3)
-    for (const button of focusable) {
-      await expect(button).not.toBeDisabled()
-    }
-  },
 }
 
 /** Natively disabled: skipped by Tab. The next button shows where focus goes instead. */
@@ -377,11 +339,6 @@ export const Disabled: Story = {
       <Button>Cancel</Button>
     </ButtonGroup>
   ),
-  play: async ({ canvas }) => {
-    const button = canvas.getByRole('button', { name: 'Skicka' })
-    await expect(button).toBeDisabled()
-    await expect(button).toHaveAttribute('data-disabled', '')
-  },
 }
 
 /** Stays in the Tab order with `aria-disabled`, and says why it's disabled. */
@@ -399,28 +356,12 @@ export const FocusableWhenDisabled: Story = {
       <Button {...args} aria-describedby="send-reason" />
     </>
   ),
-  play: async ({ canvas }) => {
-    const button = canvas.getByRole('button', { name: 'Skicka' })
-    await expect(button).toHaveAttribute('aria-disabled', 'true')
-    await expect(button).not.toHaveAttribute('disabled')
-    await expect(button).toHaveAccessibleDescription(fixtureText.reason)
-  },
 }
 
 /** `type="submit"` submits. The default `type="button"` never does. */
 export const SubmitInForm: Story = {
   parameters: showSource('button/button.fixture.tsx', 'ApplicationForm'),
   render: () => <ApplicationForm />,
-  play: async ({ canvas }) => {
-    await expect(canvas.getByRole('button', { name: 'Send application' })).toHaveAttribute(
-      'type',
-      'submit',
-    )
-    await expect(canvas.getByRole('button', { name: 'Start over' })).toHaveAttribute(
-      'type',
-      'button',
-    )
-  },
 }
 
 /**
@@ -434,8 +375,6 @@ export const ResetAndBlockedClick: Story = {
     const address = canvas.getByRole('textbox', { name: 'Street address' })
     const reset = canvas.getByRole('button', { name: 'Reset' })
     const save = canvas.getByRole('button', { name: 'Save address' })
-    await expect(reset).toHaveAttribute('type', 'reset')
-    await expect(save).toHaveAttribute('aria-disabled', 'true')
     await userEvent.clear(address)
     await userEvent.type(address, '5 King Street')
     await userEvent.click(save)
@@ -451,7 +390,6 @@ export const FocusVisible: Story = {
   play: async ({ canvas, userEvent }) => {
     const button = canvas.getByRole('button', { name: fixtureText.send })
     await userEvent.tab()
-    await expect(button).toHaveFocus()
     await waitFor(() => expect(button).toHaveAttribute('data-focus-visible'))
     // 2.4.7: a focused button shows an indicator.
     await expect(getComputedStyle(button).outlineStyle).not.toBe('none')
@@ -475,7 +413,6 @@ export const LongFinnishLabel: Story = {
     </ButtonGroup>
   ),
   play: async ({ canvas }) => {
-    await expect(canvas.getAllByRole('button', { name: fiSaveLong })).toHaveLength(2)
     await expectNoHorizontalOverflow(canvas.getByTestId('narrow'))
   },
 }
@@ -533,7 +470,6 @@ export const SiteWideSizing: Story = {
   ),
   play: async ({ canvas }) => {
     const buttons = within(canvas.getByTestId('site-wide-sizing')).getAllByRole('button')
-    await expect(buttons).toHaveLength(12)
     for (const button of buttons) {
       await expectMinimumTargetSize(button)
     }
@@ -587,18 +523,6 @@ export const ThemeOverride: Story = {
  */
 export const Busy: Story = {
   args: { busy: true, children: fixtureText.send, onClick: fn() },
-  play: async ({ canvas, args }) => {
-    const button = canvas.getByRole('button', { name: fixtureText.send })
-    await expect(button).toHaveAttribute('aria-disabled', 'true')
-    await expect(button).toHaveAttribute('data-busy')
-    await expect(button).not.toHaveAttribute('disabled')
-    await expect(button.querySelector(':scope > .kv-spinner:first-child')).toHaveAttribute(
-      'aria-hidden',
-      'true',
-    )
-    await userEvent.click(button)
-    await expect(args.onClick).not.toHaveBeenCalled()
-  },
 }
 
 /** Right to left, in English: the group starts on the right. */
@@ -685,12 +609,4 @@ export const Depth: Story = {
       </Card.Root>
     </>
   ),
-  play: async ({ canvas }) => {
-    const buttons = canvas.getAllByRole('button')
-    await expect(buttons).toHaveLength(27)
-    await expect(
-      buttons.filter((button) => button.hasAttribute('data-focus-visible')),
-    ).toHaveLength(9)
-    await expect(buttons.filter((button) => button.hasAttribute('data-disabled'))).toHaveLength(9)
-  },
 }

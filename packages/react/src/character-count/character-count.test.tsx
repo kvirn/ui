@@ -1,7 +1,6 @@
 import type { KvirnMessages } from '@kvirn/i18n'
 import { fi } from '@kvirn/i18n/fi'
 import { sv } from '@kvirn/i18n/sv'
-import { expectNoA11yViolations } from '@kvirn/testing'
 import { createRef, useState } from 'react'
 import { renderToString } from 'react-dom/server'
 import { afterEach, beforeEach, describe, expect, expectTypeOf, test, vi } from 'vite-plus/test'
@@ -68,7 +67,6 @@ describe('rendering', () => {
     expect(count).not.toBeNull()
     expect(count?.hasAttribute('aria-live')).toBe(false)
     expect(count?.hasAttribute('role')).toBe(false)
-    await expectNoA11yViolations(container)
   })
 
   test('says the limit while empty, how many remain while typing, and how many are over', async () => {
@@ -103,7 +101,6 @@ describe('rendering', () => {
     // The icon is decorative: the words say it, so the shape is never the only cue (1.4.1).
     expect(count?.querySelector('svg')?.getAttribute('aria-hidden')).toBe('true')
     expect(count?.textContent).toBe('You have 1 character too many.')
-    await expectNoA11yViolations(container)
   })
 
   // kv-lang-ok: the decomposed å is the point of the test

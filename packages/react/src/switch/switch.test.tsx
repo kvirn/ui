@@ -1,5 +1,4 @@
 import { sv } from '@kvirn/i18n/sv'
-import { expectNoA11yViolations } from '@kvirn/testing'
 import { createRef, useState } from 'react'
 import { afterEach, beforeEach, describe, expect, expectTypeOf, test, vi } from 'vite-plus/test'
 import type { MockInstance } from 'vite-plus/test'
@@ -35,7 +34,7 @@ afterEach(() => {
 
 describe('rendering', () => {
   test('renders a native <input type="checkbox" role="switch">, outside a Field', async () => {
-    const { container } = await render(<Switch aria-label="Text message" />)
+    await render(<Switch aria-label="Text message" />)
     const control = page.getByRole('switch', { name: 'Text message' })
     await expect.element(control).toHaveAttribute('type', 'checkbox')
     await expect.element(control).toHaveAttribute('role', 'switch')
@@ -45,7 +44,6 @@ describe('rendering', () => {
     await expect.element(control).not.toHaveAttribute('aria-invalid')
     await expect.element(control).not.toHaveAttribute('aria-required')
     await expect.element(control).not.toHaveAttribute('aria-checked')
-    await expectNoA11yViolations(container)
     expect(consoleWarn).not.toHaveBeenCalled()
   })
 
@@ -87,7 +85,6 @@ describe('in a Field', () => {
     expect(container.querySelector('label')?.getAttribute('for')).toBe(id)
     await expect.element(control).toHaveAccessibleDescription('You can change this at any time.')
     await expect.element(control).not.toHaveAttribute('aria-required')
-    await expectNoA11yViolations(container)
     expect(consoleWarn).not.toHaveBeenCalled()
   })
 
@@ -111,7 +108,7 @@ describe('in a Field', () => {
   })
 
   test('an invalid Field gives aria-invalid and the error in the description', async () => {
-    const { container } = await render(
+    await render(
       <Field.Root invalid>
         <Switch />
         <Field.Label marker="none">Reminders by text message</Field.Label>
@@ -127,7 +124,6 @@ describe('in a Field', () => {
       .toHaveAccessibleDescription(
         'We send a text message the day before. Error: The setting was not saved',
       )
-    await expectNoA11yViolations(container)
   })
 
   test('a disabled Field disables the switch, and the switch’s own disabled does too', async () => {

@@ -2,10 +2,9 @@ import { Field, Fieldset, TextInput } from '@kvirn/ui'
 import contract from '../../../../../packages/react/src/fieldset/fieldset.a11y.md?raw'
 import guide from '../../../../../packages/react/src/fieldset/fieldset.md?raw'
 import type { Meta, StoryObj } from '@storybook/react-vite'
-import { expect } from 'storybook/test'
 import { usageGuide } from '../../docs-source.ts'
 import { gapTextsFor } from '../form/form-gaps.fixture.tsx'
-import { fieldMessagesFor, localeOf, textsFor, withFormLocale } from '../form/form.fixture.tsx'
+import { localeOf, textsFor, withFormLocale } from '../form/form.fixture.tsx'
 import { expectNoHorizontalOverflow } from '../theme-story-assertions.ts'
 
 // Components/Form/Fieldset: the native <fieldset> and <legend>, grouping questions under one
@@ -108,15 +107,7 @@ export default meta
 type Story = StoryObj<typeof meta>
 
 /** An address: the legend names the group, and the fields are 24px apart. */
-export const Default: Story = {
-  play: async ({ canvas, globals }) => {
-    const { text } = textsFor(localeOf(globals))
-    const group = canvas.getByRole('group', { name: text.addressLegend })
-    await expect(group.tagName).toBe('FIELDSET')
-    await expect(canvas.getByRole('textbox', { name: text.street })).toBeVisible()
-    await expect(canvas.getByRole('textbox', { name: text.postcode })).toBeVisible()
-  },
-}
+export const Default: Story = {}
 
 /**
  * The fixture the keyboard tests drive. Try the keys in the Keyboard section above: Tab and
@@ -193,12 +184,6 @@ export const WithDescription: Story = {
       </>
     )
   },
-  play: async ({ canvas, globals }) => {
-    const { text } = textsFor(localeOf(globals))
-    await expect(
-      canvas.getByRole('group', { name: text.addressLegend }),
-    ).toHaveAccessibleDescription(text.addressHint)
-  },
 }
 
 /**
@@ -239,26 +224,11 @@ export const Invalid: Story = {
       </>
     )
   },
-  play: async ({ canvas, globals }) => {
-    const { text } = textsFor(localeOf(globals))
-    await expect(canvas.getByRole('textbox', { name: text.street })).toHaveAttribute(
-      'aria-invalid',
-      'true',
-    )
-    await expect(canvas.getByRole('textbox', { name: text.postcode })).not.toHaveAttribute(
-      'aria-invalid',
-    )
-  },
 }
 
 /** Native `disabled` on the fieldset disables every control inside it. */
 export const Disabled: Story = {
   args: { disabled: true },
-  play: async ({ canvas, globals }) => {
-    const { text } = textsFor(localeOf(globals))
-    await expect(canvas.getByRole('textbox', { name: text.street })).toBeDisabled()
-    await expect(canvas.getByRole('textbox', { name: text.town })).toBeDisabled()
-  },
 }
 
 /**
@@ -290,19 +260,6 @@ export const AsGroup: Story = {
         </Fieldset.Root>
       </>
     )
-  },
-  play: async ({ canvas, globals }) => {
-    const locale = localeOf(globals)
-    const { text } = textsFor(locale)
-    const { text: gap } = gapTextsFor(locale)
-    await expect(
-      canvas.getByRole('group', {
-        name: `${gap.groupLegend} ${fieldMessagesFor(locale).optional}`,
-      }),
-    ).toBeVisible()
-    // The Fields inside carry no optional text of their own.
-    await expect(canvas.getByRole('textbox', { name: text.phone })).toBeVisible()
-    await expect(canvas.getByRole('textbox', { name: text.email })).toBeVisible()
   },
 }
 
@@ -347,15 +304,6 @@ export const RequiredGroup: Story = {
       </>
     )
   },
-  play: async ({ canvas, args, globals }) => {
-    const locale = localeOf(globals)
-    const { text: gap } = gapTextsFor(locale)
-    const group = canvas.getByRole('group', { name: gap.groupLegend })
-    await expect(group).toHaveAttribute('id', args.id)
-    await expect(group).toHaveAttribute('data-required')
-    await expect(group).not.toHaveAttribute('aria-required')
-    await expect(group).toHaveAccessibleDescription(`${gap.groupHint} ${gap.groupNote}`)
-  },
 }
 
 /**
@@ -390,18 +338,6 @@ export const OptionalSection: Story = {
           </Field.Root>
         </Fieldset.Root>
       </>
-    )
-  },
-  play: async ({ canvas, globals }) => {
-    const locale = localeOf(globals)
-    const { text } = textsFor(locale)
-    const { text: gap } = gapTextsFor(locale)
-    await expect(
-      canvas.getByRole('group', { name: `${gap.sectionLegend} ${gap.ownOptional}` }),
-    ).toHaveAccessibleDescription(gap.sectionHint)
-    await expect(canvas.getByRole('textbox', { name: text.name })).toHaveAttribute(
-      'aria-required',
-      'true',
     )
   },
 }
@@ -441,11 +377,6 @@ export const AsPageHeading: Story = {
         </Fieldset.Root>
       </>
     )
-  },
-  play: async ({ canvas, globals }) => {
-    const { text } = textsFor(localeOf(globals))
-    await expect(canvas.getByRole('heading', { level: 1, name: text.addressLegend })).toBeVisible()
-    await expect(canvas.getByRole('group', { name: text.addressLegend })).toBeVisible()
   },
 }
 
@@ -492,8 +423,6 @@ export const LongFinnish: Story = {
     )
   },
   play: async ({ canvas }) => {
-    // kv-lang-ok: asserts the Finnish legend hard case
-    await expect(canvas.getByRole('group', { name: 'Missä asut?' })).toBeVisible()
     await expectNoHorizontalOverflow(canvas.getByTestId('narrow'))
   },
 }

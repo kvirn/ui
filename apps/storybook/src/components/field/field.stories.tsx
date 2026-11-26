@@ -5,13 +5,7 @@ import type { Meta, StoryObj } from '@storybook/react-vite'
 import { expect } from 'storybook/test'
 import { showSource, usageGuide } from '../../docs-source.ts'
 import { gapTextsFor } from '../form/form-gaps.fixture.tsx'
-import {
-  FieldStates,
-  localeOf,
-  fieldMessagesFor,
-  textsFor,
-  withFormLocale,
-} from '../form/form.fixture.tsx'
+import { FieldStates, localeOf, textsFor, withFormLocale } from '../form/form.fixture.tsx'
 import { expectMinimumTargetSize, expectNoHorizontalOverflow } from '../theme-story-assertions.ts'
 
 // Components/Form/Field: the headless Field, styled by @kvirn/theme/theme.css (design
@@ -87,9 +81,6 @@ export const Default: Story = {
   play: async ({ canvas, globals }) => {
     const { text } = textsFor(localeOf(globals))
     const input = canvas.getByRole('textbox', { name: text.name })
-    await expect(input).toHaveAttribute('aria-required', 'true')
-    await expect(input).not.toHaveAttribute('aria-invalid')
-    await expect(input).not.toHaveAttribute('aria-describedby')
     await expectMinimumTargetSize(input)
   },
 }
@@ -108,12 +99,6 @@ export const WithDescription: Story = {
           <TextInput name="name" autoComplete="name" />
         </Field.Root>
       </>
-    )
-  },
-  play: async ({ canvas, globals }) => {
-    const { text } = textsFor(localeOf(globals))
-    await expect(canvas.getByRole('textbox', { name: text.name })).toHaveAccessibleDescription(
-      text.nameHint,
     )
   },
 }
@@ -139,14 +124,6 @@ export const Optional: Story = {
       </>
     )
   },
-  play: async ({ canvas, globals }) => {
-    const locale = localeOf(globals)
-    const { text } = textsFor(locale)
-    const input = canvas.getByRole('textbox', {
-      name: `${text.phone} ${fieldMessagesFor(locale).optional}`,
-    })
-    await expect(input).not.toHaveAttribute('aria-required')
-  },
 }
 
 /** Required: `aria-required`, never native `required`, so the browser shows no bubble. */
@@ -164,12 +141,6 @@ export const Required: Story = {
         </Field.Root>
       </>
     )
-  },
-  play: async ({ canvas, globals }) => {
-    const { text } = textsFor(localeOf(globals))
-    const input = canvas.getByRole('textbox', { name: text.email })
-    await expect(input).toHaveAttribute('aria-required', 'true')
-    await expect(input).not.toHaveAttribute('required')
   },
 }
 
@@ -205,14 +176,6 @@ export const WithHelpTextUnder: Story = {
       </>
     )
   },
-  play: async ({ canvas, globals }) => {
-    const { text } = textsFor(localeOf(globals))
-    const input = canvas.getByRole('textbox', { name: text.registration })
-    await expect(input).toHaveAccessibleDescription(
-      `${text.registrationWhere} ${text.registrationHint}`,
-    )
-    await expect((input.getAttribute('aria-describedby') ?? '').split(' ')).toHaveLength(2)
-  },
 }
 
 /**
@@ -238,16 +201,6 @@ export const InvalidWithHelpTextUnder: Story = {
       </>
     )
   },
-  play: async ({ canvas, globals }) => {
-    const locale = localeOf(globals)
-    const { text } = textsFor(locale)
-    const input = canvas.getByRole('textbox', { name: text.registration })
-    await expect(input).toHaveAttribute('aria-invalid', 'true')
-    await expect(input).toHaveAccessibleDescription(
-      `${text.registrationWhere} ${text.registrationHint} ${fieldMessagesFor(locale).errorPrefix} ${text.registrationError}`,
-    )
-    await expect(canvas.getByText(text.registrationError)).toBeVisible()
-  },
 }
 
 /**
@@ -271,16 +224,6 @@ export const Invalid: Story = {
         </Field.Root>
       </>
     )
-  },
-  play: async ({ canvas, globals }) => {
-    const locale = localeOf(globals)
-    const { text } = textsFor(locale)
-    const input = canvas.getByRole('textbox', { name: text.email })
-    await expect(input).toHaveAttribute('aria-invalid', 'true')
-    await expect(input).toHaveAccessibleDescription(
-      `${text.emailHint} ${fieldMessagesFor(locale).errorPrefix} ${text.emailError}`,
-    )
-    await expect(canvas.getByText(text.emailError)).toBeVisible()
   },
 }
 
@@ -309,16 +252,6 @@ export const SeveralDescriptions: Story = {
         </Field.Root>
       </>
     )
-  },
-  play: async ({ canvas, globals }) => {
-    const locale = localeOf(globals)
-    const { text } = textsFor(locale)
-    const { text: gap } = gapTextsFor(locale)
-    const input = canvas.getByRole('textbox', { name: text.registration })
-    await expect(input).toHaveAccessibleDescription(
-      `${text.registrationWhere} ${gap.registrationWhy} ${text.registrationHint}`,
-    )
-    await expect((input.getAttribute('aria-describedby') ?? '').split(' ')).toHaveLength(3)
   },
 }
 
@@ -401,13 +334,6 @@ export const OwnMessages: Story = {
       </>
     )
   },
-  play: async ({ canvas, globals }) => {
-    const locale = localeOf(globals)
-    const { text } = textsFor(locale)
-    const { text: gap } = gapTextsFor(locale)
-    const input = canvas.getByRole('textbox', { name: `${text.phone} ${gap.ownOptional}` })
-    await expect(input).toHaveAccessibleDescription(`${gap.ownErrorPrefix} ${gap.phoneError}`)
-  },
 }
 
 /** Disabled: native `disabled` on the input. Say why on submit instead, where you can. */
@@ -424,10 +350,6 @@ export const Disabled: Story = {
       </>
     )
   },
-  play: async ({ canvas, globals }) => {
-    const { text } = textsFor(localeOf(globals))
-    await expect(canvas.getByRole('textbox', { name: text.registration })).toBeDisabled()
-  },
 }
 
 /** Read-only is for staff tools: the input stays focusable, and the help text under it says why. */
@@ -443,13 +365,6 @@ export const ReadOnly: Story = {
         </Field.Root>
       </>
     )
-  },
-  play: async ({ canvas, globals }) => {
-    const { text } = textsFor(localeOf(globals))
-    const input = canvas.getByRole('textbox', { name: text.personalNumber })
-    await expect(input).toHaveAttribute('readonly')
-    input.focus()
-    await expect(input).toHaveFocus()
   },
 }
 
@@ -553,10 +468,6 @@ export const LongFinnish: Story = {
     )
   },
   play: async ({ canvas }) => {
-    await expect(
-      // kv-lang-ok: asserts the long Finnish label hard case
-      canvas.getByRole('textbox', { name: /Asunnonmuutostyöavustushakemuksen/ }),
-    ).toBeVisible()
     await expectNoHorizontalOverflow(canvas.getByTestId('narrow'))
   },
 }

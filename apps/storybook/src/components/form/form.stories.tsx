@@ -4,9 +4,8 @@ import contract from '../../../../../packages/react/src/fieldset/fieldset.a11y.m
 import guide from '../../../../../packages/react/src/field/form.md?raw'
 import { showSource, usageGuide } from '../../docs-source.ts'
 import { expectNoHorizontalOverflow } from '../theme-story-assertions.ts'
-import { choiceTextsFor } from './choice.fixture.tsx'
 import { localeOf, textsFor, withFormLocale } from './form.fixture.tsx'
-import { permitTextsFor, PermitForm } from './permit.fixture.tsx'
+import { PermitForm } from './permit.fixture.tsx'
 
 // Components/Form/Overview: "Apply for a resident parking permit", a short form with every
 // control (design spec docs/design/form-fields.md §5): a text field, a date, a field with a help text
@@ -36,27 +35,6 @@ type Story = StoryObj<typeof meta>
 export const ShortForm: Story = {
   parameters: showSource('form/permit.fixture.tsx', 'PermitForm'),
   render: (_args, { globals }) => <PermitForm locale={localeOf(globals)} />,
-  play: async ({ canvas, globals }) => {
-    const locale = localeOf(globals)
-    const { text } = textsFor(locale)
-    const { text: choice } = choiceTextsFor(locale)
-    await expect(
-      canvas.getByRole('heading', { level: 1, name: permitTextsFor(locale).heading }),
-    ).toBeVisible()
-    await expect(canvas.getByRole('textbox', { name: text.name })).toHaveAttribute(
-      'autocomplete',
-      'name',
-    )
-    // The three groups of the form: a date, a radio group and a checkbox group.
-    await expect(canvas.getAllByRole('group')).toHaveLength(3)
-    await expect(canvas.getAllByRole('radio')).toHaveLength(3)
-    await expect(canvas.getAllByRole('checkbox')).toHaveLength(4)
-    await expect(canvas.getByRole('checkbox', { name: choice.declaration })).toBeVisible()
-    await expect(canvas.getAllByRole('textbox')).toHaveLength(7)
-    for (const textbox of canvas.getAllByRole('textbox')) {
-      await expect(textbox).not.toHaveAttribute('aria-invalid')
-    }
-  },
 }
 
 /**

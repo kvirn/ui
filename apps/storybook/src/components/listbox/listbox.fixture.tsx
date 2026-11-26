@@ -632,6 +632,44 @@ export function VirtualizedPlaces({ locale }: { locale: FormLocale }) {
   )
 }
 
+/** A rich option in a virtualized list: the two-line option is measured, not a fixed height. */
+export function VirtualizedRichPlaces({ locale }: { locale: FormLocale }) {
+  const { text } = choiceTextsFor(locale)
+  return (
+    <>
+      <Field.Root required>
+        <Field.Label>{text.municipality}</Field.Label>
+        <Listbox.Root
+          native="never"
+          virtualize
+          items={virtualizedPlaces}
+          itemToString={(place) => place.name}
+          itemToKey={(place) => place.code}
+          defaultOpen
+        >
+          <Listbox.Trigger>
+            <Listbox.Value placeholder={text.municipalityPlaceholder} />
+          </Listbox.Trigger>
+          <Listbox.Popup>
+            <Listbox.List>
+              {(place: VirtualizedPlace) => (
+                <Listbox.Option item={place}>
+                  <Listbox.OptionIcon>
+                    <Icon name="document" />
+                  </Listbox.OptionIcon>
+                  <Listbox.OptionText>{place.name}</Listbox.OptionText>
+                  <Listbox.OptionDescription>{place.code}</Listbox.OptionDescription>
+                  <Listbox.OptionIndicator />
+                </Listbox.Option>
+              )}
+            </Listbox.List>
+          </Listbox.Popup>
+        </Listbox.Root>
+      </Field.Root>
+    </>
+  )
+}
+
 /**
  * A rich option with the optional parts: an icon, the text that names the option, a second line
  * that describes it and a mark for the chosen one. The icon and the mark are decorative, so a

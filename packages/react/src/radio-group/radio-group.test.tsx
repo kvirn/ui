@@ -1,5 +1,4 @@
 import { en } from '@kvirn/i18n/en'
-import { expectNoA11yViolations } from '@kvirn/testing'
 import { readAloud, readAnnouncements } from '@kvirn/testing/read-aloud'
 import { createRef, useState } from 'react'
 import type { ReactNode } from 'react'
@@ -127,7 +126,6 @@ describe('rendering', () => {
       .element(group)
       .toHaveAccessibleDescription('Choose one option. Error: Choose how long you need the permit')
     expectNoDanglingReferences(container)
-    await expectNoA11yViolations(container)
     expect(consoleWarn).not.toHaveBeenCalled()
   })
 
@@ -148,7 +146,7 @@ describe('rendering', () => {
       .toHaveAccessibleDescription('Lowest price per month.')
   })
 
-  test('an option help text is a Field.HelpText in that RadioGroup.Option, outside its label, and has no axe violations', async () => {
+  test('an option help text is a Field.HelpText in that RadioGroup.Option, outside its label', async () => {
     const { container } = await render(english(<Duration optionHelpText />))
     const helpText = page.getByText('Lowest price per month.').element()
     expect(helpText.id).not.toBe('')
@@ -160,7 +158,6 @@ describe('rendering', () => {
       .element(page.getByRole('group', { name: 'How long do you need the permit? (optional)' }))
       .toHaveAccessibleDescription('Choose one option.')
     expectNoDanglingReferences(container)
-    await expectNoA11yViolations(container)
     expect(consoleWarn).not.toHaveBeenCalled()
   })
 })

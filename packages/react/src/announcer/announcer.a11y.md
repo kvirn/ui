@@ -80,25 +80,25 @@ Rules for callers (4.1.3 Status Messages, AA):
 - 3.2.1 On Focus (A): the regions can't take focus (a test checks that the regions are not focusable).
 - 2.1.1 Keyboard (A), 2.4.3 Focus Order (A): the regions add no stop to the Tab order (a test checks that the regions are not focusable).
 - 3.1.2 Language of Parts (AA): text is passed through unchanged, in the provider's language (a test checks that text is passed through unchanged in Swedish and Finnish). A message in another language than the page's is not marked up, which is a known issue.
-- Axe finds no violations with both regions empty and with both holding a message.
+- Axe finds no violations with a region holding a message (`Default`, `Assertive`) and with both holding one (`BothRegionsFilled`).
 
 ## AT test record
 
-| AT + browser + OS                                                          | Agent check | Human check | Result  | Notes                                                                                                                                |
-| -------------------------------------------------------------------------- | ----------- | ----------- | ------- | ------------------------------------------------------------------------------------------------------------------------------------ |
-| **Automated (re-runnable tests)**                                          |             |             |         |                                                                                                                                      |
-| axe, WCAG 2.2 A and AA, every story, 4 themes                              | pass        | n/a         | pass    | announcer.stories.tsx, every story, 4 themes                                                                                         |
-| Markup and ARIA (roles, names, ids, states)                                | pass        | n/a         | pass    | `announcer.test.tsx` (axe and role, name and state): `a polite and an assertive region exist, empty, as soon as the provider mounts` |
-| Keyboard contract rows (Vitest browser)                                    | pass        | n/a         | pass    | 3 rows, each names a test in `announcer.test.tsx`                                                                                    |
-| Focus order and management                                                 | pass        | n/a         | pass    | `announcer.test.tsx`: `the regions are not focusable`; `announcing never moves focus`                                                |
-| Display modes (forced colours, 320px reflow, text spacing, reduced motion) | n/a         | n/a         | n/a     | nothing is visible: the regions are clipped one-pixel boxes                                                                          |
-| **Core (required for beta)**                                               |             |             |         |                                                                                                                                      |
-| NVDA + Chrome + Windows                                                    | pending     | pending     | pending |                                                                                                                                      |
-| VoiceOver + Safari + iOS                                                   | pending     | pending     | pending |                                                                                                                                      |
-| **Release (before 1.0 and each minor)**                                    |             |             |         |                                                                                                                                      |
-| JAWS + Chrome + Windows                                                    | pending     | pending     | pending |                                                                                                                                      |
-| TalkBack + Chrome + Android                                                | pending     | pending     | pending |                                                                                                                                      |
-| VoiceOver + Safari + macOS                                                 | pending     | pending     | pending |                                                                                                                                      |
+| AT + browser + OS                                                          | Agent check | Human check | Result  | Notes                                                                                                                        |
+| -------------------------------------------------------------------------- | ----------- | ----------- | ------- | ---------------------------------------------------------------------------------------------------------------------------- |
+| **Automated (re-runnable tests)**                                          |             |             |         |                                                                                                                              |
+| axe, WCAG 2.2 A and AA, every story, light theme                           | pass        | n/a         | pass    | announcer.stories.tsx, every story, light theme                                                                              |
+| Markup and ARIA (roles, names, ids, states)                                | pass        | n/a         | pass    | `announcer.test.tsx` (role, name and state): `a polite and an assertive region exist, empty, as soon as the provider mounts` |
+| Keyboard contract rows (Vitest browser)                                    | pass        | n/a         | pass    | 3 rows, each names a test in `announcer.test.tsx`                                                                            |
+| Focus order and management                                                 | pass        | n/a         | pass    | `announcer.test.tsx`: `the regions are not focusable`; `announcing never moves focus`                                        |
+| Display modes (forced colours, 320px reflow, text spacing, reduced motion) | n/a         | n/a         | n/a     | nothing is visible: the regions are clipped one-pixel boxes                                                                  |
+| **Core (required for beta)**                                               |             |             |         |                                                                                                                              |
+| NVDA + Chrome + Windows                                                    | pending     | pending     | pending |                                                                                                                              |
+| VoiceOver + Safari + iOS                                                   | pending     | pending     | pending |                                                                                                                              |
+| **Release (before 1.0 and each minor)**                                    |             |             |         |                                                                                                                              |
+| JAWS + Chrome + Windows                                                    | pending     | pending     | pending |                                                                                                                              |
+| TalkBack + Chrome + Android                                                | pending     | pending     | pending |                                                                                                                              |
+| VoiceOver + Safari + macOS                                                 | pending     | pending     | pending |                                                                                                                              |
 
 ### What to check
 

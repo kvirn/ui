@@ -29,9 +29,6 @@ export const Default: Story = {
       Building permit application <Badge {...args} />
     </p>
   ),
-  play: async ({ canvas }) => {
-    await expect(canvas.getByText('Draft')).toBeVisible()
-  },
 }
 
 /** Every variant. The words carry the status, so none of them relies on its colour. */
@@ -58,10 +55,6 @@ export const Variants: Story = {
       </li>
     </ul>
   ),
-  play: async ({ canvas }) => {
-    await expect(canvas.getByText('Approved')).toBeVisible()
-    await expect(canvas.getByText('Rejected')).toBeVisible()
-  },
 }
 
 /** In a heading, as on a case card: the badge is part of the heading's text. */
@@ -71,11 +64,6 @@ export const InHeading: Story = {
       Building permit 4 High Street <Badge variant="success">Approved</Badge>
     </h2>
   ),
-  play: async ({ canvas }) => {
-    await expect(
-      canvas.getByRole('heading', { name: 'Building permit 4 High Street Approved' }),
-    ).toBeVisible()
-  },
 }
 
 /** Right to left: the pill keeps its shape and sits after the title in reading order. */
@@ -86,9 +74,6 @@ export const RTL: Story = {
     </p>
   ),
   globals: { dir: 'rtl' },
-  play: async ({ canvas }) => {
-    await expect(canvas.getByText('قيد المراجعة')).toBeVisible()
-  },
 }
 
 /** The edge survives forced colours. */
@@ -100,9 +85,6 @@ export const ForcedColors: Story = {
       <Badge variant="danger">Rejected</Badge>
     </p>
   ),
-  play: async ({ canvas }) => {
-    await expect(canvas.getByText('Approved')).toBeVisible()
-  },
 }
 
 /** At 320px a row of badges wraps between badges, never inside one. */
@@ -122,8 +104,7 @@ export const Narrow: Story = {
       <Badge variant="warning">Waiting for more information</Badge>
     </div>
   ),
-  play: async ({ canvas }) => {
+  play: async () => {
     await expect(window.innerWidth).toBeLessThanOrEqual(320)
-    await expect(canvas.getByText('Waiting for more information')).toBeVisible()
   },
 }

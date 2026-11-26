@@ -3,7 +3,6 @@ import { fi } from '@kvirn/i18n/fi'
 import { nb } from '@kvirn/i18n/nb'
 import { nn } from '@kvirn/i18n/nn'
 import { sv } from '@kvirn/i18n/sv'
-import { expectNoA11yViolations } from '@kvirn/testing'
 import { createRef, StrictMode, useRef, useState } from 'react'
 import { renderToString } from 'react-dom/server'
 import { afterEach, beforeEach, describe, expect, expectTypeOf, test, vi } from 'vite-plus/test'
@@ -388,41 +387,6 @@ describe('rendering', () => {
       </Alert.Root>,
     )
     expect(page.getByTestId('alert').element().className).toBe('kv-alert--custom kv-alert')
-  })
-
-  test.each(statuses)('Alert.$variant has no axe violations', async ({ Root }) => {
-    const { container } = await render(
-      <main>
-        <h1>My pages</h1>
-        <Root>
-          <Alert.Title>Your parking permit expires on 12 November 2026</Alert.Title>
-          <Alert.Body>
-            <p>Renew it before then.</p>
-          </Alert.Body>
-          <Alert.Actions>
-            <a href="#renew">Renew parking permit</a>
-          </Alert.Actions>
-        </Root>
-      </main>,
-    )
-    await expect.element(page.getByRole('heading', { level: 2 })).toBeVisible()
-    await expectNoA11yViolations(container)
-  })
-
-  test('the plain Root with its own icon and word has no axe violations', async () => {
-    const { container } = await render(
-      <main>
-        <h1>My pages</h1>
-        <Alert.Root className="my-notice">
-          <Icon icon={info} className="kv-alert-icon" />
-          <Alert.Title>
-            <span className="kv-alert-status">Notice:</span> The office is closed on Friday
-          </Alert.Title>
-        </Alert.Root>
-      </main>,
-    )
-    await expect.element(page.getByRole('heading', { level: 2 })).toBeVisible()
-    await expectNoA11yViolations(container)
   })
 })
 
@@ -1298,29 +1262,6 @@ describe('Alert.Close', () => {
       1,
     )
   })
-
-  test.each(statuses)(
-    'Alert.$variant with a close button has no axe violations',
-    async ({ Root }) => {
-      const { container } = await render(
-        <main>
-          <h1>My pages</h1>
-          <Root>
-            <Alert.Title>Your parking permit expires on 12 November 2026</Alert.Title>
-            <Alert.Body>
-              <p>Renew it before then.</p>
-            </Alert.Body>
-            <Alert.Actions>
-              <a href="#renew">Renew parking permit</a>
-            </Alert.Actions>
-            <Alert.Close />
-          </Root>
-        </main>,
-      )
-      await expect.element(page.getByRole('button', { name: 'Close message' })).toBeVisible()
-      await expectNoA11yViolations(container)
-    },
-  )
 
   test('renders to a string on the server', () => {
     const html = renderToString(

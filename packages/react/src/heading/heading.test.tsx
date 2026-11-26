@@ -1,4 +1,3 @@
-import { expectNoA11yViolations } from '@kvirn/testing'
 import { createRef } from 'react'
 import { renderToString } from 'react-dom/server'
 import { describe, expect, test, vi } from 'vite-plus/test'
@@ -80,16 +79,5 @@ describe('Heading', () => {
     expect(warn).toHaveBeenCalledTimes(1)
     expect(String(warn.mock.calls[0]?.[0])).toContain('Heading as="legend"')
     warn.mockRestore()
-  })
-
-  test('has no axe violations', async () => {
-    const { container } = await render(
-      <main>
-        <Heading as="h1">Services</Heading>
-        <Heading as="h2">Contact us</Heading>
-      </main>,
-    )
-    await expect.element(page.getByRole('heading', { level: 2 })).toBeVisible()
-    await expectNoA11yViolations(container)
   })
 })

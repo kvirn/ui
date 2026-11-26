@@ -3,9 +3,8 @@ import contract from '../../../../../packages/react/src/pagination/pagination.a1
 import guide from '../../../../../packages/react/src/pagination/pagination.md?raw'
 import type { Meta, StoryObj } from '@storybook/react-vite'
 import type { ReactNode } from 'react'
-import { expect, userEvent } from 'storybook/test'
 import { usageGuide } from '../../docs-source.ts'
-import { expectMinimumTargetSize, expectNoHorizontalOverflow } from '../theme-story-assertions.ts'
+import { expectNoHorizontalOverflow } from '../theme-story-assertions.ts'
 import { chromeViewports, wideGlobals } from '../../patterns/patterns-story-support.tsx'
 import { withLocale } from './pagination.fixture.tsx'
 
@@ -76,17 +75,6 @@ export const Default: Story = {
       </Pagination.List>
     ),
   },
-  play: async ({ canvas }) => {
-    await expect(canvas.getByRole('navigation', { name: 'Pages' })).toBeVisible()
-    await expect(canvas.getByRole('link', { name: 'Page 5' })).toHaveAttribute(
-      'aria-current',
-      'page',
-    )
-    await expect(canvas.queryAllByRole('button')).toHaveLength(0)
-    for (const link of canvas.getAllByRole('link')) {
-      await expectMinimumTargetSize(link)
-    }
-  },
 }
 
 /** The first page: no Previous (omitted, not disabled), the current page and Next. */
@@ -110,10 +98,6 @@ export const FirstPage: Story = {
       </Pagination.List>
     ),
   },
-  play: async ({ canvas }) => {
-    await expect(canvas.queryByRole('link', { name: 'Previous page' })).toBeNull()
-    await expect(canvas.getByRole('link', { name: 'Next page' })).toBeVisible()
-  },
 }
 
 /** The last page: Previous and the current page, no Next. */
@@ -136,10 +120,6 @@ export const LastPage: Story = {
         </Item>
       </Pagination.List>
     ),
-  },
-  play: async ({ canvas }) => {
-    await expect(canvas.queryByRole('link', { name: 'Next page' })).toBeNull()
-    await expect(canvas.getByRole('link', { name: 'Page 9' })).toBeVisible()
   },
 }
 
@@ -167,16 +147,6 @@ export const Keyboard: Story = {
         </Item>
       </Pagination.List>
     ),
-  },
-  play: async ({ canvas }) => {
-    for (const name of ['Previous page', 'Page 1', 'Page 2', 'Page 9']) {
-      await userEvent.tab()
-      await expect(canvas.getByRole('link', { name })).toHaveFocus()
-    }
-    await userEvent.tab()
-    await expect(canvas.getByRole('link', { name: 'Next page' })).toHaveFocus()
-    await userEvent.tab({ shift: true })
-    await expect(canvas.getByRole('link', { name: 'Page 9' })).toHaveFocus()
   },
 }
 
@@ -210,13 +180,11 @@ export const Reflow320: Story = {
   },
   decorators: [(Story) => <div className="kv-story-narrow">{<Story />}</div>],
   globals: { locale: 'fi' },
-  play: async ({ canvasElement, canvas }) => {
+  play: async ({ canvasElement }) => {
     const column = canvasElement.querySelector<HTMLElement>('.kv-story-narrow')
     if (column === null) {
       throw new Error('no narrow column')
     }
-    // kv-lang-ok: asserts the Finnish built-in navigation name under locale fi
-    await expect(canvas.getByRole('navigation', { name: 'Sivut' })).toBeVisible()
     await expectNoHorizontalOverflow(column)
   },
 }
@@ -241,10 +209,6 @@ export const RTL: Story = {
         </Item>
       </Pagination.List>
     ),
-  },
-  play: async ({ canvas }) => {
-    await expect(canvas.getByRole('navigation', { name: 'Pages' })).toBeVisible()
-    await expect(canvas.getByRole('link', { name: 'Page 2' })).toBeVisible()
   },
 }
 

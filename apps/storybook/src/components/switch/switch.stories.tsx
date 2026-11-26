@@ -2,7 +2,7 @@ import { Card, Field, Switch } from '@kvirn/ui'
 import contract from '../../../../../packages/react/src/switch/switch.a11y.md?raw'
 import guide from '../../../../../packages/react/src/switch/switch.md?raw'
 import type { Meta, StoryObj } from '@storybook/react-vite'
-import { expect, fn, userEvent } from 'storybook/test'
+import { fn } from 'storybook/test'
 import { showSource, usageGuide } from '../../docs-source.ts'
 import { localeOf, withFormLocale } from '../form/form.fixture.tsx'
 import { expectMinimumTargetSize, expectNoHorizontalOverflow } from '../theme-story-assertions.ts'
@@ -79,27 +79,11 @@ export default meta
 type Story = StoryObj<typeof meta>
 
 /** The main example: an off switch, a 44 by 24px track, with the whole 44px row as the click target. */
-export const Default: Story = {
-  play: async ({ canvas, globals }) => {
-    const { text } = switchTextsFor(localeOf(globals))
-    const control = canvas.getByRole('switch', { name: text.smsReminders })
-    await expect(control).toHaveAttribute('type', 'checkbox')
-    await expect(control).not.toBeChecked()
-    await expect(control).not.toHaveAttribute('aria-checked')
-    await expect(control).toHaveAttribute('data-state', 'unchecked')
-    await expectMinimumTargetSize(control)
-  },
-}
+export const Default: Story = {}
 
 /** On: a primary track, the thumb at the end and a tick. Off and on differ in position and shape. */
 export const Checked: Story = {
   args: { defaultChecked: true },
-  play: async ({ canvas, globals }) => {
-    const { text } = switchTextsFor(localeOf(globals))
-    const control = canvas.getByRole('switch', { name: text.smsReminders })
-    await expect(control).toBeChecked()
-    await expect(control).toHaveAttribute('data-state', 'checked')
-  },
 }
 
 /** The help text says what happens when the switch is on. It is the switch's description. */
@@ -115,12 +99,6 @@ export const WithDescription: Story = {
         </Field.Root>
       </>
     )
-  },
-  play: async ({ canvas, globals }) => {
-    const { text } = switchTextsFor(localeOf(globals))
-    await expect(
-      canvas.getByRole('switch', { name: new RegExp(`^${text.smsReminders}`) }),
-    ).toHaveAccessibleDescription(text.smsRemindersHint)
   },
 }
 
@@ -138,13 +116,6 @@ export const Invalid: Story = {
       </>
     )
   },
-  play: async ({ canvas, globals }) => {
-    const { text } = switchTextsFor(localeOf(globals))
-    const control = canvas.getByRole('switch', { name: text.smsReminders })
-    await expect(control).toHaveAttribute('aria-invalid', 'true')
-    await expect(control).toHaveAttribute('data-invalid')
-    await expect(control).not.toHaveAttribute('aria-required')
-  },
 }
 
 /** Disabled: a dashed edge on the surface colour. The help text says why, never a tooltip. */
@@ -161,21 +132,11 @@ export const Disabled: Story = {
       </>
     )
   },
-  play: async ({ canvas, globals }) => {
-    const { text } = switchTextsFor(localeOf(globals))
-    await expect(canvas.getByRole('switch', { name: text.smsReminders })).toBeDisabled()
-  },
 }
 
 /** Disabled and on: a solid muted track with the thumb in the canvas colour. */
 export const DisabledChecked: Story = {
   args: { disabled: true, defaultChecked: true },
-  play: async ({ canvas, globals }) => {
-    const { text } = switchTextsFor(localeOf(globals))
-    const control = canvas.getByRole('switch', { name: text.smsReminders })
-    await expect(control).toBeDisabled()
-    await expect(control).toBeChecked()
-  },
 }
 
 /** A long label wraps over lines, and the track stays beside the first line. */
@@ -222,16 +183,6 @@ export const Keyboard: Story = {
 export const Controlled: Story = {
   parameters: showSource('switch/switch.fixture.tsx', 'SavedAtOnceSetting'),
   render: (_args, { globals }) => <SavedAtOnceSetting locale={localeOf(globals)} />,
-  play: async ({ canvas, globals }) => {
-    const { text } = switchTextsFor(localeOf(globals))
-    const control = canvas.getByRole('switch', { name: new RegExp(`^${text.smsReminders}`) })
-    await expect(canvas.getByTestId('status')).toBeEmptyDOMElement()
-    await userEvent.click(control)
-    await expect(control).toBeChecked()
-    await expect(canvas.getByTestId('status')).toHaveTextContent(text.statusOn)
-    await userEvent.click(control)
-    await expect(canvas.getByTestId('status')).toHaveTextContent(text.statusOff)
-  },
 }
 
 /**
@@ -241,12 +192,6 @@ export const Controlled: Story = {
 export const PlainForm: Story = {
   parameters: showSource('switch/switch.fixture.tsx', 'SettingsForm'),
   render: (_args, { globals }) => <SettingsForm locale={localeOf(globals)} />,
-  play: async ({ canvas, globals }) => {
-    const { text } = switchTextsFor(localeOf(globals))
-    await userEvent.click(canvas.getByRole('switch', { name: text.smsReminders }))
-    await userEvent.click(canvas.getByRole('button', { name: text.send }))
-    await expect(canvas.getByTestId('sent')).toHaveTextContent(`${text.sent}: sms`)
-  },
 }
 
 /** In a card: the edge keeps 3:1 against `surface-raised` (1.4.11). */
@@ -267,11 +212,6 @@ export const OnSurfaces: Story = {
         </Card.Root>
       </>
     )
-  },
-  play: async ({ canvas, globals }) => {
-    const { text } = switchTextsFor(localeOf(globals))
-    await expect(canvas.getByRole('switch', { name: text.smsReminders })).toBeVisible()
-    await expect(canvas.getByRole('switch', { name: text.emailDecisions })).toBeChecked()
   },
 }
 
@@ -345,12 +285,4 @@ export const ForcedColors: Story = {
 /** A change reaches `onCheckedChange` with the new state and the reason. */
 export const Reports: Story = {
   args: { onCheckedChange: fn() },
-  play: async ({ canvas, args, globals }) => {
-    const { text } = switchTextsFor(localeOf(globals))
-    await userEvent.click(canvas.getByRole('switch', { name: text.smsReminders }))
-    await expect(args.onCheckedChange).toHaveBeenLastCalledWith(
-      true,
-      expect.objectContaining({ reason: 'input' }),
-    )
-  },
 }

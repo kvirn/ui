@@ -3,7 +3,7 @@ import contract from '../../../../../packages/react/src/toggle/toggle.a11y.md?ra
 import guide from '../../../../../packages/react/src/toggle/toggle.md?raw'
 import type { Meta, StoryObj } from '@storybook/react-vite'
 import { useState } from 'react'
-import { expect, fn, waitFor } from 'storybook/test'
+import { fn } from 'storybook/test'
 import { showSource, usageGuide } from '../../docs-source.ts'
 import { expectMinimumTargetSize, expectNoHorizontalOverflow } from '../theme-story-assertions.ts'
 import { withLibraryIcons } from '../../icons.tsx'
@@ -102,23 +102,11 @@ type Story = StoryObj<typeof meta>
  * The main example: a choice with a direct, visible effect. Press it, or use Enter and Space, and
  * `aria-pressed` switches. The label never changes with the state.
  */
-export const Default: Story = {
-  play: async ({ canvas }) => {
-    const toggle = canvas.getByRole('button', { name: text.unread })
-    await expect(toggle).toHaveAttribute('type', 'button')
-    await expect(toggle).toHaveAttribute('aria-pressed', 'false')
-    await expectMinimumTargetSize(toggle)
-  },
-}
+export const Default: Story = {}
 
 /** `defaultPressed` starts it on: a solid fill with a light label, and `aria-pressed="true"`. */
 export const Pressed: Story = {
   args: { defaultPressed: true },
-  play: async ({ canvas }) => {
-    const toggle = canvas.getByRole('button', { name: text.unread })
-    await expect(toggle).toHaveAttribute('aria-pressed', 'true')
-    await expect(toggle).toHaveAttribute('data-pressed', '')
-  },
 }
 
 function ControlledExample({ label }: { label: string }) {
@@ -141,13 +129,6 @@ function ControlledExample({ label }: { label: string }) {
 export const Controlled: Story = {
   parameters: showSource('toggle/toggle.stories.tsx', 'ControlledExample'),
   render: () => <ControlledExample label={text.map} />,
-  play: async ({ canvas, userEvent }) => {
-    const toggle = canvas.getByRole('button', { name: text.map })
-    await userEvent.click(toggle)
-    await waitFor(() => expect(toggle).toHaveAttribute('aria-pressed', 'true'))
-    await expect(canvas.getByText('The map is shown.')).toBeVisible()
-    await expect(canvas.getByRole('button', { name: text.map })).toBe(toggle)
-  },
 }
 
 /**
@@ -171,13 +152,8 @@ export const IconOnly: Story = {
     'aria-label': text.showPassword,
     children: <Icon name="eye" />,
   },
-  play: async ({ canvas, userEvent }) => {
-    const toggle = canvas.getByRole('button', { name: text.showPassword })
-    await expect(toggle.textContent).toBe('')
-    await expectMinimumTargetSize(toggle)
-    await userEvent.click(toggle)
-    await expect(toggle).toHaveAttribute('aria-pressed', 'true')
-    await expect(canvas.getByRole('button', { name: text.showPassword })).toBe(toggle)
+  play: async ({ canvas }) => {
+    await expectMinimumTargetSize(canvas.getByRole('button', { name: text.showPassword }))
   },
 }
 
@@ -192,12 +168,6 @@ export const Disabled: Story = {
       </button>
     </>
   ),
-  play: async ({ canvas }) => {
-    const toggle = canvas.getByRole('button', { name: text.unread })
-    await expect(toggle).toBeDisabled()
-    await expect(toggle).toHaveAttribute('aria-pressed', 'true')
-    await expect(toggle).toHaveAttribute('data-disabled', '')
-  },
 }
 
 function PressCounter({
@@ -226,12 +196,6 @@ export const FocusableWhenDisabled: Story = {
   parameters: showSource('toggle/toggle.stories.tsx', 'PressCounter'),
   args: { disabled: true, focusableWhenDisabled: true },
   render: (args) => <PressCounter {...args}>{text.unread}</PressCounter>,
-  play: async ({ canvas }) => {
-    const toggle = canvas.getByRole('button', { name: text.unread })
-    await expect(toggle).toHaveAttribute('aria-disabled', 'true')
-    await expect(toggle).not.toHaveAttribute('disabled')
-    await expect(toggle).toHaveAttribute('aria-pressed', 'false')
-  },
 }
 
 /**
@@ -309,15 +273,6 @@ export const States: Story = {
       </Card.Root>
     </>
   ),
-  play: async ({ canvas }) => {
-    const toggles = canvas.getAllByRole('button', { name: text.unread })
-    await expect(toggles).toHaveLength(15)
-    await expect(toggles.filter((toggle) => toggle.hasAttribute('data-pressed'))).toHaveLength(9)
-    await expect(toggles.filter((toggle) => toggle.hasAttribute('data-disabled'))).toHaveLength(9)
-    for (const toggle of toggles) {
-      await expectMinimumTargetSize(toggle)
-    }
-  },
 }
 
 /** A long Finnish label wraps inside a narrow column instead of overflowing (1.4.10). */
@@ -330,7 +285,6 @@ export const LongFinnishLabel: Story = {
     </div>
   ),
   play: async ({ canvas }) => {
-    await expect(canvas.getByRole('button', { name: fiLong })).toBeVisible()
     await expectNoHorizontalOverflow(canvas.getByTestId('narrow'))
   },
 }

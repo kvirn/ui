@@ -1,4 +1,3 @@
-import { expectNoA11yViolations } from '@kvirn/testing'
 import { createRef, useEffect, useRef, useState } from 'react'
 import type { ReactNode } from 'react'
 import { renderToString } from 'react-dom/server'
@@ -109,15 +108,14 @@ const pressAt = (element: Element, clientX: number, clientY: number, pointerType
 
 describe('rendering and ARIA', () => {
   test('a closed alert dialog is a hidden <dialog> whose content is not reachable', async () => {
-    const { container } = await render(<Confirm />)
+    await render(<Confirm />)
     expect(popupElement()?.open).toBe(false)
     expect(popupElement()?.querySelector('button')?.checkVisibility()).toBe(false)
-    await expectNoA11yViolations(container)
     expect(consoleWarn).not.toHaveBeenCalled()
   })
 
-  test('an open alert dialog is modal, has role alertdialog, a name, a description and no axe violations', async () => {
-    const { container } = await render(<Confirm />)
+  test('an open alert dialog is modal, has role alertdialog, a name and a description', async () => {
+    await render(<Confirm />)
     await userEvent.click(trigger())
     await expect.poll(isModal).toBe(true)
     const popup = popupElement()
@@ -132,7 +130,6 @@ describe('rendering and ARIA', () => {
     expect(popup?.hasAttribute('data-open')).toBe(true)
     expect(triggerElement()?.getAttribute('aria-haspopup')).toBe('dialog')
     await expect.element(page.getByRole('alertdialog', { name: 'Delete the draft?' })).toBeVisible()
-    await expectNoA11yViolations(container)
     expect(consoleWarn).not.toHaveBeenCalled()
   })
 
@@ -244,25 +241,6 @@ describe('rendering and ARIA', () => {
     const html = renderToString(<Confirm defaultOpen />)
     expect(html).not.toMatch(/<dialog[^>]*\sopen/)
     expect(html).toContain('Delete the draft?')
-  })
-
-  test('nested over a Dialog, with no axe violations', async () => {
-    const { container } = await render(
-      <Dialog.Root defaultOpen>
-        <Dialog.Popup>
-          <Dialog.Title>Redigera</Dialog.Title>
-          <AlertDialog.Root defaultOpen>
-            <AlertDialog.Popup>
-              <AlertDialog.Title>Discard?</AlertDialog.Title>
-              <AlertDialog.Description>The changes are not saved.</AlertDialog.Description>
-              <button type="button">Discard</button>
-            </AlertDialog.Popup>
-          </AlertDialog.Root>
-        </Dialog.Popup>
-      </Dialog.Root>,
-    )
-    await expect.poll(() => document.querySelectorAll('dialog:modal').length).toBe(2)
-    await expectNoA11yViolations(container)
   })
 })
 

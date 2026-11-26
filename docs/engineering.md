@@ -28,7 +28,7 @@ Config lives in the root `vite.config.ts` (fmt, lint, test projects). Each packa
 - **Telemetry is off:** Storybook (`core.disableTelemetry`) and Next.js (`NEXT_TELEMETRY_DISABLED=1` in every script). Vite+ and Playwright send none.
 - **Browser tests run in Chromium only.** It is a floor for development, not a browser-support claim: a support claim needs a run with those browsers or the manual AT matrix. The WCAG display-mode sweep (forced colours, reduced motion, 320px reflow, text spacing) is four Vitest browser projects with Playwright context options, run by CI after `vp run test` (`testing` skill). There is no e2e layer and no `@playwright/test` or `@axe-core/playwright`: `playwright` is a dev dependency in the pnpm catalog only because `@vitest/browser-playwright` peers on it (Apache-2.0, no install script).
 - **Worker caps.** Vitest `maxWorkers` is 2 per project (set in each project because it isn't inherited), and `VITEST_MAX_WORKERS` overrides it for a one-off. These are politeness for the machine, not gates: no test, threshold or timeout changes. A full run can still reach about 12 Vitest workers. For a whole-tree local run, run the Storybook projects one at a time.
-- **Formatting is advisory.** CI runs `vp check --no-fmt`, and `vp fmt --check` only warns (`continue-on-error`). Run `vp fmt <files>` on what you commit. The edit hook formats each edited file.
+- **Formatting is a gate.** `pnpm run ci` starts with `vp fmt --check` and fails on an unformatted file. Run `pnpm run format` (or `vp fmt <files>`) on what you commit. The edit hook formats each edited file.
 - **Commits.** Every commit follows Conventional Commits 1.0.0, and `tooling/commit-message/check-commit-message.ts` holds the rules:
   - The header is `<type>[scope][!]: <description>`. Types are feat, fix, docs, style, refactor, perf, test, build, ci, chore and revert. A scope is lower-case letters, digits, `-` or `/`. The description is non-empty with no trailing period, and the header is at most 100 characters.
   - A blank line separates the header from the body. A breaking change is `!` or a `BREAKING CHANGE:` footer.
@@ -57,20 +57,22 @@ Vitest projects in the root `vite.config.ts`:
 
 - `node`: core, i18n, theme and tooling tests.
 - `browser`: react, testing and rich-text tests, in Chromium. `apps/docs` has no tests: it is read-only documentation built from the components, and every component is tested in its own package and in Storybook.
-- `storybook`, `storybook-dark`, `storybook-light-contrast` and `storybook-dark-contrast`: every story, once per theme, through `addon-vitest`. The a11y addon runs with `test: 'error'` and the WCAG 2.2 AA tags, so axe runs in `vp test run`.
+- `storybook`: every story, once, in the light, standard theme, through `addon-vitest`. The a11y addon runs with `test: 'error'` and the WCAG 2.2 AA tags, so axe runs here and only here. Contrast in all four themes is `theme:check`'s, and `raw-colours` lints out every colour that isn't a token.
+- `smoke` (live requests) and the four display-mode sweeps (`storybook-forced-colors`, `-reduced-motion`, `-reflow`, `-text-spacing`) are outside `pnpm run test`.
 
-The whole tree runs through `vp run test`, which runs the four Storybook projects one at a time. Each `storybookTest()` project starts its own Vite server, and two or more in one Vitest process make random story files fail with `Failed to fetch dynamically imported module` (a single project is stable). Scoped runs of a stories file name one project: `vp test run --project storybook <file>`.
+The scripts are `lint`, `format`, `check` (types only), `test` (node, browser and `storybook`), `ci` (everything, below), `smoke` and `sweep`. Each `storybookTest()` project starts its own Vite server, and two or more in one Vitest process make random story files fail with `Failed to fetch dynamically imported module` (a single project is stable), so the sweeps run one at a time. Scoped runs of a stories file name one project: `vp test run --project storybook <file>`.
 
 ## Running CI locally
 
-`pnpm run ci:docker` (`tooling/ci`) runs the `gates` job: build, check, fmt, the node and browser tests, `i18n:check` and `theme:check` in a container with a fixed CPU and memory budget (defaults `KVIRN_CI_CPUS=4`, `KVIRN_CI_MEMORY=10g`), then the Storybook projects and the display-mode sweeps on the host under the gate lock, because Chromium dropped its connection in one Storybook file per container run (memory, CPU, cache, shared memory and limits were ruled out; plan 0142). `--step <name>` runs one step. A whole-tree run is heavy: CI is the normal place for it, and a local one is a deliberate choice. The `tooling/gate-guard` hook (`.claude/settings.json`) stops an agent from running a gate without the lock, in a loop, or again on an unchanged tree.
+`pnpm run ci` runs the `gates` job: `vp fmt --check` → `lint` → `build` → `check` → `test` → `i18n:check` → `theme:check` → the four sweeps, stopping at the first failure. `pnpm run ci:docker` (`tooling/ci`) runs the same steps: build, check, fmt, the node and browser tests, `i18n:check` and `theme:check` in a container with a fixed CPU and memory budget (defaults `KVIRN_CI_CPUS=4`, `KVIRN_CI_MEMORY=10g`), then the Storybook projects and the display-mode sweeps on the host under the gate lock, because Chromium dropped its connection in one Storybook file per container run (memory, CPU, cache, shared memory and limits were ruled out; plan 0142). `--step <name>` runs one step. A whole-tree run is heavy: CI is the normal place for it, and a local one is a deliberate choice. The `tooling/gate-guard` hook (`.claude/settings.json`) stops an agent from running a gate without the lock, in a loop, or again on an unchanged tree.
 
 ## CI
 
-`.github/workflows/ci.yml` pins Actions to commit SHAs, uses read-only `contents` permission and installs Chromium only (add browsers to the `playwright install` line to widen it). It runs:
+`.github/workflows/ci.yml` runs on PRs and pushes to `main` and `development`, pins Actions to commit SHAs, uses read-only `contents` permission and installs Chromium only (add browsers to the `playwright install` line to widen it). It runs:
 
 - `commits`: every PR commit and the PR title against the Conventional Commits rules.
-- `gates`: `vp check --no-fmt`, `vp fmt --check` (advisory), `vp run test`, `i18n:check`, `theme:check` and `vp run build` (every package, the Storybook build and the docs site), then the `smoke` project (`vp test run --project smoke`: a few live requests to geo.kvirn.com, CI only, outside `vp run test`) and the four display-mode sweep projects.
+- `gates`: `pnpm run ci` (see above), after `vp install` and the Playwright install.
+- `smoke`: `pnpm run smoke` (a few live requests to geo.kvirn.com), on a nightly schedule and `workflow_dispatch`, so a service blip never fails a PR.
 
 These are the [AGENTS.md quality gates](../AGENTS.md#quality-gates) 1 to 3. Core coverage and per-component bundle budgets are not run by any workflow yet: see the roadmap, "Engineering".
 

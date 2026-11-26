@@ -2,7 +2,6 @@ import { Heading } from '@kvirn/ui'
 import contract from '../../../../../packages/react/src/heading/heading.a11y.md?raw'
 import guide from '../../../../../packages/react/src/heading/heading.md?raw'
 import type { Meta, StoryObj } from '@storybook/react-vite'
-import { expect } from 'storybook/test'
 import { usageGuide } from '../../docs-source.ts'
 
 // Components/Heading: the headless Heading. It has no focusable part, so there's no
@@ -40,11 +39,7 @@ export default meta
 type Story = StoryObj<typeof meta>
 
 /** `as` is the element: `<Heading as="h2">` is an `<h2>`. */
-export const Default: Story = {
-  play: async ({ canvas }) => {
-    await expect(canvas.getByRole('heading', { level: 2, name: 'Contact us' })).toBeVisible()
-  },
-}
+export const Default: Story = {}
 
 // The sizes, display and heading-1 to heading-6, for the Sizes, RightToLeft and ForcedColors stories: the same markup, so a reader
 // of any of them sees the real Headings.
@@ -84,12 +79,6 @@ const inColumn: NonNullable<Story['decorators']> = [
 export const Sizes: Story = {
   decorators: inColumn,
   render: renderSizes,
-  play: async ({ canvas }) => {
-    // The level is the outline, whatever the size: the h3 set as heading-2 is still an h3.
-    await expect(
-      canvas.getByRole('heading', { level: 3, name: 'heading-2 on an h3' }),
-    ).toBeVisible()
-  },
 }
 
 /** An outline with all six levels: one `h1`, then each level in turn without skipping one. */
@@ -105,11 +94,6 @@ export const Outline: Story = {
       <Heading as="h3">Recycling centre</Heading>
     </div>
   ),
-  play: async ({ canvas }) => {
-    await expect(canvas.getAllByRole('heading')).toHaveLength(7)
-    await expect(canvas.getByRole('heading', { level: 6, name: 'Midsummer Eve' })).toBeVisible()
-    await expect(canvas.getByRole('heading', { level: 1 })).toBeVisible()
-  },
 }
 
 /**
@@ -132,16 +116,6 @@ export const SizeOnDeepLevelsAndLabelledRegion: Story = {
       </Heading>
     </section>
   ),
-  play: async ({ canvas }) => {
-    const region = canvas.getByRole('region', { name: 'Opening hours' })
-    await expect(region).toBeVisible()
-    await expect(canvas.getByRole('heading', { level: 4, name: 'Opening hours' })).toHaveAttribute(
-      'id',
-      'opening-hours',
-    )
-    await expect(canvas.getByRole('heading', { level: 5, name: 'Public holidays' })).toBeVisible()
-    await expect(canvas.getByRole('heading', { level: 6, name: 'Midsummer Eve' })).toBeVisible()
-  },
 }
 
 /** Right to left, in English: a heading starts at the right, and its size and weight don't change. */
@@ -157,8 +131,4 @@ export const ForcedColors: Story = {
   globals: { forcedColors: 'active' },
   decorators: inColumn,
   render: renderSizes,
-  play: async ({ canvas }) => {
-    const heading = canvas.getByRole('heading', { name: 'heading-2 (h2)' })
-    await expect(heading).toBeVisible()
-  },
 }

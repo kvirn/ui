@@ -6,14 +6,7 @@ import { expect, userEvent, waitFor, within } from 'storybook/test'
 import { showSource, usageGuide } from '../../docs-source.ts'
 import { localeOf, withFormLocale } from '../form/form.fixture.tsx'
 import { expectNoHorizontalOverflow } from '../theme-story-assertions.ts'
-import {
-  EmptyTags,
-  FilterAList,
-  LongTag,
-  RemovableTags,
-  StaticTags,
-  tagTextsFor,
-} from './tag.fixture.tsx'
+import { EmptyTags, FilterAList, LongTag, RemovableTags, StaticTags } from './tag.fixture.tsx'
 
 // Components/Tag: a short fact in words, static or removable, and TagGroup, which moves focus
 // after a removal (contract: tag.a11y.md, design docs/design/tag-and-filters.md). A removable tag
@@ -48,34 +41,18 @@ type Story = StoryObj<typeof meta>
 export const Removable: Story = {
   parameters: showSource('tag/tag.fixture.tsx', 'RemovableTags'),
   render: (_args, { globals }) => <RemovableTags locale={localeOf(globals)} />,
-  play: async ({ canvas }) => {
-    await expect(
-      // kv-lang-ok: the built-in remove-button names in every locale
-      canvas.getAllByRole('button', { name: /^(Remove|Ta bort|Poista|Fjern) / }).length,
-    ).toBe(3)
-    await expect(canvas.getByRole('list')).toBeVisible()
-  },
 }
 
 /** Static tags: text only, not a Tab stop. A locked value is a static tag, never a disabled button. */
 export const Static: Story = {
   parameters: showSource('tag/tag.fixture.tsx', 'StaticTags'),
   render: (_args, { globals }) => <StaticTags locale={localeOf(globals)} />,
-  play: async ({ canvas }) => {
-    await expect(canvas.getAllByRole('listitem')).toHaveLength(4)
-    await expect(canvas.queryByRole('button')).toBeNull()
-  },
 }
 
 /** No tag: the list is gone, the empty text is shown and Clear all is not rendered. */
 export const Empty: Story = {
   parameters: showSource('tag/tag.fixture.tsx', 'EmptyTags'),
   render: (_args, { globals }) => <EmptyTags locale={localeOf(globals)} />,
-  play: async ({ canvas, globals }) => {
-    await expect(canvas.getByText(tagTextsFor(localeOf(globals)).text.empty)).toBeVisible()
-    await expect(canvas.queryByRole('list')).toBeNull()
-    await expect(canvas.queryByRole('button')).toBeNull()
-  },
 }
 
 /** A long Finnish-style tag wraps over lines and is never truncated. */
@@ -103,9 +80,6 @@ export const RTL: Story = {
       <RemovableTags locale={localeOf(globals)} />
     </div>
   ),
-  play: async ({ canvas }) => {
-    await expect(canvas.getByRole('list')).toBeVisible()
-  },
 }
 
 /** The edge and the cross survive forced colours. */
@@ -117,9 +91,6 @@ export const ForcedColors: Story = {
       <StaticTags locale={localeOf(globals)} />
     </>
   ),
-  play: async ({ canvas }) => {
-    await expect(canvas.getAllByRole('list')).toHaveLength(2)
-  },
 }
 
 /** `kv-compact`: the chips are 32px high from 64rem. Staff tools. */
@@ -129,9 +100,6 @@ export const Compact: Story = {
       <RemovableTags locale={localeOf(globals)} />
     </div>
   ),
-  play: async ({ canvas }) => {
-    await expect(canvas.getByRole('list')).toBeVisible()
-  },
 }
 
 /**

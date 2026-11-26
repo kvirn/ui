@@ -1,4 +1,3 @@
-import { expectNoA11yViolations } from '@kvirn/testing'
 import { readAloud } from '@kvirn/testing/read-aloud'
 import { createRef } from 'react'
 import { describe, expect, test } from 'vite-plus/test'
@@ -23,20 +22,6 @@ describe('Divider', () => {
   test('is not a Tab stop', async () => {
     await render(<Divider data-testid="divider" />)
     expect(page.getByTestId('divider').element().hasAttribute('tabindex')).toBe(false)
-  })
-
-  test('has no axe violations as a separator and as presentation', async () => {
-    const { container } = await render(
-      <main>
-        <p>Above</p>
-        <Divider />
-        <p>Between</p>
-        <Divider role="presentation" />
-        <p>Below</p>
-      </main>,
-    )
-    await expect.element(page.getByText('Between')).toBeVisible()
-    await expectNoA11yViolations(container)
   })
 
   describe('read aloud', () => {

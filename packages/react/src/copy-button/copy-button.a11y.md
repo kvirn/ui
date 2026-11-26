@@ -87,21 +87,21 @@ Headless: CopyButton ships no CSS. With `@kvirn/theme/theme.css` it is a Button 
 
 ## AT test record
 
-| AT + browser + OS                                                          | Agent check | Human check | Result  | Notes                                                                                                                   |
-| -------------------------------------------------------------------------- | ----------- | ----------- | ------- | ----------------------------------------------------------------------------------------------------------------------- |
-| **Automated (re-runnable tests)**                                          |             |             |         |                                                                                                                         |
-| axe, WCAG 2.2 A and AA, every story, 4 themes                              | pass        | n/a         | pass    | copy-button.stories.tsx, every story, 4 themes                                                                          |
-| Markup and ARIA (roles, names, ids, states)                                | pass        | n/a         | pass    | `copy-button.test.tsx` (axe and role, name and state): `useCopyButton gives the label and a status for your own button` |
-| Keyboard contract rows (Vitest browser)                                    | pass        | n/a         | pass    | 7 rows, each names a test in `copy-button.test.tsx`                                                                     |
-| Focus order and management                                                 | pass        | n/a         | pass    | `copy-button.test.tsx`: `Enter on a refused copy selects the text and keeps focus on the button`                        |
-| Display modes (forced colours, 320px reflow, text spacing, reduced motion) | pass        | n/a         | pass    | the four sweep projects (`storybook-forced-colors`, `-reduced-motion`, `-reflow`, `-text-spacing`), run in CI           |
-| **Core (required for beta)**                                               |             |             |         |                                                                                                                         |
-| NVDA + Chrome + Windows                                                    | pending     | pending     | pending |                                                                                                                         |
-| VoiceOver + Safari + iOS                                                   | pending     | pending     | pending |                                                                                                                         |
-| **Release (before 1.0 and each minor)**                                    |             |             |         |                                                                                                                         |
-| JAWS + Chrome + Windows                                                    | pending     | pending     | pending |                                                                                                                         |
-| TalkBack + Chrome + Android                                                | pending     | pending     | pending |                                                                                                                         |
-| VoiceOver + Safari + macOS                                                 | pending     | pending     | pending |                                                                                                                         |
+| AT + browser + OS                                                          | Agent check | Human check | Result  | Notes                                                                                                           |
+| -------------------------------------------------------------------------- | ----------- | ----------- | ------- | --------------------------------------------------------------------------------------------------------------- |
+| **Automated (re-runnable tests)**                                          |             |             |         |                                                                                                                 |
+| axe, WCAG 2.2 A and AA, every story, light theme                           | pass        | n/a         | pass    | copy-button.stories.tsx, every story, light theme                                                               |
+| Markup and ARIA (roles, names, ids, states)                                | pass        | n/a         | pass    | `copy-button.test.tsx` (role, name and state): `useCopyButton gives the label and a status for your own button` |
+| Keyboard contract rows (Vitest browser)                                    | pass        | n/a         | pass    | 7 rows, each names a test in `copy-button.test.tsx`                                                             |
+| Focus order and management                                                 | pass        | n/a         | pass    | `copy-button.test.tsx`: `Enter on a refused copy selects the text and keeps focus on the button`                |
+| Display modes (forced colours, 320px reflow, text spacing, reduced motion) | pass        | n/a         | pass    | the four sweep projects (`storybook-forced-colors`, `-reduced-motion`, `-reflow`, `-text-spacing`), run in CI   |
+| **Core (required for beta)**                                               |             |             |         |                                                                                                                 |
+| NVDA + Chrome + Windows                                                    | pending     | pending     | pending |                                                                                                                 |
+| VoiceOver + Safari + iOS                                                   | pending     | pending     | pending |                                                                                                                 |
+| **Release (before 1.0 and each minor)**                                    |             |             |         |                                                                                                                 |
+| JAWS + Chrome + Windows                                                    | pending     | pending     | pending |                                                                                                                 |
+| TalkBack + Chrome + Android                                                | pending     | pending     | pending |                                                                                                                 |
+| VoiceOver + Safari + macOS                                                 | pending     | pending     | pending |                                                                                                                 |
 
 ### What to check
 

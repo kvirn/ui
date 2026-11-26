@@ -174,8 +174,8 @@ const preview: Preview = {
       toolbar: { title: 'Forced colors', items: ['none', 'active'] },
     },
   },
-  // The four storybook Vitest projects (root vite.config.ts) start every story in one theme
-  // each, so axe checks every story in all four.
+  // The storybook Vitest project (root vite.config.ts) starts every story in the light, standard-contrast
+  // theme; contrast in the other themes is proved by `theme:check`.
   initialGlobals: {
     mode: modeOf(import.meta.env.VITE_STORYBOOK_MODE),
     contrast: contrastOf(import.meta.env.VITE_STORYBOOK_CONTRAST),
@@ -191,6 +191,13 @@ const preview: Preview = {
   // The display-mode sweep (`vite.config.ts`): each story is also checked in the mode
   // its Vitest project emulates.
   afterEach: async ({ canvasElement, parameters }) => {
+    // `twoDimensional: { selector, reason }`: a region users pan (1.4.10), so the sweeps measure what is clipped inside it only up to its edge.
+    const twoDimensionalSelector = (declared: typeof parameters) => {
+      const region = declared['twoDimensional'] as
+        | { selector?: string; reason?: string }
+        | undefined
+      return region?.selector && region.reason ? region.selector : undefined
+    }
     const sweep = import.meta.env.VITE_STORYBOOK_SWEEP
     if (sweep === 'forced-colors') {
       await expectVisibleInForcedColors(canvasElement)
@@ -199,9 +206,9 @@ const preview: Preview = {
     } else if (sweep === 'reflow') {
       // A story that pins a wide viewport on purpose says why; the sweep then skips only the 320 precondition.
       if (typeof parameters['reflowOptOut'] !== 'string') await expectReflowViewport()
-      await expectNoHorizontalOverflow(canvasElement)
+      await expectNoHorizontalOverflow(canvasElement, twoDimensionalSelector(parameters))
     } else if (sweep === 'text-spacing') {
-      await expectNoClippedTextWithSpacing(canvasElement)
+      await expectNoClippedTextWithSpacing(canvasElement, twoDimensionalSelector(parameters))
     }
   },
   parameters: {

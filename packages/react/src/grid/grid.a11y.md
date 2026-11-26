@@ -90,21 +90,21 @@ Headless: Grid ships no CSS. With `@kvirn/theme/theme.css`:
 
 ## AT test record
 
-| AT + browser + OS                                                          | Agent check | Human check | Result  | Notes                                                                                                           |
-| -------------------------------------------------------------------------- | ----------- | ----------- | ------- | --------------------------------------------------------------------------------------------------------------- |
-| **Automated (re-runnable tests)**                                          |             |             |         |                                                                                                                 |
-| axe, WCAG 2.2 A and AA, every story, 4 themes                              | pass        | n/a         | pass    | grid.stories.tsx, every story, 4 themes                                                                         |
-| Markup and ARIA (roles, names, ids, states)                                | pass        | n/a         | pass    | `grid.test.tsx` (axe and role, name and state): `adds role="list" to a ul and an ol Root, and no role to a div` |
-| Keyboard contract rows (Vitest browser)                                    | pass        | n/a         | pass    | 2 rows, each names a test in `grid.test.tsx`                                                                    |
-| Focus order and management                                                 | pass        | n/a         | pass    | `grid.test.tsx` asserts focus                                                                                   |
-| Display modes (forced colours, 320px reflow, text spacing, reduced motion) | pass        | n/a         | pass    | the four sweep projects (`storybook-forced-colors`, `-reduced-motion`, `-reflow`, `-text-spacing`), run in CI   |
-| **Core (required for beta)**                                               |             |             |         |                                                                                                                 |
-| NVDA + Chrome + Windows                                                    | pending     | pending     | pending |                                                                                                                 |
-| VoiceOver + Safari + iOS                                                   | pending     | pending     | pending |                                                                                                                 |
-| **Release (before 1.0 and each minor)**                                    |             |             |         |                                                                                                                 |
-| JAWS + Chrome + Windows                                                    | pending     | pending     | pending |                                                                                                                 |
-| TalkBack + Chrome + Android                                                | pending     | pending     | pending |                                                                                                                 |
-| VoiceOver + Safari + macOS                                                 | pending     | pending     | pending |                                                                                                                 |
+| AT + browser + OS                                                          | Agent check | Human check | Result  | Notes                                                                                                         |
+| -------------------------------------------------------------------------- | ----------- | ----------- | ------- | ------------------------------------------------------------------------------------------------------------- |
+| **Automated (re-runnable tests)**                                          |             |             |         |                                                                                                               |
+| axe, WCAG 2.2 A and AA, every story, light theme                           | pass        | n/a         | pass    | grid.stories.tsx, every story, light theme                                                                    |
+| Markup and ARIA (roles, names, ids, states)                                | pass        | n/a         | pass    | `grid.test.tsx` (role, name and state): `adds role="list" to a ul and an ol Root, and no role to a div`       |
+| Keyboard contract rows (Vitest browser)                                    | pass        | n/a         | pass    | 2 rows, each names a test in `grid.test.tsx`                                                                  |
+| Focus order and management                                                 | pass        | n/a         | pass    | `grid.test.tsx` asserts focus                                                                                 |
+| Display modes (forced colours, 320px reflow, text spacing, reduced motion) | pass        | n/a         | pass    | the four sweep projects (`storybook-forced-colors`, `-reduced-motion`, `-reflow`, `-text-spacing`), run in CI |
+| **Core (required for beta)**                                               |             |             |         |                                                                                                               |
+| NVDA + Chrome + Windows                                                    | pending     | pending     | pending |                                                                                                               |
+| VoiceOver + Safari + iOS                                                   | pending     | pending     | pending |                                                                                                               |
+| **Release (before 1.0 and each minor)**                                    |             |             |         |                                                                                                               |
+| JAWS + Chrome + Windows                                                    | pending     | pending     | pending |                                                                                                               |
+| TalkBack + Chrome + Android                                                | pending     | pending     | pending |                                                                                                               |
+| VoiceOver + Safari + macOS                                                 | pending     | pending     | pending |                                                                                                               |
 
 ### What to check
 

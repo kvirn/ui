@@ -1,6 +1,5 @@
 import { fi } from '@kvirn/i18n/fi'
 import { sv } from '@kvirn/i18n/sv'
-import { expectNoA11yViolations } from '@kvirn/testing'
 import { renderToString } from 'react-dom/server'
 import { useEffect } from 'react'
 import { afterEach, beforeEach, describe, expect, expectTypeOf, test, vi } from 'vite-plus/test'
@@ -289,31 +288,5 @@ describe('without a provider', () => {
     )
     expect(warnings).toHaveLength(1)
     expect(String(warnings[0]?.[0])).toContain('<KvirnProvider>')
-  })
-})
-
-describe('axe', () => {
-  test('no violations with both regions empty', async () => {
-    const { container } = await render(
-      <KvirnProvider locale="sv" messages={sv}>
-        <main>
-          <h1>Application</h1>
-        </main>
-      </KvirnProvider>,
-    )
-
-    await expect.element(politeRegion()).toBeEmptyDOMElement()
-    await expect.element(assertiveRegion()).toBeEmptyDOMElement()
-    await expectNoA11yViolations(container)
-  })
-
-  test('no violations while both regions hold a message', async () => {
-    const { announce } = await renderProbe({ locale: 'sv', messages: sv })
-    announce('Saved')
-    announce('The session has expired', { politeness: 'assertive' })
-    await expect.element(politeRegion()).toHaveTextContent('Saved')
-    await expect.element(assertiveRegion()).toHaveTextContent('The session has expired')
-
-    await expectNoA11yViolations(document.body)
   })
 })

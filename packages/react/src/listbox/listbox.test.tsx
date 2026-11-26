@@ -1,4 +1,3 @@
-import { expectNoA11yViolations } from '@kvirn/testing'
 import { createRef, useState } from 'react'
 import { afterEach, beforeEach, describe, expect, expectTypeOf, test, vi } from 'vite-plus/test'
 import type { MockInstance } from 'vite-plus/test'
@@ -52,9 +51,7 @@ describe('rendering', () => {
   })
 
   test('renders a native <select>, outside a Field', async () => {
-    const { container } = await render(
-      <ListboxNative aria-label="Municipality">{municipalities}</ListboxNative>,
-    )
+    await render(<ListboxNative aria-label="Municipality">{municipalities}</ListboxNative>)
     const select = page.getByRole('combobox', { name: 'Municipality' })
     const element = select.element()
     expect(element.tagName).toBe('SELECT')
@@ -63,7 +60,6 @@ describe('rendering', () => {
     await expect.element(select).not.toHaveAttribute('aria-invalid')
     await expect.element(select).not.toHaveAttribute('aria-required')
     await expect.element(select).not.toHaveAttribute('role')
-    await expectNoA11yViolations(container)
     expect(consoleWarn).not.toHaveBeenCalled()
   })
 
@@ -120,7 +116,6 @@ describe('in a Field', () => {
     await expect
       .element(select)
       .toHaveAccessibleDescription('Where you are registered. Error: Choose a municipality')
-    await expectNoA11yViolations(container)
     expect(consoleWarn).not.toHaveBeenCalled()
   })
 

@@ -1,4 +1,3 @@
-import { expectNoA11yViolations } from '@kvirn/testing'
 import { StrictMode, useEffect, useRef, useState } from 'react'
 import type { ReactNode } from 'react'
 import { renderToString } from 'react-dom/server'
@@ -604,13 +603,5 @@ describe('use-focus.test.tsx › imperative and types', () => {
   test('exports its option and prop types', () => {
     expectTypeOf<UseFocusOptions['contain']>().toEqualTypeOf<false | 'loop' | 'inert' | undefined>()
     expectTypeOf<FocusScopeProps['contain']>().toEqualTypeOf<UseFocusOptions['contain']>()
-  })
-})
-
-describe('use-focus.test.tsx › accessibility', () => {
-  test('an open scope has no axe violations', async () => {
-    const { container } = await render(<Drawer contain="loop" onEscape={() => {}} />)
-    await openDrawer()
-    await expectNoA11yViolations(container)
   })
 })

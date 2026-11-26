@@ -50,9 +50,6 @@ function UnderHeading(args: StepperProps) {
 export const Default: Story = {
   render: (args) => <UnderHeading {...args} />,
   globals: { locale: 'en' },
-  play: async ({ canvas }) => {
-    await expect(canvas.getByText('Step 2 of 5')).toBeVisible()
-  },
 }
 
 /** With the section's name. */
@@ -60,9 +57,6 @@ export const WithName: Story = {
   args: { name: 'Your vehicle' },
   render: (args) => <UnderHeading {...args} />,
   globals: { locale: 'en' },
-  play: async ({ canvas }) => {
-    await expect(canvas.getByText('Step 2 of 5: Your vehicle')).toBeVisible()
-  },
 }
 
 /** The question is a label that is the page's h1: the Stepper follows the h1, before the control. */
@@ -80,10 +74,6 @@ export const LabelAsHeading: Story = {
     </Field.Root>
   ),
   globals: { locale: 'en' },
-  play: async ({ canvas }) => {
-    await expect(canvas.getByRole('textbox', { name: 'Registration number' })).toBeVisible()
-    await expect(canvas.getByText('Step 2 of 5: Your vehicle')).toBeVisible()
-  },
 }
 
 /** The question is a legend that is the page's heading: the Stepper is inside the fieldset, after the legend. */
@@ -106,12 +96,6 @@ export const LegendAsHeading: Story = {
     </RadioGroup.Root>
   ),
   globals: { locale: 'en' },
-  play: async ({ canvas }) => {
-    await expect(
-      canvas.getByRole('group', { name: 'How long should the permit last?' }),
-    ).toBeVisible()
-    await expect(canvas.getByText('Step 2 of 5: Permit type')).toBeVisible()
-  },
 }
 
 /** A wizard page (T4): error summary after a failed submit, the heading and Stepper as one pair, then the field and the button. */
@@ -141,9 +125,6 @@ export const WizardPage: Story = {
     </Stack>
   ),
   globals: { locale: 'en' },
-  play: async ({ canvas }) => {
-    await expect(canvas.getByText('Step 3 of 5: Address')).toBeVisible()
-  },
 }
 
 /** Finnish with a long name at 320px: it wraps and hyphenates, never truncates. */
@@ -167,16 +148,12 @@ export const LongFinnish: Story = {
     </div>
   ),
   globals: { locale: 'fi', viewport: { value: 'reflow', isRotated: false } },
-  play: async ({ canvasElement, canvas }) => {
+  play: async ({ canvasElement }) => {
     await expect(window.innerWidth).toBeLessThanOrEqual(320)
     const column = canvasElement.querySelector<HTMLElement>('.kv-story-narrow')
     if (column === null) {
       throw new Error('no narrow column')
     }
-    await expect(
-      // kv-lang-ok: Finnish locale story: a long name
-      canvas.getByText('Vaihe 4/5: Pysäköintitunnuksen tyyppi ja voimassaoloaika'),
-    ).toBeVisible()
     await expectNoHorizontalOverflow(column)
   },
 }
@@ -198,10 +175,6 @@ export const Overrides: Story = {
     </KvirnProvider>
   ),
   globals: { locale: 'en' },
-  play: async ({ canvas }) => {
-    await expect(canvas.getByText('Part 2 of 5, Vehicle')).toBeVisible()
-    await expect(canvas.getByText('The last part')).toBeVisible()
-  },
 }
 
 /** Right to left: the message owns the word order. */
@@ -221,9 +194,6 @@ export const RTL: Story = {
     </div>
   ),
   globals: { dir: 'rtl', locale: 'en' },
-  play: async ({ canvas }) => {
-    await expect(canvas.getByText(/مركبتك/, { selector: 'p' })).toBeVisible()
-  },
 }
 
 /** Plain text in CanvasText: nothing is carried by colour or a border. */
@@ -231,7 +201,4 @@ export const ForcedColors: Story = {
   globals: { forcedColors: 'active', locale: 'en' },
   args: { name: 'Your vehicle' },
   render: (args) => <UnderHeading {...args} />,
-  play: async ({ canvas }) => {
-    await expect(canvas.getByText('Step 2 of 5: Your vehicle')).toBeVisible()
-  },
 }

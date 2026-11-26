@@ -2,7 +2,6 @@
 import { Field, KvirnProvider } from '@kvirn/ui'
 import { sv } from '@kvirn/i18n/sv'
 import { readAloud, readAnnouncements } from '@kvirn/testing/read-aloud'
-import { expectNoA11yViolations } from '@kvirn/testing'
 import type { JSONContent } from '@tiptap/core'
 import { EditorContent } from '@tiptap/react'
 import { createRef, useEffect, useRef, useState } from 'react'
@@ -96,7 +95,6 @@ describe('in a Field', () => {
     const label = container.querySelector('label')
     expect(box.element().getAttribute('id')).toBe(label?.getAttribute('for'))
     expect(box.element().getAttribute('aria-labelledby')).toBe(label?.getAttribute('id'))
-    await expectNoA11yViolations(container)
     expect(kvirnWarnings()).toEqual([])
   })
 

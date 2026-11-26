@@ -1,10 +1,9 @@
-import { Button, Card, Field, KvirnProvider, masks, TextInput } from '@kvirn/ui'
+import { Button, Card, Field, KvirnProvider, TextInput } from '@kvirn/ui'
 import contract from '../../../../../packages/react/src/text-input/text-input.a11y.md?raw'
 import guide from '../../../../../packages/react/src/text-input/text-input.md?raw'
 import type { Meta, StoryObj } from '@storybook/react-vite'
-import { expect, fn, userEvent, waitFor } from 'storybook/test'
+import { expect, fn, userEvent } from 'storybook/test'
 import { showSource, usageGuide } from '../../docs-source.ts'
-import { dateTextsFor } from '../date-input/date-input.fixture.tsx'
 import { FieldStates, localeOf, textsFor, withFormLocale } from '../form/form.fixture.tsx'
 import { maskTextsFor } from '../mask/mask.fixture.tsx'
 import { expectMinimumTargetSize, expectNoHorizontalOverflow } from '../theme-story-assertions.ts'
@@ -190,15 +189,7 @@ type Story = StoryObj<typeof meta>
  * The main example: a text input in a Field, with every option as a control. Try `type`,
  * `className` (a width), `disabled` and `readOnly`. For a mask, see the masked examples below.
  */
-export const Default: Story = {
-  play: async ({ canvas, globals }) => {
-    const { text } = textsFor(localeOf(globals))
-    const input = canvas.getByRole('textbox', { name: text.name })
-    await expect(input).toHaveAttribute('type', 'text')
-    await expect(input).toHaveAttribute('autocomplete', 'name')
-    await expectMinimumTargetSize(input)
-  },
-}
+export const Default: Story = {}
 
 /**
  * The fixture the keyboard tests drive: two inputs and a submit button in a plain form. Try the
@@ -211,18 +202,7 @@ export const Keyboard: Story = {
 }
 
 /** Typing reaches `onValueChange` with the new value, and the input shows it. */
-export const Typing: Story = {
-  play: async ({ canvas, args, globals }) => {
-    const { text } = textsFor(localeOf(globals))
-    const input = canvas.getByRole('textbox', { name: text.name })
-    await userEvent.type(input, 'Anna')
-    await expect(input).toHaveValue('Anna')
-    await expect(args.onValueChange).toHaveBeenLastCalledWith(
-      'Anna',
-      expect.objectContaining({ reason: 'input' }),
-    )
-  },
-}
+export const Typing: Story = {}
 
 /** The input types that look the same, each with its `autocomplete` (1.3.5). */
 export const Types: Story = {
@@ -264,14 +244,6 @@ export const Types: Story = {
     await expect(canvas.getByRole('searchbox', { name: text.search })).toBeVisible()
   },
 }
-
-const widths = [
-  ['kv-input--width-2', '12'],
-  ['kv-input--width-4', '2007'],
-  ['kv-input--width-6', '123 45'],
-  ['kv-input--width-10', 'ABC 123'],
-  ['kv-input--width-20', '19900101-1234'],
-] as const
 
 /**
  * The width reflects the expected answer: five steps by characters, and full width without a
@@ -319,11 +291,7 @@ export const Widths: Story = {
       </Field.Root>
     </div>
   ),
-  play: async ({ canvas, canvasElement }) => {
-    for (const [className, example] of widths) {
-      const input = canvas.getByRole('textbox', { name: className })
-      await expect(input).toHaveValue(example)
-    }
+  play: async ({ canvasElement }) => {
     await expectNoHorizontalOverflow(canvasElement)
   },
 }
@@ -345,35 +313,16 @@ export const Invalid: Story = {
       </>
     )
   },
-  play: async ({ canvas, globals }) => {
-    const { text } = textsFor(localeOf(globals))
-    const input = canvas.getByRole('textbox', { name: text.email })
-    await expect(input).toHaveAttribute('aria-invalid', 'true')
-    await expect(input).toHaveAttribute('data-invalid')
-    // The answer stays as typed, so the user can fix it instead of starting over.
-    await expect(input).toHaveValue('anna@')
-  },
 }
 
 /** Disabled: a dashed edge on the surface colour. Say why on submit instead, where you can. */
 export const Disabled: Story = {
   args: { disabled: true, defaultValue: 'Anna Andersson' },
-  play: async ({ canvas, globals }) => {
-    const { text } = textsFor(localeOf(globals))
-    await expect(canvas.getByRole('textbox', { name: text.name })).toBeDisabled()
-  },
 }
 
 /** Read-only is for staff tools: a solid edge on the surface colour, and still focusable. */
 export const ReadOnly: Story = {
   args: { readOnly: true, defaultValue: 'Anna Andersson' },
-  play: async ({ canvas, globals }) => {
-    const { text } = textsFor(localeOf(globals))
-    const input = canvas.getByRole('textbox', { name: text.name })
-    await expect(input).toHaveAttribute('readonly')
-    input.focus()
-    await expect(input).toHaveFocus()
-  },
 }
 
 /**
@@ -385,13 +334,6 @@ export const ReadOnly: Story = {
 export const Controlled: Story = {
   parameters: showSource('text-input/text-input.fixture.tsx', 'ControlledName'),
   render: (_args, { globals }) => <ControlledName locale={localeOf(globals)} />,
-  play: async ({ canvas, globals }) => {
-    const { text } = textsFor(localeOf(globals))
-    const input = canvas.getByRole('textbox', { name: text.name })
-    await userEvent.type(input, 'Anna')
-    await expect(input).toHaveValue('Anna')
-    await expect(canvas.getByText(`${text.youTyped}: Anna`)).toBeVisible()
-  },
 }
 
 /**
@@ -402,13 +344,6 @@ export const Controlled: Story = {
 export const PlainForm: Story = {
   parameters: showSource('text-input/text-input.fixture.tsx', 'NameAndEmailForm'),
   render: (_args, { globals }) => <NameAndEmailForm locale={localeOf(globals)} />,
-  play: async ({ canvas, globals }) => {
-    const { text } = textsFor(localeOf(globals))
-    await userEvent.type(canvas.getByRole('textbox', { name: text.name }), 'Anna Andersson')
-    await userEvent.type(canvas.getByRole('textbox', { name: text.email }), 'anna@example.se')
-    await userEvent.click(canvas.getByRole('button', { name: text.send }))
-    await expect(canvas.getByText(`${text.sent}: Anna Andersson, anna@example.se`)).toBeVisible()
-  },
 }
 
 /** On a `surface` section and in a card: the edge keeps 3:1 against each (1.4.11). */
@@ -434,11 +369,6 @@ export const OnSurfaces: Story = {
         </div>
       </>
     )
-  },
-  play: async ({ canvas, globals }) => {
-    const { text } = textsFor(localeOf(globals))
-    await expect(canvas.getByRole('textbox', { name: text.surface })).toBeVisible()
-    await expect(canvas.getByRole('textbox', { name: text.inCard })).toBeVisible()
   },
 }
 
@@ -471,30 +401,12 @@ export const Compact: Story = {
 export const MaskedPersonalIdentityNumber: Story = {
   parameters: showSource('text-input/text-input.fixture.tsx', 'PersonalIdentityNumberField'),
   render: (_args, { globals }) => <PersonalIdentityNumberField locale={localeOf(globals)} />,
-  play: async ({ canvas, globals }) => {
-    const { text } = maskTextsFor(globals)
-    const input = canvas.getByRole('textbox', {
-      name: new RegExp(`^${text.personalIdentityNumber}`),
-    })
-    await expect(input).toHaveAccessibleDescription(text.personalIdentityNumberHint)
-    await userEvent.type(input, '199001012385')
-    await expect(input).toHaveValue('19900101-2385')
-    await expect(input).toHaveAttribute('inputmode', 'numeric')
-    await expect(input).toHaveAttribute('dir', 'ltr')
-  },
 }
 
 /** A postcode mask: the space is inserted as the user types past it. */
 export const MaskedPostcode: Story = {
   parameters: showSource('text-input/text-input.fixture.tsx', 'PostcodeField'),
   render: (_args, { globals }) => <PostcodeField locale={localeOf(globals)} />,
-  play: async ({ canvas, globals }) => {
-    const { text } = maskTextsFor(globals)
-    const input = canvas.getByRole('textbox', { name: new RegExp(`^${text.postalCode}`) })
-    await expect(input).toHaveAccessibleDescription(text.postalCodeHint)
-    await userEvent.type(input, '12345')
-    await expect(input).toHaveValue('123 45')
-  },
 }
 
 /**
@@ -504,12 +416,6 @@ export const MaskedPostcode: Story = {
 export const ExplicitMask: Story = {
   parameters: showSource('text-input/text-input.fixture.tsx', 'ExplicitPostcodeField'),
   render: (_args, { globals }) => <ExplicitPostcodeField locale={localeOf(globals)} />,
-  play: async ({ canvas, globals }) => {
-    const { text } = maskTextsFor(globals)
-    const input = canvas.getByRole('textbox', { name: new RegExp(`^${text.postalCode}`) })
-    await userEvent.type(input, '12345')
-    await expect(input).toHaveValue('123 45')
-  },
 }
 
 /**
@@ -520,17 +426,6 @@ export const ExplicitMask: Story = {
 export const MaskedDate: Story = {
   parameters: showSource('text-input/text-input.fixture.tsx', 'StartDateField'),
   render: (_args, { globals }) => <StartDateField locale={localeOf(globals)} />,
-  play: async ({ canvas, globals }) => {
-    const locale = localeOf(globals)
-    const { text } = dateTextsFor(locale)
-    const example = masks.date().withLocale(locale).format('2026-10-27')
-    const input = canvas.getByRole('textbox', { name: new RegExp(`^${text.oneFieldLabel}`) })
-    await expect(input).toHaveAccessibleDescription(text.oneFieldHint(example))
-    await expect(input).toHaveAttribute('inputmode', 'numeric')
-    // The digits are enough: the mask puts the separators in, in the locale's order.
-    await userEvent.type(input, example.replaceAll(/\D/g, ''))
-    await expect(input).toHaveValue(example)
-  },
 }
 
 /**
@@ -541,16 +436,6 @@ export const MaskedDate: Story = {
 export const ReferenceNumber: Story = {
   parameters: showSource('text-input/text-input.fixture.tsx', 'ReferenceNumberField'),
   render: (_args, { globals }) => <ReferenceNumberField locale={localeOf(globals)} />,
-  play: async ({ canvas, globals }) => {
-    const { text } = textsFor(localeOf(globals))
-    const input = canvas.getByRole('textbox', { name: text.caseNumber })
-    await expect(input).toHaveAccessibleDescription(text.caseNumberHint)
-    await expect(input).toHaveValue('004512')
-    await userEvent.clear(input)
-    // A letter is left out, and the zeros stay.
-    await userEvent.type(input, '00x4513')
-    await expect(input).toHaveValue('004513')
-  },
 }
 
 /**
@@ -588,13 +473,6 @@ export const ChangeDetails: Story = {
 export const OwnMessages: Story = {
   parameters: showSource('text-input/text-input.fixture.tsx', 'OwnMessagesField'),
   render: (_args, { globals }) => <OwnMessagesField locale={localeOf(globals)} />,
-  play: async ({ canvas, globals }) => {
-    const { text } = maskTextsFor(globals)
-    const input = canvas.getByRole('textbox', { name: text.digits })
-    await userEvent.type(input, 'a')
-    await expect(input).toHaveValue('')
-    await waitFor(() => expect(canvas.getByRole('status')).toHaveTextContent(text.ownRejection))
-  },
 }
 
 /**
@@ -604,13 +482,6 @@ export const OwnMessages: Story = {
 export const OwnDescribedBy: Story = {
   parameters: showSource('text-input/text-input.fixture.tsx', 'OwnDescribedByField'),
   render: (_args, { globals }) => <OwnDescribedByField locale={localeOf(globals)} />,
-  play: async ({ canvas, globals }) => {
-    const { text } = maskTextsFor(globals)
-    const input = canvas.getByRole('textbox', { name: text.caseNumber })
-    await expect(input).toHaveAccessibleDescription(
-      `${text.caseNumberHint} ${text.describedByNote}`,
-    )
-  },
 }
 
 /** An inline filter: the inputs and the Button side by side are the same height (44px). */

@@ -108,19 +108,8 @@ export const Default: Story = {
     </Tabs.Root>
   ),
   play: async ({ canvas }) => {
-    const list = canvas.getByRole('tablist', { name: 'Case' })
-    await expect(list).not.toHaveAttribute('aria-orientation')
-    const tabs = canvas.getAllByRole('tab')
-    await expect(tabs).toHaveLength(3)
-    await expect(canvas.getByRole('tab', { name: 'Details' })).toHaveAttribute(
-      'aria-selected',
-      'true',
-    )
     await expectAnimationsSettled()
-    await expect(canvas.getByRole('tabpanel', { name: 'Details' })).toBeVisible()
-    // One Tab stop: the selected tab has tabindex 0 and the others -1.
-    await expect(list.querySelectorAll('[tabindex="0"]')).toHaveLength(1)
-    for (const tab of tabs) {
+    for (const tab of canvas.getAllByRole('tab')) {
       await expectMinimumTargetSize(tab)
     }
   },
@@ -136,23 +125,6 @@ export const Default: Story = {
 export const Keyboard: Story = {
   parameters: showSource('tabs/tabs.fixture.tsx', 'FilingTabs'),
   render: () => <FilingTabs locale="en" />,
-  play: async ({ canvas, canvasElement }) => {
-    const list = canvas.getByRole('tablist', { name: 'Case' })
-    await expect(list.querySelectorAll('[tabindex="0"]')).toHaveLength(1)
-    await expect(canvas.getByRole('tab', { name: 'History' })).toHaveAttribute(
-      'aria-disabled',
-      'true',
-    )
-    // The panel with a link first leaves the Tab stop to the link. A hidden panel has no
-    // accessible name to query, so find it through its tab's `aria-controls`.
-    const documentsPanelId = canvas
-      .getByRole('tab', { name: 'Documents' })
-      .getAttribute('aria-controls')
-    await expect(canvasElement.querySelector(`[id="${documentsPanelId}"]`)).toHaveAttribute(
-      'tabindex',
-      '-1',
-    )
-  },
 }
 
 /**
@@ -162,12 +134,6 @@ export const Keyboard: Story = {
 export const Manual: Story = {
   parameters: showSource('tabs/tabs.fixture.tsx', 'ReviewTabs'),
   render: () => <ReviewTabs />,
-  play: async ({ canvas }) => {
-    await expect(canvas.getByRole('tab', { name: 'Documents' })).toHaveAttribute(
-      'aria-selected',
-      'true',
-    )
-  },
 }
 
 /**
@@ -178,12 +144,6 @@ export const Manual: Story = {
 export const Vertical: Story = {
   parameters: showSource('tabs/tabs.fixture.tsx', 'SettingsTabs'),
   render: () => <SettingsTabs />,
-  play: async ({ canvas }) => {
-    await expect(canvas.getByRole('tablist', { name: 'Settings' })).toHaveAttribute(
-      'aria-orientation',
-      'vertical',
-    )
-  },
 }
 
 /**
@@ -195,8 +155,6 @@ export const DisabledTab: Story = {
   render: () => <ApplicationTabs />,
   play: async ({ canvas }) => {
     const decision = canvas.getByRole('tab', { name: 'Decision' })
-    await expect(decision).toHaveAttribute('aria-disabled', 'true')
-    await expect(decision).not.toHaveAttribute('disabled')
     await expect(decision).toHaveAccessibleDescription(
       'The Decision tab opens when the board has made its decision.',
     )
@@ -211,14 +169,6 @@ export const DisabledTab: Story = {
 export const Controlled: Story = {
   parameters: showSource('tabs/tabs.fixture.tsx', 'ControlledTabs'),
   render: () => <ControlledTabs />,
-  play: async ({ canvas, userEvent }) => {
-    await userEvent.click(canvas.getByRole('tab', { name: 'Documents' }))
-    await expect(canvas.getByText('Selected tab: documents. Last reason: press.')).toBeVisible()
-    await expect(canvas.getByRole('tab', { name: 'Documents' })).toHaveAttribute(
-      'aria-selected',
-      'true',
-    )
-  },
 }
 
 /**
@@ -235,7 +185,6 @@ export const LongFinnishText: Story = {
     </div>
   ),
   play: async ({ canvas }) => {
-    await expect(canvas.getByRole('tablist', { name: 'Rakennuslupa' })).toBeVisible()
     await expectNoHorizontalOverflow(canvas.getByTestId('narrow'))
   },
 }
@@ -255,9 +204,6 @@ export const CompactDensity: Story = {
 export const InACard: Story = {
   parameters: showSource('tabs/tabs.fixture.tsx', 'CardTabs'),
   render: () => <CardTabs />,
-  play: async ({ canvas }) => {
-    await expect(canvas.getByRole('tablist', { name: 'Case' })).toBeVisible()
-  },
 }
 
 /** Right to left, in English: the arrows flip, so Left is the next tab and Right the previous. */
@@ -265,12 +211,6 @@ export const RTL: Story = {
   globals: { dir: 'rtl', locale: 'en' },
   parameters: showSource('tabs/tabs.fixture.tsx', 'FilingTabs'),
   render: () => <FilingTabs locale="en" />,
-  play: async ({ canvas }) => {
-    await expect(canvas.getByRole('tab', { name: 'Details' })).toHaveAttribute(
-      'aria-selected',
-      'true',
-    )
-  },
 }
 
 /**

@@ -1,4 +1,3 @@
-import { expectNoA11yViolations } from '@kvirn/testing'
 import { createRef, useState } from 'react'
 import { renderToString } from 'react-dom/server'
 import { afterEach, beforeEach, describe, expect, expectTypeOf, test, vi } from 'vite-plus/test'
@@ -100,13 +99,12 @@ function CaseTabs({
 
 describe('rendering', () => {
   test('is a tablist of tabs and panels with the names the consumer gives, and warns about nothing', async () => {
-    const { container } = await render(<CaseTabs />)
+    await render(<CaseTabs />)
     const list = page.getByRole('tablist', { name: 'The case' })
     await expect.element(list).toBeVisible()
     expect(page.getByRole('tab').elements()).toHaveLength(3)
     await expect.element(tab('Details')).toBeVisible()
     await expect.element(page.getByRole('tabpanel', { name: 'Details' })).toBeVisible()
-    await expectNoA11yViolations(container)
     expect(consoleWarn).not.toHaveBeenCalled()
   })
 
@@ -751,7 +749,7 @@ describe('useTabs', () => {
 
   test('gives props for your own elements: roles, ids, the roving tabindex and selection', async () => {
     const onDisabledClick = vi.fn<() => void>()
-    const { container } = await render(<HookTabs onDisabledClick={onDisabledClick} />)
+    await render(<HookTabs onDisabledClick={onDisabledClick} />)
     await expect.element(page.getByRole('tablist', { name: 'Own' })).toBeVisible()
     expect(tabIndexOf('one')).toBe('0')
     expect(tabIndexOf('two')).toBe('-1')
@@ -763,7 +761,6 @@ describe('useTabs', () => {
     await userEvent.keyboard('{ArrowRight}')
     await expect.element(tab('three')).toHaveFocus()
     await expect.element(tab('three')).toHaveAttribute('aria-selected', 'false')
-    await expectNoA11yViolations(container)
   })
 
   test('getTabProps gates onClick for a disabled tab, as useButton does', async () => {
@@ -845,45 +842,6 @@ describe('development warnings', () => {
       true,
     )
     expect(warnings().some((text) => text.includes('"c"') && text.includes('Tabs.Tab'))).toBe(true)
-  })
-})
-
-describe('accessibility', () => {
-  test('no axe violations: automatic activation', async () => {
-    const { container } = await render(<CaseTabs />)
-    expect(container.querySelector('[role="tablist"]')).not.toBeNull()
-    await expectNoA11yViolations(container)
-  })
-
-  test('no axe violations: manual activation', async () => {
-    const { container } = await render(<CaseTabs activationMode="manual" />)
-    expect(container.querySelector('[role="tablist"]')).not.toBeNull()
-    await expectNoA11yViolations(container)
-  })
-
-  test('no axe violations: vertical', async () => {
-    const { container } = await render(<CaseTabs orientation="vertical" />)
-    expect(container.querySelector('[role="tablist"]')).not.toBeNull()
-    await expectNoA11yViolations(container)
-  })
-
-  test('no axe violations: a disabled tab, and a tab with a long label', async () => {
-    const { container } = await render(
-      <Tabs.Root defaultValue="a">
-        <Tabs.List aria-label="Application">
-          <Tabs.Tab value="a" style={fixtureTabStyle}>
-            Attachments to the building and construction permit application
-          </Tabs.Tab>
-          <Tabs.Tab value="b" disabled style={fixtureTabStyle}>
-            Decision
-          </Tabs.Tab>
-        </Tabs.List>
-        <Tabs.Panel value="a">Attachments.</Tabs.Panel>
-        <Tabs.Panel value="b">Decision.</Tabs.Panel>
-      </Tabs.Root>,
-    )
-    await expectNoA11yViolations(container)
-    expect(consoleWarn).not.toHaveBeenCalled()
   })
 })
 

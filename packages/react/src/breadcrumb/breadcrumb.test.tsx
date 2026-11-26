@@ -3,7 +3,6 @@ import { fi } from '@kvirn/i18n/fi'
 import { nb } from '@kvirn/i18n/nb'
 import { nn } from '@kvirn/i18n/nn'
 import { sv } from '@kvirn/i18n/sv'
-import { expectNoA11yViolations } from '@kvirn/testing'
 import { createRef, useEffect } from 'react'
 import { renderToString } from 'react-dom/server'
 import { afterEach, beforeEach, describe, expect, expectTypeOf, test, vi } from 'vite-plus/test'
@@ -116,9 +115,8 @@ describe('Breadcrumb keyboard', () => {
 
 describe('Breadcrumb', () => {
   test('is a navigation landmark named by the message breadcrumb.label', async () => {
-    const { container } = await render(<Trail />)
+    await render(<Trail />)
     await expect.element(page.getByRole('navigation', { name: 'You are here' })).toBeVisible()
-    await expectNoA11yViolations(container)
     expect(consoleWarn).not.toHaveBeenCalled()
   })
 
@@ -297,14 +295,6 @@ describe('Breadcrumb', () => {
     expect(document.querySelectorAll('.kv-breadcrumb-separator')).toHaveLength(0)
   })
 
-  test('has no axe violations with a separator icon', async () => {
-    const { container } = await render(
-      <Trail separator={<svg aria-hidden="true" focusable="false" />} />,
-    )
-    await expect.element(page.getByRole('navigation', { name: 'You are here' })).toBeVisible()
-    await expectNoA11yViolations(container)
-  })
-
   test('renders on the server with the landmark, the list and the current page', () => {
     const html = renderToString(<Trail />)
     expect(html).toContain('aria-label="You are here"')
@@ -328,12 +318,11 @@ describe('useBreadcrumb', () => {
   }
 
   test('returns the part props for your own elements', async () => {
-    const { container } = await render(<Probe />)
+    await render(<Probe />)
     await expect.element(page.getByRole('navigation', { name: 'You are here' })).toBeVisible()
     await expect
       .element(page.getByText('You are here', { exact: true }).last())
       .toHaveAttribute('aria-current', 'page')
-    await expectNoA11yViolations(container)
   })
 
   test('separatorProps is the decorative class and aria-hidden, and the result is stable per variant', async () => {

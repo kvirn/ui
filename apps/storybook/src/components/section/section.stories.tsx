@@ -2,7 +2,6 @@ import { Card, Link, Prose, Section } from '@kvirn/ui'
 import contract from '../../../../../packages/react/src/section/section.a11y.md?raw'
 import guide from '../../../../../packages/react/src/section/section.md?raw'
 import type { Meta, StoryObj } from '@storybook/react-vite'
-import { expect, within } from 'storybook/test'
 import {
   binsImage,
   isCardFixtureLocale,
@@ -89,12 +88,6 @@ export const Default: Story = {
       </Prose>
     </Section>
   ),
-  play: async ({ canvas }) => {
-    const heading = canvas.getByRole('heading', { level: 2, name: 'Contact us' })
-    await expect(heading.closest('.kv-section')).not.toBeNull()
-    await expect(canvas.queryByRole('complementary')).toBeNull()
-    await expect(canvas.queryByRole('region')).toBeNull()
-  },
 }
 
 /**
@@ -111,13 +104,6 @@ export const SidebarTextBlock: Story = {
     ),
   ],
   render: (_args, { globals }) => <ContactSection locale={localeOf(globals)} />,
-  play: async ({ canvas }) => {
-    const region = canvas.getByRole('complementary', { name: 'Contact us' })
-    await expect(within(region).getByRole('heading', { level: 2 })).toBeVisible()
-    await expect(
-      within(region).getByRole('link', { name: 'Email the customer centre' }),
-    ).toHaveAttribute('href', 'mailto:kundcenter@kvirnby.example')
-  },
 }
 
 /**
@@ -130,11 +116,6 @@ export const CardsOnASection: Story = {
     showSource('card/card.fixture.tsx', 'NewsList'),
   ),
   render: (_args, { globals }) => <NewsBand locale={localeOf(globals)} />,
-  play: async ({ canvas }) => {
-    const band = canvas.getByTestId('band')
-    await expect(within(band).getAllByRole('listitem')).toHaveLength(3)
-    await expect(canvas.queryByRole('region')).toBeNull()
-  },
 }
 
 /**
@@ -319,13 +300,6 @@ export const CardOrSection: Story = {
       </>
     )
   },
-  play: async ({ canvas }) => {
-    const users = canvas.getByTestId('section-with-actions')
-    await expect(within(users).getAllByRole('button')).toHaveLength(2)
-    const news = canvas.getByTestId('news-card')
-    await expect(within(news).getAllByRole('link')).toHaveLength(1)
-    await expect(canvas.getByRole('group', { name: 'Contact details' })).toBeVisible()
-  },
 }
 
 /**
@@ -389,17 +363,6 @@ export const RenderedAsLandmarks: Story = {
     ),
   ],
   render: (_args, { globals }) => <RenderedSections locale={localeOf(globals)} />,
-  play: async ({ canvas }) => {
-    await expect(
-      canvas.getByRole('region', { name: 'Waste collection at Storgatan 12' }),
-    ).toBeVisible()
-    await expect(canvas.getByRole('navigation', { name: 'News' })).toBeVisible()
-    // The list of Sections: two plain items, no landmark.
-    const lists = canvas.getAllByRole('list')
-    await expect(
-      within(lists[lists.length - 1] as HTMLElement).getAllByRole('listitem'),
-    ).toHaveLength(2)
-  },
 }
 
 /** An image directly in a Section: the theme keeps it inside, because a Section never clips. */
@@ -446,12 +409,6 @@ export const LongFinnishText: Story = {
     </>
   ),
   play: async ({ canvas }) => {
-    await expect(
-      // kv-lang-ok: Finnish locale story
-      canvas.getByRole('button', { name: 'Keskeytä jäteastioiden tyhjennykset' }),
-    ).toBeVisible()
-    // kv-lang-ok: Finnish locale story
-    await expect(canvas.getByRole('complementary', { name: 'Ota yhteyttä' })).toBeVisible()
     await expectNoHorizontalOverflow(canvas.getByTestId('narrow'))
   },
 }

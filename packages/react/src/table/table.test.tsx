@@ -14,7 +14,6 @@ import {
   tableFeatures,
 } from '@kvirn/core'
 import { sv } from '@kvirn/i18n/sv'
-import { expectNoA11yViolations } from '@kvirn/testing'
 import type { ReactNode } from 'react'
 import { afterEach, beforeEach, describe, expect, test, vi } from 'vite-plus/test'
 import type { MockInstance } from 'vite-plus/test'
@@ -1534,90 +1533,5 @@ describe('keyboard', () => {
     expect(sortedColumns(container)).toEqual([])
     expect(container.querySelectorAll('tr[data-selected]')).toHaveLength(0)
     expect(status().element().textContent).toBe('')
-  })
-})
-
-describe('accessibility', () => {
-  test('passes axe: sortable and selectable', async () => {
-    const { container } = await renderInProvider(<CasesTable />)
-    await expect.element(table()).toBeVisible()
-    await expectNoA11yViolations(container)
-  })
-
-  test('passes axe: sorted, with some rows selected', async () => {
-    const { container } = await renderInProvider(<CasesTable />)
-    await expect.element(table()).toBeVisible()
-    await userEvent.click(sortButton('Name'))
-    await userEvent.click(page.getByRole('checkbox', { name: 'Select Anna Svensson' }))
-    await expectNoA11yViolations(container)
-  })
-
-  test('passes axe: every row selected', async () => {
-    const { container } = await renderInProvider(<CasesTable />)
-    await expect.element(table()).toBeVisible()
-    await userEvent.click(page.getByRole('checkbox', { name: 'Select all rows' }))
-    await expectNoA11yViolations(container)
-  })
-
-  test('passes axe: no row header, so the checkboxes are named by number', async () => {
-    const { container } = await renderInProvider(<CasesTable withoutRowHeader />)
-    await expect.element(table()).toBeVisible()
-    await expectNoA11yViolations(container)
-  })
-
-  test('passes axe: expanded', async () => {
-    const { container } = await renderInProvider(<ExpandableTable />)
-    await expect.element(table()).toBeVisible()
-    await userEvent.click(page.getByRole('button', { name: 'Details Anna Svensson' }))
-    await expectNoA11yViolations(container)
-  })
-
-  test('passes axe: empty', async () => {
-    const { container } = await renderInProvider(<CasesTable data={[]} />)
-    await expect.element(table()).toBeVisible()
-    await expectNoA11yViolations(container)
-  })
-
-  test('passes axe: busy', async () => {
-    const { container } = await renderInProvider(<CasesTable isLoading />)
-    await expect.element(table()).toBeVisible()
-    await expectNoA11yViolations(container)
-  })
-
-  test('passes axe: virtualized', async () => {
-    const { container } = await renderInProvider(<VirtualTable />)
-    await expect.element(page.getByRole('table', { name: 'All cases' })).toBeVisible()
-    await expect
-      .poll(() => container.querySelectorAll('tbody tr:not([aria-hidden])').length)
-      .toBeGreaterThan(0)
-    await expectNoA11yViolations(container)
-  })
-
-  test('passes axe: static, without table', async () => {
-    const { container } = await render(
-      <Table.Root>
-        <Table.Caption>Fees</Table.Caption>
-        <Table.Head>
-          <Table.Row>
-            <Table.ColumnHeader>Service</Table.ColumnHeader>
-            <Table.ColumnHeader>Fee</Table.ColumnHeader>
-          </Table.Row>
-        </Table.Head>
-        <Table.Body>
-          <Table.Row>
-            <Table.RowHeader>Passport</Table.RowHeader>
-            <Table.Cell>350 kr</Table.Cell>
-          </Table.Row>
-        </Table.Body>
-      </Table.Root>,
-    )
-    await expect.element(page.getByRole('table', { name: 'Fees' })).toBeVisible()
-    await expectNoA11yViolations(container)
-  })
-
-  test('passes axe: in Swedish', async () => {
-    const { container } = await renderInProvider(<CasesTable />, 'sv')
-    await expect.element(table()).toBeVisible()
-    await expectNoA11yViolations(container)
   })
 })

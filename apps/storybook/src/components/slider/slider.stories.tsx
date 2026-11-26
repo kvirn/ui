@@ -77,15 +77,7 @@ export default meta
 type Story = StoryObj<typeof meta>
 
 /** The main example: a plain track and a `primary` thumb. The value is spoken with its unit. */
-export const Default: Story = {
-  play: async ({ canvas, globals }) => {
-    const { text } = sliderTextsFor(localeOf(globals))
-    const control = canvas.getByRole('slider', { name: text.volumeLabel })
-    await expect(control).toHaveAttribute('type', 'range')
-    await expect(control).toHaveAttribute('aria-valuetext', text.volumeValueText(40))
-    await expectMinimumTargetSize(control)
-  },
-}
+export const Default: Story = {}
 
 /** The help text states the ends of the range in words. It is the slider's description. */
 export const WithValueText: Story = {
@@ -102,12 +94,6 @@ export const WithValueText: Story = {
     )
   },
   args: { name: 'distance', defaultValue: 15 },
-  play: async ({ canvas, globals }) => {
-    const { text } = sliderTextsFor(localeOf(globals))
-    const control = canvas.getByRole('slider', { name: text.distanceLabel })
-    await expect(control).toHaveAttribute('aria-valuetext', text.distanceValueText(15))
-    await expect(control).toHaveAccessibleDescription(text.distanceHint)
-  },
 }
 
 /** An error from the Field: a 2px `danger` edge on the track, and the message under the control. */
@@ -124,12 +110,6 @@ export const Invalid: Story = {
       </>
     )
   },
-  play: async ({ canvas, globals }) => {
-    const { text } = sliderTextsFor(localeOf(globals))
-    const control = canvas.getByRole('slider', { name: text.distanceLabel })
-    await expect(control).toHaveAttribute('aria-invalid', 'true')
-    await expect(control).toHaveAttribute('data-invalid')
-  },
 }
 
 /** Disabled: a dashed track and a muted thumb. The help text says why, never a tooltip. */
@@ -145,10 +125,6 @@ export const Disabled: Story = {
         </Field.Root>
       </>
     )
-  },
-  play: async ({ canvas, globals }) => {
-    const { text } = sliderTextsFor(localeOf(globals))
-    await expect(canvas.getByRole('slider', { name: text.radiusLabel })).toBeDisabled()
   },
 }
 

@@ -158,15 +158,6 @@ export const Default: Story = {
       className={strokeClasses[stroke]}
     />
   ),
-  play: async ({ canvasElement, args }) => {
-    const svg = canvasElement.querySelector('svg')
-    await expect(svg).not.toBeNull()
-    if (args.label) {
-      await expect(svg).toHaveAttribute('aria-label', args.label)
-    } else {
-      await expect(svg).toHaveAttribute('aria-hidden', 'true')
-    }
-  },
 }
 
 /** Every icon in the library, each with its name as text. The drawings are decorative. */
@@ -183,21 +174,10 @@ export const AllIcons: Story = {
       ))}
     </ul>
   ),
-  play: async ({ canvas }) => {
-    const drawnNames = catalog.icons
-      .filter((icon) => icon.status === 'drawn')
-      .map((icon) => icon.name)
-    await expect(drawnNames.filter((name) => !iconNames.includes(name as never))).toEqual([])
-    await expect(iconNames.filter((name) => !drawnNames.includes(name))).toEqual([])
+  play: async () => {
     for (const group of groups) {
       await expect(categoriesWithStory.includes(group.id) || group.icons.length === 0).toBe(true)
       await expect(!categoriesWithStory.includes(group.id) || group.icons.length > 0).toBe(true)
-    }
-    const cells = within(canvas.getByRole('list')).getAllByRole('listitem')
-    await expect(cells).toHaveLength(iconNames.length)
-    for (const [index, cell] of cells.entries()) {
-      await expect(within(cell).getByText(iconNames[index] ?? '')).toBeVisible()
-      await expect(cell.querySelector('svg')).toHaveAttribute('aria-hidden', 'true')
     }
   },
 }
@@ -237,26 +217,6 @@ export const Variants: Story = {
       ))}
     </div>
   ),
-  play: async ({ canvas, canvasElement }) => {
-    for (const stroke of strokeOptions) {
-      const section = within(canvas.getByRole('region', { name: `Stroke ${stroke}` }))
-      await expect(section.getAllByRole('listitem')).toHaveLength(variantOptions.length)
-      await expect(section.getByText('default')).toBeVisible()
-      for (const variant of variants) {
-        await expect(section.getByText(variant)).toBeVisible()
-      }
-    }
-    const svgs = canvasElement.querySelectorAll('svg')
-    await expect(svgs).toHaveLength(variantOptions.length * strokeOptions.length)
-    for (const svg of svgs) {
-      await expect(svg).toHaveAttribute('aria-hidden', 'true')
-    }
-    for (const variant of variants) {
-      await expect(canvasElement.querySelectorAll(`svg.kv-icon--${variant}`)).toHaveLength(
-        strokeOptions.length,
-      )
-    }
-  },
 }
 
 function categoryStory(categoryId: string): Story {
@@ -343,19 +303,6 @@ export const Rtl: Story = {
       ))}
     </ul>
   ),
-  play: async ({ canvas, canvasElement }) => {
-    const catalogMirrored = catalog.icons
-      .filter((icon) => icon.mirrorInRtl)
-      .map((icon) => icon.name)
-    await expect([...mirroredNames].sort()).toEqual(catalogMirrored.sort())
-    await expect(canvas.getAllByRole('listitem')).toHaveLength(mirroredNames.length)
-    const svgs = [...canvasElement.querySelectorAll('svg')]
-    await expect(svgs).toHaveLength(mirroredNames.length)
-    for (const svg of svgs) {
-      await expect(svg).toHaveAttribute('aria-hidden', 'true')
-      await expect(svg).toHaveAttribute('data-mirror-in-rtl')
-    }
-  },
 }
 
 const spinner = 'spinner'

@@ -1,5 +1,4 @@
 import { sv } from '@kvirn/i18n/sv'
-import { expectNoA11yViolations } from '@kvirn/testing'
 import { createRef, useState } from 'react'
 import { afterEach, beforeEach, describe, expect, expectTypeOf, test, vi } from 'vite-plus/test'
 import type { MockInstance } from 'vite-plus/test'
@@ -35,7 +34,7 @@ afterEach(() => {
 
 describe('rendering', () => {
   test('renders a native <input type="range"> with the value text, outside a Field', async () => {
-    const { container } = await render(<Slider aria-label="Volume" defaultValue={30} />)
+    await render(<Slider aria-label="Volume" defaultValue={30} />)
     const control = page.getByRole('slider', { name: 'Volume' })
     await expect.element(control).toHaveAttribute('type', 'range')
     await expect.element(control).toHaveAttribute('min', '0')
@@ -47,7 +46,6 @@ describe('rendering', () => {
     await expect.element(control).not.toHaveAttribute('aria-invalid')
     await expect.element(control).not.toHaveAttribute('aria-required')
     await expect.element(control).not.toHaveAttribute('aria-valuenow')
-    await expectNoA11yViolations(container)
     expect(consoleWarn).not.toHaveBeenCalled()
   })
 
@@ -149,12 +147,11 @@ describe('in a Field', () => {
     expect(container.querySelector('label')?.getAttribute('for')).toBe(id)
     await expect.element(control).toHaveAccessibleDescription('From quiet to loud.')
     await expect.element(control).not.toHaveAttribute('aria-required')
-    await expectNoA11yViolations(container)
     expect(consoleWarn).not.toHaveBeenCalled()
   })
 
   test('an invalid Field gives aria-invalid and the error in the description', async () => {
-    const { container } = await render(
+    await render(
       <Field.Root invalid>
         <Field.Label marker="none">Volume</Field.Label>
         <Slider />
@@ -168,7 +165,6 @@ describe('in a Field', () => {
     await expect
       .element(control)
       .toHaveAccessibleDescription('From quiet to loud. Error: Choose a lower value')
-    await expectNoA11yViolations(container)
   })
 
   test('a disabled Field disables the slider, and the slider’s own disabled does too', async () => {

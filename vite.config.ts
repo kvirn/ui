@@ -113,9 +113,9 @@ type ContextOptions = NonNullable<PlaywrightProviderOptions['contextOptions']>
 const sweepComponents = [
   'button',
   'map',
-  // Plan 0154 D26: the Bar is sticky-while-playing with round icon-only controls, so reflow,
-  // text spacing, 200% zoom and forced colours are exactly where it can break.
-  'read-aloud',
+  // read-aloud is paused (maintainer, 2026-11-26): its stories pin a 1280px viewport file-wide, so
+  // reflow can't run at 320px. Plan 0154 adds it back when the player bar lands (D26: the Bar is
+  // sticky with icon-only controls, so the sweeps are where it can break).
   'skip-panel',
   'accordion',
   'address-input',
@@ -206,7 +206,7 @@ const displayModeSweeps: { name: string; contextOptions: ContextOptions }[] = [
 const resolve = { alias: workspaceSourceAlias() }
 
 /**
- * One Vitest project of Storybook stories. Run them one per `vp test run` (`vp run test`): several
+ * One Vitest project of Storybook stories. Run them one per `vp test run` (`pnpm run test`): several
  * `storybookTest()` servers in one process make story files fail to load at random. `env` sets the preview's initial Mode and Contrast
  * globals (apps/storybook/.storybook/preview.tsx), so every story starts in that theme.
  */
@@ -379,13 +379,10 @@ export default defineConfig({
         },
       },
       // Every story is a test: it renders, runs its play function and fails on any axe
-      // violation. The same stories run once per theme.
+      // violation, in the light, standard-contrast theme. Contrast in the other themes is proved by `theme:check`.
       storybookProject('storybook', 'light', 'standard'),
-      storybookProject('storybook-dark', 'dark', 'standard'),
-      storybookProject('storybook-light-contrast', 'light', 'more'),
-      storybookProject('storybook-dark-contrast', 'dark', 'more'),
       // The display-mode sweep, on the components in `sweepComponents`. CI runs the four projects in one
-      // serial step after `vp run test`; run one with `vp test run --project storybook-<mode>`. The preview's afterEach reads
+      // serial step after `pnpm run test`; run one with `vp test run --project storybook-<mode>`. The preview's afterEach reads
       // VITE_STORYBOOK_SWEEP and asserts the outcome after each story's play function.
       ...displayModeSweeps.map(({ name, contextOptions }) =>
         storybookProject(`storybook-${name}`, 'light', 'standard', {

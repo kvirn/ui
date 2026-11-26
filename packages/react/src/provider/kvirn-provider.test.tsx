@@ -5,7 +5,6 @@ import { defineMessages } from '@kvirn/i18n'
 import type { KvirnMessages } from '@kvirn/i18n'
 import { fi } from '@kvirn/i18n/fi'
 import { sv } from '@kvirn/i18n/sv'
-import { expectNoA11yViolations } from '@kvirn/testing'
 import { createElement, Profiler, useEffect } from 'react'
 import { afterEach, beforeEach, describe, expect, test, vi } from 'vite-plus/test'
 import type { MockInstance } from 'vite-plus/test'
@@ -68,7 +67,7 @@ afterEach(() => {
 
 describe('without a provider', () => {
   test('uses en, ltr, UTC and the en messages', async () => {
-    const { container } = await render(<ProviderFixture />)
+    await render(<ProviderFixture />)
     expect(await readSettings('Settings')).toEqual({
       locale: 'en',
       direction: 'ltr',
@@ -86,8 +85,6 @@ describe('without a provider', () => {
     // The fixture formats an instant, and there is no provider to give it a zone.
     expect(consoleWarn).toHaveBeenCalledTimes(1)
     expect(String(consoleWarn.mock.calls[0]?.[0])).toContain('no `timeZone` is set')
-
-    await expectNoA11yViolations(container)
   })
 
   test('uses a native <a> as the link component', async () => {
@@ -113,7 +110,7 @@ describe('without a provider', () => {
 
 describe('locale, direction and dates', () => {
   test('sv-SE with the sv catalog', async () => {
-    const { container } = await render(
+    await render(
       <KvirnProvider locale="sv-SE" messages={sv} timeZone="Europe/Stockholm">
         <ProviderFixture />
       </KvirnProvider>,
@@ -127,7 +124,6 @@ describe('locale, direction and dates', () => {
       dir: 'ltr',
     })
     expect(consoleWarn).not.toHaveBeenCalled()
-    await expectNoA11yViolations(container)
   })
 
   test('formats dates in the provider time zone', async () => {
@@ -173,7 +169,7 @@ describe('locale, direction and dates', () => {
 
 describe('nesting', () => {
   test('a nested provider inherits unset props and changes only its section', async () => {
-    const { container } = await render(
+    await render(
       <KvirnProvider locale="sv-SE" messages={sv} timeZone="Europe/Stockholm">
         <ProviderFixture />
         <KvirnProvider locale="fi-FI" messages={fi}>
@@ -193,7 +189,6 @@ describe('nesting', () => {
       lang: 'fi-FI',
       dir: 'ltr',
     })
-    await expectNoA11yViolations(container)
   })
 
   test('a nested locale recomputes dir, and a nested provider without locale keeps the parent dir', async () => {

@@ -1,4 +1,3 @@
-import { expectNoA11yViolations } from '@kvirn/testing'
 import { StrictMode, createRef, useEffect, useState } from 'react'
 import type { CSSProperties, MouseEvent, ReactNode } from 'react'
 import { renderToString } from 'react-dom/server'
@@ -99,7 +98,7 @@ const openWithEnter = async () => {
 
 describe('rendering', () => {
   test('a closed menu: the trigger is wired to a hidden popup', async () => {
-    const { container } = await render(<Example />)
+    await render(<Example />)
     const button = triggerElement()
     const popup = popupElement()
     expect(button.getAttribute('type')).toBe('button')
@@ -112,11 +111,10 @@ describe('rendering', () => {
     expect(popup?.getAttribute('aria-labelledby')).toBe(button.id)
     expect(popup?.querySelectorAll('[role^="menuitem"]')).toHaveLength(5)
     expect(isShown()).toBe(false)
-    await expectNoA11yViolations(container)
   })
 
-  test('an open menu: expanded, shown, a roving tabindex on the items, no axe violations', async () => {
-    const { container } = await render(<Example />)
+  test('an open menu: expanded, shown, a roving tabindex on the items', async () => {
+    await render(<Example />)
     await openWithClick()
     expect(triggerElement().getAttribute('aria-expanded')).toBe('true')
     expect(triggerElement().hasAttribute('data-open')).toBe(true)
@@ -129,7 +127,6 @@ describe('rendering', () => {
       expect(element.getAttribute('type')).toBe('button')
     }
     expect(popupElement()?.querySelector('[role="separator"]')).not.toBeNull()
-    await expectNoA11yViolations(container)
   })
 
   test('a disabled item has aria-disabled and data-disabled, and is still a button that takes focus', async () => {
@@ -159,8 +156,8 @@ describe('rendering', () => {
     await expect.element(item('Deliver')).toHaveAccessibleDescription('You cannot deliver a draft.')
   })
 
-  test('checkbox and radio items expose role, aria-checked and groups, with no axe violations', async () => {
-    const { container } = await render(
+  test('checkbox and radio items expose role, aria-checked and groups', async () => {
+    await render(
       <Menu.Root defaultOpen>
         <Menu.Trigger style={controlStyle}>Show</Menu.Trigger>
         <Menu.Popup>
@@ -201,11 +198,10 @@ describe('rendering', () => {
       .toHaveAttribute('aria-checked', 'false')
     await expect.element(page.getByRole('group', { name: 'Layout' })).toBeVisible()
     await expect.element(page.getByRole('group', { name: 'Sort' })).toBeVisible()
-    await expectNoA11yViolations(container)
   })
 
-  test('a scrolling menu has keyboard access through its focused item, and no axe violations', async () => {
-    const { container } = await render(
+  test('a scrolling menu has keyboard access through its focused item', async () => {
+    await render(
       <>
         <button type="button" style={controlStyle}>
           Before
@@ -233,7 +229,6 @@ describe('rendering', () => {
     expect(popup?.hasAttribute('tabindex')).toBe(false)
     expect(document.activeElement?.getAttribute('tabindex')).toBe('0')
     await expect.element(item('Action 1')).toHaveFocus()
-    await expectNoA11yViolations(container)
   })
 
   test('the popup is named by the trigger unless the consumer names it', async () => {

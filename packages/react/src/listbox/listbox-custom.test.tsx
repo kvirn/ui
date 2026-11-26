@@ -1,5 +1,4 @@
 import { sv } from '@kvirn/i18n/sv'
-import { expectNoA11yViolations } from '@kvirn/testing'
 import { createRef, useState } from 'react'
 import { renderToString } from 'react-dom/server'
 import { afterEach, beforeEach, describe, expect, expectTypeOf, test, vi } from 'vite-plus/test'
@@ -179,7 +178,7 @@ async function openWithClick() {
 
 describe('rendering', () => {
   test('a closed listbox: a combobox div wired to a hidden listbox popup', async () => {
-    const { container } = await render(<Example />)
+    await render(<Example />)
     const element = triggerElement()
     const popup = popupElement()
     expect(element.getAttribute('role')).toBe('combobox')
@@ -200,7 +199,6 @@ describe('rendering', () => {
     expect(list?.hasAttribute('aria-multiselectable')).toBe(false)
     expect(isShown()).toBe(false)
     expect(page.getByRole('option').elements()).toHaveLength(0)
-    await expectNoA11yViolations(container)
     expect(consoleWarn).not.toHaveBeenCalled()
   })
 
@@ -229,7 +227,7 @@ describe('rendering', () => {
   })
 
   test('an open listbox: expanded, data-open, options with their state, focus on the trigger', async () => {
-    const { container } = await render(<Example defaultValue="malmo" />)
+    await render(<Example defaultValue="malmo" />)
     await openWithClick()
     const element = triggerElement()
     expect(element.getAttribute('aria-expanded')).toBe('true')
@@ -244,7 +242,6 @@ describe('rendering', () => {
     // Opening with a press activates nothing, and focus never leaves the trigger.
     expect(element.hasAttribute('aria-activedescendant')).toBe(false)
     await expect.element(trigger()).toHaveFocus()
-    await expectNoA11yViolations(container)
     expect(consoleWarn).not.toHaveBeenCalled()
   })
 
@@ -262,7 +259,7 @@ describe('rendering', () => {
     await expect.element(option('Malmo')).not.toHaveAttribute('aria-disabled')
   })
 
-  test('groups: role=group named by its label, with axe clean', async () => {
+  test('groups: role=group named by its label', async () => {
     const { container } = await render(
       <Field.Root required>
         <Field.Label>Municipality</Field.Label>
@@ -289,11 +286,10 @@ describe('rendering', () => {
     const groups = container.querySelectorAll('.kv-listbox-group')
     expect(groups).toHaveLength(2)
     expect(groups[0]?.querySelectorAll('[role="option"]')).toHaveLength(2)
-    await expectNoA11yViolations(container)
   })
 
   test('Listbox.Empty shows "No results" as plain text beside a hidden listbox, not as an option', async () => {
-    const { container } = await render(<Example items={[]} />)
+    await render(<Example items={[]} />)
     await openWithClick()
     await expect.element(page.getByText('No results')).toBeVisible()
     // Not an option, and not inside the listbox: no screen reader reads it as "option 1 of 1".
@@ -306,7 +302,6 @@ describe('rendering', () => {
     expect(listElement()?.hasAttribute('hidden')).toBe(true)
     expect(listElement()?.hasAttribute('data-empty')).toBe(true)
     expect(triggerElement().getAttribute('aria-controls')).toBe(listElement()?.id)
-    await expectNoA11yViolations(container)
   })
 
   test('Listbox.Empty is in the provider’s locale, and renders nothing while there are options', async () => {
@@ -397,7 +392,7 @@ describe('rendering', () => {
 
 describe('in a Field', () => {
   test('invalid, required and disabled come from the Field', async () => {
-    const { container } = await render(
+    await render(
       <>
         <Field.Root invalid required>
           <Field.Label>Municipality</Field.Label>
@@ -430,7 +425,6 @@ describe('in a Field', () => {
     expect(disabled.getAttribute('aria-disabled')).toBe('true')
     expect(disabled.hasAttribute('tabindex')).toBe(false)
     expect(disabled.hasAttribute('data-disabled')).toBe(true)
-    await expectNoA11yViolations(container)
   })
 
   test('a disabled listbox does not open, and is not focusable', async () => {
@@ -1002,7 +996,7 @@ describe('value', () => {
 describe('multiple', () => {
   test('aria-multiselectable, and a choice toggles the option and keeps the popup open', async () => {
     const onValueChange = vi.fn<(value: string[], details: ListboxValueChangeDetails) => void>()
-    const { container } = await render(<MultipleExample onValueChange={onValueChange} />)
+    await render(<MultipleExample onValueChange={onValueChange} />)
     await openWithClick()
     expect(listElement()?.getAttribute('aria-multiselectable')).toBe('true')
     await userEvent.click(option('Malmo'))
@@ -1017,7 +1011,6 @@ describe('multiple', () => {
     expect(triggerElement().querySelector('.kv-listbox-value')?.textContent).toBe('Malmo, Arvika')
     await userEvent.click(option('Malmo'))
     expect(onValueChange).toHaveBeenLastCalledWith(['arvika'], { reason: 'option-press' })
-    await expectNoA11yViolations(container)
   })
 
   test('Enter and Space toggle the active option, and the popup stays open', async () => {
@@ -1108,7 +1101,7 @@ describe('forms', () => {
 
 describe('native rendering', () => {
   test('native="always" renders a native select with the Field’s label, description and error', async () => {
-    const { container } = await render(
+    await render(
       <Field.Root invalid required>
         <Field.Label>Municipality</Field.Label>
         <Field.Prose>Where you are registered.</Field.Prose>
@@ -1147,7 +1140,6 @@ describe('native rendering', () => {
     expect(element.options[0]?.value).toBe('')
     expect(element.options[0]?.textContent).toBe('Choose a municipality')
     expect(element.options[6]?.disabled).toBe(true)
-    await expectNoA11yViolations(container)
   })
 
   test('native groups become optgroups', async () => {
@@ -1484,7 +1476,7 @@ describe('itemToLang (3.1.2)', () => {
   })
 
   test('the native select puts lang on each option, not on the empty one or the select', async () => {
-    const { container } = await render(
+    await render(
       <Field.Root>
         <Field.Label>Language</Field.Label>
         <Listbox.Root
@@ -1499,13 +1491,6 @@ describe('itemToLang (3.1.2)', () => {
     const langs = [...select.options].map((optionElement) => optionElement.getAttribute('lang'))
     expect(langs).toEqual([null, null, 'fi', 'nn'])
     expect(select.hasAttribute('lang')).toBe(false)
-    await expectNoA11yViolations(container)
-  })
-
-  test('no axe violations with lang on the options and the value', async () => {
-    const { container } = await render(<LanguageExample defaultValue="fi" />)
-    await openLanguages()
-    await expect(expectNoA11yViolations(container)).resolves.toBeUndefined()
   })
 })
 

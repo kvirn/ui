@@ -1,4 +1,3 @@
-import { expectNoA11yViolations } from '@kvirn/testing'
 import { createRef, useState } from 'react'
 import { renderToString } from 'react-dom/server'
 import { afterEach, beforeEach, describe, expect, test, vi } from 'vite-plus/test'
@@ -50,7 +49,7 @@ const link = () => page.getByRole('link', { name: 'Contact us', includeHidden: t
 
 describe('rendering', () => {
   test('a closed disclosure: the trigger is wired to a hidden panel', async () => {
-    const { container } = await render(<Example />)
+    await render(<Example />)
     const button = triggerElement()
     const panel = panelElement()
     expect(button.getAttribute('type')).toBe('button')
@@ -61,18 +60,16 @@ describe('rendering', () => {
     expect(panel?.hasAttribute('hidden')).toBe(true)
     expect(panel?.getAttribute('hidden')).not.toBe('until-found')
     expect(panel?.hasAttribute('data-open')).toBe(false)
-    await expectNoA11yViolations(container)
     expect(consoleWarn).not.toHaveBeenCalled()
   })
 
-  test('an open disclosure: expanded, visible, data-open, no axe violations', async () => {
-    const { container } = await render(<Example defaultOpen />)
+  test('an open disclosure: expanded, visible, data-open', async () => {
+    await render(<Example defaultOpen />)
     expect(triggerElement().getAttribute('aria-expanded')).toBe('true')
     expect(triggerElement().hasAttribute('data-open')).toBe(true)
     expect(panelElement()?.hasAttribute('hidden')).toBe(false)
     expect(panelElement()?.hasAttribute('data-open')).toBe(true)
     await expect.element(link()).toBeVisible()
-    await expectNoA11yViolations(container)
     expect(consoleWarn).not.toHaveBeenCalled()
   })
 

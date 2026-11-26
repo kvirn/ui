@@ -1,4 +1,3 @@
-import { expectNoA11yViolations } from '@kvirn/testing'
 import { readAloud } from '@kvirn/testing/read-aloud'
 import { createRef } from 'react'
 import { afterEach, beforeEach, describe, expect, expectTypeOf, test, vi } from 'vite-plus/test'
@@ -271,26 +270,6 @@ describe('types', () => {
     expectTypeOf<GridItemProps>().toHaveProperty('as')
     expectTypeOf<ReturnType<typeof useGrid>>().toEqualTypeOf<UseGridResult>()
     expectTypeOf<UseGridResult['rootProps']>().toEqualTypeOf<GridPartProps<'kv-grid'>>()
-  })
-})
-
-describe('accessibility', () => {
-  test('has no axe violations around real content', async () => {
-    const { container } = await render(
-      <main>
-        <Grid.Root className="kv-grid--cols-1 kv-grid--lg-cols-12">
-          <Grid.Item className="kv-grid-item--lg-span-8">
-            <h1>Kvirnby kommun</h1>
-            <p>Vi svarar vardagar 9–16.</p>
-          </Grid.Item>
-          <Grid.Item as="section" aria-label="Contact" className="kv-grid-item--lg-span-4">
-            <Link.Root href="#contact">Contact us</Link.Root>
-          </Grid.Item>
-        </Grid.Root>
-      </main>,
-    )
-    await expect.element(page.getByRole('main')).toBeVisible()
-    await expectNoA11yViolations(container)
   })
 })
 

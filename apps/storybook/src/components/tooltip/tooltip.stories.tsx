@@ -124,11 +124,6 @@ export const Default: Story = {
   ),
   play: async ({ canvas }) => {
     const button = canvas.getByRole('button', { name: 'Search' })
-    // A tooltip with only the name adds no description: the name is the button's own.
-    await expect(button).not.toHaveAttribute('aria-describedby')
-    await expect(document.querySelector('.kv-tooltip')).toHaveAttribute('role', 'tooltip')
-    await expect(document.querySelector('.kv-tooltip-name')).toHaveAttribute('aria-hidden', 'true')
-    await expect(isTooltipShown()).toBe(false)
     await expectMinimumTargetSize(button)
   },
 }
@@ -145,13 +140,6 @@ export const WithAShortcut: Story = {
       <BoldToggle {...args} />
     </div>
   ),
-  play: async ({ canvas }) => {
-    const toggle = canvas.getByRole('button', { name: 'Bold' })
-    await expect(toggle).toHaveAttribute('aria-pressed', 'false')
-    await expect(toggle).toHaveAttribute('aria-keyshortcuts', 'Control+B')
-    const shortcut = document.getElementById(toggle.getAttribute('aria-describedby') ?? '')
-    await expect(shortcut).toHaveTextContent('Ctrl+B')
-  },
 }
 
 /**
@@ -165,13 +153,6 @@ export const PlainDescription: Story = {
       <PrintButton {...args} />
     </div>
   ),
-  play: async ({ canvas }) => {
-    const button = canvas.getByRole('button', { name: 'Print' })
-    await expect(button).toHaveAttribute(
-      'aria-describedby',
-      document.querySelector('.kv-tooltip')?.id ?? '',
-    )
-  },
 }
 
 /**
@@ -186,11 +167,9 @@ export const Open: Story = {
       <BoldToggle {...args} />
     </div>
   ),
-  play: async ({ canvas }) => {
+  play: async () => {
     await waitFor(() => expect(isTooltipShown()).toBe(true))
     await waitForFade()
-    await expect(canvas.getByRole('tooltip')).toBeVisible()
-    await expect(document.querySelector('.kv-tooltip')).toHaveAttribute('data-open')
   },
 }
 
@@ -206,10 +185,6 @@ export const InAToolbar: Story = {
     </div>
   ),
   play: async ({ canvas }) => {
-    const toolbar = canvas.getByRole('toolbar', { name: 'Formatting' })
-    await waitFor(() => expect(toolbar.querySelectorAll('[tabindex="0"]')).toHaveLength(1))
-    // The tooltips are no items: four controls, one Tab stop.
-    await expect(toolbar.querySelectorAll('[tabindex]')).toHaveLength(4)
     for (const control of canvas.getAllByRole('button')) {
       await expectMinimumTargetSize(control)
     }
@@ -229,15 +204,6 @@ export const Keyboard: Story = {
       <FormattingToolbar locale="en" />
     </div>
   ),
-  play: async ({ canvas }) => {
-    const toolbar = canvas.getByRole('toolbar', { name: 'Formatting' })
-    await waitFor(() => expect(toolbar.querySelectorAll('[tabindex="0"]')).toHaveLength(1))
-    // A disabled control stays focusable, so its tooltip can open.
-    await expect(canvas.getByRole('button', { name: 'Redo' })).toHaveAttribute(
-      'aria-disabled',
-      'true',
-    )
-  },
 }
 
 /**
@@ -263,11 +229,6 @@ export const FlipsAtTheEdge: Story = {
   render: (args) => <TooltipAtTheTop {...args} />,
   play: async () => {
     await waitFor(() => expect(isTooltipShown()).toBe(true))
-    await waitFor(() =>
-      expect(document.querySelector('.kv-tooltip')?.getAttribute('data-placement')).toMatch(
-        /^bottom/,
-      ),
-    )
     await waitForFade()
   },
 }

@@ -1,4 +1,3 @@
-import { expectNoA11yViolations } from '@kvirn/testing'
 import { createRef, useEffect, useState } from 'react'
 import type { ReactNode } from 'react'
 import { renderToString } from 'react-dom/server'
@@ -67,7 +66,7 @@ const triggerElement = () => trigger().element()
 
 describe('rendering', () => {
   test('a closed popover: the trigger is wired to a hidden popup', async () => {
-    const { container } = await render(<Example />)
+    await render(<Example />)
     const button = triggerElement()
     const popup = popupElement()
     expect(button.getAttribute('type')).toBe('button')
@@ -81,19 +80,17 @@ describe('rendering', () => {
     expect(popup?.hasAttribute('data-open')).toBe(false)
     expect(popup?.getAttribute('data-placement')).toBe('bottom-start')
     expect(isShown()).toBe(false)
-    await expectNoA11yViolations(container)
     expect(consoleWarn).not.toHaveBeenCalled()
   })
 
-  test('an open popover: expanded, shown, data-open, no axe violations', async () => {
-    const { container } = await render(<Example />)
+  test('an open popover: expanded, shown, data-open', async () => {
+    await render(<Example />)
     await userEvent.click(trigger())
     await expect.poll(isShown).toBe(true)
     expect(triggerElement().getAttribute('aria-expanded')).toBe('true')
     expect(triggerElement().hasAttribute('data-open')).toBe(true)
     expect(popupElement()?.hasAttribute('data-open')).toBe(true)
     await expect.element(page.getByRole('dialog', { name: 'Help about the service' })).toBeVisible()
-    await expectNoA11yViolations(container)
     expect(consoleWarn).not.toHaveBeenCalled()
   })
 

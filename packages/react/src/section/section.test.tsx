@@ -1,11 +1,9 @@
-import { expectNoA11yViolations } from '@kvirn/testing'
 import { createRef, useId } from 'react'
 import { afterEach, beforeEach, describe, expect, expectTypeOf, test, vi } from 'vite-plus/test'
 import type { MockInstance } from 'vite-plus/test'
 import { page, userEvent } from 'vite-plus/test/browser'
 import { renderToString } from 'react-dom/server'
 import { render } from 'vitest-browser-react'
-import { Card } from '../card/card.tsx'
 import { resetDevWarnings } from '../dev/dev-warning.ts'
 import { Link } from '../link/link.tsx'
 import { Section, SectionRoot } from './section.tsx'
@@ -146,24 +144,6 @@ describe('rendering', () => {
     expect(Section.Root).toBe(SectionRoot)
     expect(Section).toBe(SectionRoot)
   })
-
-  test('has no axe violations as a sidebar and as a band with a card', async () => {
-    const { container } = await render(
-      <main>
-        <h1>Building permit</h1>
-        <ContactSection />
-        <Section>
-          <h2>News</h2>
-          <ul>
-            <Card.Root as="li">New opening hours</Card.Root>
-            <Card.Root as="li">Winter road maintenance</Card.Root>
-          </ul>
-        </Section>
-      </main>,
-    )
-    await expect.element(page.getByRole('heading', { name: 'News', level: 2 })).toBeVisible()
-    await expectNoA11yViolations(container)
-  })
 })
 
 describe('refs and style', () => {
@@ -216,7 +196,7 @@ describe('refs and style', () => {
 
 describe('as', () => {
   test('<aside aria-labelledby> makes the section a named complementary landmark', async () => {
-    const { container } = await render(
+    await render(
       <main>
         <h1>Building permit</h1>
         <ContactSection />
@@ -224,7 +204,6 @@ describe('as', () => {
     )
     const section = page.getByRole('complementary', { name: 'Contact us' })
     await expect.element(section).toBeVisible()
-    await expectNoA11yViolations(container)
   })
 
   test('<section aria-labelledby> makes the section a named region', async () => {
@@ -236,13 +215,12 @@ describe('as', () => {
         </Section>
       )
     }
-    const { container } = await render(
+    await render(
       <main>
         <NewsBand />
       </main>,
     )
     await expect.element(page.getByRole('region', { name: 'News' })).toBeVisible()
-    await expectNoA11yViolations(container)
   })
 
   test('<nav aria-labelledby> makes the section a named navigation landmark', async () => {
@@ -255,24 +233,22 @@ describe('as', () => {
         </Section>
       )
     }
-    const { container } = await render(
+    await render(
       <main>
         <CaseNavigation />
       </main>,
     )
     await expect.element(page.getByRole('navigation', { name: 'Cases' })).toBeVisible()
-    await expectNoA11yViolations(container)
   })
 
   test('<li> sections make a list with one item per section', async () => {
-    const { container } = await render(
+    await render(
       <ul>
         <Section as="li">New opening hours</Section>
         <Section as="li">Winter road maintenance</Section>
       </ul>,
     )
     expect(page.getByRole('listitem').elements()).toHaveLength(2)
-    await expectNoA11yViolations(container)
   })
 
   test('renders footer, header and article for their own landmarks and roles', async () => {
@@ -310,13 +286,12 @@ describe('useSection', () => {
   }
 
   test('gives the class for your own element', async () => {
-    const { container } = await render(
+    await render(
       <main>
         <HookSection />
       </main>,
     )
     await expect.element(page.getByRole('navigation', { name: 'Cases' })).toHaveClass('kv-section')
-    await expectNoA11yViolations(container)
   })
 
   test('returns only the class, the same props the component renders', () => {

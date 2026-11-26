@@ -1,7 +1,6 @@
 import type { KvirnMessages } from '@kvirn/i18n'
 import { en } from '@kvirn/i18n/en'
 import { sv } from '@kvirn/i18n/sv'
-import { expectNoA11yViolations } from '@kvirn/testing'
 import { createRef, useState } from 'react'
 import { renderToString } from 'react-dom/server'
 import { afterEach, beforeEach, describe, expect, expectTypeOf, test, vi } from 'vite-plus/test'
@@ -148,7 +147,7 @@ describe('keyboard', () => {
 
 describe('rendering', () => {
   test('renders a native <textarea> with 5 rows, outside a Field', async () => {
-    const { container } = await render(<Textarea aria-label="Description" />)
+    await render(<Textarea aria-label="Description" />)
     const box = page.getByRole('textbox', { name: 'Description' })
     expect(box.element().tagName).toBe('TEXTAREA')
     await expect.element(box).toHaveAttribute('rows', '5')
@@ -157,7 +156,6 @@ describe('rendering', () => {
     await expect.element(box).not.toHaveAttribute('aria-invalid')
     await expect.element(box).not.toHaveAttribute('aria-required')
     await expect.element(box).not.toHaveAttribute('maxlength')
-    await expectNoA11yViolations(container)
     expect(consoleWarn).not.toHaveBeenCalled()
   })
 
@@ -218,7 +216,6 @@ describe('in a Field', () => {
     const id = box.element().id
     expect(id).not.toBe('')
     expect(container.querySelector('label')?.getAttribute('for')).toBe(id)
-    await expectNoA11yViolations(container)
     expect(consoleWarn).not.toHaveBeenCalled()
   })
 
@@ -249,7 +246,7 @@ describe('in a Field', () => {
   })
 
   test('the description lists the description, the help text and the error, in DOM order', async () => {
-    const { container } = await render(
+    await render(
       <Field.Root invalid>
         <Field.Label>Description</Field.Label>
         <Field.Prose>Write what has happened.</Field.Prose>
@@ -263,7 +260,6 @@ describe('in a Field', () => {
       .toHaveAccessibleDescription(
         'Write what has happened. Swedish or English. Error: Describe the case',
       )
-    await expectNoA11yViolations(container)
   })
 
   test('keeps your own aria-describedby ids, after the Field’s', async () => {
@@ -631,7 +627,7 @@ describe('characterCount', () => {
   })
 
   test('directly in a Fieldset, the count describes the box and not the fieldset', async () => {
-    const { container } = await render(
+    await render(
       <Fieldset.Root>
         <Fieldset.Legend>Your situation</Fieldset.Legend>
         <Textarea aria-label="Description" characterCount maxLength={100} />
@@ -643,7 +639,6 @@ describe('characterCount', () => {
     await expect
       .element(page.getByRole('group', { name: 'Your situation' }))
       .not.toHaveAccessibleDescription('You can enter up to 100 characters.')
-    await expectNoA11yViolations(container)
   })
 
   test('an uncontrolled box counts the value the browser restored: on mount and on pageshow', async () => {
@@ -753,24 +748,6 @@ describe('characterCount', () => {
       .element(page.getByRole('textbox', { name: 'Description' }))
       .toHaveAttribute('maxlength', '10')
   })
-
-  test('has no axe violations under, near and over the limit, and invalid', async () => {
-    const { container } = await render(
-      <Field.Root required invalid>
-        <Field.Label>Describe your situation</Field.Label>
-        <Field.Prose>Tell us what has happened.</Field.Prose>
-        <Textarea characterCount maxLength={20} />
-        <Field.HelpText>Swedish or English.</Field.HelpText>
-        <Field.ErrorMessage>Describe your situation</Field.ErrorMessage>
-      </Field.Root>,
-    )
-    const box = page.getByRole('textbox', { name: 'Describe your situation' })
-    await expect(expectNoA11yViolations(container)).resolves.toBeUndefined()
-    await userEvent.fill(box, 'a'.repeat(17))
-    await expect(expectNoA11yViolations(container)).resolves.toBeUndefined()
-    await userEvent.fill(box, 'a'.repeat(25))
-    await expect(expectNoA11yViolations(container)).resolves.toBeUndefined()
-  })
 })
 
 describe('useTextarea', () => {
@@ -781,7 +758,7 @@ describe('useTextarea', () => {
   }
 
   test('gives spreadable props for your own <textarea>, reading the nearest Field', async () => {
-    const { container } = await render(
+    await render(
       <Field.Root invalid required>
         <Field.Label>Description</Field.Label>
         <Field.ErrorMessage>Describe the case</Field.ErrorMessage>
@@ -793,7 +770,6 @@ describe('useTextarea', () => {
     await expect.element(box).toHaveAttribute('aria-required', 'true')
     await expect.element(box).toHaveAccessibleDescription('Error: Describe the case')
     await expect.element(box).toHaveClass('kv-textarea')
-    await expectNoA11yViolations(container)
   })
 
   test('rows default to 5 and can be set', async () => {

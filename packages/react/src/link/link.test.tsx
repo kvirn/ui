@@ -1,7 +1,6 @@
 import { en } from '@kvirn/i18n/en'
 import { fi } from '@kvirn/i18n/fi'
 import { sv } from '@kvirn/i18n/sv'
-import { expectNoA11yViolations } from '@kvirn/testing'
 import { createRef } from 'react'
 import type { ComponentPropsWithRef } from 'react'
 import { afterEach, beforeEach, describe, expect, expectTypeOf, test, vi } from 'vite-plus/test'
@@ -37,14 +36,13 @@ afterEach(() => {
 
 describe('rendering', () => {
   test('renders a native <a href> without a provider', async () => {
-    const { container } = await render(<Link.Root href="#apply">Apply</Link.Root>)
+    await render(<Link.Root href="#apply">Apply</Link.Root>)
     const link = page.getByRole('link', { name: 'Apply' })
     await expect.element(link).toHaveAttribute('href', '#apply')
     await expect.element(link).not.toHaveAttribute('aria-current')
     await expect.element(link).not.toHaveAttribute('data-current')
     await expect.element(link).not.toHaveAttribute('rel')
     await expect.element(link).not.toHaveAttribute('data-router-link')
-    await expectNoA11yViolations(container)
     expect(consoleWarn).not.toHaveBeenCalled()
   })
 
@@ -76,14 +74,13 @@ describe('rendering', () => {
   })
 
   test('passes hrefLang through', async () => {
-    const { container } = await render(
+    await render(
       <Link.Root href="/fi" hrefLang="fi">
         Suomeksi
       </Link.Root>,
     )
     const link = page.getByRole('link', { name: 'Suomeksi' })
     await expect.element(link).toHaveAttribute('hreflang', 'fi')
-    await expectNoA11yViolations(container)
   })
 
   test('Enter activates the link; Space does not', async () => {
@@ -108,7 +105,7 @@ describe('rendering', () => {
 
 describe('current', () => {
   test('current="page" sets aria-current and data-current', async () => {
-    const { container } = await render(
+    await render(
       <nav aria-label="Main menu">
         <Link.Root href="#start">Start</Link.Root>
         <Link.Root href="#apply" current="page">
@@ -122,7 +119,6 @@ describe('current', () => {
     await expect
       .element(page.getByRole('link', { name: 'Start' }))
       .not.toHaveAttribute('aria-current')
-    await expectNoA11yViolations(container)
   })
 
   test.each([
@@ -156,7 +152,7 @@ describe('current', () => {
 
 describe('new tab', () => {
   test('target="_blank" adds rel="noopener noreferrer"', async () => {
-    const { container } = await render(
+    await render(
       <Link.Root href="https://www.digg.se/" target="_blank">
         Digg <Link.NewTabNotice />
       </Link.Root>,
@@ -164,7 +160,6 @@ describe('new tab', () => {
     const link = page.getByRole('link', { name: 'Digg (opens in a new tab)' })
     await expect.element(link).toHaveAttribute('target', '_blank')
     await expect.element(link).toHaveAttribute('rel', 'noopener noreferrer')
-    await expectNoA11yViolations(container)
     expect(consoleWarn).not.toHaveBeenCalled()
   })
 
@@ -374,7 +369,7 @@ describe('router link', () => {
   }
 
   test('renders the provider’s registered link component and navigates through it', async () => {
-    const { container } = await render(
+    await render(
       <KvirnProvider linkComponent={mockRouterLinkComponent}>
         <MockRouterProvider initialPathname="/start">
           <Link.Root href="/apply">Apply</Link.Root>
@@ -387,7 +382,6 @@ describe('router link', () => {
     await expect.element(link).toHaveAttribute('href', '/apply')
     await userEvent.click(link)
     await expect.element(page.getByText('Current page: /apply')).toBeVisible()
-    await expectNoA11yViolations(container)
     expect(consoleWarn).not.toHaveBeenCalled()
   })
 
@@ -522,7 +516,7 @@ describe('useLink', () => {
   }
 
   test('gives spreadable linkProps and the resolved notice for your own <a>', async () => {
-    const { container } = await render(
+    await render(
       <KvirnProvider locale="en" messages={en}>
         <HookLink href="https://www.digg.se/" target="_blank" current="page" label="Digg" />
       </KvirnProvider>,
@@ -531,7 +525,6 @@ describe('useLink', () => {
     await expect.element(link).toHaveAttribute('rel', 'noopener noreferrer')
     await expect.element(link).toHaveAttribute('target', '_blank')
     await expect.element(link).toHaveAttribute('aria-current', 'page')
-    await expectNoA11yViolations(container)
   })
 
   test('takes instance messages', async () => {
@@ -549,7 +542,7 @@ describe('useLink', () => {
 
 describe('Link.Icon', () => {
   test('is a decorative span: aria-hidden, class kv-link-icon, and not part of the link’s name', async () => {
-    const { container } = await render(
+    await render(
       <Link.Root href="https://www.digg.se/" target="_blank" className="kv-link--service">
         <Link.Icon data-testid="icon">
           <svg viewBox="0 0 24 24" focusable="false">
@@ -568,7 +561,6 @@ describe('Link.Icon', () => {
       .element(page.getByRole('link', { name: 'Apply for a building permit (opens in a new tab)' }))
       .toBeVisible()
     await expect.element(page.getByRole('link')).toHaveClass('kv-link', 'kv-link--service')
-    await expectNoA11yViolations(container)
     expect(consoleWarn).not.toHaveBeenCalled()
   })
 

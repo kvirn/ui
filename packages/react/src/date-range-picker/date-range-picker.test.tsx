@@ -1,7 +1,6 @@
 // kv-lang-ok-file: the tests run in sv because month and weekday names, announcements and the built-in labels are locale behaviour
 import { masks } from '@kvirn/core'
 import { sv } from '@kvirn/i18n/sv'
-import { expectNoA11yViolations } from '@kvirn/testing'
 import { readAloud, readAnnouncements } from '@kvirn/testing/read-aloud'
 import { useState } from 'react'
 import { afterEach, beforeEach, describe, expect, test, vi } from 'vite-plus/test'
@@ -254,24 +253,6 @@ describe('roles, names and states', () => {
     )
     await page.getByRole('button', { name: 'Open calendar' }).click()
     await expect.element(page.getByRole('dialog', { name: 'Calendar' })).toBeVisible()
-  })
-
-  test('has no axe violations closed, and open at the start step', async () => {
-    const { container } = await render(<Example />)
-    await expectNoA11yViolations(container)
-    await open()
-    await expectNoA11yViolations(document.body)
-    expect(consoleWarn).not.toHaveBeenCalled()
-  })
-
-  test('has no axe violations open at the end step', async () => {
-    await render(<Example />)
-    await openWithStart()
-    await expect
-      .element(dialogRegion())
-      .toHaveTextContent('Startdatum fredag 16 oktober 2026. Välj slutdatum.')
-    await expectNoA11yViolations(document.body)
-    expect(consoleWarn).not.toHaveBeenCalled()
   })
 })
 

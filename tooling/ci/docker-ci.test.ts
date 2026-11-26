@@ -8,6 +8,8 @@ import { ciSteps, containerCommands, containerSteps, hostSteps, setupCommands } 
 const root = new URL('../../', import.meta.url)
 const read = (path: string) => readFileSync(new URL(path, root), 'utf8')
 
+const scripts = () => JSON.parse(read('package.json')).scripts as Record<string, string>
+
 function gatesRunCommands(): string[] {
   const lines = read('.github/workflows/ci.yml').split('\n')
   const start = lines.findIndex((line) => /^ {2}gates:/.test(line))
@@ -20,20 +22,22 @@ function gatesRunCommands(): string[] {
   return commands
 }
 
-describe('row 1: the container runs the ci.yml gates steps in order', () => {
-  it('lists the gates run commands, setup first, in the workflow order', () => {
-    expect(gatesRunCommands()).toEqual([...setupCommands, ...ciSteps.map((step) => step.command)])
+describe('row 1: the container runs the ci script steps in order', () => {
+  it('the workflow gates job installs, then runs the ci script', () => {
+    expect(gatesRunCommands()).toEqual([...setupCommands, 'pnpm run ci'])
   })
 
-  it('marks only the formatting check advisory, as the workflow does', () => {
-    expect(ciSteps.filter((step) => step.advisory).map((step) => step.command)).toEqual([
-      'vp fmt --check',
-    ])
+  it('lists the ci script commands in the script order', () => {
+    expect(ciSteps.map((step) => step.command).join(' && ')).toBe(scripts().ci)
+  })
+
+  it('marks no step advisory: format fails the ci script', () => {
+    expect(ciSteps.filter((step) => step.advisory)).toEqual([])
   })
 
   it('--step selects one step and rejects an unknown name', () => {
     expect(selectSteps(ciSteps, 'i18n:check').map((step) => step.command)).toEqual([
-      'vp run i18n:check',
+      'pnpm run i18n:check',
     ])
     expect(() => selectSteps(ciSteps, 'nope')).toThrow(/Unknown step/)
   })
@@ -131,22 +135,20 @@ describe('row 4: pinned image, Playwright equals the catalog', () => {
   })
 })
 
-describe('row 1: container and host steps together are the ci.yml test and sweep', () => {
+describe('row 1: container and host steps together are the ci script test and sweep', () => {
   const stepNamed = (name: string) => hostSteps.find((step) => step.name === name)!
 
   it('container test plus the host Storybook projects are the package.json test script, in order', () => {
-    const script = JSON.parse(read('package.json')).scripts.test as string
     const commands = [containerCommands.test!, ...stepNamed('storybook').commands]
-    expect(commands.join(' && ')).toBe(script)
-    expect(ciSteps.find((step) => step.name === 'test')!.command).toBe('vp run test')
+    expect(commands.join(' && ')).toBe(scripts().test)
+    expect(ciSteps.find((step) => step.name === 'test')!.command).toBe('pnpm run test')
   })
 
-  it('the host sweep is the ci.yml sweep command unchanged', () => {
-    const sweep = ciSteps.find((step) => step.name === 'sweep')!.command
-    expect(stepNamed('sweep').commands.join(' && ')).toBe(sweep)
+  it('the host sweep is the sweep script unchanged', () => {
+    expect(stepNamed('sweep').commands.join(' && ')).toBe(scripts().sweep)
   })
 
-  it('the container runs every ci.yml step except the host sweep', () => {
+  it('the container runs every ci script step except the host sweep', () => {
     expect(containerSteps.map((step) => step.name)).toEqual(
       ciSteps.map((step) => step.name).filter((name) => name !== 'sweep'),
     )

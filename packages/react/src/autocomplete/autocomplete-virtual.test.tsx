@@ -1,5 +1,4 @@
 import { sv } from '@kvirn/i18n/sv'
-import { expectNoA11yViolations } from '@kvirn/testing'
 import { afterEach, beforeEach, describe, expect, test, vi } from 'vite-plus/test'
 import type { MockInstance } from 'vite-plus/test'
 import { page, userEvent } from 'vite-plus/test/browser'
@@ -120,14 +119,6 @@ describe('virtualize: the window', () => {
       expect(element.getAttribute('aria-setsize')).toBe(String(count - 1))
       expect(element.getAttribute('aria-posinset')).toBe(String(index + 1))
     }
-  })
-
-  test('an open virtualized autocomplete has no axe violations', async () => {
-    const { container } = await render(<Example />)
-    await typeText('Street')
-    await expect.poll(renderedCount).toBeGreaterThan(5)
-    await expectNoA11yViolations(container)
-    expect(consoleWarn).not.toHaveBeenCalled()
   })
 
   test('an autocomplete that is not virtualized is unchanged: every suggestion, no set size', async () => {

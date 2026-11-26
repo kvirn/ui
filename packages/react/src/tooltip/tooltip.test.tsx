@@ -1,4 +1,3 @@
-import { expectNoA11yViolations } from '@kvirn/testing'
 import { createRef, useState } from 'react'
 import type { ComponentPropsWithRef } from 'react'
 import { renderToString } from 'react-dom/server'
@@ -86,7 +85,7 @@ function describedText(element: HTMLElement): string {
 
 describe('rendering', () => {
   test('closed: the popup is in the DOM, hidden, a role="tooltip" in the top layer, and the trigger is described by its shortcut', async () => {
-    const { container } = await render(<Example />)
+    await render(<Example />)
     const popup = popupElement()
     expect(popup?.tagName).toBe('DIV')
     expect(popup?.getAttribute('role')).toBe('tooltip')
@@ -104,7 +103,6 @@ describe('rendering', () => {
     // The trigger keeps its own name and no tooltip state of its own.
     expect(triggerElement().getAttribute('aria-label')).toBe('Bold')
     expect(triggerElement().hasAttribute('data-open')).toBe(false)
-    await expectNoA11yViolations(container)
     expect(consoleWarn).not.toHaveBeenCalled()
   })
 
@@ -121,7 +119,7 @@ describe('rendering', () => {
   })
 
   test('plain text in the popup is the description as a whole', async () => {
-    const { container } = await render(
+    await render(
       <Tooltip.Root defaultOpen>
         <Tooltip.Trigger aria-label="Print" style={buttonStyle}>
           P
@@ -134,11 +132,10 @@ describe('rendering', () => {
     expect(button.element().getAttribute('aria-describedby')).toBe(popupElement()?.id)
     await expect.element(button).toHaveAccessibleDescription('Opens the print view')
     expect(popupElement()?.hasAttribute('aria-hidden')).toBe(false)
-    await expectNoA11yViolations(container)
   })
 
   test('a popup with only the name adds nothing for assistive technology: no description, and the whole popup is aria-hidden with its role kept', async () => {
-    const { container } = await render(
+    await render(
       <Tooltip.Root defaultOpen>
         <Tooltip.Trigger aria-label="Search" style={buttonStyle}>
           S
@@ -158,16 +155,14 @@ describe('rendering', () => {
     expect(popupElement()?.getAttribute('role')).toBe('tooltip')
     // It stays in the DOM while closed too.
     expect(popupElement()).not.toBeNull()
-    await expectNoA11yViolations(container)
   })
 
-  test('an open tooltip has data-open and data-placement, and no axe violations', async () => {
-    const { container } = await render(<Example defaultOpen />)
+  test('an open tooltip has data-open and data-placement', async () => {
+    await render(<Example defaultOpen />)
     await expect.poll(isShown).toBe(true)
     expect(popupElement()?.hasAttribute('data-open')).toBe(true)
     expect(popupElement()?.getAttribute('data-placement')).toMatch(/^(top|bottom)/)
     await expect.element(page.getByRole('tooltip')).toBeVisible()
-    await expectNoA11yViolations(container)
     expect(consoleWarn).not.toHaveBeenCalled()
   })
 
@@ -253,7 +248,6 @@ describe('composition', () => {
     expect(describedText(element as HTMLElement)).toBe('Select the text first. Ctrl+B')
     // Still one Tab stop with the toolbar's roving tabindex.
     expect(container.querySelectorAll('[tabindex="0"]')).toHaveLength(1)
-    await expectNoA11yViolations(container)
     expect(consoleWarn).not.toHaveBeenCalled()
   })
 })

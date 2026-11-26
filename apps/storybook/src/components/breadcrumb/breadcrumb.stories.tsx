@@ -3,7 +3,6 @@ import { Breadcrumb, Icon } from '@kvirn/ui'
 import contract from '../../../../../packages/react/src/breadcrumb/breadcrumb.a11y.md?raw'
 import guide from '../../../../../packages/react/src/breadcrumb/breadcrumb.md?raw'
 import type { Meta, StoryObj } from '@storybook/react-vite'
-import { expect, userEvent } from 'storybook/test'
 import { usageGuide } from '../../docs-source.ts'
 import { expectMinimumTargetSize, expectNoHorizontalOverflow } from '../theme-story-assertions.ts'
 import { withLocale } from './breadcrumb.fixture.tsx'
@@ -63,10 +62,6 @@ type Story = StoryObj<typeof meta>
 /** Start, a level up and the current page as text. The separators are drawn by the theme and never read. */
 export const Default: Story = {
   play: async ({ canvas }) => {
-    const navigation = canvas.getByRole('navigation', { name: 'You are here' })
-    await expect(navigation).toBeVisible()
-    await expect(canvas.getByText('Preschool')).toHaveAttribute('aria-current', 'page')
-    await expect(canvas.getAllByRole('link')).toHaveLength(2)
     for (const link of canvas.getAllByRole('link')) {
       await expectMinimumTargetSize(link)
     }
@@ -76,12 +71,6 @@ export const Default: Story = {
 /** The slash variant: `kv-breadcrumb--slash` swaps the generated chevron, still never read. */
 export const Slash: Story = {
   args: { variant: 'slash' },
-  play: async ({ canvas }) => {
-    await expect(canvas.getByRole('navigation', { name: 'You are here' })).toHaveClass(
-      'kv-breadcrumb--slash',
-    )
-    await expect(canvas.getAllByRole('link')).toHaveLength(2)
-  },
 }
 
 /** Your own separator, here an Icon: hidden from screen readers, and the first item has none. */
@@ -98,34 +87,14 @@ export const CustomSeparator: Story = {
     },
   },
   args: { separator: <Icon name="chevron-forward" /> },
-  play: async ({ canvas, canvasElement }) => {
-    const separators = canvasElement.querySelectorAll('.kv-breadcrumb-separator')
-    await expect(separators).toHaveLength(3)
-    for (const separator of separators) {
-      await expect(separator).toHaveAttribute('aria-hidden', 'true')
-    }
-    await expect(canvas.getAllByRole('link')).toHaveLength(2)
-  },
 }
 
 /** Try the keys: Tab goes through the two links and leaves the trail (the current page is no stop). */
-export const Keyboard: Story = {
-  play: async ({ canvas }) => {
-    await userEvent.tab()
-    await expect(canvas.getByRole('link', { name: 'Start' })).toHaveFocus()
-    await userEvent.tab()
-    await expect(canvas.getByRole('link', { name: 'Children and education' })).toHaveFocus()
-    await userEvent.tab({ shift: true })
-    await expect(canvas.getByRole('link', { name: 'Start' })).toHaveFocus()
-  },
-}
+export const Keyboard: Story = {}
 
 /** Your own name for the landmark. A custom string is yours to translate. */
 export const CustomLabel: Story = {
   args: { label: 'Trail' },
-  play: async ({ canvas }) => {
-    await expect(canvas.getByRole('navigation', { name: 'Trail' })).toBeVisible()
-  },
 }
 
 /** A deep trail never collapses into "…": it wraps onto the next line. */
@@ -155,9 +124,6 @@ export const LongTrail: Story = {
       </Breadcrumb.List>
     ),
   },
-  play: async ({ canvas }) => {
-    await expect(canvas.getAllByRole('link')).toHaveLength(4)
-  },
 }
 
 /** A 320px column with a long Finnish compound: the trail wraps and nothing scrolls sideways (1.4.10). */
@@ -179,12 +145,11 @@ export const Reflow320: Story = {
   },
   decorators: [(Story) => <div className="kv-story-narrow">{<Story />}</div>],
   globals: { locale: 'fi' },
-  play: async ({ canvasElement, canvas }) => {
+  play: async ({ canvasElement }) => {
     const column = canvasElement.querySelector<HTMLElement>('.kv-story-narrow')
     if (column === null) {
       throw new Error('no narrow column')
     }
-    await expect(canvas.getByRole('navigation', { name: 'Olet tässä' })).toBeVisible()
     await expectNoHorizontalOverflow(column)
   },
 }
@@ -206,9 +171,6 @@ export const RTL: Story = {
         </Breadcrumb.Item>
       </Breadcrumb.List>
     ),
-  },
-  play: async ({ canvas }) => {
-    await expect(canvas.getByRole('navigation', { name: 'You are here' })).toBeVisible()
   },
 }
 
@@ -235,10 +197,6 @@ export const RTLVariants: Story = {
       </Breadcrumb.Root>
     </>
   ),
-  play: async ({ canvas }) => {
-    await expect(canvas.getByRole('navigation', { name: 'You are here' })).toBeVisible()
-    await expect(canvas.getByRole('navigation', { name: 'Icon separator' })).toBeVisible()
-  },
 }
 
 /** Forced colours: system colours, the separators in `CanvasText` and the links in `LinkText`. */

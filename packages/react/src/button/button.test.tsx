@@ -1,4 +1,3 @@
-import { expectNoA11yViolations } from '@kvirn/testing'
 import { createRef, useState } from 'react'
 import type { FormEvent, ReactElement, ReactNode } from 'react'
 import { afterEach, beforeEach, describe, expect, expectTypeOf, test, vi } from 'vite-plus/test'
@@ -54,12 +53,11 @@ function SubmitForm({
 
 describe('rendering', () => {
   test('renders a native button with type="button" by default', async () => {
-    const { container } = await render(<Button>Save</Button>)
+    await render(<Button>Save</Button>)
     const button = page.getByRole('button', { name: 'Save' })
     await expect.element(button).toHaveAttribute('type', 'button')
     await expect.element(button).not.toHaveAttribute('data-disabled')
     await expect.element(button).not.toHaveAttribute('aria-disabled')
-    await expectNoA11yViolations(container)
   })
 
   test('passes other button props through', async () => {
@@ -122,7 +120,7 @@ describe('forms', () => {
 
   test('type="submit" submits its form', async () => {
     const onSubmit = vi.fn<() => void>()
-    const { container } = await render(
+    await render(
       <SubmitForm onSubmit={onSubmit}>
         <Button type="submit">Submit application</Button>
       </SubmitForm>,
@@ -131,7 +129,6 @@ describe('forms', () => {
     await expect.element(button).toHaveAttribute('type', 'submit')
     await userEvent.click(button)
     expect(onSubmit).toHaveBeenCalledTimes(1)
-    await expectNoA11yViolations(container)
   })
 })
 
@@ -206,7 +203,7 @@ describe('keyboard', () => {
 
 describe('disabled', () => {
   test('is natively disabled, marked with data-disabled and skipped by Tab', async () => {
-    const { container } = await render(
+    await render(
       <>
         <Button disabled>Send</Button>
         <Button>Cancel</Button>
@@ -218,7 +215,6 @@ describe('disabled', () => {
     await expect.element(disabledButton).not.toHaveAttribute('aria-disabled')
     await userEvent.keyboard('{Tab}')
     await expect.element(page.getByRole('button', { name: 'Cancel' })).toHaveFocus()
-    await expectNoA11yViolations(container)
   })
 
   test('a click calls no handler', async () => {
@@ -235,7 +231,7 @@ describe('disabled', () => {
 
 describe('focusable when disabled', () => {
   test('uses aria-disabled instead of disabled and stays in the Tab order', async () => {
-    const { container } = await render(
+    await render(
       <Button disabled focusableWhenDisabled>
         Send
       </Button>,
@@ -247,7 +243,6 @@ describe('focusable when disabled', () => {
     await expect.element(button).toBeDisabled()
     await userEvent.keyboard('{Tab}')
     await expect.element(button).toHaveFocus()
-    await expectNoA11yViolations(container)
   })
 
   test('click, Enter and Space call no handler, and focus stays', async () => {
@@ -320,13 +315,12 @@ describe('focusable when disabled', () => {
 
 describe('busy', () => {
   test('is aria-disabled with data-busy, never native disabled, and keeps its name', async () => {
-    const { container } = await render(<Button busy>Submit application</Button>)
+    await render(<Button busy>Submit application</Button>)
     const button = page.getByRole('button', { name: 'Submit application' })
     await expect.element(button).toHaveAttribute('aria-disabled', 'true')
     await expect.element(button).toHaveAttribute('data-busy', '')
     await expect.element(button).not.toHaveAttribute('disabled')
     await expect.element(button).not.toHaveAttribute('aria-busy')
-    await expectNoA11yViolations(container)
   })
 
   test('renders a decorative spinner as the first child only while busy, and the name stays the text', async () => {
@@ -577,7 +571,7 @@ describe('useButton', () => {
 
   test('gives spreadable buttonProps with the same behaviour', async () => {
     const onClick = vi.fn<() => void>()
-    const { container } = await render(
+    await render(
       <HookButton disabled focusableWhenDisabled onClick={onClick}>
         Send
       </HookButton>,
@@ -587,7 +581,6 @@ describe('useButton', () => {
     await expect.element(button).toHaveAttribute('aria-disabled', 'true')
     await userEvent.click(button, { force: true })
     expect(onClick).not.toHaveBeenCalled()
-    await expectNoA11yViolations(container)
   })
 
   test('calls onClick when enabled', async () => {

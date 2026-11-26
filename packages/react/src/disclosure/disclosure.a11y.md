@@ -93,21 +93,21 @@ Disclosure has no strings of its own and announces nothing: the change of `aria-
 
 ## AT test record
 
-| AT + browser + OS                                                          | Agent check | Human check | Result  | Notes                                                                                                                       |
-| -------------------------------------------------------------------------- | ----------- | ----------- | ------- | --------------------------------------------------------------------------------------------------------------------------- |
-| **Automated (re-runnable tests)**                                          |             |             |         |                                                                                                                             |
-| axe, WCAG 2.2 A and AA, every story, 4 themes                              | pass        | n/a         | pass    | disclosure.stories.tsx, every story, 4 themes                                                                               |
-| Markup and ARIA (roles, names, ids, states)                                | pass        | n/a         | pass    | `disclosure.test.tsx` (axe and role, name and state): `an open disclosure: expanded, visible, data-open, no axe violations` |
-| Keyboard contract rows (Vitest browser)                                    | pass        | n/a         | pass    | 6 rows, each names a test in `disclosure.test.tsx`                                                                          |
-| Focus order and management                                                 | pass        | n/a         | pass    | `disclosure.test.tsx`: `Tab focuses the trigger, and is one stop`                                                           |
-| Display modes (forced colours, 320px reflow, text spacing, reduced motion) | pass        | n/a         | pass    | the four sweep projects (`storybook-forced-colors`, `-reduced-motion`, `-reflow`, `-text-spacing`), run in CI               |
-| **Core (required for beta)**                                               |             |             |         |                                                                                                                             |
-| NVDA + Chrome + Windows                                                    | pending     | pending     | pending |                                                                                                                             |
-| VoiceOver + Safari + iOS                                                   | pending     | pending     | pending |                                                                                                                             |
-| **Release (before 1.0 and each minor)**                                    |             |             |         |                                                                                                                             |
-| JAWS + Chrome + Windows                                                    | pending     | pending     | pending |                                                                                                                             |
-| TalkBack + Chrome + Android                                                | pending     | pending     | pending |                                                                                                                             |
-| VoiceOver + Safari + macOS                                                 | pending     | pending     | pending |                                                                                                                             |
+| AT + browser + OS                                                          | Agent check | Human check | Result  | Notes                                                                                                         |
+| -------------------------------------------------------------------------- | ----------- | ----------- | ------- | ------------------------------------------------------------------------------------------------------------- |
+| **Automated (re-runnable tests)**                                          |             |             |         |                                                                                                               |
+| axe, WCAG 2.2 A and AA, every story, light theme                           | pass        | n/a         | pass    | disclosure.stories.tsx, every story, light theme                                                              |
+| Markup and ARIA (roles, names, ids, states)                                | pass        | n/a         | pass    | `disclosure.test.tsx` (role, name and state): `an open disclosure: expanded, visible, data-open`              |
+| Keyboard contract rows (Vitest browser)                                    | pass        | n/a         | pass    | 6 rows, each names a test in `disclosure.test.tsx`                                                            |
+| Focus order and management                                                 | pass        | n/a         | pass    | `disclosure.test.tsx`: `Tab focuses the trigger, and is one stop`                                             |
+| Display modes (forced colours, 320px reflow, text spacing, reduced motion) | pass        | n/a         | pass    | the four sweep projects (`storybook-forced-colors`, `-reduced-motion`, `-reflow`, `-text-spacing`), run in CI |
+| **Core (required for beta)**                                               |             |             |         |                                                                                                               |
+| NVDA + Chrome + Windows                                                    | pending     | pending     | pending |                                                                                                               |
+| VoiceOver + Safari + iOS                                                   | pending     | pending     | pending |                                                                                                               |
+| **Release (before 1.0 and each minor)**                                    |             |             |         |                                                                                                               |
+| JAWS + Chrome + Windows                                                    | pending     | pending     | pending |                                                                                                               |
+| TalkBack + Chrome + Android                                                | pending     | pending     | pending |                                                                                                               |
+| VoiceOver + Safari + macOS                                                 | pending     | pending     | pending |                                                                                                               |
 
 ### What to check
 

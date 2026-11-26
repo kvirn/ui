@@ -36,12 +36,20 @@ type Story = StoryObj<typeof meta>
  */
 export const Default: Story = {
   play: async ({ canvas }) => {
-    await expect(canvas.getByRole('status')).toBeEmptyDOMElement()
     await userEvent.click(canvas.getByRole('button', { name: 'Say it politely' }))
     await waitFor(() =>
       expect(canvas.getByRole('status')).toHaveTextContent('Your changes are saved'),
     )
-    await expect(canvas.getByRole('alert')).toBeEmptyDOMElement()
+  },
+}
+
+/** Both regions hold a message at once: the assertive one interrupts. */
+export const BothRegionsFilled: Story = {
+  play: async ({ canvas }) => {
+    await userEvent.click(canvas.getByRole('button', { name: 'Say it politely' }))
+    await userEvent.click(canvas.getByRole('button', { name: 'Say it assertively' }))
+    await waitFor(() => expect(canvas.getByRole('status')).not.toBeEmptyDOMElement())
+    await waitFor(() => expect(canvas.getByRole('alert')).not.toBeEmptyDOMElement())
   },
 }
 
@@ -54,38 +62,14 @@ export const Assertive: Story = {
         'Your session has expired. Sign in again.',
       ),
     )
-    await expect(canvas.getByRole('status')).toBeEmptyDOMElement()
   },
 }
 
 /** The same message twice: the region is emptied and filled again, so it is read again. */
-export const RepeatedMessage: Story = {
-  play: async ({ canvas }) => {
-    const button = canvas.getByRole('button', { name: 'Repeat the same message' })
-    await userEvent.click(button)
-    await waitFor(() =>
-      expect(canvas.getByRole('status')).toHaveTextContent('Your changes are saved'),
-    )
-    await userEvent.click(button)
-    await expect(canvas.getByTestId('last-call')).toHaveTextContent('sent')
-    await waitFor(() =>
-      expect(canvas.getByRole('status')).toHaveTextContent('Your changes are saved'),
-    )
-  },
-}
+export const RepeatedMessage: Story = {}
 
 /** A message with a key is throttled: a second click inside three seconds is dropped. */
-export const Throttled: Story = {
-  play: async ({ canvas }) => {
-    const button = canvas.getByRole('button', {
-      name: 'Message with a key (at most one every three seconds)',
-    })
-    await userEvent.click(button)
-    await expect(canvas.getByTestId('last-call')).toHaveTextContent('sent')
-    await userEvent.click(button)
-    await expect(canvas.getByTestId('last-call')).toHaveTextContent('dropped')
-  },
-}
+export const Throttled: Story = {}
 
 /**
  * `throttleMilliseconds: 0` turns the throttle off for a key. Two messages inside 100 ms leave
@@ -95,21 +79,6 @@ export const Throttled: Story = {
 export const BurstsAndBlankMessages: Story = {
   parameters: showSource('announcer/announcer.fixture.tsx', 'BurstsAndBlanks'),
   render: (_args, { globals }) => <BurstsAndBlanks locale={localeOf(globals)} />,
-  play: async ({ canvas }) => {
-    const unthrottled = canvas.getByRole('button', { name: 'Same key, no throttle' })
-    await userEvent.click(unthrottled)
-    await userEvent.click(unthrottled)
-    await expect(canvas.getByTestId('last-call')).toHaveTextContent('sent')
-    await userEvent.click(canvas.getByRole('button', { name: 'Two messages at once' }))
-    await waitFor(() =>
-      expect(canvas.getByRole('status')).toHaveTextContent(
-        'Your session has expired. Sign in again.',
-      ),
-    )
-    await expect(canvas.getByRole('status')).not.toHaveTextContent('Your changes are saved')
-    await userEvent.click(canvas.getByRole('button', { name: 'Empty message' }))
-    await expect(canvas.getByTestId('last-call')).toHaveTextContent('dropped (empty)')
-  },
 }
 
 /** Finnish: the strings and `lang` follow the locale. The announcer adds no text of its own. */

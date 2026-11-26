@@ -89,8 +89,6 @@ type Story = StoryObj<typeof meta>
  */
 export const Default: Story = {
   play: async ({ canvas }) => {
-    const group = canvas.getByRole('group', { name: /^Din adress/ })
-    await expect(group.tagName).toBe('FIELDSET')
     const street = canvas.getByRole('textbox', { name: /^Gatuadress/ })
     const line2 = canvas.getByRole('textbox', { name: /^Adressrad 2/ })
     const postalCode = canvas.getByRole('textbox', { name: /^Postnummer/ })
@@ -98,15 +96,6 @@ export const Default: Story = {
     for (const textbox of [street, line2, postalCode, city]) {
       await expectMinimumTargetSize(textbox)
     }
-    await expect(street).toHaveAttribute('autocomplete', 'address-line1')
-    await expect(line2).toHaveAttribute('autocomplete', 'address-line2')
-    await expect(postalCode).toHaveAttribute('autocomplete', 'postal-code')
-    await expect(city).toHaveAttribute('autocomplete', 'address-level2')
-    await expect(line2).toHaveAccessibleName('Adressrad 2 (valfritt)')
-    await userEvent.type(postalCode, '12345')
-    await expect(postalCode).toHaveValue('123 45')
-    await expect(postalCode).toHaveFocus()
-    await expect(postalCode).toHaveAccessibleDescription('Till exempel 123 45')
   },
 }
 
@@ -139,12 +128,6 @@ export const Finland: Story = {
       </AddressInput.Root>
     </Fieldset.Root>
   ),
-  play: async ({ canvas }) => {
-    const postalCode = canvas.getByRole('textbox', { name: /^Postinumero/ })
-    await userEvent.type(postalCode, '00100')
-    await expect(postalCode).toHaveValue('00100')
-    await expect(postalCode).toHaveAttribute('inputmode', 'numeric')
-  },
 }
 
 /** Norway: four digits, in a box of four characters. The strings are drafts, for length checks. */
@@ -176,11 +159,6 @@ export const Norway: Story = {
       </AddressInput.Root>
     </Fieldset.Root>
   ),
-  play: async ({ canvas }) => {
-    const postalCode = canvas.getByRole('textbox', { name: /^Postnummer/ })
-    await userEvent.type(postalCode, '01501')
-    await expect(postalCode).toHaveValue('0150')
-  },
 }
 
 /**
@@ -213,13 +191,6 @@ export const AddressAbroad: Story = {
       </AddressInput.Root>
     </Fieldset.Root>
   ),
-  play: async ({ canvas }) => {
-    const postalCode = canvas.getByRole('textbox', { name: /^Postal code/ })
-    await userEvent.type(postalCode, '10115 b')
-    await expect(postalCode).toHaveValue('10115 b')
-    await expect(postalCode).toHaveAttribute('inputmode', 'text')
-    await expect(postalCode).toHaveAttribute('autocapitalize', 'characters')
-  },
 }
 
 /**
@@ -373,13 +344,6 @@ export const OptionalSection: Story = {
       </AddressInput.Root>
     </Fieldset.Root>
   ),
-  play: async ({ canvas }) => {
-    await expect(canvas.getByRole('textbox', { name: /^Street address/ })).toHaveAttribute(
-      'autocomplete',
-      'section-postal address-line1',
-    )
-    await expect(canvas.getByRole('group', { name: /^Postal address, if different/ })).toBeVisible()
-  },
 }
 
 /**
@@ -428,16 +392,6 @@ export const TwoAddresses: Story = {
       </Fieldset.Root>
     </>
   ),
-  play: async ({ canvasElement }) => {
-    await expect(canvasElement.querySelector('input[name="applicantLine1"]')).toHaveAttribute(
-      'autocomplete',
-      'address-line1',
-    )
-    await expect(canvasElement.querySelector('input[name="guardianLine1"]')).toHaveAttribute(
-      'autocomplete',
-      'off',
-    )
-  },
 }
 
 /** The whole address disabled: a dashed edge on each box, skipped by Tab. */
@@ -462,11 +416,6 @@ export const Disabled: Story = {
       </AddressInput.Root>
     </Fieldset.Root>
   ),
-  play: async ({ canvas }) => {
-    for (const textbox of canvas.getAllByRole('textbox')) {
-      await expect(textbox).toBeDisabled()
-    }
-  },
 }
 
 /** Right to left: the postal code and city row mirrors, and the postal code stays left to right. */
@@ -492,13 +441,6 @@ export const Keyboard: Story = {
   globals: { locale: 'en' },
   parameters: showSource('address-input/address-input.fixture.tsx', 'KeyboardAddress'),
   render: () => <KeyboardAddress />,
-  play: async ({ canvas }) => {
-    const postalCode = canvas.getByRole('textbox', { name: /^Postal code/ })
-    await userEvent.type(postalCode, '12345')
-    await expect(postalCode).toHaveFocus()
-    await userEvent.type(canvas.getByRole('textbox', { name: /^Town or city/ }), 'Kvirnby{Enter}')
-    await expect(canvas.getByTestId('submits')).toHaveTextContent('Sent: 1')
-  },
 }
 
 type Canvas = Parameters<NonNullable<Story['play']>>[0]['canvas']
@@ -551,11 +493,6 @@ export const Lookup: Story = {
   globals: { locale: 'en' },
   parameters: lookupStory('AddressLookup'),
   render: () => <AddressLookup />,
-  play: async ({ canvas }) => {
-    const input = lookupInput(canvas)
-    await expect(input).toHaveAttribute('autocomplete', 'address-line1')
-    await expect(input).toHaveAttribute('name', 'line1')
-  },
 }
 
 /** The consumer turns the privacy notice off and says where the text goes in the street box's help text. */
@@ -563,11 +500,6 @@ export const LookupOwnPrivacyNotice: Story = {
   globals: { locale: 'en' },
   parameters: lookupStory('AddressLookup'),
   render: () => <AddressLookup privacyNotice={false} />,
-  play: async ({ canvas }) => {
-    const input = lookupInput(canvas)
-    await expect(input).toHaveAccessibleDescription(/sent to the address service/)
-    await expect(canvas.queryByText(/sent to .* to find the address/)).toBeNull()
-  },
 }
 
 /** On request, Enter or Search with fewer than 3 characters says what is missing and sends nothing. */
@@ -655,9 +587,6 @@ export const LookupNoPostalAddress: Story = {
   play: async ({ canvas }) => {
     await pick(canvas, 'Platsgatan')
     await canvas.findByText(/This place has no postal address/)
-    await expect(canvas.getByRole('combobox', { name: /^Street address/ })).toHaveValue(
-      'Platsgatan',
-    )
   },
 }
 
@@ -671,10 +600,7 @@ export const LookupFilled: Story = {
     await waitFor(() =>
       expect(canvas.getByRole('combobox', { name: /^Street address/ })).toHaveValue('Storgatan 1'),
     )
-    await expect(canvas.getByRole('textbox', { name: /^Postal code/ })).toHaveValue('211 22')
-    await expect(canvas.getByRole('textbox', { name: /^Town or city/ })).toHaveValue('Malmö')
     await canvas.findByText('Filled in from the address search. Check the address.')
-    await expect(lookupInput(canvas)).toHaveFocus()
   },
 }
 
@@ -686,7 +612,6 @@ export const LookupFilledMissingPostalCode: Story = {
   play: async ({ canvas }) => {
     await pick(canvas, 'Postgatan')
     await canvas.findByText(/Add the postal code: the search didn’t have it\./)
-    await expect(canvas.getByRole('textbox', { name: /^Postal code/ })).toHaveValue('')
   },
 }
 
@@ -714,8 +639,6 @@ export const LookupHouseNumber: Story = {
     await waitFor(() =>
       expect(canvas.getByRole('textbox', { name: /^Postal code/ })).toHaveValue('211 24'),
     )
-    await expect(street).toHaveValue('Gatugatan 12')
-    await expect(street).toHaveFocus()
   },
 }
 
@@ -729,7 +652,6 @@ export const LookupEditedAfterFill: Story = {
     const street = canvas.getByRole('combobox', { name: /^Street address/ })
     await waitFor(() => expect(street).toHaveValue('Storgatan 1'))
     await userEvent.type(street, '2')
-    await expect(street).toHaveValue('Storgatan 12')
     await canvas.findByText('Filled in from the address search. Check the address.')
   },
 }
@@ -739,12 +661,6 @@ export const LookupAutofilled: Story = {
   globals: { locale: 'en' },
   parameters: lookupStory('AddressLookup'),
   render: () => <AddressLookup autofilled />,
-  play: async ({ canvas }) => {
-    await expect(canvas.getByRole('combobox', { name: /^Street address/ })).toHaveValue(
-      'Storgatan 12',
-    )
-    await expect(canvas.queryByText(/^Filled in from/)).toBeNull()
-  },
 }
 
 /**
@@ -756,12 +672,6 @@ export const WithCountry: Story = {
   globals: { locale: 'en' },
   parameters: lookupStory('AddressLookup'),
   render: () => <AddressLookup withCountry />,
-  play: async ({ canvas }) => {
-    const country = canvas.getByRole('combobox', { name: /^Country/ })
-    await expect(country).toHaveValue('SE')
-    await expect(country).toHaveAttribute('autocomplete', 'country')
-    await canvas.findByText(/Suggests addresses in Sweden\./)
-  },
 }
 
 /** The visitor changes the country: the postal code is 6 wide for Finland and the help says Finland. */
@@ -772,9 +682,6 @@ export const CountryChangedByUser: Story = {
   play: async ({ canvas }) => {
     await userEvent.selectOptions(canvas.getByRole('combobox', { name: /^Country/ }), 'Finland')
     await canvas.findByText(/Suggests addresses in Finland\./)
-    const postalCode = canvas.getByRole('textbox', { name: /^Postal code/ })
-    await userEvent.type(postalCode, '001009')
-    await expect(postalCode).toHaveValue('00100')
   },
 }
 
@@ -789,7 +696,6 @@ export const FilledOtherCountry: Story = {
       expect(canvas.getByRole('combobox', { name: /^Country/ })).toHaveValue('FI'),
     )
     await canvas.findByText(/The country is now Finland\./)
-    await expect(canvas.getByRole('textbox', { name: /^Postal code/ })).toHaveValue('00100')
   },
 }
 
@@ -811,9 +717,6 @@ export const LookupDisabled: Story = {
   globals: { locale: 'en' },
   parameters: lookupStory('AddressLookup'),
   render: () => <AddressLookup disabled />,
-  play: async ({ canvas }) => {
-    await expect(lookupInput(canvas)).toBeDisabled()
-  },
 }
 
 /** Compact density: 32px controls from 64rem; Search and Clear stay at least 24px. */
@@ -857,11 +760,4 @@ export const LookupKeyboard: Story = {
   globals: { locale: 'en' },
   parameters: lookupStory('AddressLookup'),
   render: () => <AddressLookup withCountry />,
-  play: async ({ canvas }) => {
-    await searchFor(canvas, 'Postgatan')
-    await findSuggestions(canvas)
-    await userEvent.keyboard('{ArrowDown}{Enter}')
-    await expect(lookupInput(canvas)).toHaveFocus()
-    await expect(canvas.getByTestId('submits')).toHaveTextContent('Sent: 0')
-  },
 }

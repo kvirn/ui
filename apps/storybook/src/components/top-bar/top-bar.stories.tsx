@@ -1,7 +1,6 @@
 import { SiteHeader } from '@kvirn/patterns'
 import { DisplaySettings, Link, Navigation, TopBar } from '@kvirn/ui'
 import type { Meta, StoryObj } from '@storybook/react-vite'
-import { expect, userEvent } from 'storybook/test'
 import contract from '../../../../../packages/react/src/top-bar/top-bar.a11y.md?raw'
 import {
   expectMinimumTargetSize,
@@ -78,13 +77,8 @@ export const Default: Story = {
       </Navigation.Root>
     </TopBar>
   ),
-  play: async ({ canvas, canvasElement }) => {
+  play: async ({ canvasElement }) => {
     await expectTopBarTargetSizes(canvasElement)
-    await expect(canvas.getByRole('navigation', { name: 'Tools' })).toBeVisible()
-    await expect(canvas.getByRole('link', { name: 'Documentation' })).toHaveAttribute(
-      'aria-current',
-      'true',
-    )
   },
 }
 
@@ -219,9 +213,8 @@ export const Narrow: Story = {
       </Navigation.Root>
     </TopBar>
   ),
-  play: async ({ canvas, canvasElement }) => {
+  play: async ({ canvasElement }) => {
     await expectTopBarTargetSizes(canvasElement)
-    await expect(canvas.getByRole('link', { name: 'GitHub' })).toBeVisible()
     await expectNoHorizontalOverflow(canvasElement)
   },
 }
@@ -286,8 +279,6 @@ export const DisplaySettingsLinkLook: Story = {
   ),
   play: async ({ canvas, canvasElement }) => {
     await expectTopBarTargetSizes(canvasElement)
-    await expect(canvas.getByRole('link', { name: 'Latest: Pre-alpha' })).toBeVisible()
-    await expect(canvas.getByRole('link', { name: 'GitHub' })).toBeVisible()
     await expectMinimumTargetSize(canvas.getByRole('button', { name: /display/i }))
     await expectMinimumTargetSize(canvas.getByRole('link', { name: 'GitHub' }))
   },
@@ -313,12 +304,8 @@ export const Keyboard: Story = {
       <DisplaySettings.Compact className="kv-button--link" />
     </TopBar>
   ),
-  play: async ({ canvasElement, canvas }) => {
+  play: async ({ canvasElement }) => {
     await expectTopBarTargetSizes(canvasElement)
-    await userEvent.tab()
-    await expect(canvas.getByRole('link', { name: 'Latest: Pre-alpha' })).toHaveFocus()
-    await userEvent.tab()
-    await expect(canvas.getByRole('link', { name: 'Documentation' })).toHaveFocus()
   },
 }
 

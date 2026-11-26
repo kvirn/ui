@@ -133,15 +133,15 @@ Headless: the package ships no CSS. With the default theme the list is cut down 
 - 3.2.3 Consistent Navigation (AA): your duty; keep the panel the same on every page.
 - 4.1.2 Name, Role, Value (A): links and buttons are named by their text.
 
-The behaviour ones are proved by tests and axe; the visual ones by stories and the sweeps.
+The behaviour ones are proved by tests; the visual ones by stories and the sweeps.
 
 ## AT test record
 
 | AT + browser + OS                                                          | Agent check | Human check | Result  | Notes                                                                                                                                  |
 | -------------------------------------------------------------------------- | ----------- | ----------- | ------- | -------------------------------------------------------------------------------------------------------------------------------------- |
 | **Automated (re-runnable tests)**                                          |             |             |         |                                                                                                                                        |
-| axe, WCAG 2.2 A and AA, every story, 4 themes                              | pass        | n/a         | pass    | skip-panel.stories.tsx, every story, 4 themes                                                                                          |
-| Markup and ARIA (roles, names, ids, states)                                | pass        | n/a         | pass    | skip-panel.test.tsx › SkipPanel accessibility › has no axe violations; SkipPanel name and attributes › the lists are lists with items  |
+| axe, WCAG 2.2 A and AA, every story, light theme                           | pass        | n/a         | pass    | skip-panel.stories.tsx, every story, light theme                                                                                       |
+| Markup and ARIA (roles, names, ids, states)                                | pass        | n/a         | pass    | skip-panel.test.tsx › SkipPanel name and attributes › the lists are lists with items                                                   |
 | Keyboard contract rows (Vitest browser)                                    | pass        | n/a         | pass    | 35 rows, each names a test (skip-panel.test.tsx › SkipPanel keyboard › Tab on page load focuses the first Link)                        |
 | Focus order and management                                                 | pass        | n/a         | pass    | skip-panel.test.tsx asserts document.activeElement after each key; first: SkipPanel keyboard › Tab on page load focuses the first Link |
 | Display modes (forced colours, 320px reflow, text spacing, reduced motion) | pass        | n/a         | pass    | the four sweep projects (`storybook-forced-colors`, `-reduced-motion`, `-reflow`, `-text-spacing`), run in CI                          |

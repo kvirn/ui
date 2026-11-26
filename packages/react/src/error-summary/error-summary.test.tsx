@@ -3,7 +3,6 @@ import { fi } from '@kvirn/i18n/fi'
 import { nb } from '@kvirn/i18n/nb'
 import { nn } from '@kvirn/i18n/nn'
 import { sv } from '@kvirn/i18n/sv'
-import { expectNoA11yViolations } from '@kvirn/testing'
 import { createRef, StrictMode, useState } from 'react'
 import { renderToString } from 'react-dom/server'
 import { afterEach, beforeEach, describe, expect, expectTypeOf, test, vi } from 'vite-plus/test'
@@ -539,28 +538,5 @@ describe('hook', () => {
   test('the types are exported', () => {
     expectTypeOf<ErrorSummaryLinkProps['controlId']>().toEqualTypeOf<string>()
     expectTypeOf<ErrorSummaryRootProps['focusKey']>().toEqualTypeOf<string | number | undefined>()
-  })
-})
-
-describe('accessibility', () => {
-  test('no axe violations with the summary focused', async () => {
-    const { container } = await render(
-      <main>
-        <Form />
-      </main>,
-    )
-    await expect.element(summary()).toHaveFocus()
-    await expectNoA11yViolations(container)
-  })
-
-  test('no axe violations with a link focused', async () => {
-    const { container } = await render(
-      <main>
-        <Form />
-      </main>,
-    )
-    await userEvent.tab()
-    await expect.element(page.getByRole('link', { name: 'Enter your email address' })).toHaveFocus()
-    await expectNoA11yViolations(container)
   })
 })

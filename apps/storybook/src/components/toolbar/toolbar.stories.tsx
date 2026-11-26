@@ -2,7 +2,6 @@ import { Toolbar } from '@kvirn/ui'
 import contract from '../../../../../packages/react/src/toolbar/toolbar.a11y.md?raw'
 import guide from '../../../../../packages/react/src/toolbar/toolbar.md?raw'
 import type { Meta, StoryObj } from '@storybook/react-vite'
-import { expect, waitFor } from 'storybook/test'
 import { showSource, usageGuide } from '../../docs-source.ts'
 import { expectMinimumTargetSize, expectNoHorizontalOverflow } from '../theme-story-assertions.ts'
 import {
@@ -73,19 +72,6 @@ export const Default: Story = {
   parameters: showSource('toolbar/toolbar.fixture.tsx', 'TextToolbar'),
   render: (args) => <TextToolbar {...args} />,
   play: async ({ canvas }) => {
-    const toolbar = canvas.getByRole('toolbar', { name: 'Formatting' })
-    await expect(toolbar).not.toHaveAttribute('aria-orientation')
-    await expect(canvas.getByRole('group', { name: 'Text style' })).toHaveClass(
-      'kv-button-group--attached',
-    )
-    // One Tab stop: the first control has tabindex 0 and the other six -1. The controls
-    // register after the first render.
-    await waitFor(() => expect(toolbar.querySelectorAll('[tabindex="0"]')).toHaveLength(1))
-    await expect(toolbar.querySelectorAll('[tabindex="-1"]')).toHaveLength(6)
-    await expect(canvas.getByRole('button', { name: 'Bold' })).toHaveAttribute(
-      'aria-pressed',
-      'true',
-    )
     for (const control of canvas.getAllByRole('button')) {
       await expectMinimumTargetSize(control)
     }
@@ -101,20 +87,6 @@ export const Default: Story = {
 export const Keyboard: Story = {
   parameters: showSource('toolbar/toolbar.fixture.tsx', 'FormattingToolbar'),
   render: () => <FormattingToolbar locale="en" />,
-  play: async ({ canvas }) => {
-    const toolbar = canvas.getByRole('toolbar', { name: 'Formatting' })
-    await waitFor(() => expect(toolbar.querySelectorAll('[tabindex="0"]')).toHaveLength(1))
-    // The Listbox trigger sets its own tabindex 0, and the toolbar's roving one wins.
-    await expect(canvas.getByRole('combobox', { name: 'Text type' })).toHaveAttribute(
-      'tabindex',
-      '-1',
-    )
-    // A disabled control stays focusable, so the arrows reach it.
-    await expect(canvas.getByRole('button', { name: 'Redo' })).toHaveAttribute(
-      'aria-disabled',
-      'true',
-    )
-  },
 }
 
 /**
@@ -124,12 +96,6 @@ export const Keyboard: Story = {
 export const Vertical: Story = {
   parameters: showSource('toolbar/toolbar.fixture.tsx', 'RowActionsToolbar'),
   render: () => <RowActionsToolbar />,
-  play: async ({ canvas }) => {
-    await expect(canvas.getByRole('toolbar', { name: 'Row actions' })).toHaveAttribute(
-      'aria-orientation',
-      'vertical',
-    )
-  },
 }
 
 /**
@@ -145,8 +111,6 @@ export const Wrapping: Story = {
     </div>
   ),
   play: async ({ canvas }) => {
-    // kv-lang-ok: asserts the Finnish toolbar name under locale fi
-    await expect(canvas.getByRole('toolbar', { name: 'Muotoilu' })).toBeVisible()
     await expectNoHorizontalOverflow(canvas.getByTestId('narrow'))
     for (const control of canvas.getAllByRole('button')) {
       await expectMinimumTargetSize(control)

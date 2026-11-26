@@ -86,27 +86,27 @@ None through a live region. The focus move makes the screen reader read the grou
 - 1.3.1 Info and Relationships (A), 4.1.2 Name, Role, Value (A): native list and links, a named group. 2.4.2 Page Titled (A): the prefix on the page title (`document title › prefixes the page title while shown and restores it on unmount`).
 - 2.4.7 Focus Visible (AA): the summary and the links show a focus ring (Visual / modes; reviewed in the stories, no named test).
 - 1.4.1 Use of Color (A): the links are underlined and the Alert's danger word and icon say danger, so colour is not the only cue (theme properties, no named test).
-- 1.4.3 Contrast (Minimum) (AA): the theme's colour pairs for the Alert meet the minimum contrast, checked automatically for every theme, and axe finds no violation (`accessibility › no axe violations with the summary focused`).
+- 1.4.3 Contrast (Minimum) (AA): the theme's colour pairs for the Alert meet the minimum contrast, checked automatically for every theme, and axe finds no violation.
 - 2.5.8 Target Size (Minimum) (AA): the links are at least 24 by 24 CSS pixels (Visual / modes; reviewed in the stories, no named test).
-- Axe: no violations with the summary focused (`accessibility › no axe violations with the summary focused`).
+- Axe: no violations with the summary focused (`OnSubmit` story, whose play moves focus to the summary).
 
 ## AT test record
 
-| AT + browser + OS                                                          | Agent check | Human check | Result  | Notes                                                                                                                           |
-| -------------------------------------------------------------------------- | ----------- | ----------- | ------- | ------------------------------------------------------------------------------------------------------------------------------- |
-| **Automated (re-runnable tests)**                                          |             |             |         |                                                                                                                                 |
-| axe, WCAG 2.2 A and AA, every story, 4 themes                              | pass        | n/a         | pass    | error-summary.stories.tsx, every story, 4 themes                                                                                |
-| Markup and ARIA (roles, names, ids, states)                                | pass        | n/a         | pass    | `error-summary.test.tsx` (axe and role, name and state): `it is an Alert.Danger group named by its title, with a list of links` |
-| Keyboard contract rows (Vitest browser)                                    | pass        | n/a         | pass    | 4 rows, each names a test in `error-summary.test.tsx`                                                                           |
-| Focus order and management                                                 | pass        | n/a         | pass    | `error-summary.test.tsx`: `focus › moves focus to the summary on mount`                                                         |
-| Display modes (forced colours, 320px reflow, text spacing, reduced motion) | pass        | n/a         | pass    | the four sweep projects (`storybook-forced-colors`, `-reduced-motion`, `-reflow`, `-text-spacing`), run in CI                   |
-| **Core (required for beta)**                                               |             |             |         |                                                                                                                                 |
-| NVDA + Chrome + Windows                                                    | pending     | pending     | pending |                                                                                                                                 |
-| VoiceOver + Safari + iOS                                                   | pending     | pending     | pending |                                                                                                                                 |
-| **Release (before 1.0 and each minor)**                                    |             |             |         |                                                                                                                                 |
-| JAWS + Chrome + Windows                                                    | pending     | pending     | pending |                                                                                                                                 |
-| TalkBack + Chrome + Android                                                | pending     | pending     | pending |                                                                                                                                 |
-| VoiceOver + Safari + macOS                                                 | pending     | pending     | pending |                                                                                                                                 |
+| AT + browser + OS                                                          | Agent check | Human check | Result  | Notes                                                                                                                   |
+| -------------------------------------------------------------------------- | ----------- | ----------- | ------- | ----------------------------------------------------------------------------------------------------------------------- |
+| **Automated (re-runnable tests)**                                          |             |             |         |                                                                                                                         |
+| axe, WCAG 2.2 A and AA, every story, light theme                           | pass        | n/a         | pass    | error-summary.stories.tsx, every story, light theme                                                                     |
+| Markup and ARIA (roles, names, ids, states)                                | pass        | n/a         | pass    | `error-summary.test.tsx` (role, name and state): `it is an Alert.Danger group named by its title, with a list of links` |
+| Keyboard contract rows (Vitest browser)                                    | pass        | n/a         | pass    | 4 rows, each names a test in `error-summary.test.tsx`                                                                   |
+| Focus order and management                                                 | pass        | n/a         | pass    | `error-summary.test.tsx`: `focus › moves focus to the summary on mount`                                                 |
+| Display modes (forced colours, 320px reflow, text spacing, reduced motion) | pass        | n/a         | pass    | the four sweep projects (`storybook-forced-colors`, `-reduced-motion`, `-reflow`, `-text-spacing`), run in CI           |
+| **Core (required for beta)**                                               |             |             |         |                                                                                                                         |
+| NVDA + Chrome + Windows                                                    | pending     | pending     | pending |                                                                                                                         |
+| VoiceOver + Safari + iOS                                                   | pending     | pending     | pending |                                                                                                                         |
+| **Release (before 1.0 and each minor)**                                    |             |             |         |                                                                                                                         |
+| JAWS + Chrome + Windows                                                    | pending     | pending     | pending |                                                                                                                         |
+| TalkBack + Chrome + Android                                                | pending     | pending     | pending |                                                                                                                         |
+| VoiceOver + Safari + macOS                                                 | pending     | pending     | pending |                                                                                                                         |
 
 ### What to check
 

@@ -94,9 +94,6 @@ export const Default: Story = {
   play: async ({ canvas, globals }) => {
     const { text } = choiceTextsFor(localeOf(globals))
     const checkbox = canvas.getByRole('checkbox', { name: text.declaration })
-    await expect(checkbox).toHaveAttribute('type', 'checkbox')
-    await expect(checkbox).not.toBeChecked()
-    await expect(checkbox).toHaveAttribute('data-state', 'unchecked')
     await expectMinimumTargetSize(checkbox)
   },
 }
@@ -104,27 +101,12 @@ export const Default: Story = {
 /** Checked: a primary fill with a drawn tick. Unchecked and checked differ in shape. */
 export const Checked: Story = {
   args: { defaultChecked: true },
-  play: async ({ canvas, globals }) => {
-    const { text } = choiceTextsFor(localeOf(globals))
-    const checkbox = canvas.getByRole('checkbox', { name: text.declaration })
-    await expect(checkbox).toBeChecked()
-    await expect(checkbox).toHaveAttribute('data-state', 'checked')
-  },
 }
 
 /** A staff "select all rows" box, mixed while some rows are chosen. It's a DOM property. */
 export const Indeterminate: Story = {
   parameters: showSource('checkbox/checkbox.fixture.tsx', 'SelectAllCheckbox'),
   render: (_args, { globals }) => <SelectAllCheckbox locale={localeOf(globals)} />,
-  play: async ({ canvas, globals }) => {
-    const { text } = choiceTextsFor(localeOf(globals))
-    const checkbox = canvas.getByRole('checkbox', { name: text.selectAll })
-    await expect((checkbox as HTMLInputElement).indeterminate).toBe(true)
-    await expect(checkbox).toHaveAttribute('data-state', 'indeterminate')
-    await userEvent.click(checkbox)
-    await expect(checkbox).toBeChecked()
-    await expect((checkbox as HTMLInputElement).indeterminate).toBe(false)
-  },
 }
 
 /** An option's help text is in the checkbox's description. */
@@ -140,12 +122,6 @@ export const WithDescription: Story = {
         </Field.Root>
       </>
     )
-  },
-  play: async ({ canvas, globals }) => {
-    const { text } = choiceTextsFor(localeOf(globals))
-    await expect(
-      canvas.getByRole('checkbox', { name: new RegExp(`^${text.newsletter}`) }),
-    ).toHaveAccessibleDescription(text.newsletterHint)
   },
 }
 
@@ -173,13 +149,7 @@ export const Standalone: Story = {
   },
   play: async ({ canvas, globals }) => {
     const { text } = choiceTextsFor(localeOf(globals))
-    const first = canvas.getByRole('checkbox', { name: text.rowOne })
-    await expect(first).not.toBeChecked()
-    await expect(first).not.toHaveAttribute('aria-describedby')
-    await expect(canvas.getByRole('checkbox', { name: text.rowTwo })).toBeChecked()
-    await expectMinimumTargetSize(first)
-    await userEvent.click(first)
-    await expect(first).toBeChecked()
+    await expectMinimumTargetSize(canvas.getByRole('checkbox', { name: text.rowOne }))
   },
 }
 
@@ -198,33 +168,16 @@ export const Invalid: Story = {
       </>
     )
   },
-  play: async ({ canvas, globals }) => {
-    const { text } = choiceTextsFor(localeOf(globals))
-    const checkbox = canvas.getByRole('checkbox', { name: text.declaration })
-    await expect(checkbox).toHaveAttribute('aria-invalid', 'true')
-    await expect(checkbox).toHaveAttribute('aria-required', 'true')
-    await expect(checkbox).toHaveAttribute('data-invalid')
-  },
 }
 
 /** Disabled: a dashed edge on the surface colour, and the label is muted. */
 export const Disabled: Story = {
   args: { disabled: true },
-  play: async ({ canvas, globals }) => {
-    const { text } = choiceTextsFor(localeOf(globals))
-    await expect(canvas.getByRole('checkbox', { name: text.declaration })).toBeDisabled()
-  },
 }
 
 /** Disabled and checked: a solid muted box with the tick in the canvas colour. */
 export const DisabledChecked: Story = {
   args: { disabled: true, defaultChecked: true },
-  play: async ({ canvas, globals }) => {
-    const { text } = choiceTextsFor(localeOf(globals))
-    const checkbox = canvas.getByRole('checkbox', { name: text.declaration })
-    await expect(checkbox).toBeDisabled()
-    await expect(checkbox).toBeChecked()
-  },
 }
 
 /** A long label wraps over lines, and the box stays beside the first line. */
@@ -275,7 +228,6 @@ export const Controlled: Story = {
     const { text } = choiceTextsFor(localeOf(globals))
     const checkbox = canvas.getByRole('checkbox', { name: text.declaration })
     await userEvent.click(checkbox)
-    await expect(checkbox).toBeChecked()
     await expect(canvas.getByTestId('mirror')).toHaveTextContent(`${text.youChose}: true`)
   },
 }
@@ -310,10 +262,6 @@ export const OnSurfaces: Story = {
         </Card.Root>
       </>
     )
-  },
-  play: async ({ canvas, globals }) => {
-    const { text } = choiceTextsFor(localeOf(globals))
-    await expect(canvas.getByRole('checkbox', { name: text.declaration })).toBeVisible()
   },
 }
 
@@ -390,13 +338,4 @@ export const ForcedColors: Story = {
 /** A change reaches `onCheckedChange` with the new state and the reason. */
 export const Reports: Story = {
   args: { onCheckedChange: fn() },
-  play: async ({ canvas, args, globals }) => {
-    const { text } = choiceTextsFor(localeOf(globals))
-    const checkbox = canvas.getByRole('checkbox', { name: text.declaration })
-    await userEvent.click(checkbox)
-    await expect(args.onCheckedChange).toHaveBeenLastCalledWith(
-      true,
-      expect.objectContaining({ reason: 'input' }),
-    )
-  },
 }

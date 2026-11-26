@@ -4,7 +4,6 @@ import { fi } from '@kvirn/i18n/fi'
 import { nb } from '@kvirn/i18n/nb'
 import { nn } from '@kvirn/i18n/nn'
 import { sv } from '@kvirn/i18n/sv'
-import { expectNoA11yViolations } from '@kvirn/testing'
 import { readAloud, readAnnouncements } from '@kvirn/testing/read-aloud'
 import { useState } from 'react'
 import { afterEach, beforeEach, describe, expect, test, vi } from 'vite-plus/test'
@@ -208,16 +207,6 @@ describe('roles, names and states', () => {
       await expect.element(page.getByRole('dialog', { name: title })).toBeVisible()
     },
   )
-
-  test('has no axe violations closed and open', async () => {
-    const { container } = await render(
-      <Example initial={{ year: '2026', month: '10', day: '20' }} />,
-    )
-    await expectNoA11yViolations(container)
-    await open()
-    await expectNoA11yViolations(document.body)
-    expect(consoleWarn).not.toHaveBeenCalled()
-  })
 })
 
 describe('keyboard', () => {

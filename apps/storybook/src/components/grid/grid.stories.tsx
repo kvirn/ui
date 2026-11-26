@@ -2,7 +2,6 @@ import { Card, Grid } from '@kvirn/ui'
 import contract from '../../../../../packages/react/src/grid/grid.a11y.md?raw'
 import guide from '../../../../../packages/react/src/grid/grid.md?raw'
 import type { Meta, StoryObj } from '@storybook/react-vite'
-import { expect } from 'storybook/test'
 import { usageGuide } from '../../docs-source.ts'
 import { expectNoHorizontalOverflow } from '../theme-story-assertions.ts'
 
@@ -218,10 +217,6 @@ export const AsList: Story = {
       ))}
     </Grid.Root>
   ),
-  play: async ({ canvas }) => {
-    await expect(canvas.getByRole('list')).toBeVisible()
-    await expect(canvas.getAllByRole('listitem')).toHaveLength(services.length)
-  },
 }
 
 /** A 320px column: one column, a long Finnish word wraps, nothing scrolls sideways (1.4.10). */

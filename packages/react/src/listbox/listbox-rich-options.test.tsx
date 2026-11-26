@@ -1,4 +1,3 @@
-import { expectNoA11yViolations } from '@kvirn/testing'
 import { createRef } from 'react'
 import { afterEach, beforeEach, describe, expect, test, vi } from 'vite-plus/test'
 import type { MockInstance } from 'vite-plus/test'
@@ -121,14 +120,13 @@ const optionElement = (name: string) => option(name).element()
 
 describe('Listbox rich options: name and description', () => {
   test('OptionText is the option’s accessible name, so the second line is not part of it', async () => {
-    const { container } = await render(<RichListbox />)
+    await render(<RichListbox />)
     // The name is the text alone, and the flag and the "Chosen" mark are out of it.
     await expect.element(option('Sverige')).toBeInTheDocument()
     const element = optionElement('Sverige')
     const text = element.querySelector('.kv-listbox-option-text')
     expect(text?.id).not.toBe('')
     expect(element.getAttribute('aria-labelledby')).toBe(text?.id)
-    await expectNoA11yViolations(container)
     expect(richWarnings()).toEqual([])
   })
 
@@ -268,11 +266,6 @@ describe('Listbox rich options: decorative parts', () => {
     await expect.poll(() => optionElement('Sverige').hasAttribute('data-has-indicator')).toBe(true)
     await rerender(<RichListbox withIndicator={false} />)
     await expect.poll(() => optionElement('Sverige').hasAttribute('data-has-indicator')).toBe(false)
-  })
-
-  test('a chosen rich option has no axe violations', async () => {
-    const { container } = await render(<RichListbox defaultValue="fi" />)
-    await expect(expectNoA11yViolations(container)).resolves.toBeUndefined()
   })
 })
 
@@ -425,7 +418,7 @@ describe('Listbox rich options: dev warnings', () => {
 
 describe('Listbox rich options: native rendering', () => {
   test('native="always" drops the parts and shows the itemToString text', async () => {
-    const { container } = await render(<RichListbox native="always" />)
+    await render(<RichListbox native="always" />)
     const select = page.getByRole('combobox', { name: 'Land (optional)' }).element()
     expect(select.tagName).toBe('SELECT')
     expect(document.querySelector('.kv-listbox-option')).toBeNull()
@@ -435,7 +428,6 @@ describe('Listbox rich options: native rendering', () => {
     expect(document.querySelector('.kv-listbox-option-indicator')).toBeNull()
     const labels = [...(select as HTMLSelectElement).options].map((element) => element.textContent)
     expect(labels).toEqual(['', 'Sverige', 'Finland', 'Norge'])
-    await expectNoA11yViolations(container)
     expect(richWarnings()).toEqual([])
   })
 })
@@ -448,7 +440,7 @@ describe('Listbox rich options: virtualized', () => {
   }))
 
   test('a two-line option keeps its name, description and place in the whole list', async () => {
-    const { container } = await render(
+    await render(
       <RichListbox items={manyCountries} virtualize={{ estimateSize: 56, overscan: 2 }} />,
     )
     await expect.poll(() => page.getByRole('option').elements().length).toBeGreaterThan(3)
@@ -457,7 +449,6 @@ describe('Listbox rich options: virtualized', () => {
     expect(first.getAttribute('aria-setsize')).toBe('2000')
     expect(first.getAttribute('aria-posinset')).toBe('1')
     await expect.element(option('Land 1')).toHaveAccessibleDescription('Huvudstad 1')
-    await expectNoA11yViolations(container)
   })
 
   test('moving the active option with the keys reaches a two-line option that is not rendered yet', async () => {
@@ -508,7 +499,7 @@ describe('Combobox rich options', () => {
   const input = () => page.getByRole('combobox', { name: /Land/ })
 
   test('the options are named by their text and described by their second line', async () => {
-    const { container } = await render(<RichCombobox />)
+    await render(<RichCombobox />)
     await expect.element(option('Sverige')).toHaveAccessibleDescription('Stockholm')
     await expect.element(option('Finland')).toHaveAccessibleDescription('Helsingfors')
     const element = optionElement('Sverige')
@@ -522,7 +513,6 @@ describe('Combobox rich options', () => {
     expect(element.querySelector('.kv-listbox-option-indicator')?.getAttribute('aria-hidden')).toBe(
       'true',
     )
-    await expectNoA11yViolations(container)
     expect(richWarnings()).toEqual([])
   })
 
@@ -573,7 +563,7 @@ describe('Autocomplete rich options', () => {
   }
 
   test('the suggestions are named by their text and described by their second line', async () => {
-    const { container } = await render(<RichAutocomplete />)
+    await render(<RichAutocomplete />)
     await userEvent.click(page.getByRole('combobox', { name: /Gatuadress/ }))
     await userEvent.keyboard('sto')
     await expect.element(option('Storgatan')).toHaveAccessibleDescription('Centrum')
@@ -583,7 +573,6 @@ describe('Autocomplete rich options', () => {
     expect(element.querySelector('.kv-listbox-option-icon')?.getAttribute('aria-hidden')).toBe(
       'true',
     )
-    await expectNoA11yViolations(container)
     expect(richWarnings()).toEqual([])
   })
 
@@ -626,7 +615,7 @@ describe('naming of the rich option parts', () => {
 
 describe('Listbox rich options: any markup', () => {
   test('an <Icon>, an svg, divs and spans work in every part and in a bare option', async () => {
-    const { container } = await render(
+    await render(
       <Field.Root>
         <Field.Label>Land</Field.Label>
         <Listbox.Root
@@ -672,7 +661,6 @@ describe('Listbox rich options: any markup', () => {
     await expect.element(option('Sverige')).toHaveAccessibleDescription('Stockholm')
     expect(optionElement('Sverige').querySelector('[data-testid="free"] em')).not.toBeNull()
     await expect.element(option('Finland Helsingfors')).toBeVisible()
-    await expectNoA11yViolations(container)
     expect(richWarnings()).toEqual([])
   })
 })

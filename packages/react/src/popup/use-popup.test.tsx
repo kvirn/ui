@@ -1,4 +1,3 @@
-import { expectNoA11yViolations } from '@kvirn/testing'
 import { useRef, useState } from 'react'
 import type { CSSProperties } from 'react'
 import { renderToString } from 'react-dom/server'
@@ -202,14 +201,6 @@ describe('exposed state', () => {
       Number.parseFloat(style?.getPropertyValue('--kv-popup-max-height') ?? ''),
     ).toBeGreaterThan(0)
     expect(Number.parseFloat(style?.getPropertyValue('--kv-anchor-width') ?? '')).toBeGreaterThan(0)
-  })
-
-  test('the popup passes axe, open and closed', async () => {
-    const { container, unmount } = await render(<PopupExample open={false} />)
-    await expect(expectNoA11yViolations(container)).resolves.toBeUndefined()
-    await unmount()
-    const opened = await render(<PopupExample />)
-    await expect(expectNoA11yViolations(opened.container)).resolves.toBeUndefined()
   })
 })
 

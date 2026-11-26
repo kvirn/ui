@@ -3,7 +3,6 @@ import type { KvirnMessages } from '@kvirn/i18n'
 import { fi } from '@kvirn/i18n/fi'
 import { nb } from '@kvirn/i18n/nb'
 import { sv } from '@kvirn/i18n/sv'
-import { expectNoA11yViolations } from '@kvirn/testing'
 import { createRef, useState } from 'react'
 import { afterEach, beforeEach, describe, expect, expectTypeOf, test, vi } from 'vite-plus/test'
 import type { MockInstance } from 'vite-plus/test'
@@ -38,7 +37,7 @@ afterEach(() => {
 
 describe('rendering', () => {
   test('renders a native <input type="text">, outside a Field', async () => {
-    const { container } = await render(<TextInput aria-label="Name" />)
+    await render(<TextInput aria-label="Name" />)
     const input = page.getByRole('textbox', { name: 'Name' })
     await expect.element(input).toHaveAttribute('type', 'text')
     await expect.element(input).not.toHaveAttribute('id')
@@ -46,7 +45,6 @@ describe('rendering', () => {
     await expect.element(input).not.toHaveAttribute('aria-invalid')
     await expect.element(input).not.toHaveAttribute('aria-required')
     await expect.element(input).not.toHaveAttribute('data-kv')
-    await expectNoA11yViolations(container)
     expect(consoleWarn).not.toHaveBeenCalled()
   })
 
@@ -95,7 +93,7 @@ describe('rendering', () => {
   })
 
   test('passes autoComplete, inputMode and spellCheck for numbers', async () => {
-    const { container } = await render(
+    await render(
       <TextInput
         aria-label="Antal barn"
         inputMode="numeric"
@@ -107,7 +105,6 @@ describe('rendering', () => {
     await expect.element(input).toHaveAttribute('inputmode', 'numeric')
     await expect.element(input).toHaveAttribute('spellcheck', 'false')
     await expect.element(input).toHaveAttribute('type', 'text')
-    await expectNoA11yViolations(container)
   })
 })
 
@@ -123,7 +120,6 @@ describe('in a Field', () => {
     const id = input.element().id
     expect(id).not.toBe('')
     expect(container.querySelector('label')?.getAttribute('for')).toBe(id)
-    await expectNoA11yViolations(container)
     expect(consoleWarn).not.toHaveBeenCalled()
   })
 
@@ -163,7 +159,7 @@ describe('in a Field', () => {
   })
 
   test('keeps your own aria-describedby ids, after the Field’s', async () => {
-    const { container } = await render(
+    await render(
       <>
         <p id="extra">Extra information.</p>
         <Field.Root>
@@ -176,7 +172,6 @@ describe('in a Field', () => {
     const input = page.getByRole('textbox', { name: 'Name (optional)' })
     await expect.element(input).toHaveAccessibleDescription('Som i passet. Extra information.')
     expect(input.element().getAttribute('aria-describedby')?.endsWith(' extra')).toBe(true)
-    await expectNoA11yViolations(container)
   })
 
   test('your own aria-describedby alone is kept when the Field has no parts', async () => {
@@ -533,7 +528,7 @@ describe('useTextInput', () => {
   }
 
   test('gives spreadable props for your own <input>, reading the nearest Field', async () => {
-    const { container } = await render(
+    await render(
       <Field.Root invalid required>
         <Field.Label>Name</Field.Label>
         <Field.ErrorMessage>Enter your name</Field.ErrorMessage>
@@ -544,7 +539,6 @@ describe('useTextInput', () => {
     await expect.element(input).toHaveAttribute('aria-invalid', 'true')
     await expect.element(input).toHaveAttribute('aria-required', 'true')
     await expect.element(input).toHaveAccessibleDescription('Error: Enter your name')
-    await expectNoA11yViolations(container)
   })
 
   test('onValueChange and type work without a Field', async () => {
@@ -618,7 +612,7 @@ describe('mask (contract: text-input.a11y.md › Masked input)', () => {
   })
 
   test('a mask shapes the value, adds no role, and keeps the Field wiring', async () => {
-    const { container } = await render(
+    await render(
       <KvirnProvider locale="sv" messages={sv}>
         <Field.Root required invalid>
           <Field.Label>Personal identity number</Field.Label>
@@ -646,7 +640,6 @@ describe('mask (contract: text-input.a11y.md › Masked input)', () => {
       .toHaveAccessibleDescription(
         '12 digits, for example 19900101-1234. Fel: Enter the personal identity number',
       )
-    await expectNoA11yViolations(container)
     expect(consoleWarn).not.toHaveBeenCalled()
   })
 

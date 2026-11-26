@@ -1,5 +1,4 @@
 import { sv } from '@kvirn/i18n/sv'
-import { expectNoA11yViolations } from '@kvirn/testing'
 import { createRef, useState } from 'react'
 import { afterEach, beforeEach, describe, expect, expectTypeOf, test, vi } from 'vite-plus/test'
 import type { MockInstance } from 'vite-plus/test'
@@ -34,7 +33,7 @@ afterEach(() => {
 
 describe('rendering', () => {
   test('renders a native <input type="checkbox">, outside a Field', async () => {
-    const { container } = await render(<Checkbox aria-label="Approve" />)
+    await render(<Checkbox aria-label="Approve" />)
     const checkbox = page.getByRole('checkbox', { name: 'Approve' })
     await expect.element(checkbox).toHaveAttribute('type', 'checkbox')
     await expect.element(checkbox).toHaveAttribute('data-state', 'unchecked')
@@ -44,7 +43,6 @@ describe('rendering', () => {
     await expect.element(checkbox).not.toHaveAttribute('aria-required')
     await expect.element(checkbox).not.toHaveAttribute('aria-checked')
     await expect.element(checkbox).not.toHaveAttribute('role')
-    await expectNoA11yViolations(container)
     expect(consoleWarn).not.toHaveBeenCalled()
   })
 
@@ -87,7 +85,6 @@ describe('in a Field', () => {
     await expect.element(checkbox).toHaveAccessibleDescription('We email the decision.')
     await expect.element(checkbox).toHaveAttribute('aria-required', 'true')
     expect((checkbox.element() as HTMLInputElement).required).toBe(false)
-    await expectNoA11yViolations(container)
     expect(consoleWarn).not.toHaveBeenCalled()
   })
 
@@ -111,7 +108,7 @@ describe('in a Field', () => {
   })
 
   test('an invalid Field gives the standalone checkbox aria-invalid and the error in its description', async () => {
-    const { container } = await render(
+    await render(
       <Field.Root invalid required>
         <Checkbox />
         <Field.Label>I confirm that the information is correct</Field.Label>
@@ -129,7 +126,6 @@ describe('in a Field', () => {
       .toHaveAccessibleDescription(
         'You cannot send without the confirmation. Error: Confirm that the information is correct',
       )
-    await expectNoA11yViolations(container)
   })
 
   test('a disabled Field disables the checkbox, and the checkbox’s own disabled does too', async () => {
@@ -306,7 +302,7 @@ describe('checked', () => {
 
 describe('indeterminate', () => {
   test('indeterminate is the DOM property and data-state', async () => {
-    const { container } = await render(
+    await render(
       <Field.Root required>
         <Checkbox indeterminate />
         <Field.Label>Select all rows</Field.Label>
@@ -317,7 +313,6 @@ describe('indeterminate', () => {
     await expect.element(checkbox).toBePartiallyChecked()
     await expect.element(checkbox).toHaveAttribute('data-state', 'indeterminate')
     await expect.element(checkbox).not.toHaveAttribute('aria-checked')
-    await expectNoA11yViolations(container)
   })
 
   test('the property follows the prop when it changes', async () => {

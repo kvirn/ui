@@ -80,26 +80,26 @@ Headless: Stepper ships no CSS. With the default theme the Stepper is body text 
 ## WCAG SCs covered
 
 - 1.3.1 Info and Relationships (A), 1.3.2 Meaningful Sequence (A): a paragraph that follows the heading, outside any name. Tests prove it is the reading stop right after the heading, and that a Stepper inside a heading, label or legend warns.
-- 1.4.1 Use of Color (A): the words say it, and axe finds no violation in any theme.
+- 1.4.1 Use of Color (A): the words say it, and the stories pass axe in every theme.
 - 1.4.3 Contrast (Minimum) (AA), 1.4.4 Resize Text (AA), 1.4.10 Reflow (AA): text on measured pairs, in rem, wrapping. 1.4.12 Text Spacing (AA): the text-spacing sweep checks that no text is clipped.
 
 ## AT test record
 
-| AT + browser + OS                                                          | Agent check | Human check | Result  | Notes                                                                                                                                              |
-| -------------------------------------------------------------------------- | ----------- | ----------- | ------- | -------------------------------------------------------------------------------------------------------------------------------------------------- |
-| **Automated (re-runnable tests)**                                          |             |             |         |                                                                                                                                                    |
-| axe, WCAG 2.2 A and AA, every story, 4 themes                              | pass        | n/a         | pass    | stepper.stories.tsx, every story, 4 themes                                                                                                         |
-| Markup and ARIA (roles, names, ids, states)                                | pass        | n/a         | pass    | stepper.test.tsx › renders one p with the position and a class, no role or ARIA, and passes attributes and the ref through; expectNoA11yViolations |
-| Keyboard contract rows (Vitest browser)                                    | pass        | n/a         | pass    | stepper.test.tsx › keyboard › Tab passes over it                                                                                                   |
-| Focus order and management                                                 | n/a         | n/a         | n/a     | nothing focusable: the component never takes or moves focus                                                                                        |
-| Display modes (forced colours, 320px reflow, text spacing, reduced motion) | pass        | n/a         | pass    | the four sweep projects (`storybook-forced-colors`, `-reduced-motion`, `-reflow`, `-text-spacing`), run in CI                                      |
-| **Core (required for beta)**                                               |             |             |         |                                                                                                                                                    |
-| NVDA + Chrome + Windows                                                    | pending     | pending     | pending |                                                                                                                                                    |
-| VoiceOver + Safari + iOS                                                   | pending     | pending     | pending |                                                                                                                                                    |
-| **Release (before 1.0 and each minor)**                                    |             |             |         |                                                                                                                                                    |
-| JAWS + Chrome + Windows                                                    | pending     | pending     | pending |                                                                                                                                                    |
-| TalkBack + Chrome + Android                                                | pending     | pending     | pending |                                                                                                                                                    |
-| VoiceOver + Safari + macOS                                                 | pending     | pending     | pending |                                                                                                                                                    |
+| AT + browser + OS                                                          | Agent check | Human check | Result  | Notes                                                                                                                      |
+| -------------------------------------------------------------------------- | ----------- | ----------- | ------- | -------------------------------------------------------------------------------------------------------------------------- |
+| **Automated (re-runnable tests)**                                          |             |             |         |                                                                                                                            |
+| axe, WCAG 2.2 A and AA, every story, light theme                           | pass        | n/a         | pass    | stepper.stories.tsx, every story, light theme                                                                              |
+| Markup and ARIA (roles, names, ids, states)                                | pass        | n/a         | pass    | stepper.test.tsx › renders one p with the position and a class, no role or ARIA, and passes attributes and the ref through |
+| Keyboard contract rows (Vitest browser)                                    | pass        | n/a         | pass    | stepper.test.tsx › keyboard › Tab passes over it                                                                           |
+| Focus order and management                                                 | n/a         | n/a         | n/a     | nothing focusable: the component never takes or moves focus                                                                |
+| Display modes (forced colours, 320px reflow, text spacing, reduced motion) | pass        | n/a         | pass    | the four sweep projects (`storybook-forced-colors`, `-reduced-motion`, `-reflow`, `-text-spacing`), run in CI              |
+| **Core (required for beta)**                                               |             |             |         |                                                                                                                            |
+| NVDA + Chrome + Windows                                                    | pending     | pending     | pending |                                                                                                                            |
+| VoiceOver + Safari + iOS                                                   | pending     | pending     | pending |                                                                                                                            |
+| **Release (before 1.0 and each minor)**                                    |             |             |         |                                                                                                                            |
+| JAWS + Chrome + Windows                                                    | pending     | pending     | pending |                                                                                                                            |
+| TalkBack + Chrome + Android                                                | pending     | pending     | pending |                                                                                                                            |
+| VoiceOver + Safari + macOS                                                 | pending     | pending     | pending |                                                                                                                            |
 
 ### What to check
 

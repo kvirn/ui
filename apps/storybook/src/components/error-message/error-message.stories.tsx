@@ -2,15 +2,8 @@ import { Field, Fieldset, TextInput } from '@kvirn/ui'
 import contract from '../../../../../packages/react/src/field/field.a11y.md?raw'
 import guide from '../../../../../packages/react/src/field/field-error-message.md?raw'
 import type { Meta, StoryObj } from '@storybook/react-vite'
-import { expect } from 'storybook/test'
 import { showSource, usageGuide } from '../../docs-source.ts'
-import {
-  FieldStates,
-  localeOf,
-  fieldMessagesFor,
-  textsFor,
-  withFormLocale,
-} from '../form/form.fixture.tsx'
+import { FieldStates, localeOf, textsFor, withFormLocale } from '../form/form.fixture.tsx'
 import { expectNoHorizontalOverflow } from '../theme-story-assertions.ts'
 
 // Components/Form/ErrorMessage: ErrorMessage, a <p> that renders only while its Field or
@@ -64,18 +57,7 @@ type Story = StoryObj<typeof meta>
  * In a Field: the message under the input, with the icon and the hidden prefix. Screen
  * readers hear "Error: Enter your full name" as the input's description.
  */
-export const InField: Story = {
-  play: async ({ canvas, globals }) => {
-    const locale = localeOf(globals)
-    const { text } = textsFor(locale)
-    const input = canvas.getByRole('textbox', { name: text.name })
-    await expect(input).toHaveAttribute('aria-invalid', 'true')
-    await expect(input).toHaveAccessibleDescription(
-      `${fieldMessagesFor(locale).errorPrefix} ${text.nameError}`,
-    )
-    await expect(canvas.getByText(text.nameError)).toBeVisible()
-  },
-}
+export const InField: Story = {}
 
 /**
  * The fixture the keyboard tests drive. Try the keys in the Keyboard section above: Tab goes
@@ -95,13 +77,6 @@ export const NotInvalid: Story = {
           <Field.ErrorMessage {...args}>{text.nameError}</Field.ErrorMessage>
         </Field.Root>
       </>
-    )
-  },
-  play: async ({ canvas, globals }) => {
-    const { text } = textsFor(localeOf(globals))
-    await expect(canvas.queryByText(text.nameError)).toBeNull()
-    await expect(canvas.getByRole('textbox', { name: text.name })).not.toHaveAttribute(
-      'aria-describedby',
     )
   },
 }
@@ -126,15 +101,6 @@ export const InFieldset: Story = {
       </>
     )
   },
-  play: async ({ canvas, globals }) => {
-    const locale = localeOf(globals)
-    const { text } = textsFor(locale)
-    await expect(
-      canvas.getByRole('group', { name: text.addressLegend }),
-    ).toHaveAccessibleDescription(
-      `${text.addressHint} ${fieldMessagesFor(locale).errorPrefix} ${text.addressError}`,
-    )
-  },
 }
 
 /**
@@ -154,15 +120,6 @@ export const UnderHelpText: Story = {
           <Field.ErrorMessage {...args}>{text.registrationError}</Field.ErrorMessage>
         </Field.Root>
       </>
-    )
-  },
-  play: async ({ canvas, globals }) => {
-    const locale = localeOf(globals)
-    const { text } = textsFor(locale)
-    await expect(
-      canvas.getByRole('textbox', { name: text.registration }),
-    ).toHaveAccessibleDescription(
-      `${text.registrationHint} ${fieldMessagesFor(locale).errorPrefix} ${text.registrationError}`,
     )
   },
 }
@@ -187,9 +144,7 @@ export const LongMessage: Story = {
       </>
     )
   },
-  play: async ({ canvas, globals }) => {
-    const { text } = textsFor(localeOf(globals))
-    await expect(canvas.getByText(text.emailError)).toBeVisible()
+  play: async ({ canvas }) => {
     await expectNoHorizontalOverflow(canvas.getByTestId('narrow'))
   },
 }

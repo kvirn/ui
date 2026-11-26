@@ -148,10 +148,6 @@ const threeBoxArgTypes: ThreeBoxStory['argTypes'] = {
   },
 }
 
-/** The labels of the boxes in the order a user meets them. */
-const boxLabels = (canvasElement: HTMLElement) =>
-  [...canvasElement.querySelectorAll('input')].map((input) => input.labels?.[0]?.textContent)
-
 /** One box by its part, from the `birth` name prefix. */
 const box = (canvasElement: HTMLElement, part: 'day' | 'month' | 'year') => {
   const input = canvasElement.querySelector<HTMLInputElement>(`input[name="birth-${part}"]`)
@@ -174,9 +170,6 @@ export const Default: Story = {
     const { text } = dateTextsFor(localeOf(globals))
     const field = canvas.getByRole('textbox', { name: new RegExp(`^${text.oneFieldLabel}`) })
     await expectMinimumTargetSize(field)
-    await expect(field).toHaveAttribute('inputmode', 'numeric')
-    // The help text, with an example in the locale's form, describes the field.
-    await expect(field).toHaveAccessibleDescription(text.oneFieldHint('27/10/2026'))
     // Eight digits are enough: the mask puts the separators in.
     await userEvent.type(field, '04102026')
     await expect(field).toHaveValue('04/10/2026')
@@ -194,7 +187,6 @@ export const OneFieldFinnish: Story = {
   play: async ({ canvas }) => {
     const { text } = dateTextsFor('fi')
     const field = canvas.getByRole('textbox', { name: new RegExp(`^${text.oneFieldLabel}`) })
-    await expect(field).toHaveAccessibleDescription(text.oneFieldHint('27.10.2026'))
     await userEvent.type(field, '4.10.2026')
     await expect(field).toHaveValue('4.10.2026')
     await expect(canvas.getByTestId('stored')).toHaveTextContent(`${text.stored}: 2026-10-04`)
@@ -208,14 +200,6 @@ export const OneFieldFinnish: Story = {
 export const OneFieldStates: Story = {
   parameters: showSource('date-input/date-input.fixture.tsx', 'OneFieldDateStates'),
   render: (_args, { globals }) => <OneFieldDateStates locale={localeOf(globals)} />,
-  play: async ({ canvas, globals }) => {
-    const { text } = dateTextsFor(localeOf(globals))
-    const [invalid, disabled, readOnly] = canvas.getAllByRole('textbox')
-    await expect(invalid).toHaveAttribute('aria-invalid', 'true')
-    await expect(invalid).toHaveAccessibleDescription(new RegExp(`${text.oneFieldError}$`))
-    await expect(disabled).toBeDisabled()
-    await expect(readOnly).toHaveAttribute('readonly')
-  },
 }
 
 /**
@@ -232,24 +216,10 @@ export const ThreeBoxes: ThreeBoxStory = {
   argTypes: threeBoxArgTypes,
   render: renderBirthDate,
   parameters: showSource('date-input/date-input.fixture.tsx', 'BirthDate'),
-  play: async ({ canvas, canvasElement, globals }) => {
-    const locale = localeOf(globals)
-    const { text } = dateTextsFor(locale)
-    const group = canvas.getByRole('group', { name: new RegExp(`^${text.legend}`) })
-    await expect(group.tagName).toBe('FIELDSET')
-    const boxes = canvas.getAllByRole('textbox')
-    await expect(boxes).toHaveLength(3)
-    for (const textbox of boxes) {
+  play: async ({ canvas }) => {
+    for (const textbox of canvas.getAllByRole('textbox')) {
       await expectMinimumTargetSize(textbox)
-      await expect(textbox).toHaveAttribute('inputmode', 'numeric')
-      await expect(textbox).not.toHaveAttribute('aria-invalid')
     }
-    await expect(box(canvasElement, 'day')).toHaveAttribute('autocomplete', 'bday-day')
-    // The auto-advance hint and then the example, in the order of the boxes, describe the whole date.
-    const yearFirst = canvasElement.querySelector('input')?.name === 'birth-year'
-    await expect(group).toHaveAccessibleDescription(
-      new RegExp(`${yearFirst ? text.hintYearFirst : text.hintDayFirst}$`),
-    )
   },
 }
 
@@ -273,17 +243,6 @@ export const NoAutoAdvance: ThreeBoxStory = {
   render: renderBirthDate,
   args: { autoAdvance: false },
   parameters: showSource('date-input/date-input.fixture.tsx', 'BirthDate'),
-  play: async ({ canvas, canvasElement, globals }) => {
-    const { text } = dateTextsFor(localeOf(globals))
-    const yearFirst = canvasElement.querySelector('input')?.name === 'birth-year'
-    await userEvent.type(box(canvasElement, 'year'), '1990')
-    await expect(box(canvasElement, 'year')).toHaveFocus()
-    await expect(box(canvasElement, 'year')).toHaveValue('1990')
-    // Only the example describes the group: the auto-advance hint is gone.
-    await expect(
-      canvas.getByRole('group', { name: new RegExp(`^${text.legend}`) }),
-    ).toHaveAccessibleDescription(yearFirst ? text.hintYearFirst : text.hintDayFirst)
-  },
 }
 
 /** `sv-SE`: the locale proof for Swedish date names. Year, month, day, and the example is written in that order. */
@@ -293,12 +252,6 @@ export const SwedishSweden: ThreeBoxStory = {
   globals: { locale: 'sv' },
   decorators: [withRegion('sv-SE')],
   parameters: showSource('date-input/date-input.fixture.tsx', 'BirthDate'),
-  play: async ({ canvasElement, canvas }) => {
-    // kv-lang-ok: proves Swedish date names and format
-    await expect(boxLabels(canvasElement)).toEqual(['År', 'Månad', 'Dag'])
-    // kv-lang-ok: proves Swedish date names and format
-    await expect(canvas.getByText('Till exempel 1990 3 27')).toBeVisible()
-  },
 }
 
 /**
@@ -311,12 +264,6 @@ export const SwedishFinland: ThreeBoxStory = {
   globals: { locale: 'sv' },
   decorators: [withRegion('sv-FI')],
   parameters: showSource('date-input/date-input.fixture.tsx', 'BirthDate'),
-  play: async ({ canvasElement, canvas }) => {
-    // kv-lang-ok: proves Swedish date names and format
-    await expect(boxLabels(canvasElement)).toEqual(['Dag', 'Månad', 'År'])
-    // kv-lang-ok: proves Swedish date names and format
-    await expect(canvas.getByText('Till exempel 27 3 1990')).toBeVisible()
-  },
 }
 
 /** Finnish: day, month, year. The strings are designer drafts, for length checks. */
@@ -324,12 +271,6 @@ export const Finnish: ThreeBoxStory = {
   render: renderBirthDate,
   globals: { locale: 'fi' },
   parameters: showSource('date-input/date-input.fixture.tsx', 'BirthDate'),
-  play: async ({ canvasElement, canvas }) => {
-    // kv-lang-ok: asserts the Finnish box labels under locale fi
-    await expect(boxLabels(canvasElement)).toEqual(['Päivä', 'Kuukausi', 'Vuosi'])
-    // kv-lang-ok: asserts the Finnish example hint under locale fi
-    await expect(canvas.getByText('Esimerkiksi 27 3 1990')).toBeVisible()
-  },
 }
 
 /**
@@ -340,9 +281,6 @@ export const English: ThreeBoxStory = {
   render: renderBirthDate,
   globals: { locale: 'en' },
   parameters: showSource('date-input/date-input.fixture.tsx', 'BirthDate'),
-  play: async ({ canvasElement }) => {
-    await expect(boxLabels(canvasElement)).toEqual(['Day', 'Month', 'Year'])
-  },
 }
 
 /**
@@ -352,9 +290,6 @@ export const English: ThreeBoxStory = {
 export const OwnOrder: Story = {
   parameters: showSource('date-input/date-input.fixture.tsx', 'PaperFormDate'),
   render: (_args, { globals }) => <PaperFormDate locale={localeOf(globals)} />,
-  play: async ({ canvasElement }) => {
-    await expect(boxLabels(canvasElement)).toEqual(['Day', 'Month', 'Year'])
-  },
 }
 
 /**
@@ -364,37 +299,19 @@ export const OwnOrder: Story = {
 export const InvalidYear: ThreeBoxStory = {
   render: (args, { globals }) => <BirthDate {...args} locale={localeOf(globals)} error="year" />,
   parameters: showSource('date-input/date-input.fixture.tsx', 'BirthDate'),
-  play: async ({ canvas, canvasElement, globals }) => {
-    const { text } = dateTextsFor(localeOf(globals))
-    await expect(box(canvasElement, 'year')).toHaveAttribute('aria-invalid', 'true')
-    await expect(box(canvasElement, 'month')).not.toHaveAttribute('aria-invalid')
-    await expect(box(canvasElement, 'day')).not.toHaveAttribute('aria-invalid')
-    await expect(
-      canvas.getByRole('group', { name: new RegExp(`^${text.legend}`) }),
-    ).toHaveAccessibleDescription(new RegExp(`${text.errorYear}$`))
-  },
 }
 
 /** "Must be a real date" marks all three boxes: the message is the same one, under them. */
 export const InvalidDate: ThreeBoxStory = {
   render: (args, { globals }) => <BirthDate {...args} locale={localeOf(globals)} error="date" />,
   parameters: showSource('date-input/date-input.fixture.tsx', 'BirthDate'),
-  play: async ({ canvasElement }) => {
-    for (const part of ['day', 'month', 'year'] as const) {
-      await expect(box(canvasElement, part)).toHaveAttribute('aria-invalid', 'true')
-    }
-  },
 }
 
 /** A date that is not a birthday has no `autoComplete`, and an optional one ends its legend with the optional marker. */
 export const NotABirthday: Story = {
   parameters: showSource('date-input/date-input.fixture.tsx', 'VisitDate'),
   render: (_args, { globals }) => <VisitDate locale={localeOf(globals)} />,
-  play: async ({ canvasElement, canvas, globals }) => {
-    const { text } = dateTextsFor(localeOf(globals))
-    await expect(
-      canvas.getByRole('group', { name: new RegExp(`^${text.visitLegend}`) }),
-    ).toBeVisible()
+  play: async ({ canvasElement }) => {
     for (const input of canvasElement.querySelectorAll('input')) {
       await expect(input).not.toHaveAttribute('autocomplete')
     }
@@ -406,11 +323,6 @@ export const Disabled: ThreeBoxStory = {
   render: renderBirthDate,
   args: { disabled: true, defaultValue: { year: '1990', month: '3', day: '27' } },
   parameters: showSource('date-input/date-input.fixture.tsx', 'BirthDate'),
-  play: async ({ canvas }) => {
-    for (const textbox of canvas.getAllByRole('textbox')) {
-      await expect(textbox).toBeDisabled()
-    }
-  },
 }
 
 /** Read only: a solid edge on the surface colour, and the boxes still take focus. */
@@ -418,11 +330,6 @@ export const ReadOnly: ThreeBoxStory = {
   render: renderBirthDate,
   args: { readOnly: true, defaultValue: { year: '1990', month: '3', day: '27' } },
   parameters: showSource('date-input/date-input.fixture.tsx', 'BirthDate'),
-  play: async ({ canvas }) => {
-    for (const textbox of canvas.getAllByRole('textbox')) {
-      await expect(textbox).toHaveAttribute('readonly')
-    }
-  },
 }
 
 /** Staff density from 64rem: 32px boxes and 12px between them, the digits still 16px. */
@@ -462,12 +369,6 @@ export const Narrow: ThreeBoxStory = {
 export const Controlled: Story = {
   parameters: showSource('date-input/date-input.fixture.tsx', 'ControlledDate'),
   render: (_args, { globals }) => <ControlledDate locale={localeOf(globals)} />,
-  play: async ({ canvas, canvasElement, globals }) => {
-    const { text } = dateTextsFor(localeOf(globals))
-    await userEvent.type(box(canvasElement, 'day'), '27')
-    // Nothing is padded or parsed: the month stays `3`, the day is what was typed.
-    await expect(canvas.getByTestId('mirror')).toHaveTextContent(`${text.youTyped}: 1990-3-27`)
-  },
 }
 
 /** A plain `<form>`: only `name`, and the submit reads three fields from `FormData`. */

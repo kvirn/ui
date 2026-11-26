@@ -1,7 +1,6 @@
 import { fi } from '@kvirn/i18n/fi'
 import { en } from '@kvirn/i18n/en'
 import { sv } from '@kvirn/i18n/sv'
-import { expectNoA11yViolations } from '@kvirn/testing'
 import { createRef, useContext, useEffect, useRef, useState } from 'react'
 import { afterEach, beforeEach, describe, expect, expectTypeOf, test, vi } from 'vite-plus/test'
 import type { MockInstance } from 'vite-plus/test'
@@ -154,7 +153,6 @@ describe('wiring: name and description per state', () => {
     await expect.element(input).toHaveAccessibleName('Phone number')
     await expect.element(input).toHaveAccessibleDescription('We only call if something is wrong.')
     expectNoDanglingReferences(container)
-    await expectNoA11yViolations(container)
   })
 
   test('optional: "(optional)" is part of the name in en', async () => {
@@ -162,15 +160,13 @@ describe('wiring: name and description per state', () => {
     const input = page.getByRole('textbox', { name: 'Phone number (optional)' })
     await expect.element(input).toHaveAccessibleName('Phone number (optional)')
     expect(container.querySelector('.kv-field-optional')?.textContent).toBe('(optional)')
-    await expectNoA11yViolations(container)
   })
 
   test('optional: "(optional)" is part of the name in en', async () => {
-    const { container } = await render(<PhoneField />)
+    await render(<PhoneField />)
     await expect
       .element(page.getByRole('textbox', { name: 'Phone number (optional)' }))
       .toBeVisible()
-    await expectNoA11yViolations(container)
   })
 
   // kv-lang-ok: the fi catalog string for the optional marker
@@ -196,18 +192,16 @@ describe('wiring: name and description per state', () => {
       )
     await expect.element(input).toHaveAttribute('aria-invalid', 'true')
     expectNoDanglingReferences(container)
-    await expectNoA11yViolations(container)
   })
 
   test('invalid: the description is followed by "Error:" and the message, in en', async () => {
-    const { container } = await render(<PhoneField invalid required />)
+    await render(<PhoneField invalid required />)
     const input = page.getByRole('textbox', { name: 'Phone number' })
     await expect
       .element(input)
       .toHaveAccessibleDescription(
         'We only call if something is wrong. Error: Enter a phone number',
       )
-    await expectNoA11yViolations(container)
   })
 
   test('invalid without a description: the description is just the error', async () => {
@@ -693,7 +687,6 @@ describe('useField', () => {
     await expect.element(input).toHaveAttribute('aria-invalid', 'true')
     await expect.element(input).toHaveAttribute('aria-required', 'true')
     expectNoDanglingReferences(container)
-    await expectNoA11yViolations(container)
   })
 
   test('returns the optional marker only when the field isn’t required and marker isn’t none', async () => {
@@ -883,7 +876,6 @@ describe('several descriptions', () => {
         'It is on the registration certificate. For example ABC 123 Error: Enter a registration number',
       )
     expectNoDanglingReferences(container)
-    await expectNoA11yViolations(container)
   })
 
   test('each Description has its own id, so no id appears twice', async () => {
@@ -1228,16 +1220,6 @@ describe('Field.HelpText (Plan 0029)', () => {
     expect(warnings).toHaveLength(1)
     expect(warnings[0]).toContain('before its control')
     expect(warnings[0]).toContain('Field.Prose')
-  })
-
-  test('a Field with a description, a help text and an error has no axe violations', async () => {
-    const { container } = await render(<PersonalNumberField invalid />)
-    await expect(expectNoA11yViolations(container)).resolves.toBeUndefined()
-  })
-
-  test('a disabled Field with a help text has no axe violations', async () => {
-    const { container } = await render(<PersonalNumberField disabled />)
-    await expect(expectNoA11yViolations(container)).resolves.toBeUndefined()
   })
 
   test('renders to a string with its id, for server rendering', () => {

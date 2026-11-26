@@ -6,7 +6,6 @@ import {
 } from '@kvirn/core'
 import type { Env } from '@kvirn/core'
 import { fi } from '@kvirn/i18n/fi'
-import { expectNoA11yViolations } from '@kvirn/testing'
 import { afterEach, beforeEach, describe, expect, test, vi } from 'vite-plus/test'
 import type { MockInstance } from 'vite-plus/test'
 import { cdp, page, userEvent } from 'vite-plus/test/browser'
@@ -73,13 +72,12 @@ describe('theme preference', () => {
       { name: 'prefers-contrast', value: 'more' },
     ])
     const env = createEnv()
-    const { container } = await renderSwitcher(env)
+    await renderSwitcher(env)
 
     await expect.element(radio('Follow system').first()).toBeChecked()
     await expect.element(page.getByText('In use: Dark, High contrast, Full motion')).toBeVisible()
     expect(readAttributes(env)).toEqual({ colorScheme: 'dark', contrast: 'more', motion: 'full' })
     expect(readStorage()).toBeNull()
-    await expectNoA11yViolations(container)
   })
 
   test('OS changes update the resolved values while the preference is system', async () => {

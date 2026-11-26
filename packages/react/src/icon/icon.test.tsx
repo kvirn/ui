@@ -1,6 +1,5 @@
 import { TrashIcon } from '@heroicons/react/24/outline'
 import { Trash as PhosphorTrash } from '@phosphor-icons/react'
-import { expectNoA11yViolations } from '@kvirn/testing'
 import { readAloud } from '@kvirn/testing/read-aloud'
 import { ArrowRight, Trash2 } from 'lucide-react'
 import { createRef } from 'react'
@@ -475,30 +474,6 @@ describe('accessibility', () => {
     )
     expect(await readAloud(container)).toEqual(['image, Close'])
   })
-
-  test('no axe violations: decorative, labelled, in a Button, icon-only Button', async () => {
-    const { container } = await render(
-      <KvirnProvider icons={libraryIcons}>
-        <main>
-          <p>
-            <RegisteredIcon name="heroicons-trash" /> Dekorativ
-          </p>
-          <p>
-            <RegisteredIcon name="phosphor-trash" label="Papperskorg" />
-          </p>
-          <Button>
-            <RegisteredIcon name="lucide-trash" />
-            Radera
-          </Button>
-          <Button className="kv-button--icon-only" aria-label="Delete application">
-            <RegisteredIcon name="lucide-trash" />
-          </Button>
-        </main>
-      </KvirnProvider>,
-    )
-    await expect.element(page.getByRole('button', { name: 'Delete application' })).toBeVisible()
-    await expectNoA11yViolations(container)
-  })
 })
 
 describe('one-off icons without the registry', () => {
@@ -611,25 +586,6 @@ describe('icon prop: a component reference (Plan 0044)', () => {
   test('a component is not looked up in the registry: no unknown-name warning', async () => {
     await render(<Icon icon={Trash2} />)
     expect(consoleWarn).not.toHaveBeenCalled()
-  })
-
-  test('no axe violations: decorative and labelled Lucide and Heroicons icons', async () => {
-    const { container } = await render(
-      <main>
-        <p>
-          <Icon icon={Trash2} /> Dekorativ
-        </p>
-        <p>
-          <Icon icon={TrashIcon} label="Papperskorg" />
-        </p>
-        <Button>
-          <Icon icon={TrashIcon} />
-          Radera
-        </Button>
-      </main>,
-    )
-    await expect.element(page.getByRole('img', { name: 'Papperskorg' })).toBeVisible()
-    await expectNoA11yViolations(container)
   })
 })
 

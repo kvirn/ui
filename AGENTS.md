@@ -28,14 +28,17 @@ docs/              vision · architecture · accessibility · compliance · engi
 Use pnpm only. `vp` is the single CLI. Don't use ESLint or Prettier.
 
 ```sh
-vp check [files]            # fmt + lint + types. Formatting is advisory
-vp test run [files]         # Vitest: core (node), components (Chromium browser mode) and every story
-vp run test                 # the whole tree: the same projects, the four Storybook ones in series
+pnpm run lint               # vp lint
+pnpm run format             # vp fmt (writes)
+pnpm run check              # types only (vp check --no-fmt --no-lint)
+pnpm run test               # Vitest: core (node), components (Chromium browser mode) and every story, in one theme
+pnpm run ci                 # everything: fmt --check, lint, build, check, test, i18n:check, theme:check, the four sweeps
+pnpm run smoke              # live requests to geo.kvirn.com (nightly in CI)
 vp run i18n:check           # all locales complete
-vp run theme:check          # token contrast
+vp run theme:check          # token contrast, in all four themes
 ```
 
-While working, pass your files. The whole tree runs once, at the end.
+While working, pass your files (`vp lint <files>`, `vp test run <files>`). `pnpm run ci` runs once, at the end.
 
 ## Workflow
 
@@ -57,20 +60,20 @@ While working, pass your files. The whole tree runs once, at the end.
 
 ## Tests
 
-Vitest is the only runner: `node` for core, `browser` (Chromium, real key events) for components, and four `storybook*` projects that run every story in every theme. Each contract row, ARIA state and announcement is proved once, in the cheapest layer (`testing` skill). **Keyboard rows are tested in `<name>.test.tsx`.** Patterns (`packages/patterns`) have no unit tests: they are components composed, so WCAG is proved by axe in every story state in every theme and by their contract. There is no e2e layer. **`apps/docs` has no tests of any kind** (no page, shell, navigation, example, lib or action tests): the library's components are tested in their packages and in Storybook, and the docs site only presents them.
+Vitest is the only runner: `node` for core, `browser` (Chromium, real key events) for components, and `storybook`, which runs every story in the light, standard theme. Each contract row, ARIA state and announcement is proved once, in the cheapest layer (`testing` skill). **Keyboard rows are tested in `<name>.test.tsx`, and only there; axe runs in stories, and only there; a story `play` proves only what no test does; contrast in all four themes is `theme:check`'s.** Patterns (`packages/patterns`) have no unit tests: they are components composed, so WCAG is proved by axe in every story state and by their contract. There is no e2e layer. **`apps/docs` has no tests of any kind** (no page, shell, navigation, example, lib or action tests): the library's components are tested in their packages and in Storybook, and the docs site only presents them.
 
 ## Quality gates
 
 Nothing is done until all of these pass. The orchestrator runs them, once, at the end; CI is the whole-tree gate.
 
-1. `vp check`: no lint or type errors. Formatting is advisory: `vp fmt <files>` on what you commit.
-2. `vp run test` (the whole tree): green, with 0 axe violations in every story state (`wcag2a`, `wcag2aa`, `wcag21a`, `wcag21aa`, `wcag22aa`) and a named test for every keyboard-contract row of a component (a pattern's rows need none).
-3. `vp run i18n:check` and `vp run theme:check`.
+1. `pnpm run lint` and `pnpm run check`: no lint or type errors. Run `pnpm run format` on what you commit: `pnpm run ci` fails on unformatted files.
+2. `pnpm run test` (the whole tree): green, with 0 axe violations in every story state in the light theme (`wcag2a`, `wcag2aa`, `wcag21a`, `wcag21aa`, `wcag22aa`) and a named test for every keyboard-contract row of a component (a pattern's rows need none).
+3. `vp run i18n:check` and `vp run theme:check` (contrast in all four themes).
 4. The component has a hook, a compound component, stories (every state, RTL, forced-colors, and a `Keyboard` story if it has a focusable part) and a `<name>.a11y.md` that matches the tests. Its Docs page shows the contract's Keyboard section.
 5. `accessibility-reviewer` returns APPROVE.
 6. Every Automated row of the AT matrix (`docs/accessibility.md`) is `pass` or `n/a` with a reason the reviewer agrees with (agent check only), and every Core row passes before `beta`: an agent check proved by tests that re-run, **and** a human check on the real AT. **Agents never write or claim a human check.**
 
-Forced colours, reduced motion and 320px reflow are not gated per change. Four projects sweep the stories of the components in `sweepComponents` in `vite.config.ts` (`vp test run --project storybook-forced-colors | -reduced-motion | -reflow | -text-spacing`). CI runs them in one serial step after `vp run test`; they are not part of `vp run test`, and components outside the list are not swept (`testing` skill). CI also runs `vp test run --project smoke`: a few live requests to geo.kvirn.com (HTTP 200, the JSON parses, every geocoder's `countries` is in the service's `/health` list). It is the only test that uses the network, and it's never part of `vp run test`.
+Forced colours, reduced motion, 320px reflow and text spacing are not gated per change. Four projects sweep the stories of the components in `sweepComponents` in `vite.config.ts` (`pnpm run sweep`, or `vp test run --project storybook-forced-colors | -reduced-motion | -reflow | -text-spacing`). `pnpm run ci` runs them last; they are not part of `pnpm run test`, and components outside the list are not swept (`testing` skill). CI runs on PRs and pushes to `main` and `development`: its gates job is `pnpm run ci`. A nightly job runs `pnpm run smoke`: a few live requests to geo.kvirn.com (HTTP 200, the JSON parses, every geocoder's `countries` is in the service's `/health` list). It is the only test that uses the network, and it's never part of `test` or `ci`.
 
 ## Hard rules
 

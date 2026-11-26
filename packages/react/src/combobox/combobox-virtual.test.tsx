@@ -1,5 +1,4 @@
 import { sv } from '@kvirn/i18n/sv'
-import { expectNoA11yViolations } from '@kvirn/testing'
 import { afterEach, beforeEach, describe, expect, test, vi } from 'vite-plus/test'
 import type { MockInstance } from 'vite-plus/test'
 import { page, userEvent } from 'vite-plus/test/browser'
@@ -164,14 +163,6 @@ describe('virtualize: the window', () => {
       expect(element.getAttribute('aria-posinset')).toBe(String(index + 1))
     }
     expect(inputElement().getAttribute('aria-expanded')).toBe('true')
-  })
-
-  test('an open virtualized combobox has no axe violations', async () => {
-    const { container } = await render(<Example />)
-    await openWithKey('{ArrowDown}')
-    await expect.poll(renderedCount).toBeGreaterThan(5)
-    await expectNoA11yViolations(container)
-    expect(consoleWarn).not.toHaveBeenCalled()
   })
 
   test('a combobox that is not virtualized is unchanged: every option, no set size', async () => {

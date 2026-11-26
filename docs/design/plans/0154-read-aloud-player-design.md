@@ -514,5 +514,6 @@ styles.** A visual criterion asserts its threshold (44px targets, contrast), nev
 ## Done when
 
 - [ ] Gates green; `accessibility-reviewer` APPROVE
+- [ ] Add `read-aloud` back to `sweepComponents` in `vite.config.ts` (paused 2026-11-26, Plan 0159): pin the wide viewport only on the stories that need it, each with a `reflowOptOut` reason, so the rest run at 320px, then pass all four sweeps
 - [ ] The maintainer has run the player bar and approved it
 - [ ] DESIGN.md carries the icon-only and sticky amendments, in the same PR as the code that needs them

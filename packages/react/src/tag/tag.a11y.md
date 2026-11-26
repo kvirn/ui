@@ -78,7 +78,7 @@ Headless: no CSS. With `@kvirn/theme/theme.css`, a static `kv-tag` is a `surface
 - 2.4.7 Focus Visible: the theme's focus ring on the button.
 - 2.5.3 Label in Name: `tag.test.tsx › the remove button's name contains its visible text`.
 - 2.5.8 Target Size: the whole chip is the target.
-- 4.1.2 Name, Role, Value: a native button with a name (axe test).
+- 4.1.2 Name, Role, Value: a native button with a name (axe in the stories).
 - 4.1.3 Status Messages: `tag.test.tsx › removing a tag announces tag.removed` and `announceRemoval={false}` says nothing.
 
 ## AT test record
@@ -86,8 +86,8 @@ Headless: no CSS. With `@kvirn/theme/theme.css`, a static `kv-tag` is a `surface
 | AT + browser + OS                                                          | Agent check | Human check | Result  | Notes                                                                                                          |
 | -------------------------------------------------------------------------- | ----------- | ----------- | ------- | -------------------------------------------------------------------------------------------------------------- |
 | **Automated (re-runnable tests)**                                          |             |             |         |                                                                                                                |
-| axe, WCAG 2.2 A and AA, every story, 4 themes                              | pass        | n/a         | pass    | tag.stories.tsx, every story, 4 themes                                                                         |
-| Markup and ARIA (roles, names, ids, states)                                | pass        | n/a         | pass    | tag.test.tsx › the list is named by the label and is not rendered while empty; expectNoA11yViolations          |
+| axe, WCAG 2.2 A and AA, every story, light theme                           | pass        | n/a         | pass    | tag.stories.tsx, every story, light theme                                                                      |
+| Markup and ARIA (roles, names, ids, states)                                | pass        | n/a         | pass    | tag.test.tsx › the list is named by the label and is not rendered while empty                                  |
 | Keyboard contract rows (Vitest browser)                                    | pass        | n/a         | pass    | 7 rows, each names a test (tag.test.tsx › Tab reaches every remove button in order, then Clear all)            |
 | Focus order and management                                                 | pass        | n/a         | pass    | tag.test.tsx asserts focus (toHaveFocus); first rule: Tab reaches every remove button in order, then Clear all |
 | Display modes (forced colours, 320px reflow, text spacing, reduced motion) | pass        | n/a         | pass    | the four sweep projects (`storybook-forced-colors`, `-reduced-motion`, `-reflow`, `-text-spacing`), run in CI  |

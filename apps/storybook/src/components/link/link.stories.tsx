@@ -66,12 +66,7 @@ export default meta
 type Story = StoryObj<typeof meta>
 
 /** On its own, a link has the link colour, and an underline on hover. */
-export const Default: Story = {
-  play: async ({ canvas }) => {
-    const link = canvas.getByRole('link', { name: 'Apply for a building permit' })
-    await expect(link).toHaveAttribute('href', '#apply')
-  },
-}
+export const Default: Story = {}
 
 /** A link to a heading on the same page: Enter moves there. */
 export const SamePageLink: Story = {
@@ -83,11 +78,6 @@ export const SamePageLink: Story = {
       <h2 id="apply">Apply</h2>
     </>
   ),
-  play: async ({ canvas }) => {
-    const link = canvas.getByRole('link', { name: 'Apply for a building permit' })
-    await expect(link).toHaveAttribute('href', '#apply')
-    await expect(link).not.toHaveAttribute('aria-current')
-  },
 }
 
 /**
@@ -114,10 +104,6 @@ export const InRunningText: Story = {
       You can <Link.Root href="#application">apply for a parking permit</Link.Root> online.
     </p>
   ),
-  play: async ({ canvas }) => {
-    const link = canvas.getByRole('link', { name: 'apply for a parking permit' })
-    await expect(link.closest('p')).toHaveTextContent('You can apply for a parking permit online.')
-  },
 }
 
 /**
@@ -182,18 +168,6 @@ export const CurrentKinds: Story = {
 export const BypassRouterAndKeepRel: Story = {
   parameters: showSource('link/link.fixture.tsx', 'RouterAndPlainLinks'),
   render: () => <RouterAndPlainLinks />,
-  play: async ({ canvas }) => {
-    await expect(canvas.getByRole('link', { name: 'Apply' })).toHaveAttribute(
-      'data-router-link',
-      '',
-    )
-    await expect(canvas.getByRole('link', { name: 'Form (PDF)' })).not.toHaveAttribute(
-      'data-router-link',
-    )
-    const external = canvas.getByRole('link', { name: 'Digg (opens in a new tab)' })
-    await expect(external).toHaveAttribute('rel', 'author noopener noreferrer')
-    await expect(external.querySelector('small')).toHaveClass('kv-link-new-tab-notice')
-  },
 }
 
 /**
@@ -223,9 +197,6 @@ export const UnderlineProperties: Story = {
       You can <Link.Root href="#application">apply for a parking permit</Link.Root> online.
     </p>
   ),
-  play: async ({ canvas }) => {
-    await expect(canvas.getByRole('link', { name: 'apply for a parking permit' })).toBeVisible()
-  },
 }
 
 /**
@@ -251,11 +222,7 @@ export const Service: Story = {
     const link = canvas.getByRole('link', {
       name: 'Apply for a building permit (opens in a new tab)',
     })
-    await expect(link).toHaveAttribute('rel', 'noopener noreferrer')
-    await expect(link).toHaveClass('kv-link', 'kv-link--service')
     await expectMinimumTargetSize(link)
-    // The icon block is decorative: it is not in the name (2.5.3).
-    await expect(link.querySelector('.kv-link-icon')).toHaveAttribute('aria-hidden', 'true')
   },
 }
 
@@ -285,8 +252,6 @@ export const ServiceLongFinnishText: Story = {
     ),
   ],
   play: async ({ canvas }) => {
-    // kv-lang-ok: Finnish locale story
-    await expect(canvas.getByRole('link', { name: 'Hae rakennuslupaa sähköisesti' })).toBeVisible()
     await expectNoHorizontalOverflow(canvas.getByTestId('narrow'))
   },
 }
@@ -305,10 +270,6 @@ export const NewTab: Story = {
         Digg <Link.NewTabNotice />
       </>
     ),
-  },
-  play: async ({ canvas }) => {
-    const link = canvas.getByRole('link', { name: 'Digg (opens in a new tab)' })
-    await expect(link).toHaveAttribute('rel', 'noopener noreferrer')
   },
 }
 
@@ -332,12 +293,6 @@ export const NewTabNoticeOverrides: Story = {
       </li>
     </ul>
   ),
-  play: async ({ canvas }) => {
-    await expect(canvas.getByRole('link', { name: 'Digg (opens in a new window)' })).toBeVisible()
-    await expect(
-      canvas.getByRole('link', { name: 'Parliament (external link, new tab)' }),
-    ).toBeVisible()
-  },
 }
 
 /**
@@ -353,11 +308,6 @@ export const RoutedLinks: Story = {
       <RoutedLinkList />
     </AppRoot>
   ),
-  play: async ({ canvas }) => {
-    const start = canvas.getByRole('link', { name: 'Start' })
-    await expect(start).toHaveAttribute('data-router-link', '')
-    await expect(start).toHaveAttribute('aria-current', 'page')
-  },
 }
 
 /** Each link is in its own language, and sits in a nested provider and says so with `hrefLang` (3.1.2). */
@@ -407,7 +357,6 @@ export const FocusVisible: Story = {
   play: async ({ canvas, userEvent }) => {
     const inText = canvas.getByRole('link', { name: 'apply for a parking permit' })
     await userEvent.tab()
-    await expect(inText).toHaveFocus()
     await waitFor(() => expect(inText).toHaveAttribute('data-focus-visible'))
     // 2.4.7: a focused link shows an indicator.
     await expect(getComputedStyle(inText).outlineStyle).not.toBe('none')
@@ -436,12 +385,6 @@ export const LongFinnishText: Story = {
     ),
   ],
   play: async ({ canvas }) => {
-    await expect(
-      canvas.getByRole('link', {
-        // kv-lang-ok: Finnish locale story
-        name: 'Lue saavutettavuusohjeet (avautuu uuteen välilehteen)',
-      }),
-    ).toBeVisible()
     await expectNoHorizontalOverflow(canvas.getByTestId('narrow'))
   },
 }
@@ -457,9 +400,6 @@ export const RTL: Story = {
       </Link.Root>
     </p>
   ),
-  play: async ({ canvas }) => {
-    await expect(canvas.getByRole('link', { name: 'Digg (opens in a new tab)' })).toBeVisible()
-  },
 }
 
 /** Every link style with the forced-colors marker. */

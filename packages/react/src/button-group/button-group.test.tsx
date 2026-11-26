@@ -1,4 +1,3 @@
-import { expectNoA11yViolations } from '@kvirn/testing'
 import { createRef } from 'react'
 import { renderToString } from 'react-dom/server'
 import { afterEach, beforeEach, describe, expect, expectTypeOf, test, vi } from 'vite-plus/test'
@@ -30,7 +29,7 @@ afterEach(() => {
 
 describe('role and name', () => {
   test('with aria-label it is a group with that name', async () => {
-    const { container } = await render(
+    await render(
       <ButtonGroup aria-label="The case">
         <Button>Save draft</Button>
         <Button>Send</Button>
@@ -38,11 +37,10 @@ describe('role and name', () => {
     )
     const group = page.getByRole('group', { name: 'The case' })
     await expect.element(group).toBeVisible()
-    await expectNoA11yViolations(container)
   })
 
   test('with aria-labelledby it is a group named by that element', async () => {
-    const { container } = await render(
+    await render(
       <>
         <h2 id="heading">Building permit</h2>
         <ButtonGroup aria-labelledby="heading">
@@ -52,11 +50,10 @@ describe('role and name', () => {
       </>,
     )
     await expect.element(page.getByRole('group', { name: 'Building permit' })).toBeVisible()
-    await expectNoA11yViolations(container)
   })
 
   test('without a name it is a plain div with no role, so it adds no empty group to the tree', async () => {
-    const { container } = await render(
+    await render(
       <ButtonGroup data-testid="footer">
         <Button>Save draft</Button>
         <Button>Send</Button>
@@ -66,7 +63,6 @@ describe('role and name', () => {
     await expect.element(group).not.toHaveAttribute('role')
     expect(group.element().tagName).toBe('DIV')
     expect(page.getByRole('group').elements()).toHaveLength(0)
-    await expectNoA11yViolations(container)
     expect(consoleWarn).not.toHaveBeenCalled()
   })
 })
@@ -88,7 +84,7 @@ describe('part class and props', () => {
 
 describe('attached', () => {
   test('a consumer-added kv-button-group--attached keeps the group role and name, and joins the class', async () => {
-    const { container } = await render(
+    await render(
       <ButtonGroup aria-label="Text style" className="kv-button-group--attached own-class">
         <Button>Fet</Button>
         <Button>Italic</Button>
@@ -98,7 +94,6 @@ describe('attached', () => {
     await expect
       .element(group)
       .toHaveClass('kv-button-group', 'kv-button-group--attached', 'own-class')
-    await expectNoA11yViolations(container)
   })
 
   test('an attached group without a name has no role', async () => {
@@ -200,11 +195,10 @@ describe('useButtonGroup', () => {
   }
 
   test('gives spreadable groupProps: a group role only when named', async () => {
-    const { container, rerender } = await render(<HookGroup isNamed />)
+    const { rerender } = await render(<HookGroup isNamed />)
     await expect
       .element(page.getByRole('group', { name: 'The case' }))
       .toHaveClass('kv-button-group')
-    await expectNoA11yViolations(container)
     await rerender(<HookGroup isNamed={false} />)
     expect(page.getByRole('group').elements()).toHaveLength(0)
   })

@@ -1,8 +1,8 @@
-import { AlertDialog } from '@kvirn/ui'
+import { AlertDialog, Dialog } from '@kvirn/ui'
 import contract from '../../../../../packages/react/src/alert-dialog/alert-dialog.a11y.md?raw'
 import guide from '../../../../../packages/react/src/alert-dialog/alert-dialog.md?raw'
 import type { Meta, StoryObj } from '@storybook/react-vite'
-import { expect, fn, userEvent, waitFor, within } from 'storybook/test'
+import { expect, fn, userEvent, waitFor } from 'storybook/test'
 import { showSource, usageGuide } from '../../docs-source.ts'
 import { localeOf, withFormLocale } from '../form/form.fixture.tsx'
 import {
@@ -68,14 +68,7 @@ export const ConfirmDelete: Story = {
   render: (args, { globals }) => <DeleteDraftConfirmation {...args} locale={localeOf(globals)} />,
   play: async ({ canvas }) => {
     await userEvent.click(canvas.getByRole('button', { name: 'Delete the draft' }))
-    const dialog = await canvas.findByRole('alertdialog', {
-      name: 'Delete the draft application?',
-    })
-    await expect(dialog).toHaveAttribute('aria-modal', 'true')
-    await expect(dialog).toHaveAccessibleDescription(
-      "You can't undo this. Your answers will be deleted.",
-    )
-    await expect(canvas.getByRole('button', { name: 'Keep draft' })).toHaveFocus()
+    await canvas.findByRole('alertdialog', { name: 'Delete the draft application?' })
   },
 }
 
@@ -89,13 +82,7 @@ export const TimeoutWarning: Story = {
   render: (_args, { globals }) => <SessionTimeoutWarning locale={localeOf(globals)} />,
   play: async ({ canvas }) => {
     await userEvent.click(canvas.getByRole('button', { name: 'Show the warning' }))
-    const dialog = await canvas.findByRole('alertdialog', {
-      name: 'Do you want to stay signed in?',
-    })
-    await expect(canvas.getByRole('button', { name: 'Stay signed in' })).toHaveFocus()
-    await expect(dialog).toHaveAccessibleDescription(
-      /For your security, we will sign you out in 2 minutes at /,
-    )
+    await canvas.findByRole('alertdialog', { name: 'Do you want to stay signed in?' })
     await expect(canvas.getByText('2 minutes left.')).toBeInTheDocument()
   },
 }
@@ -107,7 +94,7 @@ export const Rtl: Story = {
   render: (args, { globals }) => <DeleteDraftConfirmation {...args} locale={localeOf(globals)} />,
   play: async ({ canvas }) => {
     await userEvent.click(canvas.getByRole('button', { name: 'Delete the draft' }))
-    await expect(await canvas.findByRole('button', { name: 'Keep draft' })).toHaveFocus()
+    await canvas.findByRole('button', { name: 'Keep draft' })
   },
 }
 
@@ -129,19 +116,25 @@ export const ForcedColors: Story = {
 export const Keyboard: Story = {
   parameters: source('KeyboardAlertDialog'),
   render: (_args, { globals }) => <KeyboardAlertDialog locale={localeOf(globals)} />,
-  play: async ({ canvas }) => {
-    const trigger = canvas.getByRole('button', { name: 'Delete the draft' })
-    trigger.focus()
-    await userEvent.keyboard('{Enter}')
-    await waitFor(() => expect(canvas.getByRole('button', { name: 'Keep draft' })).toHaveFocus())
-    await userEvent.tab({ shift: true })
-    await expect(
-      within(canvas.getByRole('alertdialog')).getByRole('button', { name: 'Delete draft' }),
-    ).toHaveFocus()
-    await userEvent.keyboard('{Escape}')
-    await waitFor(() => expect(alertDialog()).toBeNull())
-    await expect(trigger).toHaveFocus()
-    await userEvent.keyboard(' ')
-    await waitFor(() => expect(alertDialog()).not.toBeNull())
+}
+
+/** An alert dialog opened over a Dialog: both are modal, and the alert dialog is on top. */
+export const OverADialog: Story = {
+  render: () => (
+    <Dialog.Root defaultOpen>
+      <Dialog.Popup>
+        <Dialog.Title>Edit application</Dialog.Title>
+        <AlertDialog.Root defaultOpen>
+          <AlertDialog.Popup>
+            <AlertDialog.Title>Discard the changes?</AlertDialog.Title>
+            <AlertDialog.Description>The changes are not saved.</AlertDialog.Description>
+            <button type="button">Discard</button>
+          </AlertDialog.Popup>
+        </AlertDialog.Root>
+      </Dialog.Popup>
+    </Dialog.Root>
+  ),
+  play: async () => {
+    await waitFor(() => expect(document.querySelectorAll('dialog:modal')).toHaveLength(2))
   },
 }

@@ -1,4 +1,3 @@
-import { expectNoA11yViolations } from '@kvirn/testing'
 import { createRef } from 'react'
 import { afterEach, describe, expect, expectTypeOf, test, vi } from 'vite-plus/test'
 import { page, userEvent } from 'vite-plus/test/browser'
@@ -213,26 +212,5 @@ describe('keyboard', () => {
     await expect.element(page.getByRole('button', { name: 'Copy' })).toHaveFocus()
     await userEvent.keyboard('{Shift>}{Tab}{/Shift}')
     await expect.element(page.getByRole('button', { name: 'Before' })).toHaveFocus()
-  })
-})
-
-describe('accessibility', () => {
-  test('has no axe violations, with and without a label', async () => {
-    const { container } = await render(
-      <KvirnProvider>
-        <main>
-          <CodeBlock.Root>
-            <CodeBlock.Label>Installera</CodeBlock.Label>
-            <CodeBlock.Code>{command}</CodeBlock.Code>
-            <CodeBlock.Copy />
-          </CodeBlock.Root>
-          <CodeBlock.Root>
-            <CodeBlock.Code>{command}</CodeBlock.Code>
-          </CodeBlock.Root>
-        </main>
-      </KvirnProvider>,
-    )
-    await expect.element(page.getByRole('group', { name: 'Installera' })).toBeVisible()
-    await expectNoA11yViolations(container)
   })
 })

@@ -4,7 +4,6 @@ import { fi } from '@kvirn/i18n/fi'
 import { nb } from '@kvirn/i18n/nb'
 import { nn } from '@kvirn/i18n/nn'
 import { sv } from '@kvirn/i18n/sv'
-import { expectNoA11yViolations } from '@kvirn/testing'
 import { Fragment, createRef } from 'react'
 import type { ReactNode } from 'react'
 import { renderToString } from 'react-dom/server'
@@ -142,13 +141,12 @@ const nextFrame = () => new Promise<void>((resolve) => requestAnimationFrame(() 
 
 describe('rendering', () => {
   test('renders a navigation landmark named by aria-labelledby, with no aria-label', async () => {
-    const { container } = await render(<Page />)
+    await render(<Page />)
     const navigation = page.getByRole('navigation', { name: 'On this page' })
     await expect.element(navigation).toBeVisible()
     await expect.element(navigation).toHaveAttribute('aria-labelledby', 'title')
     await expect.element(navigation).not.toHaveAttribute('aria-label')
     expect(navigation.element().tagName).toBe('NAV')
-    await expectNoA11yViolations(container)
     expect(consoleWarn).not.toHaveBeenCalled()
   })
 

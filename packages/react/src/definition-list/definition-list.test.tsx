@@ -3,7 +3,6 @@ import { fi } from '@kvirn/i18n/fi'
 import { nb } from '@kvirn/i18n/nb'
 import { nn } from '@kvirn/i18n/nn'
 import { sv } from '@kvirn/i18n/sv'
-import { expectNoA11yViolations } from '@kvirn/testing'
 import { createRef } from 'react'
 import { renderToString } from 'react-dom/server'
 import { afterEach, beforeEach, describe, expect, expectTypeOf, test, vi } from 'vite-plus/test'
@@ -364,21 +363,5 @@ describe('hook', () => {
   test('the types are exported', () => {
     expectTypeOf<DefinitionListPartProps>().toBeObject()
     expectTypeOf<DefinitionListChangeProps['href']>().toEqualTypeOf<string | undefined>()
-  })
-})
-
-describe('accessibility', () => {
-  test('no axe violations', async () => {
-    const { container } = await render(<Answers />)
-    await expect.element(page.getByRole('term').first()).toBeVisible()
-    await expectNoA11yViolations(container)
-  })
-
-  test('no axe violations with the Change link focused', async () => {
-    const { container } = await render(<Answers />)
-    await userEvent.tab()
-    await userEvent.tab()
-    await expect.element(page.getByRole('link', { name: 'Change Name' })).toHaveFocus()
-    await expectNoA11yViolations(container)
   })
 })

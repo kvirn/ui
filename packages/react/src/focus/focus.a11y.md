@@ -60,14 +60,14 @@ Focus moves programmatically when `active` changes. With `contain: 'loop'` only 
 - 2.4.7 Focus Visible (AA): focus goes to an element that can show a focus ring, never to the page body.
 - 2.4.11 Focus Not Obscured (Minimum) (AA): the scope draws nothing over the page, and each element it focuses is scrolled into view (`use-focus.test.tsx › focus management › a stop far below the fold is scrolled into view when the scope opens (2.4.11)`). A sticky header still needs `scroll-padding` (consumer).
 - 3.2.1 On Focus (A): an element in the scope getting focus never moves focus or changes context (`use-focus.test.tsx › focus management › focus moving to another element in the scope, or a re-render, never moves focus again (3.2.1)`). The scope moves focus only when `active` or `moveOn`'s `key` changes, never on the first render (`moveOn › does not move on the first render, and adds no tabindex that stays`).
-- No axe violations with an open scope (`accessibility › an open scope has no axe violations`).
+- No axe violations with an open scope (the `Loop` story).
 
 ## AT test record
 
 | AT + browser + OS                                                          | Agent check | Human check | Result  | Notes                                                       |
 | -------------------------------------------------------------------------- | ----------- | ----------- | ------- | ----------------------------------------------------------- |
 | **Automated (re-runnable tests)**                                          |             |             |         |                                                             |
-| axe, WCAG 2.2 A and AA, every story, 4 themes                              | pass        | n/a         | pass    | focus.stories.tsx, every story, 4 themes                    |
+| axe, WCAG 2.2 A and AA, every story, light theme                           | pass        | n/a         | pass    | focus.stories.tsx, every story, light theme                 |
 | Markup and ARIA (roles, names, ids, states)                                | pending     | n/a         | pending | a hook that renders nothing: no markup of its own to assert |
 | Keyboard contract rows (Vitest browser)                                    | pass        | n/a         | pass    | 7 rows, each names a test in `use-focus.test.tsx`           |
 | Focus order and management                                                 | pass        | n/a         | pass    | `use-focus.test.tsx` asserts focus                          |
