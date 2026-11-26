@@ -42,4 +42,5 @@ export const useReadAloudTexts = defineExampleTexts({ en })
 // the surrounding English interface (3.1.2 Language of Parts).
 // kv-lang-ok: the quoted decision is in Swedish on purpose, to show the voice follows the content's own language, never the page's interface language
 export const swedishDecisionText =
+  // kv-lang-ok: Swedish sample decision text, see the marker above
   'Beslutet vinner laga kraft tre veckor efter att det har kungjorts.'

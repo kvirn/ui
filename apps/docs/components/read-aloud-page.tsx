@@ -312,6 +312,7 @@ export function ReadAloudPage({
             your privacy notice, is still your own job.
           </li>
           <li>
+            {/* kv-lang-ok: English prose that names Norwegian Bokmål by its own spelling */}
             Today the service has voices for Swedish, Norwegian (Bokmål) and English only. A page in
             Finnish or Norwegian Nynorsk gets no player at all, not even for a moment: the check
             happens before anything is shown, so nothing flashes on screen.

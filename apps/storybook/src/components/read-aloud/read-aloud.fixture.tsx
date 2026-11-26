@@ -245,7 +245,9 @@ export function FinnishArticle({ ref }: { ref: React.Ref<HTMLElement> }) {
     <article ref={ref} lang="fi" data-testid="article">
       {/* kv-lang-ok: proves the no-voice case (D9) for a language the service doesn't support */}
       <h2>Rakennusluvan hakeminen</h2>
+      {/* kv-lang-ok: Finnish sample content for the no-voice case */}
       <p>Haet rakennuslupaa siitä kunnasta, johon rakennus tulee.</p>
+      {/* kv-lang-ok: Finnish sample content for the no-voice case */}
       <p>Liitä hakemukseen asemapiirros ja lyhyt kuvaus työstä.</p>
     </article>
   )

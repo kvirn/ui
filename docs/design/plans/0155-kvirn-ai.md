@@ -1,5 +1,7 @@
 # Plan 0155: Kvirn AI (ai.kvirn.com) and `@kvirn/ai`: Klarspråk, Chat and Search
 
+<!-- kv-lang-ok-file: the plan quotes Swedish terms, config examples and the sv message catalogue for the klarspråk, chat and search features -->
+
 - **Status:** Draft
 - **Owner:** lead (orchestrator) → component-engineer, ux-designer, accessibility-reviewer; user for the service repo, the server and the model choice
 - **Created:** 2026-10-25 · **Target:** after 1.2 (ReadAloud), no milestone yet

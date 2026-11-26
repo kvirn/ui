@@ -104,7 +104,7 @@ With none of the three, `ReadAloud.Root` renders nothing and a development warni
 </KvirnProvider>
 ```
 
-**The voice language is the content's, never the UI's.** `KvirnProvider`'s `locale` is what the buttons say ("Listen" vs "Lyssna"); the voice is picked for the _content's_ declared language, read from the closest `[lang]` on or above it. A Finnish municipality with a Finnish-language UI around Swedish-language content still reads it in Swedish, and the mirror case (an English UI over Swedish content) never reads Swedish aloud with an English voice (3.1.2 Language of Parts). Only content with no `lang` at all falls back to the provider's `locale`, then to `en`.
+**The voice language is the content's, never the UI's.** `KvirnProvider`'s `locale` is what the buttons say ("Listen" vs "Lyssna"); the voice is picked for the _content's_ declared language, read from the closest `[lang]` on or above it. A Finnish municipality with a Finnish-language UI around Swedish-language content still reads it in Swedish, and the mirror case (an English UI over Swedish content) never reads Swedish aloud with an English voice (3.1.2 Language of Parts). Only content with no `lang` at all falls back to the provider's `locale`, then to `en`. <!-- kv-lang-ok: quotes the Swedish button label Lyssna to contrast it with the content language -->
 
 ## Hook
 
