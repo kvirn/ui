@@ -94,6 +94,9 @@ export function camelCase(name) {
   return reservedWords.has(camel) ? `${camel}Icon` : camel
 }
 
+export const componentName = (name) =>
+  `${name.replace(/(?:^|-)([a-z0-9])/g, (_, character) => character.toUpperCase())}Icon`
+
 const quote = (text) => `'${text.replaceAll('\\', '\\\\').replaceAll("'", "\\'")}'`
 
 // The text matches what `vp fmt` prints (100 columns), so formatting generated files changes nothing.
@@ -151,6 +154,26 @@ export function buildOutputs(svgDirectory, mirrorInRtl) {
     const shapes = parseIcon(`${name}.svg`, readFileSync(join(svgDirectory, `${name}.svg`), 'utf8'))
     outputs.set(`src/icons/${name}.ts`, moduleText(name, shapes, mirrorInRtl.includes(name)))
   }
+  for (const name of names) {
+    outputs.set(
+      `src/react/${name}.ts`,
+      `${header}import type { ReactElement } from 'react'
+import { ${camelCase(name)} } from '../icons/${name}.ts'
+import { SvgIcon, type IconComponentProps } from '../svg-icon.ts'
+
+export function ${componentName(name)}(props: IconComponentProps): ReactElement {
+  return SvgIcon({ icon: ${camelCase(name)}, ...props })
+}
+`,
+    )
+  }
+  outputs.set(
+    'src/react.ts',
+    `${header}export { createIconComponent, SvgIcon } from './svg-icon.ts'
+export type { IconComponentProps, SvgIconProps } from './svg-icon.ts'
+${names.map((name) => `export { ${componentName(name)} } from './react/${name}.ts'`).join('\n')}
+`,
+  )
   outputs.set(
     'src/index.ts',
     `${header}export type { IconData, IconShape } from './icon-data.ts'\n${names.map((name) => `export { ${camelCase(name)} } from './icons/${name}.ts'`).join('\n')}\n`,
@@ -180,9 +203,10 @@ export function readMirrorList() {
 
 if (process.argv[1] === fileURLToPath(import.meta.url)) {
   const outputs = buildOutputs(join(packageRoot, 'svg'), readMirrorList())
-  const iconsDirectory = join(packageRoot, 'src/icons')
-  rmSync(iconsDirectory, { recursive: true, force: true })
-  mkdirSync(iconsDirectory, { recursive: true })
+  for (const directory of ['src/icons', 'src/react']) {
+    rmSync(join(packageRoot, directory), { recursive: true, force: true })
+    mkdirSync(join(packageRoot, directory), { recursive: true })
+  }
   for (const [path, text] of outputs) writeFileSync(join(packageRoot, path), text)
-  console.log(`Generated ${outputs.size - 2} icons.`)
+  console.log(`Generated ${(outputs.size - 3) / 2} icons.`)
 }

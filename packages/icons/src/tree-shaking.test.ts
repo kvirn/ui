@@ -5,7 +5,7 @@ import { fileURLToPath } from 'node:url'
 import { build } from 'vite-plus'
 import { describe, expect, it } from 'vite-plus/test'
 import * as everyIcon from './all.ts'
-import { add, arrowEast, bold, building } from './index.ts'
+import { add, arrowEast, arrowForward, bold, building } from './index.ts'
 
 const indexPath = fileURLToPath(new URL('./index.ts', import.meta.url))
 const reactPath = fileURLToPath(new URL('./react.ts', import.meta.url))
@@ -64,6 +64,19 @@ describe('tree-shaking', () => {
       .filter((value) => !shapeValues(add).includes(value))
 
     for (const value of shapeValues(add)) expect(code).toContain(value)
+    for (const value of others) expect(code).not.toContain(value)
+  })
+
+  it('importing ArrowForwardIcon bundles one icon', async () => {
+    const code = await bundleEntryOf(
+      `import { ArrowForwardIcon } from ${JSON.stringify(reactPath)}\nconsole.log(ArrowForwardIcon)\n`,
+    )
+    const others = [add, arrowEast, bold, building]
+      .flatMap(shapeValues)
+      .filter((value) => !shapeValues(arrowForward).includes(value))
+
+    for (const value of shapeValues(arrowForward)) expect(code).toContain(value)
+    expect(others.length).toBeGreaterThan(0)
     for (const value of others) expect(code).not.toContain(value)
   })
 })

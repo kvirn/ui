@@ -20,17 +20,29 @@ import { arrowForward } from '@kvirn/icons'
 arrowForward.shapes // [['path', { d: '…' }], …]
 ```
 
-In React, `SvgIcon` draws it. With no `title`, `aria-label` or `aria-labelledby` the icon is decorative and hidden from assistive technology; give it a name when it carries meaning on its own.
+In React, every icon is a component. With no `title`, `aria-label` or `aria-labelledby` the icon is decorative and hidden from assistive technology; give it a name when it carries meaning on its own. Take `title` or `aria-label` from your app's translations. Only the icons you import end up in your bundle.
 
 ```tsx
-import { arrowForward, attention } from '@kvirn/icons'
-import { SvgIcon } from '@kvirn/icons/react'
+import { ArrowForwardIcon, AttentionIcon } from '@kvirn/icons/react'
 
-<SvgIcon icon={arrowForward} />
-<SvgIcon icon={attention} size={20} title="Warning" />
+<ArrowForwardIcon />
+<ArrowForwardIcon size={20} />
+<ArrowForwardIcon className="size-4" />   // CSS sizes it instead
+<AttentionIcon title="Warning" />
 ```
 
-An icon with `mirrorInRtl: true` (an arrow, for example) should be flipped in right-to-left text. `SvgIcon` doesn't flip it: that's up to you.
+`size`, `className`, `title` and the other SVG props pass through, except `tabIndex`, `onClick` and `aria-describedby`: an icon that does something goes inside a `<button>` or `<a>`, and the name goes on that control, not on the icon. To draw icon data you pick at runtime, use `SvgIcon`:
+
+```tsx
+import { allIcons, type LibraryIconName } from '@kvirn/icons/all'
+import { SvgIcon } from '@kvirn/icons/react'
+
+function PickedIcon({ name }: { name: LibraryIconName }) {
+  return <SvgIcon icon={allIcons[name]} />
+}
+```
+
+An icon with `mirrorInRtl: true` (an arrow, for example) should be flipped in right-to-left text. The components and `SvgIcon` don't flip it: that's up to you. The hint is `arrowForward.mirrorInRtl` from `@kvirn/icons`, and it's shown in the gallery. A flip is one rule, for example `.my-icon:dir(rtl) { transform: scaleX(-1) }`.
 
 `@kvirn/icons/all` exports every icon and the list of names, for pickers and galleries. It isn't tree-shakeable.
 

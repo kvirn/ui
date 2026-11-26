@@ -3,6 +3,7 @@ export function buildOutputs(
   mirrorInRtl: readonly string[],
 ): Map<string, string>
 export function camelCase(name: string): string
+export function componentName(name: string): string
 export function readMirrorList(): string[]
 export function parseIcon(
   file: string,

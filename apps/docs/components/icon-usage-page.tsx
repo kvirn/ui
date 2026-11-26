@@ -92,24 +92,33 @@ const icons = defineIcons({ bus, 'city-hall': cityHall })
               <p>
                 The icons are free for any use, commercial and public-sector use included, under the
                 MIT licence. The package depends on nothing else. Each icon is plain drawing data,
-                so any app can use it. For React, <code>@kvirn/icons/react</code> has a small{' '}
-                <code>SvgIcon</code> component that works in a Server Component too (React is the
-                only thing it needs):
+                so any app can use it. For React, <code>@kvirn/icons/react</code> has one component
+                per icon, such as <code>SearchIcon</code>, that works in a Server Component too
+                (React is the only thing it needs). Only the icons you import end up in your bundle.
+                Take <code>title</code> or <code>aria-label</code> from your app’s translations. An
+                icon that does something goes inside a <code>&lt;button&gt;</code> or{' '}
+                <code>&lt;a&gt;</code>, and the name goes on that control, not on the icon:
               </p>
               <CodeBlock
-                code={`import { search } from '@kvirn/icons'
-import { SvgIcon } from '@kvirn/icons/react'
+                code={`import { SearchIcon } from '@kvirn/icons/react'
 
-<SvgIcon icon={search} />                  // decorative: hidden from screen readers
-<SvgIcon icon={search} title="Search" />   // named: an image with an accessible name`}
+<SearchIcon />                  // decorative: hidden from screen readers
+<SearchIcon size={20} />
+<SearchIcon className="size-4" />
+<SearchIcon title="Search" />   // named: an image with an accessible name`}
               />
               <p>
                 Keep <code>currentColor</code>, the default, so the icon follows the text colour and
                 high-contrast modes. Do not hard-code a <code>fill</code> or <code>stroke</code>.
               </p>
               <p>
-                <code>SvgIcon</code> does not flip icons in right-to-left text. Each icon says
-                whether it should, and your code decides.
+                The icon components do not flip icons in right-to-left text. Each icon says whether
+                it should (<code>arrowForward.mirrorInRtl</code> from <code>@kvirn/icons</code>, and
+                the gallery above), and your code decides. A flip is one rule, for example{' '}
+                <code>
+                  .my-icon:dir(rtl) {'{'} transform: scaleX(-1) {'}'}
+                </code>
+                .
               </p>
             </>
           ),

@@ -2,7 +2,13 @@ import { readdirSync, readFileSync } from 'node:fs'
 import { join } from 'node:path'
 import { describe, expect, it } from 'vite-plus/test'
 import { allIcons } from './all.ts'
-import { buildOutputs, camelCase, parseIcon, readMirrorList } from '../scripts/generate.mjs'
+import {
+  buildOutputs,
+  camelCase,
+  componentName,
+  parseIcon,
+  readMirrorList,
+} from '../scripts/generate.mjs'
 
 const byName = (left: string, right: string) => left.localeCompare(right)
 const packageRoot = join(import.meta.dirname, '..')
@@ -44,6 +50,21 @@ describe('@kvirn/icons', () => {
       .map((file) => file.slice(0, -'.ts'.length))
       .sort(byName)
     expect(modules).toEqual(sourceNames)
+  })
+
+  it('has no stale generated react component module', () => {
+    const modules = readdirSync(join(packageRoot, 'src/react'))
+      .filter((file) => !file.endsWith('.d.ts'))
+      .map((file) => file.slice(0, -'.ts'.length))
+      .sort(byName)
+    expect(modules).toEqual(sourceNames)
+  })
+
+  it('gives every icon one component, with a name of its own', () => {
+    const names = sourceNames.map(componentName)
+    expect(new Set(names).size).toBe(sourceNames.length)
+    expect(names).toContain('ArrowForwardIcon')
+    expect(names).toContain('DeleteIcon')
   })
 
   it('gives no two icons the same export name', () => {

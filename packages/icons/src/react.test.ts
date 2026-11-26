@@ -1,11 +1,18 @@
 import { readdirSync, readFileSync } from 'node:fs'
-import { join } from 'node:path'
+import { join, sep } from 'node:path'
 import { createElement } from 'react'
 import { renderToStaticMarkup } from 'react-dom/server'
-import { describe, expect, it } from 'vite-plus/test'
+import { describe, expect, expectTypeOf, it } from 'vite-plus/test'
 import { add } from './icons/add.ts'
 import { spinner } from './icons/spinner.ts'
-import { createIconComponent, SvgIcon } from './react.ts'
+import {
+  ArrowForwardIcon,
+  createIconComponent,
+  DeleteIcon,
+  SvgIcon,
+  type IconComponentProps,
+} from './react.ts'
+import { arrowForward } from './icons/arrow-forward.ts'
 
 const sourceFiles = (directory: string): string[] =>
   readdirSync(directory, { withFileTypes: true }).flatMap((entry) =>
@@ -20,12 +27,13 @@ const render = (props: Record<string, unknown> = {}) =>
   renderToStaticMarkup(createElement(SvgIcon, { icon: add, ...props }))
 
 describe('@kvirn/icons standalone', () => {
-  it('imports no package but itself, and react only from react.ts', () => {
+  it('imports no package but itself, and react only from svg-icon.ts and src/react/', () => {
+    const mayImportReact = (file: string) =>
+      file.endsWith('svg-icon.ts') || file.includes(`${sep}react${sep}`)
     const offenders = sourceFiles(import.meta.dirname).filter((file) => {
       const text = readFileSync(file, 'utf8')
       return (
-        /from ['"]@kvirn\//.test(text) ||
-        (!file.endsWith('react.ts') && /from ['"]react/.test(text))
+        /from ['"]@kvirn\//.test(text) || (!mayImportReact(file) && /from ['"]react/.test(text))
       )
     })
     expect(offenders).toEqual([])
@@ -91,5 +99,32 @@ describe('SvgIcon', () => {
     expect(createIconComponent(add)).toBe(createIconComponent(add))
     expect(createIconComponent(add)).not.toBe(createIconComponent(spinner))
     expect(renderToStaticMarkup(createElement(createIconComponent(add)))).toBe(render())
+  })
+})
+
+describe('icon components', () => {
+  const draw = (props: Record<string, unknown> = {}) =>
+    renderToStaticMarkup(createElement(ArrowForwardIcon, props))
+
+  it('renders the same markup as SvgIcon with its data', () => {
+    expect(draw()).toBe(renderToStaticMarkup(createElement(SvgIcon, { icon: arrowForward })))
+  })
+
+  it('passes size, className and title through as SvgIcon does', () => {
+    const props = { size: 20, className: 'size-4', title: 'Next' }
+    expect(draw(props)).toBe(
+      renderToStaticMarkup(createElement(SvgIcon, { icon: arrowForward, ...props })),
+    )
+  })
+
+  it('takes no tabIndex, onClick or aria-describedby', () => {
+    expectTypeOf<IconComponentProps>().not.toHaveProperty('tabIndex')
+    expectTypeOf<IconComponentProps>().not.toHaveProperty('onClick')
+    expectTypeOf<IconComponentProps>().not.toHaveProperty('aria-describedby')
+    expectTypeOf<IconComponentProps>().toHaveProperty('aria-label')
+  })
+
+  it('names a reserved-word icon DeleteIcon, not DeleteIconIcon', () => {
+    expect(DeleteIcon.name).toBe('DeleteIcon')
   })
 })
