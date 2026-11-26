@@ -32,7 +32,7 @@ beforeAll(() => {
 }, 180_000)
 
 describe('@kvirn/ui/server build', () => {
-  for (const file of ['server.mjs', 'server.cjs']) {
+  for (const file of ['server.mjs', 'server.mjs']) {
     it(`${file} and every chunk it imports carry no 'use client'`, () => {
       const files = reachableFiles(file)
       expect(files.has(file)).toBe(true)
@@ -48,7 +48,7 @@ describe('@kvirn/ui/server build', () => {
     })
   }
 
-  for (const file of ['index.mjs', 'index.cjs', 'internal.mjs', 'internal.cjs']) {
+  for (const file of ['index.mjs', 'index.mjs', 'internal.mjs', 'internal.mjs']) {
     it(`${file} still starts with 'use client'`, () => {
       expect(startsWithClientDirective(file)).toBe(true)
     })

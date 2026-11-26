@@ -3,8 +3,6 @@ import { join, resolve } from 'node:path'
 
 const root = resolve(import.meta.dirname, '../..')
 
-type Condition = string | { default?: string }
-
 /**
  * Aliases `@kvirn/<package>` imports to the package's TypeScript source, so Storybook and the
  * tests need no build. A package's `exports` point to `dist`, exactly as an adopter gets them;
@@ -16,11 +14,11 @@ export function workspaceSourceAlias() {
     const pkgPath = join(root, 'packages', directory, 'package.json')
     const pkg = JSON.parse(readFileSync(pkgPath, 'utf8')) as {
       name: string
-      exports: Record<string, string | { import?: Condition }>
+      exports: Record<string, string | { default?: string }>
     }
     for (const [subpath, target] of Object.entries(pkg.exports)) {
-      if (typeof target === 'string' || !target.import) continue
-      const dist = typeof target.import === 'string' ? target.import : target.import.default
+      if (typeof target === 'string') continue
+      const dist = target.default
       if (!dist?.startsWith('./dist/')) continue
       const source = join(
         root,

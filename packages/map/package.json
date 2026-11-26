@@ -12,85 +12,40 @@
   ],
   "type": "module",
   "sideEffects": false,
-  "main": "./dist/index.cjs",
-  "module": "./dist/index.mjs",
-  "types": "./dist/index.d.cts",
+  "main": "./dist/index.mjs",
+  "types": "./dist/index.d.mts",
   "exports": {
     ".": {
-      "import": {
-        "types": "./dist/index.d.mts",
-        "default": "./dist/index.mjs"
-      },
-      "require": {
-        "types": "./dist/index.d.cts",
-        "default": "./dist/index.cjs"
-      }
+      "types": "./dist/index.d.mts",
+      "default": "./dist/index.mjs"
     },
     "./maplibre": {
-      "import": {
-        "types": "./dist/maplibre.d.mts",
-        "default": "./dist/maplibre.mjs"
-      },
-      "require": {
-        "types": "./dist/maplibre.d.cts",
-        "default": "./dist/maplibre.cjs"
-      }
+      "types": "./dist/maplibre.d.mts",
+      "default": "./dist/maplibre.mjs"
     },
     "./leaflet": {
-      "import": {
-        "types": "./dist/leaflet.d.mts",
-        "default": "./dist/leaflet.mjs"
-      },
-      "require": {
-        "types": "./dist/leaflet.d.cts",
-        "default": "./dist/leaflet.cjs"
-      }
+      "types": "./dist/leaflet.d.mts",
+      "default": "./dist/leaflet.mjs"
     },
     "./google": {
-      "import": {
-        "types": "./dist/google.d.mts",
-        "default": "./dist/google.mjs"
-      },
-      "require": {
-        "types": "./dist/google.d.cts",
-        "default": "./dist/google.cjs"
-      }
+      "types": "./dist/google.d.mts",
+      "default": "./dist/google.mjs"
     },
     "./google-places": {
-      "import": {
-        "types": "./dist/google-places.d.mts",
-        "default": "./dist/google-places.mjs"
-      },
-      "require": {
-        "types": "./dist/google-places.d.cts",
-        "default": "./dist/google-places.cjs"
-      }
+      "types": "./dist/google-places.d.mts",
+      "default": "./dist/google-places.mjs"
     },
     "./nominatim": {
-      "import": {
-        "types": "./dist/nominatim.d.mts",
-        "default": "./dist/nominatim.mjs"
-      },
-      "require": {
-        "types": "./dist/nominatim.d.cts",
-        "default": "./dist/nominatim.cjs"
-      }
+      "types": "./dist/nominatim.d.mts",
+      "default": "./dist/nominatim.mjs"
     },
     "./kvirn": {
-      "import": {
-        "types": "./dist/kvirn.d.mts",
-        "default": "./dist/kvirn.mjs"
-      },
-      "require": {
-        "types": "./dist/kvirn.d.cts",
-        "default": "./dist/kvirn.cjs"
-      }
+      "types": "./dist/kvirn.d.mts",
+      "default": "./dist/kvirn.mjs"
     },
     "./worker": {
-      "import": {
-        "types": "./dist/worker.d.mts",
-        "default": "./dist/worker.mjs"
-      }
+      "types": "./dist/worker.d.mts",
+      "default": "./dist/worker.mjs"
     },
     "./package.json": "./package.json"
   },

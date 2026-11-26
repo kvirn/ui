@@ -6,6 +6,8 @@ export default defineConfig({
     ...packPreset,
     // `all` is its own entry so an app that names its icons never pulls the whole set.
     entry: ['src/index.ts', 'src/all.ts', 'src/react.ts'],
+    // Mirrors src, so each icon is its own module and tree-shakes without a bundler.
+    unbundle: true,
     deps: { neverBundle: ['react'] },
   },
 })

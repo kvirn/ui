@@ -10,14 +10,16 @@ Plans describe **how** we will build something. Decisions live in the skills and
 
 ## Index
 
-| #                                                | Title                                                                 | Status      |
-| ------------------------------------------------ | --------------------------------------------------------------------- | ----------- |
-| [0117](0117-map-and-address-search.md)           | Map, layers and AddressSearch                                         | In progress |
-| [0088](0088-read-aloud.md)                       | ReadAloud (text to speech player and selection reader)                | Draft (1.2) |
-| [0141](0141-sweeps-in-ci-and-testing-upkeep.md)  | Display-mode sweeps in CI; Testing upkeep in the docs workflow        | Approved    |
-| [0150](0150-geocoder-country-and-smoke-tests.md) | Geocoder per-search country; live smoke tests for geo.kvirn.com in CI | Done        |
-| [0151](0151-read-aloud-service.md)               | Kvirn read-aloud service (voice.kvirn.com) and `kvirnSpeechEngine`    | Approved    |
-| [0152](0152-dictation.md)                        | Dictation (speak a short query into a text field)                     | Approved    |
-| [0153](0153-read-aloud-kvirn-only.md)            | ReadAloud on the Kvirn voice service only (drops browser voices)      | In progress |
-| [0154](0154-read-aloud-player-design.md)         | ReadAloud player design: the player bar (concept J)                   | In progress |
-| [0155](0155-kvirn-ai.md)                         | Kvirn AI (ai.kvirn.com): Klarspråk, Chat and Search                   | Draft       |
+| #                                                | Title                                                                     | Status      |
+| ------------------------------------------------ | ------------------------------------------------------------------------- | ----------- |
+| [0117](0117-map-and-address-search.md)           | Map, layers and AddressSearch                                             | In progress |
+| [0088](0088-read-aloud.md)                       | ReadAloud (text to speech player and selection reader)                    | Draft (1.2) |
+| [0141](0141-sweeps-in-ci-and-testing-upkeep.md)  | Display-mode sweeps in CI; Testing upkeep in the docs workflow            | Approved    |
+| [0150](0150-geocoder-country-and-smoke-tests.md) | Geocoder per-search country; live smoke tests for geo.kvirn.com in CI     | Done        |
+| [0151](0151-read-aloud-service.md)               | Kvirn read-aloud service (voice.kvirn.com) and `kvirnSpeechEngine`        | Approved    |
+| [0152](0152-dictation.md)                        | Dictation (speak a short query into a text field)                         | Approved    |
+| [0153](0153-read-aloud-kvirn-only.md)            | ReadAloud on the Kvirn voice service only (drops browser voices)          | In progress |
+| [0154](0154-read-aloud-player-design.md)         | ReadAloud player design: the player bar (concept J)                       | In progress |
+| [0155](0155-kvirn-ai.md)                         | Kvirn AI (ai.kvirn.com): Klarspråk, Chat and Search                       | Draft       |
+| [0157](0157-esm-only-packages.md)                | ESM-only packages, and one file per icon in `@kvirn/icons`                | In progress |
+| [0158](0158-icon-components.md)                  | One React component per icon in `@kvirn/icons/react` (`ArrowForwardIcon`) | In progress |
