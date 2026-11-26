@@ -32,11 +32,9 @@
       "Bash(pnpm add*)",
       "Bash(git worktree remove*)",
       "Bash(pnpm publish*)",
-      "Bash(vp test*)",
       "Bash(vp run test*)",
       "Bash(pnpm test*)",
       "Bash(pnpm run test*)",
-      "Bash(flock * vp test*)",
       "Bash(flock * vp run test*)",
       "Bash(flock * pnpm test*)",
       "Bash(flock * pnpm run test*)"
