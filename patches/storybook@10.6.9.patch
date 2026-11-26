@@ -1,0 +1,54 @@
+diff --git a/dist/_node-chunks/chunk-XDXMRQOV.js b/dist/_node-chunks/chunk-XDXMRQOV.js
+index a1176f663f2513bceb67d0f0eece9e51c65cdc74..8111372820e236e0b6aadfbc7eff290f86de67bd 100644
+--- a/dist/_node-chunks/chunk-XDXMRQOV.js
++++ b/dist/_node-chunks/chunk-XDXMRQOV.js
+@@ -728,9 +728,16 @@ var importMetaResolve = (...args) => typeof import.meta.resolve != "function" &&
+       return dirname(req.resolve(join(pkg, "package.json")));
+     }
+   }
+-}, typescriptLoaderRegistration = null, typescriptLoaderRegistrationError = null;
++}, usesRegisterHooks = (nodeVersion) => Number(nodeVersion.split(".")[0]) >= 26, typescriptLoaderRegistration = null, typescriptLoaderRegistrationError = null;
+ function registerTypescriptLoader() {
+   return typescriptLoaderRegistration ??= (async () => {
++    if (usesRegisterHooks(process.versions.node))
++      try {
++        let { load } = await import("storybook/internal/bin/loader");
++        nodeModule.registerHooks({ load });
++        return;
++      } catch {
++      }
+     let typescriptLoaderUrl = importMetaResolve("storybook/internal/bin/loader");
+     nodeModule.register(typescriptLoaderUrl, import.meta.url);
+   })().catch(async (error) => {
+diff --git a/dist/bin/loader.js b/dist/bin/loader.js
+index a2038e26715e116863fb802d851017968054a187..6e2abf51f7c3baefc21ed915b416058d42d2a9ca 100644
+--- a/dist/bin/loader.js
++++ b/dist/bin/loader.js
+@@ -21,12 +21,11 @@ import {
+ 
+ // src/bin/loader.ts
+ var import_ts_dedent = __toESM(require_dist(), 1);
+-import { readdirSync } from "node:fs";
+-import { readFile } from "node:fs/promises";
++import { readFileSync, readdirSync } from "node:fs";
+ import * as path from "node:path";
+ import { fileURLToPath } from "node:url";
+ import { deprecate } from "storybook/internal/node-logger";
+-import { transform } from "esbuild";
++import { transformSync } from "esbuild";
+ var supportedExtensions = [
+   ".js",
+   ".mjs",
+@@ -95,10 +94,10 @@ function addExtensionsToRelativeImports(source, filePath) {
+     });
+   return result;
+ }
+-var load = async (url, context, nextLoad) => {
++var load = (url, context, nextLoad) => {
+   let urlWithoutQuery = url.split("?")[0];
+   if (urlWithoutQuery.endsWith(".ts") || urlWithoutQuery.endsWith(".tsx") || urlWithoutQuery.endsWith(".mts") || urlWithoutQuery.endsWith(".cts") || urlWithoutQuery.endsWith(".mtsx") || urlWithoutQuery.endsWith(".ctsx")) {
+-    let filePath = fileURLToPath(urlWithoutQuery), rawSource = await readFile(filePath, "utf-8"), transformedSource = await transform(rawSource, {
++    let filePath = fileURLToPath(urlWithoutQuery), rawSource = readFileSync(filePath, "utf-8"), transformedSource = transformSync(rawSource, {
+       loader: "ts",
+       target: NODE_TARGET,
+       format: "esm",
