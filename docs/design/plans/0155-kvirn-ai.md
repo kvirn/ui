@@ -140,7 +140,7 @@ A prebuilt Web Component wrapping the React package, with a default theme from `
 ## Tasks
 
 - [ ] T1 Spike (service repo): choose a chat model, an embedding model and a GPU host; measure Swedish quality, cost per 1 000 answers and latency; clear licences
-- [ ] T2 Service: ingest, collections, hybrid search, `/v1/search`, smoke test as in 0150
+- [ ] T2 Service: ingest, collections, hybrid search, `/v1/search`, smoke test as in `tooling/geo-smoke/`
 - [ ] T3 Service: `/v1/rewrite` with LIX before and after; listening/reading panel on 20 real municipal pages
 - [ ] T4 Service: profiles, `/v1/chat` with sources, refusal threshold, handoff, masking
 - [ ] T5 Library: `kvirnAi`, `useKlarsprak`, `useAiSearch` + `Search` parts, unit and browser tests
@@ -169,7 +169,7 @@ A prebuilt Web Component wrapping the React package, with a default theme from `
 ## Testing strategy
 
 - Golden sets per feature: 50 rewrite pairs, 100 search queries with expected top-3, 100 chat questions with expected source and expected refusals. They run in the service repo's CI.
-- Library: mocked service (MSW) for unit and browser tests; a live smoke test skips until `KVIRN_AI_URL` is set (as 0150/0151).
+- Library: mocked service (MSW) for unit and browser tests; a live smoke test skips until `KVIRN_AI_URL` is set (as `tooling/geo-smoke/` and 0151).
 
 ## Rollout
 

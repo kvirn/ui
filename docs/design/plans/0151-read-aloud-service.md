@@ -7,7 +7,7 @@
 - **Was:** Approved (maintainer, 2026-10-23). The service is phase 1 of `kvirn-voice-provider` (spike first); this plan is the KvirnUI side.
 - **Owner:** lead (orchestrator) → component-engineer, ux-designer, accessibility-reviewer; user for the repo, the server and the listening panel
 - **Created:** 2026-10-23 · **Target:** 1.2, with ReadAloud (Plan 0088)
-- **Related:** [0088](0088-read-aloud.md) (the player and its `ReadAloudEngine`), [0150](0150-geocoder-country-and-smoke-tests.md) (smoke tests for geo.kvirn.com), research report `kvirn-voice-provider/docs/reports/Nordic TTS engines for read aloud.md` (2026-10-23), `kvirn-map-provider` (the stack copied)
+- **Related:** [0088](0088-read-aloud.md) (the player and its `ReadAloudEngine`), the `smoke` test project (`tooling/geo-smoke/`, live checks of geo.kvirn.com), research report `kvirn-voice-provider/docs/reports/Nordic TTS engines for read aloud.md` (2026-10-23), `kvirn-map-provider` (the stack copied)
 
 ## Goal
 
