@@ -365,6 +365,36 @@ describe('Map cluster layer cue', () => {
     expect(button.getAttribute('aria-label')).toBe('Hotell: 2 places')
   })
 
+  test('the name of a cluster contains its visible count, in the same number format', async () => {
+    const manyPlaces: MapPlace[] = Array.from({ length: 1200 }, (_, index) => ({
+      ...placeAtPixelsEast(0),
+      id: `place-${index}`,
+      name: `Place ${index}`,
+      layer: 'hotels',
+    }))
+    await render(
+      <>
+        <style>{fixtureStyle}</style>
+        <Map.Root
+          provider={createMemoryProvider()}
+          label="Map"
+          places={manyPlaces}
+          layers={[{ id: 'hotels', label: 'Hotell' }]}
+          initialView={{ center: centre, zoom }}
+        >
+          <Map.Viewport className="fixture-viewport">
+            <Map.Markers />
+          </Map.Viewport>
+        </Map.Root>
+      </>,
+    )
+    await expect.element(clusterButton()).toBeVisible()
+    const button = clusterButton().element()
+    const visibleText = button.textContent ?? ''
+    expect(visibleText).toBe('1,200')
+    expect(button.getAttribute('aria-label')).toContain(visibleText)
+  })
+
   test('a layer without an icon keeps the count alone', async () => {
     await renderClusters(undefined, false)
     await expect.element(clusterButton()).toBeVisible()

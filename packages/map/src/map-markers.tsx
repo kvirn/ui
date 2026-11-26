@@ -1,5 +1,5 @@
 import type { MapCluster as MapClusterData, MapLayer, MapPlace } from '@kvirn/core'
-import { Icon } from '@kvirn/ui'
+import { Icon, useFormat } from '@kvirn/ui'
 import { useLayoutEffect, useRef, useState } from 'react'
 import type { ComponentPropsWithRef, CSSProperties, KeyboardEvent, ReactNode } from 'react'
 import { joinClassNames } from './class-names.ts'
@@ -82,6 +82,7 @@ export function MapCluster<Data = unknown>({
   ...otherProps
 }: MapClusterProps<Data>) {
   const map = useMapContext<Data>('Cluster')
+  const format = useFormat()
   const point = map.handle?.project(cluster.position)
   if (!point) {
     return null
@@ -125,7 +126,7 @@ export function MapCluster<Data = unknown>({
               {layer.icon}
             </span>
           ) : null}
-          <span className="kv-map-cluster-count">{count}</span>
+          <span className="kv-map-cluster-count">{format.number(count)}</span>
         </>
       )}
     </button>
