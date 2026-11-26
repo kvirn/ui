@@ -32,7 +32,7 @@ pnpm run lint               # vp lint
 pnpm run format             # vp fmt (writes)
 pnpm run check              # types only (vp check --no-fmt --no-lint)
 pnpm run test               # Vitest: core (node), components (Chromium browser mode) and every story, in one theme
-pnpm run ci                 # everything: fmt --check, lint, build, check, test, i18n:check, theme:check, the four sweeps
+pnpm run ci                 # everything: fmt --check, build, lint, check, test, i18n:check, theme:check, the four sweeps
 pnpm run smoke              # live requests to geo.kvirn.com (nightly in CI)
 vp run i18n:check           # all locales complete
 vp run theme:check          # token contrast, in all four themes

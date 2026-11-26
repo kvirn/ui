@@ -15,7 +15,7 @@
     "test": "vp test run --project node --project browser && node tooling/storybook-run/storybook-run.ts storybook",
     "smoke": "vp test run --project smoke",
     "sweep": "node tooling/storybook-run/storybook-run.ts storybook-forced-colors storybook-reduced-motion storybook-reflow storybook-text-spacing",
-    "ci": "vp fmt --check && vp lint && vp run build && pnpm run check && pnpm run test && pnpm run i18n:check && pnpm run theme:check && pnpm run sweep",
+    "ci": "vp fmt --check && vp run build && vp lint && pnpm run check && pnpm run test && pnpm run i18n:check && pnpm run theme:check && pnpm run sweep",
     "ci:docker": "node tooling/ci/docker-ci.ts",
     "i18n:check": "node packages/i18n/scripts/i18n-check.ts",
     "theme:check": "node packages/theme/scripts/theme-check.ts",

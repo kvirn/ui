@@ -13,8 +13,8 @@ export const setupCommands = ['vp install', 'pnpm exec playwright install --with
 
 export const ciSteps: CiStep[] = [
   { name: 'fmt', command: 'vp fmt --check' },
-  { name: 'lint', command: 'vp lint' },
   { name: 'build', command: 'vp run build' },
+  { name: 'lint', command: 'vp lint' },
   { name: 'check', command: 'pnpm run check' },
   { name: 'test', command: 'pnpm run test' },
   { name: 'i18n:check', command: 'pnpm run i18n:check' },
