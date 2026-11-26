@@ -138,6 +138,11 @@ const meta = {
   globals: { locale: 'en' },
   parameters: {
     layout: 'padded',
+    twoDimensional: {
+      selector: '.kv-map-markers',
+      reason:
+        'the marker layer is two-dimensional content that users pan (WCAG 1.4.10 exception): markers near the edge are clipped by it and reached by panning or from the list. The controls, layers panel and attribution are outside it and get the full check',
+    },
     a11yContract: contract,
     docs: {
       description: { component: usageGuide(guide) },

@@ -49,9 +49,12 @@
     block-size: 100%;
   }
 
+  /* Markers near the edge are cut by the viewport. Clipping here keeps them out of its scrollable
+     overflow, so nothing can scroll the viewport itself. */
   .kv-map-markers {
     position: absolute;
     inset: 0;
+    overflow: clip;
     pointer-events: none;
   }
 

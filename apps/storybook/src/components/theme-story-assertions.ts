@@ -65,15 +65,29 @@ const isInScrollRegion = (element: Element, root: Element) => {
   return false
 }
 
+// A story that declares a two-dimensional region (1.4.10 exempts content that needs two-dimensional
+// layout, such as a map the user pans) says why. Only inside it is clipped content measured up to
+// the region's edge; everywhere else a clipped box is still lost content and counts in full.
+const visibleRight = (element: Element, root: Element, region: string | undefined) => {
+  let right = element.getBoundingClientRect().right
+  if (!region || escapesScrollBox(element)) return right
+  for (let node = element.parentElement; node && node !== root; node = node.parentElement) {
+    if (escapesScrollBox(node)) break
+    if (node.matches(region)) right = Math.min(right, node.getBoundingClientRect().right)
+  }
+  return right
+}
+
 /**
  * Nothing inside the element is wider than it (1.4.10). A box clipped to 1 CSS px is skipped, and
- * so are the contents of a focusable scroll region (the region itself is checked).
+ * so are the contents of a focusable scroll region (the region itself is checked). Inside the
+ * story's declared two-dimensional `region` selector, content is measured up to the region's edge.
  */
-export async function expectNoHorizontalOverflow(element: HTMLElement) {
+export async function expectNoHorizontalOverflow(element: HTMLElement, region?: string) {
   await expect(element.scrollWidth).toBeLessThanOrEqual(element.clientWidth)
   for (const child of element.querySelectorAll<HTMLElement>('*')) {
     if (isClippedAway(child, element) || isInScrollRegion(child, element)) continue
-    await expect(child.getBoundingClientRect().right).toBeLessThanOrEqual(
+    await expect(visibleRight(child, element, region)).toBeLessThanOrEqual(
       element.getBoundingClientRect().right + 0.5,
     )
   }
@@ -188,11 +202,23 @@ const textSpacingCss = `
   p { margin-block-end: 2em !important; }
 `
 
+const overflowOf = (element: HTMLElement) => ({
+  inline: element.scrollWidth - element.clientWidth,
+  block: element.scrollHeight - element.clientHeight,
+})
+
 /**
  * Text spacing (1.4.12): with the spacing applied, no element that clips its content (overflow
- * hidden or clip, or a fixed height) has more content than box. A box clipped to 1 CSS px is skipped.
+ * hidden or clip, or a fixed height) has more content than box. Inside the story's declared
+ * two-dimensional `region` selector, only overflow the spacing adds counts: the SC is about content
+ * lost because of the spacing, not what a panned map already clips. A box clipped to 1 CSS px is
+ * skipped.
  */
-export async function expectNoClippedTextWithSpacing(root: Element) {
+export async function expectNoClippedTextWithSpacing(root: Element, region?: string) {
+  const before = new Map<Element, ReturnType<typeof overflowOf>>()
+  for (const element of root.querySelectorAll<HTMLElement>('*')) {
+    before.set(element, overflowOf(element))
+  }
   const style = document.createElement('style')
   style.textContent = textSpacingCss
   document.head.append(style)
@@ -202,8 +228,11 @@ export async function expectNoClippedTextWithSpacing(root: Element) {
       const { overflowX, overflowY } = getComputedStyle(element)
       const clipsX = overflowX === 'hidden' || overflowX === 'clip'
       const clipsY = overflowY === 'hidden' || overflowY === 'clip'
-      if (clipsX) await expect(element.scrollWidth).toBeLessThanOrEqual(element.clientWidth)
-      if (clipsY) await expect(element.scrollHeight).toBeLessThanOrEqual(element.clientHeight)
+      const inRegion = region !== undefined && element.closest(region) !== null
+      const was = (inRegion && before.get(element)) || { inline: 0, block: 0 }
+      const now = overflowOf(element)
+      if (clipsX) await expect(now.inline).toBeLessThanOrEqual(Math.max(was.inline, 0))
+      if (clipsY) await expect(now.block).toBeLessThanOrEqual(Math.max(was.block, 0))
     }
   } finally {
     style.remove()
