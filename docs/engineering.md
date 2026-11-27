@@ -68,10 +68,10 @@ The scripts are `lint`, `format`, `check` (types only), `test` (node, browser an
 
 ## CI
 
-`.github/workflows/ci.yml` runs on PRs and pushes to `main` and `development`, pins Actions to commit SHAs, uses read-only `contents` permission and installs Chromium only (add browsers to the `playwright install` line to widen it). It runs:
+`.github/workflows/ci.yml` runs on PRs (the commit-message check only), pushes to `main`, the nightly schedule and `workflow_dispatch`, pins Actions to commit SHAs, uses read-only `contents` permission and installs Chromium only (add browsers to the `playwright install` line to widen it). It runs:
 
 - `commits`: every PR commit and the PR title against the Conventional Commits rules.
-- `gates`: `pnpm run ci` (see above), after `vp install` and the Playwright install.
+- `gates`: `pnpm run ci` (see above), after `vp install` and the Playwright install, on a push to `main` or `workflow_dispatch` only (about 30 minutes).
 - `smoke`: `pnpm run smoke` (a few live requests to geo.kvirn.com), on a nightly schedule and `workflow_dispatch`, so a service blip never fails a PR.
 
 These are the [AGENTS.md quality gates](../AGENTS.md#quality-gates) 1 to 3. Core coverage and per-component bundle budgets are not run by any workflow yet: see the roadmap, "Engineering".

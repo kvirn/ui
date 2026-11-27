@@ -4,7 +4,7 @@ name: CI
 on:
   pull_request:
   push:
-    branches: [main, development]
+    branches: [main]
   schedule:
     - cron: '0 3 * * *'
   workflow_dispatch:
@@ -39,7 +39,9 @@ jobs:
 
   gates:
     name: Format, lint, check, test, i18n, theme, sweep
-    if: github.event_name != 'schedule'
+    # The full run takes about 30 minutes: only a push to main or the Run workflow button starts it.
+    # A pull request gets the commit-message check; day to day, run the scoped checks locally.
+    if: github.event_name == 'push' || github.event_name == 'workflow_dispatch'
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
