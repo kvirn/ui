@@ -1,14 +1,6 @@
 import type { ReadAloudEngine, ReadAloudError, ReadAloudVoice } from '@kvirn/core'
-import { pause, play, settings, stop } from '@kvirn/icons'
-import {
-  Breadcrumb,
-  Container,
-  DefinitionList,
-  Icon,
-  KvirnProvider,
-  Popover,
-  Tooltip,
-} from '@kvirn/ui'
+import { PauseIcon, PlayIcon, SettingsIcon, StopIcon } from '@kvirn/icons/react'
+import { Breadcrumb, Container, DefinitionList, KvirnProvider, Popover, Tooltip } from '@kvirn/ui'
 import {
   ApplicationLogo,
   LanguageLinks,
@@ -394,16 +386,12 @@ export function ArticleWithPlayer({
       inline={
         <div {...reader.rootProps}>
           <button {...reader.playProps}>
-            <Icon
-              name={isPlayingOrPreparing ? 'pause' : 'play'}
-              icon={isPlayingOrPreparing ? pause : play}
-              size="20"
-            />
+            {isPlayingOrPreparing ? <PauseIcon size="20" /> : <PlayIcon size="20" />}
             {reader.playLabel}
           </button>
           {isActive ? (
             <button {...reader.stopProps}>
-              <Icon name="stop" icon={stop} size="20" />
+              <StopIcon size="20" />
               {reader.stopLabel}
             </button>
           ) : null}
@@ -414,7 +402,7 @@ export function ArticleWithPlayer({
                 className="kv-button kv-button--icon-only kv-read-aloud-settings"
                 aria-label={reader.settingsLabel}
               >
-                <Icon name="settings" icon={settings} size="20" />
+                <SettingsIcon size="20" />
               </Tooltip.Trigger>
               <Tooltip.Popup>
                 <Tooltip.Name>{reader.settingsLabel}</Tooltip.Name>
@@ -475,11 +463,7 @@ export function ArticleWithPlayerInFinnish({ engine }: { engine: ReadAloudEngine
       inline={
         <div {...reader.rootProps}>
           <button {...reader.playProps}>
-            <Icon
-              name={isPlayingOrPreparing ? 'pause' : 'play'}
-              icon={isPlayingOrPreparing ? pause : play}
-              size="20"
-            />
+            {isPlayingOrPreparing ? <PauseIcon size="20" /> : <PlayIcon size="20" />}
             {reader.playLabel}
           </button>
           <span {...reader.statusProps}>{reader.statusText}</span>

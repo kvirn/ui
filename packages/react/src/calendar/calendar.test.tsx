@@ -148,6 +148,15 @@ function recordDefaultPrevented() {
 }
 
 describe('roles, names and states', () => {
+  test('the month and year chevrons mirror in RTL', async () => {
+    const { container } = await render(<Example dir="rtl" />)
+    const chevrons = container.querySelectorAll('button svg')
+    expect(chevrons).toHaveLength(6)
+    for (const chevron of chevrons) {
+      expect(chevron.hasAttribute('data-mirror-in-rtl')).toBe(true)
+    }
+  })
+
   test('the grid is a table with role grid, named by the heading', async () => {
     await render(<Example />)
     const grid = page.getByRole('grid', { name: 'oktober 2026' })

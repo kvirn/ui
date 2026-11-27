@@ -2,6 +2,7 @@ import { afterEach, beforeEach, describe, expect, test, vi } from 'vite-plus/tes
 import { cdp, page, userEvent } from 'vite-plus/test/browser'
 import { render } from 'vitest-browser-react'
 import type { ComponentProps } from 'react'
+import { PinIcon } from '@kvirn/icons/react'
 import { Icon, KvirnProvider } from '@kvirn/ui'
 import { Map } from './map.tsx'
 import { mapIcons } from './map-icons.ts'
@@ -329,7 +330,7 @@ describe('Map popup room', () => {
 })
 
 describe('Map cluster layer cue', () => {
-  const layerIcon = <Icon icon={mapIcons.marker} size="16" data-testid="layer-icon" />
+  const layerIcon = <Icon as={PinIcon} size="16" data-testid="layer-icon" />
   const closePlaces: MapPlace[] = [0, 1].map((index) => ({
     ...placeAtPixelsEast(index),
     id: `place-${index}`,

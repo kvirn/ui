@@ -1,6 +1,6 @@
 'use client'
-import { bold, image, italic, link, underline } from '@kvirn/icons'
-import { Icon, Toolbar } from '@kvirn/ui'
+import { BoldIcon, ImageIcon, ItalicIcon, LinkIcon, UnderlineIcon } from '@kvirn/icons/react'
+import { Toolbar } from '@kvirn/ui'
 import { useToolbarTexts } from './texts.ts'
 
 export function IconOnly() {
@@ -9,21 +9,21 @@ export function IconOnly() {
     <Toolbar.Root aria-label={texts.formatting}>
       <Toolbar.Group aria-label={texts.textStyle}>
         <Toolbar.Toggle className="kv-button--icon-only" aria-label={texts.bold} defaultPressed>
-          <Icon icon={bold} />
+          <BoldIcon />
         </Toolbar.Toggle>
         <Toolbar.Toggle className="kv-button--icon-only" aria-label={texts.italic}>
-          <Icon icon={italic} />
+          <ItalicIcon />
         </Toolbar.Toggle>
         <Toolbar.Toggle className="kv-button--icon-only" aria-label={texts.underline}>
-          <Icon icon={underline} />
+          <UnderlineIcon />
         </Toolbar.Toggle>
       </Toolbar.Group>
       <Toolbar.Group aria-label={texts.insert}>
         <Toolbar.Button className="kv-button--icon-only" aria-label={texts.link}>
-          <Icon icon={link} />
+          <LinkIcon />
         </Toolbar.Button>
         <Toolbar.Button className="kv-button--icon-only" aria-label={texts.image}>
-          <Icon icon={image} />
+          <ImageIcon />
         </Toolbar.Button>
       </Toolbar.Group>
     </Toolbar.Root>

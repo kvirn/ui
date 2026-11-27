@@ -13,14 +13,15 @@ A status message in the content: something people need to know now, or the resul
 
 ## API
 
-| Part                                            | Renders                                                                          | Props                                                                                                                                                                                            |
-| ----------------------------------------------- | -------------------------------------------------------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------ |
-| `Alert.Root`                                    | `<div class="kv-alert">`                                                         | `announce`, `as` (`div`, `section`), `ref`, any attribute of the element                                                                                                                         |
-| `Alert.Info`, `.Success`, `.Warning`, `.Danger` | `<div>` with the status class, icon and word                                     | The same, and `messages` (`infoPrefix`, … or `close`)                                                                                                                                            |
-| `Alert.Title`                                   | `<h2 class="kv-alert-title">`                                                    | `as` (`h2` to `h6`, or `p`), `ref`                                                                                                                                                               |
-| `Alert.Body`                                    | `<div class="kv-alert-body">`                                                    | `as` (`div`, `p`, `section`), `ref`                                                                                                                                                              |
-| `Alert.Actions`                                 | `<div class="kv-alert-actions">`                                                 | `as` (`div`, `section`), `ref`                                                                                                                                                                   |
-| `Alert.Close`                                   | `<button type="button" class="kv-alert-close">` with the decorative `close` icon | `onClick` (never called while `disabled`), `disabled`, `messages` (`{ close }`), `children` (visible text replaces the icon and the `aria-label`), `ref`, any `<button>` attribute except `type` |
+| Part                                            | Renders                                                                                 | Props                                                                                                                                                                                            |
+| ----------------------------------------------- | --------------------------------------------------------------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------ |
+| `Alert.Root`                                    | `<div class="kv-alert">`                                                                | `announce`, `as` (`div`, `section`), `ref`, any attribute of the element                                                                                                                         |
+| `Alert.Info`, `.Success`, `.Warning`, `.Danger` | `<div>` with the status class, icon and word                                            | The same, and `messages` (`infoPrefix`, … or `close`)                                                                                                                                            |
+| `Alert.Title`                                   | `<h2 class="kv-alert-title">`                                                           | `as` (`h2` to `h6`, or `p`), `ref`                                                                                                                                                               |
+| `Alert.Body`                                    | `<div class="kv-alert-body">`                                                           | `as` (`div`, `p`, `section`), `ref`                                                                                                                                                              |
+| `Alert.Actions`                                 | `<div class="kv-alert-actions">`                                                        | `as` (`div`, `section`), `ref`                                                                                                                                                                   |
+| `Alert.Close`                                   | `<button type="button" class="kv-alert-close">` with the decorative `close` icon        | `onClick` (never called while `disabled`), `disabled`, `messages` (`{ close }`), `children` (visible text replaces the icon and the `aria-label`), `ref`, any `<button>` attribute except `type` |
+| `Alert.Icon`                                    | `<svg class="kv-icon kv-alert-icon">`, decorative: the status icon of `alert.iconProps` | `name`, `icon`, `className` (spread `alert.iconProps` from `useAlert`); a registered `info`, `success`, `warning` or `error` replaces the icon                                                   |
 
 | Message key (`messages.alert`)                                 | Default (en)              | Used by                                                       |
 | -------------------------------------------------------------- | ------------------------- | ------------------------------------------------------------- |
@@ -192,13 +193,13 @@ Never for messages about a part of the page.
 ## Hook
 
 ```tsx
-import { Icon, useAlert } from '@kvirn/ui'
+import { Alert, useAlert } from '@kvirn/ui'
 
 function PermitNotice() {
   const alert = useAlert({ variant: 'warning', announce: 'polite' })
   return (
     <div {...alert.rootProps}>
-      <Icon {...alert.iconProps} />
+      <Alert.Icon {...alert.iconProps} />
       <h2 {...alert.titleProps}>
         <span {...alert.statusProps} /> Your permit expires
       </h2>
@@ -208,4 +209,4 @@ function PermitNotice() {
 }
 ```
 
-`useAlert({ variant?, announce?, messages? })` returns `rootProps`, `titleProps`, `bodyProps`, `actionsProps` and `closeProps` (class names, plus callback refs for the root, Title and Body; `closeProps` is the close button's class, `type="button"` and the resolved `aria-label`, for your own `<button>` with your own `onClick`). With a `variant` it also returns `iconProps` (`name`, `icon` and `className`, for `<Icon>`; it draws with no registry, and a registered `name` replaces it) and `statusProps` (`className` and the resolved word as `children`), from the same table as the components. Without one, it is the plain Root: no status class, `iconProps` and `statusProps` are `undefined`. Attach `titleProps` and `bodyProps` so `announce` can read their text. Merge your own classes with `mergeProps`.
+`useAlert({ variant?, announce?, messages? })` returns `rootProps`, `titleProps`, `bodyProps`, `actionsProps` and `closeProps` (class names, plus callback refs for the root, Title and Body; `closeProps` is the close button's class, `type="button"` and the resolved `aria-label`, for your own `<button>` with your own `onClick`). With a `variant` it also returns `iconProps` (`name`, `icon` and `className`, for `<Alert.Icon>`; it draws with no registry, and a registered `name` replaces it) and `statusProps` (`className` and the resolved word as `children`), from the same table as the components. Without one, it is the plain Root: no status class, `iconProps` and `statusProps` are `undefined`. Attach `titleProps` and `bodyProps` so `announce` can read their text. Merge your own classes with `mergeProps`.

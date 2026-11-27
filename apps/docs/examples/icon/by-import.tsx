@@ -1,13 +1,13 @@
 'use client'
-import { search } from '@kvirn/icons'
-import { Button, Icon } from '@kvirn/ui'
+import { SearchIcon } from '@kvirn/icons/react'
+import { Button } from '@kvirn/ui'
 import { useIconTexts } from './texts.ts'
 
 export function ByImport() {
   const { texts } = useIconTexts()
   return (
     <Button>
-      <Icon icon={search} />
+      <SearchIcon />
       {texts.searchRegister}
     </Button>
   )

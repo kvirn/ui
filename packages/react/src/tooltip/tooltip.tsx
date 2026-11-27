@@ -76,7 +76,7 @@ function useRegisteredPart(part: TooltipPart, context: TooltipContextValue | nul
  * @example
  * <Tooltip.Root>
  *   <Tooltip.Trigger as={Toolbar.Toggle} aria-label="Bold" aria-keyshortcuts="Control+B">
- *     <Icon icon={bold} />
+ *     <BoldIcon />
  *   </Tooltip.Trigger>
  *   <Tooltip.Popup>
  *     <Tooltip.Name>Bold</Tooltip.Name>

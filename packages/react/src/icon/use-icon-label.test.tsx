@@ -15,11 +15,11 @@ function LabelledIcon({
   name: IconLabelName
   messages?: { cityHall?: string }
 }) {
-  return <Icon icon={Trash2} size="24" label={useIconLabel(name, messages)} />
+  return <Icon as={Trash2} size="24" label={useIconLabel(name, messages)} />
 }
 
 function DecorativeIcon() {
-  return <Icon icon={Trash2} />
+  return <Icon as={Trash2} />
 }
 
 describe('useIconLabel', () => {

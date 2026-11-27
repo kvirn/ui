@@ -1,6 +1,7 @@
-import { arrowForward } from '@kvirn/icons'
-import { Container, Heading, Icon, Link, Section, mergeProps } from '@kvirn/ui'
+import { ArrowForwardIcon } from '@kvirn/icons/react'
+import { Container, Heading, Link, Section, mergeProps } from '@kvirn/ui'
 import type { HeadingProps, LinkProps } from '@kvirn/ui'
+import { LibraryIcon } from '@kvirn/ui/internal'
 import type { ComponentPropsWithRef, ElementType, ReactElement } from 'react'
 
 export type HeroRootProps = ComponentPropsWithRef<'div'>
@@ -61,7 +62,7 @@ export function HeroAction({
     >
       {service === true && (
         <Link.Icon>
-          <Icon name="arrow-forward" icon={arrowForward} size="24" />
+          <LibraryIcon name="arrow-forward" icon={ArrowForwardIcon} size="24" mirrorInRtl />
         </Link.Icon>
       )}
       {children}

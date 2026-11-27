@@ -26,7 +26,7 @@ export function OwnComponent() {
   const { texts } = useIconTexts()
   return (
     <p>
-      <Icon icon={HouseIcon} /> {texts.house}
+      <Icon as={HouseIcon} /> {texts.house}
     </p>
   )
 }

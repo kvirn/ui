@@ -2,6 +2,7 @@ import type {
   AlertActionsProps,
   AlertBodyProps,
   AlertCloseProps,
+  AlertIconProps,
   AlertRootProps,
   AlertStatusRootProps,
   AlertTitleProps,
@@ -116,6 +117,29 @@ export const closeRows = propRows<
   },
 })
 
+export const iconRows = propRows<AlertIconProps>({
+  name: {
+    type: "'info' | 'success' | 'warning' | 'error'",
+    default: '–',
+    description:
+      'The registry name of the status icon. A registered icon under this name replaces the library’s.',
+  },
+  icon: {
+    type: 'IconData',
+    default: '–',
+    description: 'The library’s status icon, drawn when the name is not registered.',
+  },
+  className: {
+    type: "'kv-alert-icon'",
+    default: '–',
+    description: 'The part class. Spread alert.iconProps and it is set for you.',
+  },
+})
+
+export const iconAttributes: readonly AttributeRow[] = [
+  { name: 'kv-alert-icon', values: 'always', meaning: 'The part class.' },
+]
+
 export const rootAttributes: readonly AttributeRow[] = [
   { name: 'kv-alert', values: 'always', meaning: 'The part class. The default theme styles it.' },
   {
@@ -211,7 +235,7 @@ export const useAlertHook: ApiHook = {
     iconProps: {
       type: 'AlertIconPartProps | undefined',
       default: '–',
-      description: 'Spread on an Icon. Undefined without a variant.',
+      description: 'Spread on Alert.Icon. Undefined without a variant.',
     },
     statusProps: {
       type: 'AlertStatusPartProps | undefined',

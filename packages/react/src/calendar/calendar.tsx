@@ -2,8 +2,8 @@
 import { Fragment, useContext, useEffect } from 'react'
 import type { ComponentPropsWithRef, ReactElement, ReactNode } from 'react'
 import { warnOnce } from '../dev/dev-warning.ts'
-import { chevronBack, chevronForward } from '@kvirn/icons'
-import { Icon } from '../icon/icon.tsx'
+import { ChevronBackIcon, ChevronForwardIcon } from '@kvirn/icons/react'
+import { LibraryIcon } from '../icon/library-icon.tsx'
 import { mergeProps } from '../merge-props/merge-props.ts'
 import { Tooltip } from '../tooltip/tooltip.tsx'
 import { CalendarContext } from './calendar-context.ts'
@@ -175,7 +175,7 @@ export function CalendarPreviousMonth(props: CalendarStepButtonProps): ReactElem
     'PreviousMonth',
     'previousMonthProps',
     props,
-    <Icon name="chevron-back" icon={chevronBack} />,
+    <LibraryIcon name="chevron-back" icon={ChevronBackIcon} mirrorInRtl />,
   )
 }
 CalendarPreviousMonth.displayName = 'Calendar.PreviousMonth'
@@ -186,7 +186,7 @@ export function CalendarNextMonth(props: CalendarStepButtonProps): ReactElement 
     'NextMonth',
     'nextMonthProps',
     props,
-    <Icon name="chevron-forward" icon={chevronForward} />,
+    <LibraryIcon name="chevron-forward" icon={ChevronForwardIcon} mirrorInRtl />,
   )
 }
 CalendarNextMonth.displayName = 'Calendar.NextMonth'
@@ -198,8 +198,8 @@ export function CalendarPreviousYear(props: CalendarStepButtonProps): ReactEleme
     'previousYearProps',
     props,
     <>
-      <Icon name="chevron-back" icon={chevronBack} />
-      <Icon name="chevron-back" icon={chevronBack} />
+      <LibraryIcon name="chevron-back" icon={ChevronBackIcon} mirrorInRtl />
+      <LibraryIcon name="chevron-back" icon={ChevronBackIcon} mirrorInRtl />
     </>,
   )
 }
@@ -212,8 +212,8 @@ export function CalendarNextYear(props: CalendarStepButtonProps): ReactElement |
     'nextYearProps',
     props,
     <>
-      <Icon name="chevron-forward" icon={chevronForward} />
-      <Icon name="chevron-forward" icon={chevronForward} />
+      <LibraryIcon name="chevron-forward" icon={ChevronForwardIcon} mirrorInRtl />
+      <LibraryIcon name="chevron-forward" icon={ChevronForwardIcon} mirrorInRtl />
     </>,
   )
 }

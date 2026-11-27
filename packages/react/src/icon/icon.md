@@ -1,12 +1,13 @@
 # Icon
 
-One component for every icon: icons from the icon library, your own SVGs, and icons from libraries such as Lucide, Heroicons and Phosphor. There are three routes, and you can mix them:
+One component for the icons your app registers and your own SVGs. There are two routes, and you can mix them:
 
-- **`icon`** for one icon from a library: `<Icon icon={Search} />`. No setup. It also takes an icon from `@kvirn/icons` directly: `<Icon icon={add} />` with `import { add } from '@kvirn/icons'`.
 - **`name`** for icons you register once in `KvirnProvider`: `<Icon name="close" />`. Register first: nothing is built in.
 - **`as`** (or children) for a one-off icon of your own, such as a municipality's mark.
 
-Icon's `size` and `label` replace the library component's own in every route that draws a component, so you never size an icon on the component itself. `className` is joined with the component's own classes.
+An icon from the icon library is drawn as its own component: `<SearchIcon />` from `@kvirn/icons/react` (see Foundation › Icons).
+
+Icon's `size` and `label` replace the component's own in every route that draws a component, so you never size an icon on the component itself. `className` is joined with the component's own classes.
 
 - **Decorative by default** (`aria-hidden="true"`). Give it a `label` from your translations when no text next to it says the same thing, and it becomes an image with that name.
 - **`size` is the pixel size, as a string.** `<Icon size="20" />` (the default) is 20px at the default root font size: the theme turns it into `1.25rem` with the class `kv-icon--size-20`, so it follows the user's root font size and not the text around it. The sizes are `'12'`, `'14'`, `'16'`, `'20'`, `'24'`, `'28'`, `'32'`, `'40'`, `'48'`, `'56'`, `'64'`, `'80'` and `'96'`. A number or a CSS length (`'48px'`) is a type error: another size is a class you add (`<Icon className="my-icon" />`).
@@ -16,49 +17,35 @@ Icon's `size` and `label` replace the library component's own in every route tha
 
 ## Icons come from your app
 
-`@kvirn/ui` has no default icons, so an app bundles only the icons it imports. Every `name` is one you register once in `KvirnProvider` (below), and `icon` draws a drawing or component with no registration. [`@kvirn/icons`](../../../icons) is the icon library: the page **Icons/Library** in Storybook (and the Icons page on the docs site) shows all of it. The drawings are decorative: the name is the text beside each.
+`@kvirn/ui` has no default icons, so an app bundles only the icons it imports. Every `name` is one you register once in `KvirnProvider` (below). [`@kvirn/icons`](../../../icons) is the icon library: the page **Icons/Library** in Storybook (and the Icons page on the docs site) shows all of it. The drawings are decorative: the name is the text beside each.
 
-Directional icons (`chevron-back`, `chevron-forward`, `arrow-back`, `arrow-forward`, `external`) flip in right-to-left text, because the library marks them with `mirrorInRtl`. Every KvirnUI component imports its own icon from `@kvirn/icons` and passes it with its name (`<Icon name="close" icon={close} />`). So when you register an icon under that name (`close`, `chevron-down`, `info`, and so on), every component uses yours. Mirroring belongs to the name: your entry's `mirrorInRtl` wins, else your entry keeps the flip of the icon it replaces, so a plain `ArrowRight` registered as `arrow-forward` still flips in a component. A bare `<Icon name>` of a plain component doesn't flip unless its entry says `mirrorInRtl: true`.
+Directional icons (`chevron-back`, `chevron-forward`, `arrow-back`, `arrow-forward`, `external`) flip in right-to-left text, because the library marks them with `mirrorInRtl`. Every KvirnUI component draws its own library icon under a name (`close`, `chevron-down`, `info`, and so on). When you register an icon under that name, every component uses yours. Mirroring belongs to the name: your entry's `mirrorInRtl` wins, else your entry keeps the flip of the icon it replaces, so a plain `ArrowRight` registered as `arrow-forward` still flips in a component. A bare `<Icon name>` of a plain component doesn't flip unless its entry says `mirrorInRtl: true`.
 
 ```tsx
 import { Button, Icon } from '@kvirn/ui'
-import { search } from '@kvirn/icons'
 
 <Icon name="search" />                              // registered once in KvirnProvider
-<Icon icon={search} label={messages.search} />      // no registration
-<Icon name="close" icon={close} />                  // the registered "close" wins, else the import
+<Icon as={MunicipalityMark} label={messages.mark} /> // a one-off
 <Button><Icon name="add" />Add</Button>
 ```
 
 The Map (`mapIcons` in `@kvirn/map`, with the default marker pin) and the rich text editor (`richTextIconNames` in `@kvirn/rich-text`) register their own icon sets, drawn from `@kvirn/icons`.
 
-## An icon: `icon`
+## A one-off icon: `as` or children
 
-For an icon from `@kvirn/icons`, import it by name (camelCase, with no `Icon` suffix, such as `chevronDown`; `deleteIcon` and `newIcon` end in `Icon` because the plain words are reserved) and pass it. Your bundle holds only the icons you import.
-
-```tsx
-import { Icon } from '@kvirn/ui'
-import { search } from '@kvirn/icons'
-
-;<Icon icon={search} label={messages.search} />
-```
-
-For an icon from another library, pass the component, not an element. It needs no registration. A component can't cross from a server component to a client one, so use `icon` in a client component, and `name` (a string) in a server component.
+`as` takes a component that spreads SVG props onto one `<svg>` and forwards its ref (`IconComponent`): Lucide, Heroicons, Phosphor, SVGR output, or your own. A component can't cross from a server component to a client one, so use `as` in a client component, and `name` (a string) in a server component.
 
 ```tsx
 import { Icon } from '@kvirn/ui'
 import { MapPinIcon } from '@heroicons/react/24/outline'
-import { Search } from 'lucide-react'
 
-<Icon icon={Search} label={messages.search} />
-<Icon icon={MapPinIcon} size="24" />
+;<Icon as={MapPinIcon} size="24" label={messages.place} />
 ```
 
-- It takes any component that spreads SVG props onto one `<svg>` and forwards its ref (`IconComponent`): Lucide, Heroicons, Phosphor, SVGR output, or your own. A component that doesn't fit is a type error.
 - Icon passes `width`, `height`, `className` (joined with the component's own), `aria-*` and `role` to it, and they win over the library's own defaults (Lucide's 24px size, Heroicons' `aria-hidden`).
-- A component passed to `icon` doesn't mirror in right-to-left text by default. Set `mirrorInRtl` on the Icon, or register the icon under a name with `{ component, mirrorInRtl: true }`, which is the better place for a direction. An icon from `@kvirn/icons` carries its own `mirrorInRtl` flag, so an arrow or chevron from the library flips with no prop.
+- A component given to `as` doesn't mirror in right-to-left text by default. Set `mirrorInRtl` on the Icon, or register the icon under a name with `{ component, mirrorInRtl: true }`, which is the better place for a direction.
 - A library draws its own stroke (Lucide's 2). To change it, register a wrapper component of your own that sets it, then use the name.
-- `IconProps` is a union of four forms (`name`, `icon`, `as` or children). A wrapper that types its props as `Omit<IconProps, K>` flattens the union, so it must omit `name | icon | as | children` together (or use a distributive `Omit`), then pass the one form it wants.
+- `IconProps` is a union of three forms (`name`, `as` or children). A wrapper that types its props as `Omit<IconProps, K>` flattens the union, so it must omit `name | as | children` together (or use a distributive `Omit`), then pass the one form it wants.
 
 ## Registering icons: `name`
 
@@ -116,18 +103,17 @@ export function Providers({ children }: { children: React.ReactNode }) {
 
 ## Props
 
-| Prop          | Type                                                                             | Default                                    |
-| ------------- | -------------------------------------------------------------------------------- | ------------------------------------------ |
-| `name`        | `IconName`: a registered name, else any string                                   | –                                          |
-| `icon`        | `IconRegistryEntry`: a library icon, a Lucide, Heroicons or other icon component | –                                          |
-| `size`        | `IconSize`: a pixel string, `'12'` to `'96'`                                     | `iconDefaults.size`, else `'20'`           |
-| `variant`     | `IconVariant`: the colour class, see Colour above                                | none (`currentColor`); no provider default |
-| `label`       | `string`                                                                         | none: decorative                           |
-| `mirrorInRtl` | `boolean`                                                                        | the entry's, else `false`                  |
-| `as`          | a component that draws the icon, for a one-off icon                              | –                                          |
-| `children`    | your own shapes, with Icon as the `<svg>`                                        | –                                          |
+| Prop          | Type                                                | Default                                    |
+| ------------- | --------------------------------------------------- | ------------------------------------------ |
+| `name`        | `IconName`: a registered name, else any string      | –                                          |
+| `size`        | `IconSize`: a pixel string, `'12'` to `'96'`        | `iconDefaults.size`, else `'20'`           |
+| `variant`     | `IconVariant`: the colour class, see Colour above   | none (`currentColor`); no provider default |
+| `label`       | `string`                                            | none: decorative                           |
+| `mirrorInRtl` | `boolean`                                           | the entry's, else `false`                  |
+| `as`          | a component that draws the icon, for a one-off icon | –                                          |
+| `children`    | your own shapes, with Icon as the `<svg>`           | –                                          |
 
-`name`, `icon`, `as` and `children` are exclusive: the types forbid two, and in development, two together warn once. The one pair that is allowed is `name` with `icon`: a registered name wins, else the `icon` draws, and nothing warns. It is how a library component lets your registry swap its icon, and how you can do the same. Other SVG attributes, such as `className` or `viewBox`, pass through. `aria-label`, `aria-hidden` and `role` can't be passed: `label` sets them.
+`name`, `as` and `children` are exclusive: the types forbid two, and in development, two together warn once. Other SVG attributes, such as `className` or `viewBox`, pass through. `aria-label`, `aria-hidden` and `role` can't be passed: `label` sets them.
 
 ## Labels for library icons
 
@@ -174,7 +160,7 @@ Use these for an icon that isn't a library component: an imported `.svg`, or sha
 </Icon>
 ```
 
-With an element, the element's own props (`<Search size={30} />`, in pixels) win over Icon's, which is why a library component should use `icon` instead.
+With an element, the element's own props (`<Search size={30} />`, in pixels) win over Icon's, which is why a library component should be registered under a name instead.
 
 ## Hook
 
@@ -199,4 +185,4 @@ It returns `iconProps`, `component` (`undefined` without a name, or for an unkno
 | Iconify     | Use its offline bundles. Its default mode fetches icons from a third-party server |
 | Icon fonts  | Not supported. Use SVG                                                            |
 
-Lucide, Heroicons and Phosphor are tested, with `icon` and in the registry.
+Lucide, Heroicons and Phosphor are tested, with `as` and in the registry.

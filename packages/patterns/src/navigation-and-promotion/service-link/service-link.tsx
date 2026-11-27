@@ -1,8 +1,9 @@
 'use client'
 
-import { arrowForward } from '@kvirn/icons'
-import { Icon, Link, mergeProps } from '@kvirn/ui'
+import { ArrowForwardIcon } from '@kvirn/icons/react'
+import { Link, mergeProps } from '@kvirn/ui'
 import type { LinkProps } from '@kvirn/ui'
+import { LibraryIcon } from '@kvirn/ui/internal'
 import type { ComponentPropsWithRef, ElementType, ReactElement } from 'react'
 
 export type ServiceLinkRootProps = ComponentPropsWithRef<'div'>
@@ -37,7 +38,7 @@ export function ServiceLinkLink({ children, ...otherProps }: LinkProps<'a'>): Re
     <p className="kv-service-link-action">
       <Link.Root {...mergeProps(otherProps, { className: 'kv-link--service' })}>
         <Link.Icon>
-          <Icon name="arrow-forward" icon={arrowForward} size="24" />
+          <LibraryIcon name="arrow-forward" icon={ArrowForwardIcon} size="24" mirrorInRtl />
         </Link.Icon>
         {children}
       </Link.Root>

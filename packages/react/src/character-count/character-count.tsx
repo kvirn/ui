@@ -1,8 +1,8 @@
 'use client'
 import type { KvirnMessages } from '@kvirn/i18n'
 import type { ReactElement } from 'react'
-import { warning } from '@kvirn/icons'
-import { Icon } from '../icon/icon.tsx'
+import { WarningIcon } from '@kvirn/icons/react'
+import { LibraryIcon } from '../icon/library-icon.tsx'
 import { mergeProps } from '../merge-props/merge-props.ts'
 import { resolveAsTag } from '../render/as-prop.ts'
 import type { AsTag } from '../render/as-prop.ts'
@@ -96,7 +96,9 @@ export function CharacterCount({
       ...mergeProps(otherProps, characterCount.countProps),
       children: (
         <>
-          {characterCount.isOver ? <Icon name="warning" icon={warning} size="20" /> : null}
+          {characterCount.isOver ? (
+            <LibraryIcon name="warning" icon={WarningIcon} size="20" />
+          ) : null}
           {characterCount.text}
         </>
       ),

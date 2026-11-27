@@ -6,7 +6,7 @@ import { page, userEvent } from 'vite-plus/test/browser'
 import { renderToString } from 'react-dom/server'
 import { render } from 'vitest-browser-react'
 import { resetDevWarnings } from '../dev/dev-warning.ts'
-import { close } from '@kvirn/icons'
+import { CloseIcon as LibraryCloseIcon } from '@kvirn/icons/react'
 import { Icon } from '../icon/icon.tsx'
 import { mergeProps } from '../merge-props/merge-props.ts'
 import { Button } from './button.tsx'
@@ -459,7 +459,7 @@ describe('focus visible', () => {
 
 describe('icon-only button name (Plan 0009)', () => {
   function CloseIcon() {
-    return <Icon icon={close} />
+    return <Icon as={LibraryCloseIcon} />
   }
 
   test('warns in development when an icon-only button has no accessible name', async () => {
@@ -508,7 +508,7 @@ describe('icon-only button name (Plan 0009)', () => {
       'a labelled Icon',
       () => (
         <Button>
-          <Icon icon={close} label="Close" />
+          <Icon as={LibraryCloseIcon} label="Close" />
         </Button>
       ),
     ],

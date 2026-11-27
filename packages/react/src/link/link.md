@@ -13,7 +13,7 @@ A native `<a href>` for navigation, rendered by your router's link component whe
 ## Component
 
 ```tsx
-import { Link } from '@kvirn/ui'
+import { Icon, Link } from '@kvirn/ui'
 
 <Link.Root href="/apply" current="page">Apply</Link.Root>
 
@@ -31,12 +31,12 @@ In a React Server Component, use the named exports `LinkRoot` and `LinkNewTabNot
 `className="kv-link--service"` is the look of the one link that starts an e-service: an outlined label, and with a `Link.Icon` first, a filled block with the icon. It is still a `<a href>` that navigates, with the router, `current` and the new-tab notice. It is a class and not a prop, as a Button's `kv-button--primary` is: the headless Link ships no CSS.
 
 ```tsx
-import { arrowForward } from '@kvirn/icons'
+import { ArrowForwardIcon } from '@kvirn/icons/react'
 import { Icon, Link } from '@kvirn/ui'
 
 ;<Link.Root href="https://eservice.example/permit" className="kv-link--service">
   <Link.Icon>
-    <Icon icon={arrowForward} size="24" />
+    <Icon as={ArrowForwardIcon} size="24" mirrorInRtl />
   </Link.Icon>
   Apply for a building permit
 </Link.Root>

@@ -147,17 +147,16 @@ declare module '@kvirn/ui' {
           <UseCase
             id="by-import"
             title="An icon without registering it"
-            why="Where there is no provider to register in, or for one icon you draw once, import it and pass it as icon. Only the icons you import reach your bundle."
+            why="Where there is no provider to register in, or for one icon you draw once, import its component from @kvirn/icons/react and draw it. Only the icons you import reach your bundle."
             code={sources['by-import']}
-            propsUsed={[{ part: 'Icon', prop: 'icon' }]}
           >
             <ByImport />
           </UseCase>
           <p>
-            KvirnUI’s own components pass both: <code>name=&quot;close&quot;</code> and the{' '}
-            <code>close</code> drawing as <code>icon</code>. A name you register wins over the
-            drawing, so registering <code>close</code> changes it in every KvirnUI component at
-            once, such as a Toast, a Dialog or an Alert:
+            KvirnUI’s own components draw each icon by its name, such as <code>close</code>, with
+            the library’s drawing as the fallback. A name you register wins over the drawing, so
+            registering <code>close</code> changes it in every KvirnUI component at once, such as a
+            Toast, a Dialog or an Alert:
           </p>
           <CodeBlock
             code={`import { defineIcons } from '@kvirn/ui'
@@ -172,14 +171,14 @@ export const icons = defineIcons({ close: Cross })`}
               <>
                 Both packages draw icons from <code>@kvirn/icons</code>. The Map has the marker pin
                 and the control arrows. <code>mapIcons</code> in <code>@kvirn/map</code> lists them
-                by name. Pass one with <code>icon</code>, or register them with{' '}
-                <code>defineIcons</code>. The editor draws its toolbar icons with{' '}
+                by name. Register them with <code>KvirnProvider</code>, then draw one with{' '}
+                <code>name</code>. The editor draws its toolbar icons with{' '}
                 <code>RichTextEditor.Icon</code> (exported as <code>ToolbarIcon</code>), from the
                 names in <code>richTextIconNames</code> in <code>@kvirn/rich-text</code>.
               </>
             }
             code={sources['package-sets']}
-            propsUsed={[{ part: 'Icon', prop: 'icon' }]}
+            propsUsed={[{ part: 'Icon', prop: 'name' }]}
           >
             <PackageSets />
           </UseCase>
@@ -219,15 +218,9 @@ export const icons = defineIcons({ close: Cross })`}
           <UseCase
             id="library-icon"
             title="An icon from another library, or of your own"
-            why="Pass a component that spreads SVG props onto one svg and forwards its ref, such as one from Lucide, Heroicons or Phosphor, or your own. It needs no registration."
+            why="Pass a component that spreads SVG props onto one svg and takes a ref, such as one from Lucide, Heroicons or Phosphor, or your own, as as. It needs no registration."
             code={sources['own-component']}
-            propsUsed={[{ part: 'Icon', prop: 'icon' }]}
-            note={
-              <Note kind="tip">
-                Icon’s <code>size</code> and <code>label</code> replace the component’s own, so
-                every icon on the page is sized the same way.
-              </Note>
-            }
+            propsUsed={[{ part: 'Icon', prop: 'as' }]}
           >
             <OwnComponent />
           </UseCase>

@@ -1,5 +1,5 @@
-import { close } from '@kvirn/icons'
-import { Icon } from '@kvirn/ui'
+import { CloseIcon } from '@kvirn/icons/react'
+import { LibraryIcon } from '@kvirn/ui/internal'
 import type { MapCluster, MapPlace } from '@kvirn/core'
 import { createContext, useCallback, useContext, useState } from 'react'
 import type { ComponentPropsWithRef, ElementType, ReactElement, ReactNode } from 'react'
@@ -188,7 +188,7 @@ export function MapClusterPopupClose({
         }
       }}
     >
-      {children ?? <Icon name="close" icon={close} />}
+      {children ?? <LibraryIcon name="close" icon={CloseIcon} />}
     </button>
   )
 }

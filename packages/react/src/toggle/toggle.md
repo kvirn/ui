@@ -73,7 +73,7 @@ An icon-only toggle names itself with `aria-label` and keeps the icon decorative
 
 ```tsx
 <Toggle className="kv-button--icon-only" aria-label="Show password">
-  <Icon icon={eye} />
+  <EyeIcon />
 </Toggle>
 ```
 

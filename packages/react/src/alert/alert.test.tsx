@@ -10,7 +10,8 @@ import type { MockInstance } from 'vite-plus/test'
 import { page, userEvent } from 'vite-plus/test/browser'
 import { render } from 'vitest-browser-react'
 import { resetDevWarnings } from '../dev/dev-warning.ts'
-import { close, error, info, success, warning } from '@kvirn/icons'
+import { CloseIcon, ErrorIcon, InfoIcon, SuccessIcon, WarningIcon } from '@kvirn/icons/react'
+import { defineIcons } from '../icon/icon-registry.ts'
 import { Icon } from '../icon/icon.tsx'
 import { KvirnProvider } from '../provider/kvirn-provider.tsx'
 import {
@@ -36,7 +37,12 @@ import type {
 import { useAlert } from './use-alert.ts'
 import type { AlertVariant, UseAlertOptions, UseAlertResult } from './use-alert.ts'
 
-const statusIcons = { info, success, warning, error }
+const statusIcons = {
+  info: InfoIcon,
+  success: SuccessIcon,
+  warning: WarningIcon,
+  error: ErrorIcon,
+}
 
 // Contract: alert.a11y.md.
 
@@ -144,7 +150,7 @@ describe('rendering', () => {
           <Root data-testid="alert">
             <Alert.Title>Your application was not sent</Alert.Title>
           </Root>
-          <Icon icon={statusIcons[iconName]} data-testid="expected-icon" />
+          <Icon as={statusIcons[iconName]} data-testid="expected-icon" />
         </main>,
       )
       const root = page.getByTestId('alert').element()
@@ -905,12 +911,39 @@ describe('development warnings', () => {
   })
 })
 
+describe('Alert.Icon', () => {
+  function IconOnly({ variant }: { variant: AlertVariant }) {
+    const alert = useAlert({ variant })
+    return alert.iconProps === undefined ? null : <Alert.Icon {...alert.iconProps} />
+  }
+
+  test('draws the status icon of the hook, decorative', async () => {
+    const { container } = await render(<IconOnly variant="warning" />)
+    const icon = container.querySelector('svg')
+    expect(icon?.getAttribute('aria-hidden')).toBe('true')
+    expect(classesOf(icon)).toContain('kv-alert-icon')
+    expect(iconPaths(icon)).not.toBe('')
+  })
+
+  test('a registered status name swaps the icon', async () => {
+    const { container } = await render(
+      <KvirnProvider icons={defineIcons({ warning: CloseIcon })}>
+        <IconOnly variant="warning" />
+        <Icon as={CloseIcon} data-testid="expected-icon" />
+      </KvirnProvider>,
+    )
+    expect(iconPaths(container.querySelector('svg'))).toBe(
+      iconPaths(page.getByTestId('expected-icon').element()),
+    )
+  })
+})
+
 describe('useAlert', () => {
   function HookAlert({ options }: { options?: UseAlertOptions }) {
     const alert = useAlert(options)
     return (
       <div {...alert.rootProps} data-testid="alert">
-        {alert.iconProps === undefined ? null : <Icon {...alert.iconProps} />}
+        {alert.iconProps === undefined ? null : <Alert.Icon {...alert.iconProps} />}
         <h2 {...alert.titleProps}>
           {alert.statusProps === undefined ? null : (
             <>
@@ -967,7 +1000,7 @@ describe('useAlert', () => {
       await render(
         <main>
           <HookAlert options={{ variant }} />
-          <Icon icon={statusIcons[iconName]} data-testid="expected-icon" />
+          <Icon as={statusIcons[iconName]} data-testid="expected-icon" />
         </main>,
       )
       const root = page.getByTestId('alert').element()
@@ -1052,7 +1085,7 @@ describe('Alert.Close', () => {
           <Alert.Title>Title</Alert.Title>
           <Alert.Close />
         </Alert.Info>
-        <Icon icon={close} data-testid="expected-close-icon" />
+        <Icon as={CloseIcon} data-testid="expected-close-icon" />
       </main>,
     )
     const button = page.getByRole('button', { name: 'Close message' })

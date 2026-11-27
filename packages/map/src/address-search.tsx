@@ -1,6 +1,6 @@
 import type { AddressSuggestion } from '@kvirn/core'
-import { error as errorIcon, info as infoIcon } from '@kvirn/icons'
-import { Autocomplete, Field, Icon } from '@kvirn/ui'
+import { ErrorIcon, InfoIcon } from '@kvirn/icons/react'
+import { Autocomplete, Field } from '@kvirn/ui'
 import type {
   AutocompleteClearProps,
   AutocompleteControlProps,
@@ -14,6 +14,7 @@ import type {
 } from '@kvirn/ui'
 import {
   ComboboxProviders,
+  LibraryIcon,
   useAddressLookupEngine,
   useAddressLookupField,
 } from '@kvirn/ui/internal'
@@ -233,9 +234,9 @@ export function AddressSearchStatus({
       {search.status === 'searching' ? (
         <span className="kv-spinner" aria-hidden="true" />
       ) : search.status === 'error' ? (
-        <Icon icon={errorIcon} size="16" />
+        <LibraryIcon name="error" icon={ErrorIcon} size="16" />
       ) : search.status === 'offline' ? (
-        <Icon icon={infoIcon} size="16" />
+        <LibraryIcon name="info" icon={InfoIcon} size="16" />
       ) : null}
       {search.statusText}
     </div>

@@ -15,8 +15,8 @@ import { warnOnce } from '../dev/dev-warning.ts'
 import { DialogClose, DialogPopup, DialogTitle } from '../dialog/dialog.tsx'
 import type { DialogPopupProps, DialogTitleProps } from '../dialog/dialog.tsx'
 import { DialogContext, useDialogAnnouncer } from '../dialog/dialog-context.ts'
-import { calendar } from '@kvirn/icons'
-import { Icon } from '../icon/icon.tsx'
+import { CalendarIcon } from '@kvirn/icons/react'
+import { LibraryIcon } from '../icon/library-icon.tsx'
 import { mergeProps } from '../merge-props/merge-props.ts'
 import { useMergedRef } from '../merge-props/use-merged-ref.ts'
 import { DateRangePickerContext } from './date-range-picker-context.ts'
@@ -117,7 +117,7 @@ export function DateRangePickerTrigger({
     <button {...mergeProps(otherProps, dateRangePicker.triggerProps)} ref={mergedRef}>
       {children ?? (
         <>
-          <Icon name="calendar" icon={calendar} />
+          <LibraryIcon name="calendar" icon={CalendarIcon} />
           {dateRangePicker.triggerText}
         </>
       )}

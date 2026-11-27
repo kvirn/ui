@@ -101,7 +101,7 @@ export const layeredArgs = {
   places: [...fuelStations, ...hotels],
   layers: demoLayers.map((layer) => ({
     ...layer,
-    icon: <Icon icon={layerIcons[layer.id]!} size="16" />,
+    icon: <Icon as={layerIcons[layer.id]!} size="16" />,
   })),
 }
 
@@ -278,14 +278,14 @@ export function MapLayeredDemo({
       <Map.Viewport>
         <Map.Layers
           defaultOpen={layersDefaultOpen}
-          icon={(layer) => <Icon icon={layerIcons[layer.id]!} size="16" />}
+          icon={(layer) => <Icon as={layerIcons[layer.id]!} size="16" />}
         />
         {showBaseMapSwitch ? <Map.BaseMapSwitch icon={baseMapPreview} /> : null}
         <Map.Markers
           markerClassName={(place) => `story-marker--${place.layer}`}
           clusterClassName={(cluster) => `story-cluster--${cluster.layer}`}
         >
-          {(place) => <Icon icon={layerIcons[place.layer ?? 'fuel']!} size="16" />}
+          {(place) => <Icon as={layerIcons[place.layer ?? 'fuel']!} size="16" />}
         </Map.Markers>
         <Map.Controls />
         <Map.Attribution />
@@ -310,14 +310,14 @@ function CustomLayerMarkers() {
       }
       cluster={(cluster) => (
         <>
-          <Icon icon={layerIcons[cluster.layer ?? 'fuel']!} size="16" />
+          <Icon as={layerIcons[cluster.layer ?? 'fuel']!} size="16" />
           <span className="story-ring-count">{cluster.count}</span>
         </>
       )}
     >
       {(place, state) => (
         <>
-          <Icon icon={layerIcons[place.layer ?? 'fuel']!} size="16" />
+          <Icon as={layerIcons[place.layer ?? 'fuel']!} size="16" />
           {state.highlighted && !state.selected ? (
             <span className="kv-map-marker-label">{place.name}</span>
           ) : null}
@@ -338,7 +338,7 @@ export function CustomMarkersDemo({ offline = false, ...mapProps }: MapDemoProps
       <Map.Skip />
       <Map.Viewport>
         <CustomLayerMarkers />
-        <Map.Layers icon={(layer) => <Icon icon={layerIcons[layer.id]!} size="16" />} />
+        <Map.Layers icon={(layer) => <Icon as={layerIcons[layer.id]!} size="16" />} />
         <Map.Controls />
         <Map.Attribution />
       </Map.Viewport>
@@ -462,7 +462,7 @@ export function MapEverythingDemo({
         <CustomLayerMarkers />
         <Map.Layers
           defaultOpen={layersDefaultOpen}
-          icon={(layer) => <Icon icon={layerIcons[layer.id]!} size="16" />}
+          icon={(layer) => <Icon as={layerIcons[layer.id]!} size="16" />}
         />
         <Map.Controls />
         <Map.Attribution />

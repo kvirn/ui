@@ -7,7 +7,7 @@
 
 > **Superseded (Plan 0130, 2026-10-17).** There are no default icons. Every icon is a `@kvirn/icons` import; a component passes `name` and `icon` together, and `name` alone resolves only what the app registers. Examples use `<Icon name>` against a registry. The 25 below are the icons KvirnUI's components draw, not a built-in set. The keylines and drawing rules (§6) still apply to the library, and so does §4.2: mirroring belongs to the name, so a plain component registered over a component's directional icon keeps its flip.
 >
-> **Superseded in part (Plan 0128, 2026-10-17).** `@kvirn/ui` draws nothing: every drawing is in `@kvirn/icons`, and the library's drawings replace the ones described here (library rules: `docs/design/icon-library.md`). Docs and Storybook import icons explicitly (`<Icon icon={add} />`).
+> **Superseded in part (Plan 0128, 2026-10-17).** `@kvirn/ui` draws nothing: every drawing is in `@kvirn/icons`, and the library's drawings replace the ones described here (library rules: `docs/design/icon-library.md`). Docs and Storybook import icons explicitly (`<AddIcon />` from `@kvirn/icons/react`).
 
 The API is decided in the Icon API decision and Plan 0009: a typed name registry in `KvirnProvider`, attributes on the root `<svg>`, a size scale (changed 2026-10-04, see the note below), and decorative by default. The maintainer has also decided (2026-10-01) that `@kvirn/ui` ships a **built-in set** as the registry's base layer. It's drawn in the Heroicons outline style, but every drawing is original. An app that registers the same name replaces the built-in.
 

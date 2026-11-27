@@ -56,7 +56,8 @@ Keyed `toolbar-*` and `button-group-*`, English, for the developer only: a toolb
 ## Component
 
 ```tsx
-import { Icon, Toolbar } from '@kvirn/ui'
+import { BoldIcon } from '@kvirn/icons/react'
+import { Toolbar } from '@kvirn/ui'
 
 ;<Toolbar.Root aria-label="Formatting" aria-controls={editorId}>
   <Toolbar.Group aria-label="History">
@@ -75,7 +76,7 @@ import { Icon, Toolbar } from '@kvirn/ui'
 </Toolbar.Root>
 ```
 
-An icon-only control takes `kv-button--icon-only` and an `aria-label`, and a tooltip where the toolbar's users might not know the icons (`bold` is an icon from `@kvirn/icons`: `import { bold } from '@kvirn/icons'`):
+An icon-only control takes `kv-button--icon-only` and an `aria-label`, and a tooltip where the toolbar's users might not know the icons (`BoldIcon` is an icon from `@kvirn/icons`: `import { BoldIcon } from '@kvirn/icons/react'`):
 
 ```tsx
 <Toolbar.Toggle
@@ -84,7 +85,7 @@ An icon-only control takes `kv-button--icon-only` and an `aria-label`, and a too
   pressed={isBold}
   onPressedChange={setIsBold}
 >
-  <Icon icon={bold} />
+  <BoldIcon />
 </Toolbar.Toggle>
 ```
 

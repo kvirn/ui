@@ -67,15 +67,15 @@ Messages (`messages`, per instance, or the provider's `map` catalog): `roleDescr
 
 ### Customizing markers, clusters and layers
 
-A marker shows a solid map pin by default (2.25rem tall, the head at least 24px), its tip on the place's position, so a map works with no customization. Any `children` of `Map.Markers` replace the pin, also a function that returns `null`. The pin is decorative (`aria-hidden`): the button is still named from the place. `mapIcons` from `@kvirn/map` lists the Map's own icons (`marker`, `locate`, `remove` and the four arrows) for `<Icon icon>` or the `icons` of `KvirnProvider`.
+A marker shows a solid map pin by default (2.25rem tall, the head at least 24px), its tip on the place's position, so a map works with no customization. Any `children` of `Map.Markers` replace the pin, also a function that returns `null`. The pin is decorative (`aria-hidden`): the button is still named from the place. `mapIcons` from `@kvirn/map` lists the Map's own icons (`marker`, `locate`, `remove` and the four arrows) for the `icons` of `KvirnProvider`.
 
 Keep one record from layer id to icon and use it twice, so a layer looks the same on the map and in `Map.Layers`:
 
 ```tsx
 const layerIcons = { fuel: FuelIcon, hotels: BedIcon } // your own SVG components
 
-<Map.Markers>{(place) => <Icon icon={layerIcons[place.layer!]} size="16" />}</Map.Markers>
-<Map.Layers icon={(layer) => <Icon icon={layerIcons[layer.id]} size="16" />} />
+<Map.Markers>{(place) => <Icon as={layerIcons[place.layer!]} size="16" />}</Map.Markers>
+<Map.Layers icon={(layer) => <Icon as={layerIcons[layer.id]} size="16" />} />
 ```
 
 A custom point marker gets the place and its state. Show a name chip on hover, but not while its details are open (the popup already names it), and colour it per layer with `markerClassName`:
@@ -87,7 +87,7 @@ A custom point marker gets the place and its state. Show a name chip on hover, b
 >
   {(place, { selected, highlighted }) => (
     <>
-      <Icon icon={layerIcons[place.layer!]} size="16" />
+      <Icon as={layerIcons[place.layer!]} size="16" />
       {highlighted && !selected ? <span className="kv-map-marker-label">{place.name}</span> : null}
     </>
   )}
@@ -107,7 +107,7 @@ A custom cluster is sized by its count and coloured by its layer:
 - **The content is decoration.** It sits inside the one native button, so it is not read: the name comes from `label` and `clusterLabel` (default: the place's name and `map.clusterLabel`). Put the information in the name, and never let colour alone tell layers apart: add an icon or a shape (a layer's `icon` does it for its clusters by default). A visible name goes in `kv-map-marker-label`: the theme draws it as a chip under the mark and leaves its size alone (every other child is sized as a 16px icon).
 - **Keep the button.** You never replace the marker or the cluster, only what is inside it and its classes. It stays a 44px target with a 24px mark; a bigger look is fine, a smaller one is not (2.5.8).
 - **Restyle with classes and state.** Use `markerClassName`, `clusterClassName` and the `data-selected`, `data-highlighted` and `aria-expanded` state, never inline `style`: the library sets `--kv-map-x` and `--kv-map-y` for the position, and your CSS must leave them alone. A shape needs 3:1 against the map (1.4.11); in forced colours use system colours.
-- **Your own icons** are components that take the SVG props: pass them with `<Icon icon={MyIcon} />`. The Map's own icons come from `@kvirn/icons` and carry their library name, so a name registered in `KvirnProvider icons` replaces them everywhere: `add` and `remove` (zoom), `arrow-north`, `arrow-west`, `arrow-east` and `arrow-south` (pan), `close` (details and cluster popup) and `chevron-down` (base map switch). In `Map.Layers` the icon is a swatch before the label (`kv-map-layer-swatch`), `aria-hidden`; the label and count are the name.
+- **Your own icons** are components that take the SVG props: pass them with `<Icon as={MyIcon} />`. The Map's own icons come from `@kvirn/icons` and carry their library name, so a name registered in `KvirnProvider icons` replaces them everywhere: `marker` (the place mark), `add` and `remove` (zoom), `arrow-north`, `arrow-west`, `arrow-east` and `arrow-south` (pan), `close` (details and cluster popup) and `chevron-down` (base map switch). In `Map.Layers` the icon is a swatch before the label (`kv-map-layer-swatch`), `aria-hidden`; the label and count are the name.
 
 ### Your own list: `useMapState`
 

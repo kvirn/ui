@@ -1,5 +1,6 @@
 'use client'
 import { allIcons } from '@kvirn/icons/all'
+import { createIconComponent } from '@kvirn/icons/react'
 import { getMessages } from '@kvirn/ui/server'
 import {
   Badge,
@@ -140,8 +141,9 @@ function IconTile({
     <Card.Root as="li" className="docs-icon-item">
       <div className="docs-icon-preview">
         <Icon
-          icon={allIcons[icon.name as keyof typeof allIcons]}
+          as={createIconComponent(allIcons[icon.name as keyof typeof allIcons])}
           size={settings.size as IconSize}
+          mirrorInRtl={icon.mirrorInRtl}
           {...(settings.variant === '' ? {} : { variant: settings.variant as IconVariant })}
           {...(previewClassName === '' ? {} : { className: previewClassName })}
         />

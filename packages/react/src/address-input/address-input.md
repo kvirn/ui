@@ -34,7 +34,7 @@ What the parts do on their own:
 | `kv-address-input`                                          | Root                                | The fields stacked, 24px apart (16px with `kv-compact` from 64rem); the postal code and the city share a row from 22rem |
 | `kv-address-input-line1`, `-line2`, `-postal-code`, `-city` | the part's input                    | The part the layout finds its Field by                                                                                  |
 | `kv-address-input-country`                                  | Country                             | The Country field as wide as its content                                                                                |
-| `kv-address-input-lookup-note`                              | the fill note                       | Small text with a check icon under Line 1                                                                               |
+| `kv-address-input-lookup-note`                              | the fill note                       | Small text with a `check` icon under Line 1 (the lookup's status line draws `error` and `info`; a name registered in `KvirnProvider icons` replaces each)                                                                               |
 | `kv-address-lookup-submit`, `-status`, `-notice`            | Search, status line, privacy notice | Shared with AddressSearch                                                                                               |
 
 ## Address lookup

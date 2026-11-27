@@ -1,5 +1,6 @@
-import { chevronDown } from '@kvirn/icons'
-import { Field, Icon, Popover, RadioGroup } from '@kvirn/ui'
+import { ChevronDownIcon } from '@kvirn/icons/react'
+import { Field, Popover, RadioGroup } from '@kvirn/ui'
+import { LibraryIcon } from '@kvirn/ui/internal'
 import type { MapBaseMap } from '@kvirn/core'
 import type { ComponentPropsWithRef, ReactElement, ReactNode } from 'react'
 import { joinClassNames } from './class-names.ts'
@@ -70,7 +71,7 @@ export function MapBaseMapSwitch({
             <BaseMapPreview baseMap={current} icon={icon} />
             {map.messages.baseMapLabel}
             <span className="kv-map-base-maps-chevron" aria-hidden="true">
-              <Icon name="chevron-down" icon={chevronDown} size="16" />
+              <LibraryIcon name="chevron-down" icon={ChevronDownIcon} size="16" />
             </span>
           </Popover.Trigger>
           <Popover.Popup aria-label={map.messages.baseMapLabel} className="kv-map-base-maps-popup">

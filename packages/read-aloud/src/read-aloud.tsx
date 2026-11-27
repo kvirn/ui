@@ -2,9 +2,17 @@
 import { createElement, useCallback, useContext, useEffect, useRef, useState } from 'react'
 import type { CSSProperties, ReactElement, ReactNode, Ref } from 'react'
 import type { ComponentPropsWithRef, HTMLAttributes } from 'react'
-import { close, pause, play, settings, skipNext, skipPrevious, stop } from '@kvirn/icons'
-import { Icon, Popover, Toolbar, mergeProps } from '@kvirn/ui'
-import { renderPart, resolveAsTag, useMergedRef } from '@kvirn/ui/internal'
+import {
+  CloseIcon,
+  PauseIcon,
+  PlayIcon,
+  SettingsIcon,
+  SkipNextIcon,
+  SkipPreviousIcon,
+  StopIcon,
+} from '@kvirn/icons/react'
+import { Popover, Toolbar, mergeProps } from '@kvirn/ui'
+import { LibraryIcon, renderPart, resolveAsTag, useMergedRef } from '@kvirn/ui/internal'
 import type { AsTag } from '@kvirn/ui/internal'
 import { ReadAloudContext } from './read-aloud-context.ts'
 import type { ReadAloudContextValue } from './read-aloud-context.ts'
@@ -195,9 +203,9 @@ export function ReadAloudPlay({ children, ...otherProps }: ReadAloudButtonProps)
           {isSpinnerVisible ? (
             <span className="kv-spinner" />
           ) : (
-            <Icon
+            <LibraryIcon
               name={isPlayingOrPreparing ? 'pause' : 'play'}
-              icon={isPlayingOrPreparing ? pause : play}
+              icon={isPlayingOrPreparing ? PauseIcon : PlayIcon}
               size="20"
             />
           )}
@@ -224,7 +232,7 @@ export function ReadAloudPrevious(props: ReadAloudButtonProps): ReactElement {
       part="Previous"
       pick={(reader) => reader.previousProps}
       label={(reader) => reader.previousLabel}
-      icon={<Icon name="skip-previous" icon={skipPrevious} size="20" />}
+      icon={<LibraryIcon name="skip-previous" icon={SkipPreviousIcon} size="20" />}
     />
   )
 }
@@ -237,7 +245,7 @@ export function ReadAloudNext(props: ReadAloudButtonProps): ReactElement {
       part="Next"
       pick={(reader) => reader.nextProps}
       label={(reader) => reader.nextLabel}
-      icon={<Icon name="skip-next" icon={skipNext} size="20" />}
+      icon={<LibraryIcon name="skip-next" icon={SkipNextIcon} size="20" />}
     />
   )
 }
@@ -250,7 +258,7 @@ export function ReadAloudStop(props: ReadAloudButtonProps): ReactElement {
       part="Stop"
       pick={(reader) => reader.stopProps}
       label={(reader) => reader.stopLabel}
-      icon={<Icon name="stop" icon={stop} size="20" />}
+      icon={<LibraryIcon name="stop" icon={StopIcon} size="20" />}
     />
   )
 }
@@ -463,7 +471,7 @@ export function ReadAloudSettings({
         })}
         ref={ref}
       >
-        <Icon name="settings" icon={settings} size="20" />
+        <LibraryIcon name="settings" icon={SettingsIcon} size="20" />
         {/* A visible label span, like every other Bar control (0154), not `aria-label`: the
          * `--words` choice class only reveals text, and an `aria-label` has none to reveal, so
          * Settings alone would stay wordless in that mode. */}
@@ -505,7 +513,7 @@ export function ReadAloudHide({
   return createElement(
     'button',
     mergeProps(otherProps, reader.hideProps),
-    children ?? <Icon name="close" icon={close} size="20" />,
+    children ?? <LibraryIcon name="close" icon={CloseIcon} size="20" />,
   )
 }
 ReadAloudHide.displayName = 'ReadAloud.Hide'

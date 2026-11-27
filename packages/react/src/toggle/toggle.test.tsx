@@ -6,7 +6,7 @@ import type { MockInstance } from 'vite-plus/test'
 import { page, userEvent } from 'vite-plus/test/browser'
 import { render } from 'vitest-browser-react'
 import { resetDevWarnings } from '../dev/dev-warning.ts'
-import { close } from '@kvirn/icons'
+import { CloseIcon } from '@kvirn/icons/react'
 import { Icon } from '../icon/icon.tsx'
 import { mergeProps } from '../merge-props/merge-props.ts'
 import { Toggle } from './toggle.tsx'
@@ -250,7 +250,7 @@ describe('accessible name', () => {
   test('warns in development when an icon-only toggle has no accessible name', async () => {
     await render(
       <Toggle>
-        <Icon icon={close} />
+        <Icon as={CloseIcon} />
       </Toggle>,
     )
     await expect.element(page.getByRole('button')).toBeVisible()
@@ -262,7 +262,7 @@ describe('accessible name', () => {
   test('an aria-label names an icon-only toggle, and it does not change with the state', async () => {
     await render(
       <Toggle aria-label="Bold">
-        <Icon icon={close} />
+        <Icon as={CloseIcon} />
       </Toggle>,
     )
     const toggle = page.getByRole('button', { name: 'Bold' })

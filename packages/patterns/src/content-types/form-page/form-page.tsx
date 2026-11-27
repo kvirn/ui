@@ -1,6 +1,6 @@
 'use client'
 
-import { arrowBack } from '@kvirn/icons'
+import { ArrowBackIcon } from '@kvirn/icons/react'
 import {
   Alert,
   Button,
@@ -9,12 +9,12 @@ import {
   ErrorSummary,
   Field,
   Heading,
-  Icon,
   Link,
   Stack,
   TextInput,
   Textarea,
 } from '@kvirn/ui'
+import { LibraryIcon } from '@kvirn/ui/internal'
 import { useEffect, useRef, useState } from 'react'
 import type { FormEvent } from 'react'
 import { kvirnbyFeedbackReference, kvirnbyReferringAddress } from '../../fixtures/accessibility.ts'
@@ -148,7 +148,7 @@ export function FormPage({ state = 'empty', failNextSend = false }: FormPageProp
       <Container size="form">
         <Link.Root href="#accessibility">
           <Link.Icon>
-            <Icon name="arrow-back" icon={arrowBack} size="24" />
+            <LibraryIcon name="arrow-back" icon={ArrowBackIcon} size="24" mirrorInRtl />
           </Link.Icon>
           Back to accessibility
         </Link.Root>

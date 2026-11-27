@@ -7,7 +7,7 @@ import { Autocomplete } from '../autocomplete/autocomplete.tsx'
 import { Combobox } from '../combobox/combobox.tsx'
 import { resetDevWarnings } from '../dev/dev-warning.ts'
 import { Field } from '../field/field.tsx'
-import { check } from '@kvirn/icons'
+import { CheckIcon } from '@kvirn/icons/react'
 import { Icon } from '../icon/icon.tsx'
 import * as api from '../index.ts'
 import { KvirnProvider } from '../provider/kvirn-provider.tsx'
@@ -632,7 +632,7 @@ describe('Listbox rich options: any markup', () => {
             <Listbox.List>
               <Listbox.Option item={countries[0]!}>
                 <Listbox.OptionIcon>
-                  <Icon icon={check} />
+                  <Icon as={CheckIcon} />
                 </Listbox.OptionIcon>
                 <Listbox.OptionText>
                   <b>Sverige</b>

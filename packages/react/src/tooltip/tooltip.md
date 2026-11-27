@@ -57,11 +57,12 @@ Keyed `tooltip-*`, English, for the developer only: a trigger with no accessible
 ## Component
 
 ```tsx
-import { Icon, Kbd, Toolbar, Tooltip } from '@kvirn/ui'
+import { BoldIcon } from '@kvirn/icons/react'
+import { Kbd, Toolbar, Tooltip } from '@kvirn/ui'
 
 ;<Tooltip.Root>
   <Tooltip.Trigger as={Toolbar.Toggle} aria-label="Bold" aria-keyshortcuts="Control+B">
-    <Icon icon={bold} />
+    <BoldIcon />
   </Tooltip.Trigger>
   <Tooltip.Popup>
     <Tooltip.Name>Bold</Tooltip.Name>

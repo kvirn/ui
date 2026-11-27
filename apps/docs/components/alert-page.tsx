@@ -14,6 +14,8 @@ import {
   bodyRows,
   closeAttributes,
   closeRows,
+  iconAttributes,
+  iconRows,
   readyMadeRootName,
   readyMadeRootRows,
   rootAttributes,
@@ -113,6 +115,21 @@ const parts: ApiPart[] = [
     ),
     props: closeRows,
     attributes: closeAttributes,
+  },
+  {
+    name: 'Alert.Icon',
+    renders: (
+      <>
+        The status icon, a decorative <code>&lt;svg&gt;</code> with <code>aria-hidden</code>: the
+        status is text. The ready-made roots draw it for you. With <code>useAlert</code>, write{' '}
+        <code>
+          &lt;Alert.Icon {'{'}...alert.iconProps{'}'} /&gt;
+        </code>
+        .
+      </>
+    ),
+    props: iconRows,
+    attributes: iconAttributes,
   },
 ]
 

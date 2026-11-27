@@ -1,5 +1,5 @@
 // kv-lang-ok-file: per-locale story texts: the toolbar locale selects the sv, fi, nb, nn or en table
-import { search } from '@kvirn/icons'
+import { SearchIcon } from '@kvirn/icons/react'
 import {
   ArrowRightIcon,
   MagnifyingGlassIcon,
@@ -337,13 +337,13 @@ export function ArrowButtons() {
   )
 }
 
-/** Lucide, one-off: pass the component as `icon`. Icon's own props replace Lucide's. */
+/** Lucide, one-off: pass the component as `as`. Icon's own props replace Lucide's. */
 export function LucideOneOff() {
   return (
     <>
-      <Icon icon={Search} label="Search" />
-      <Icon icon={MapPin} size="24" variant="primary" />
-      <Icon icon={Trash2} />
+      <Icon as={Search} label="Search" />
+      <Icon as={MapPin} size="24" variant="primary" />
+      <Icon as={Trash2} />
     </>
   )
 }
@@ -375,13 +375,13 @@ export function LucideRegistered() {
   )
 }
 
-/** Heroicons, one-off: pass the component as `icon`. A `label` removes Heroicons' `aria-hidden`. */
+/** Heroicons, one-off: pass the component as `as`. A `label` removes Heroicons' `aria-hidden`. */
 export function HeroiconsOneOff() {
   return (
     <>
-      <Icon icon={MagnifyingGlassIcon} label="Search" />
-      <Icon icon={MapPinIcon} size="24" variant="primary" />
-      <Icon icon={TrashIcon} />
+      <Icon as={MagnifyingGlassIcon} label="Search" />
+      <Icon as={MapPinIcon} size="24" variant="primary" />
+      <Icon as={TrashIcon} />
     </>
   )
 }
@@ -489,9 +489,9 @@ export function UnstyledIcons() {
   )
 }
 
-/** No registration: pass the drawing from `@kvirn/icons` as `icon`. */
+/** No registration: draw the component from `@kvirn/icons/react`. */
 export function IconFromDrawing() {
-  return <Icon icon={search} />
+  return <SearchIcon />
 }
 
 /** `size` is the pixel size as a string. */

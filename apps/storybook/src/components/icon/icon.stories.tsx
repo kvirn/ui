@@ -5,6 +5,7 @@ import { nn } from '@kvirn/i18n/nn'
 import { sv } from '@kvirn/i18n/sv'
 import type { KvirnMessages } from '@kvirn/i18n'
 import { allIcons } from '../../icons.tsx'
+import { SvgIcon } from '@kvirn/icons/react'
 import { mapIcons } from '@kvirn/map'
 import { Icon, KvirnProvider, useFormat } from '@kvirn/ui'
 import { richTextIconNames, ToolbarIcon } from '@kvirn/rich-text'
@@ -81,13 +82,7 @@ const meta = {
       control: 'select',
       options: Object.keys(allIcons),
       description:
-        'The name of a registered icon from `@kvirn/icons`. Without a registration, pass the drawing as `icon={search}` instead. Mirrors in RTL when the drawing is directional.',
-    },
-    icon: {
-      control: false,
-      description:
-        'A drawing from `@kvirn/icons` or a component, with no registration: `icon={search}`. With `name` too, a registered `name` wins and `icon` is the fallback.',
-      table: { type: { summary: 'IconRegistryEntry' } },
+        'The name of a registered icon from `@kvirn/icons`. Without a registration, draw the library icon as its component: `<SearchIcon />`. Mirrors in RTL when the drawing is directional.',
     },
     size: {
       control: 'select',
@@ -185,7 +180,7 @@ export const Default: Story = {
 }
 
 /**
- * No registration: pass the drawing from `@kvirn/icons` as `icon`. Only this icon is bundled,
+ * No registration: draw the component from `@kvirn/icons/react`. Only this icon is bundled,
  * which is the route for code that renders outside a provider.
  */
 export const WithoutRegistration: Story = {
@@ -203,9 +198,9 @@ export const MapSet: Story = {
       {mapIconNames.map((name) => (
         <li key={name} className="kv-story-icon-cell">
           <span className="kv-story-icon-row">
-            <Icon icon={mapIcons[name]} size="16" />
-            <Icon icon={mapIcons[name]} size="20" />
-            <Icon icon={mapIcons[name]} size="24" />
+            <SvgIcon icon={mapIcons[name]} size={16} />
+            <SvgIcon icon={mapIcons[name]} size={20} />
+            <SvgIcon icon={mapIcons[name]} size={24} />
           </span>
           <code>{name}</code>
         </li>

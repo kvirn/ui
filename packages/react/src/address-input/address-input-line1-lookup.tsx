@@ -1,7 +1,7 @@
 'use client'
 import type { AddressResult, GeocoderProvider } from '@kvirn/core'
 import type { KvirnMessages } from '@kvirn/i18n'
-import { check, error as errorIcon, info as infoIcon } from '@kvirn/icons'
+import { CheckIcon, ErrorIcon, InfoIcon } from '@kvirn/icons/react'
 import { useEffect, useRef, useState } from 'react'
 import {
   DEFAULT_DEBOUNCE_MILLISECONDS,
@@ -18,7 +18,7 @@ import type {
 import { Autocomplete } from '../autocomplete/autocomplete.tsx'
 import { ComboboxProviders } from '../combobox/combobox.tsx'
 import { Field } from '../field/field.tsx'
-import { Icon } from '../icon/icon.tsx'
+import { LibraryIcon } from '../icon/library-icon.tsx'
 import { mergeProps } from '../merge-props/merge-props.ts'
 import { useMergedRef } from '../merge-props/use-merged-ref.ts'
 import { countryName } from '../phone-input/country-options.ts'
@@ -340,7 +340,7 @@ function AddressInputLine1Field({
       <Field.HelpText>{lookup.helpText}</Field.HelpText>
       {note === undefined ? null : (
         <Field.HelpText className="kv-address-input-lookup-note">
-          <Icon icon={check} size="16" />
+          <LibraryIcon name="check" icon={CheckIcon} size="16" />
           {note}
         </Field.HelpText>
       )}
@@ -350,9 +350,9 @@ function AddressInputLine1Field({
             {lookup.status === 'searching' ? (
               <span className="kv-spinner" aria-hidden="true" />
             ) : lookup.status === 'error' ? (
-              <Icon icon={errorIcon} size="16" />
+              <LibraryIcon name="error" icon={ErrorIcon} size="16" />
             ) : lookup.status === 'offline' || lookup.status === 'rejected' ? (
-              <Icon icon={infoIcon} size="16" />
+              <LibraryIcon name="info" icon={InfoIcon} size="16" />
             ) : null}
             {lookup.statusText}
           </div>

@@ -4,7 +4,7 @@ import type { ApiHook, AttributeRow } from '../components/api-block.tsx'
 
 export type IconDocumentedProps = Pick<
   IconProps,
-  'name' | 'icon' | 'as' | 'children' | 'size' | 'label' | 'variant' | 'mirrorInRtl'
+  'name' | 'as' | 'children' | 'size' | 'label' | 'variant' | 'mirrorInRtl'
 >
 
 export const iconRows = propRows<IconDocumentedProps>({
@@ -12,13 +12,7 @@ export const iconRows = propRows<IconDocumentedProps>({
     type: 'IconName',
     default: '–',
     description:
-      'A name you registered with defineIcons in a KvirnProvider, such as close or search. KvirnUI has no built-in icons, so a name you did not register draws an empty icon and warns in development. Give one of name, icon, as or children. Together with icon, a registered name wins over the icon.',
-  },
-  icon: {
-    type: 'IconRegistryEntry',
-    default: '–',
-    description:
-      'A drawing from @kvirn/icons, or a component: icon={search} or icon={Search}. It needs no registration, and a registered name wins over it. Icon’s size and label replace the component’s own, and className is joined with it.',
+      'A name you registered with defineIcons in a KvirnProvider, such as close or search. KvirnUI has no built-in icons, so a name you did not register draws an empty icon and warns in development. Give one of name, as or children.',
   },
   as: {
     type: 'ElementType',
@@ -89,11 +83,6 @@ export const useIconHook: ApiHook = {
       default: '–',
       description: 'A registered icon name, to get its component.',
     },
-    icon: {
-      type: 'IconRegistryEntry',
-      default: '–',
-      description: 'An icon from @kvirn/icons, or a component, used instead of a name.',
-    },
     size: { type: 'IconSize', default: '20', description: 'The size in pixels, as a string.' },
     label: {
       type: 'string',
@@ -121,8 +110,7 @@ export const useIconHook: ApiHook = {
     component: {
       type: 'IconComponent | undefined',
       default: '–',
-      description:
-        'The component for a registered name, else for icon. Undefined without either, or for an unknown name.',
+      description: 'The component for a registered name. Undefined for an unknown name.',
     },
     isDecorative: {
       type: 'boolean',

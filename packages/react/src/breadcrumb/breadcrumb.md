@@ -36,7 +36,7 @@ A slash, or your own separator:
 
 ```tsx
 <Breadcrumb.Root variant="slash">…</Breadcrumb.Root>
-<Breadcrumb.Root separator={<Icon icon={chevronForward} />}>…</Breadcrumb.Root>
+<Breadcrumb.Root separator={<Icon as={ChevronForwardIcon} mirrorInRtl />}>…</Breadcrumb.Root>
 ```
 
 ## Hook

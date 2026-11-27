@@ -46,8 +46,6 @@ export interface IconDefaults {
 export interface UseIconOptions extends IconDefaults {
   /** An icon registered in `KvirnProvider`. */
   name?: IconName | undefined
-  /** A drawing from `@kvirn/icons` or a component. It needs no registration, and a registered `name` wins over it. */
-  icon?: IconRegistryEntry | undefined
   /**
    * Makes the icon an image with this name, from your own translations. Leave it
    * out when text next to the icon says the same thing: the icon is then hidden from
@@ -82,9 +80,16 @@ export interface IconPartProps {
   'aria-label'?: string
 }
 
+/** Internal: `LibraryIcon` passes the library's own icon, which a registered `name` replaces. */
+interface UseIconInternalOptions extends UseIconOptions {
+  fallbackIcon?: IconRegistryEntry | undefined
+  /** Whether `fallbackIcon` flips in RTL, when a component can't say. */
+  fallbackMirrorInRtl?: boolean | undefined
+}
+
 export interface UseIconResult {
   iconProps: IconPartProps
-  /** The component for a registered `name`, else for `icon`. `undefined` without either, or for an unknown name. */
+  /** The component for a registered `name`. `undefined` for an unknown name. */
   component: IconComponent | undefined
   /** `true` unless the icon has a `label`. */
   isDecorative: boolean
@@ -129,27 +134,30 @@ const iconVariants: readonly string[] = [
  */
 export function useIcon({
   name,
-  icon,
+  fallbackIcon,
+  fallbackMirrorInRtl,
   size,
   label,
   variant,
   mirrorInRtl,
-}: UseIconOptions = {}): UseIconResult {
+}: UseIconInternalOptions = {}): UseIconResult {
   const { icons, iconDefaults } = useContext(KvirnConfigContext)
   // Own properties only: `name="constructor"` must not find `Object.prototype.constructor`.
   const appEntry = name !== undefined && Object.hasOwn(icons, name) ? icons[name] : undefined
-  const entryToUse = appEntry ?? icon
+  const entryToUse = appEntry ?? fallbackIcon
   const entry = entryToUse === undefined ? undefined : readIconEntry(entryToUse)
   // Mirroring belongs to the name: a plain component registered over a component's directional
   // icon keeps that icon's flip, or an override would silently point backwards in RTL.
+  const fallbackFlip =
+    fallbackMirrorInRtl ??
+    (fallbackIcon === undefined ? undefined : readIconEntry(fallbackIcon).mirrorInRtl)
   const entryMirrorInRtl =
-    entry?.mirrorInRtl ??
-    (appEntry !== undefined && icon !== undefined ? readIconEntry(icon).mirrorInRtl : undefined)
+    appEntry === undefined ? fallbackFlip : (entry?.mirrorInRtl ?? fallbackFlip)
 
-  if (name !== undefined && icon === undefined && entry === undefined) {
+  if (name !== undefined && fallbackIcon === undefined && entry === undefined) {
     warnOnce(
       `unknown-icon:${name}`,
-      `<Icon name="${name}"> isn't registered in a KvirnProvider, so it renders an empty <svg>. Add it with defineIcons and pass the registry to <KvirnProvider icons>, or pass the drawing as icon.`,
+      `<Icon name="${name}"> isn't registered in a KvirnProvider, so it renders an empty <svg>. Add it with defineIcons and pass the registry to <KvirnProvider icons>, or draw it with as or children.`,
     )
   }
 

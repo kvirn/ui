@@ -112,7 +112,7 @@ export interface AlertClosePartProps {
 }
 
 /**
- * Spread on `<Icon>`: `<Icon {...alert.iconProps} />`. Decorative: the status is text. The `icon`
+ * Spread on `<Alert.Icon>`: `<Alert.Icon {...alert.iconProps} />`. Decorative: the status is text. The `icon`
  * draws with no registry, and a registered `name` replaces it.
  */
 export interface AlertIconPartProps {
@@ -164,7 +164,7 @@ export function readText(element: HTMLElement | null): string {
  * @example
  * const alert = useAlert({ variant: 'warning', announce: 'polite' })
  * <div {...alert.rootProps}>
- *   <Icon {...alert.iconProps} />
+ *   <Alert.Icon {...alert.iconProps} />
  *   <h2 {...alert.titleProps}>
  *     <span {...alert.statusProps} /> Your permit expires
  *   </h2>

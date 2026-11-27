@@ -1,11 +1,12 @@
 import type { MapCluster as MapClusterData, MapLayer, MapPlace } from '@kvirn/core'
-import { Icon, useFormat } from '@kvirn/ui'
+import { useFormat } from '@kvirn/ui'
+import { LibraryIcon } from '@kvirn/ui/internal'
 import { useLayoutEffect, useRef, useState } from 'react'
 import type { ComponentPropsWithRef, CSSProperties, KeyboardEvent, ReactNode } from 'react'
 import { joinClassNames } from './class-names.ts'
 import { hasModifier } from './has-modifier.ts'
 import { useMapContext } from './map-context.ts'
-import { pin } from '@kvirn/icons'
+import { PinIcon } from '@kvirn/icons/react'
 import { useMapFrame } from './use-map-frame.ts'
 
 export interface MapMarkerProps<Data = unknown> extends ComponentPropsWithRef<'button'> {
@@ -56,7 +57,11 @@ export function MapMarker<Data = unknown>({
         map.keepClear(event.currentTarget)
       }}
     >
-      {children === undefined ? <Icon icon={pin} className="kv-map-marker-pin" /> : children}
+      {children === undefined ? (
+        <LibraryIcon name="marker" icon={PinIcon} className="kv-map-marker-pin" />
+      ) : (
+        children
+      )}
     </button>
   )
 }

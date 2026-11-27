@@ -1,12 +1,12 @@
 'use client'
 import type { AnnouncerPoliteness } from '@kvirn/core'
 import type { KvirnMessages } from '@kvirn/i18n'
-import { close } from '@kvirn/icons'
+import { CloseIcon } from '@kvirn/icons/react'
 import { useContext, useEffect } from 'react'
 import type { ComponentPropsWithRef, ReactElement, ReactNode } from 'react'
 import { useButton } from '../button/use-button.ts'
 import { warnOnce } from '../dev/dev-warning.ts'
-import { Icon } from '../icon/icon.tsx'
+import { LibraryIcon } from '../icon/library-icon.tsx'
 import { mergeProps } from '../merge-props/merge-props.ts'
 import { useMergedRef } from '../merge-props/use-merged-ref.ts'
 import { useMessages } from '../provider/use-messages.ts'
@@ -15,7 +15,7 @@ import type { AsTag } from '../render/as-prop.ts'
 import { renderPart } from '../render/render-part.ts'
 import { AlertContext } from './alert-context.ts'
 import { useAlert } from './use-alert.ts'
-import type { AlertVariant } from './use-alert.ts'
+import type { AlertIconPartProps, AlertVariant } from './use-alert.ts'
 
 export type { AlertVariant } from './use-alert.ts'
 
@@ -62,6 +62,9 @@ export type AlertTitleProps = AsTag<(typeof titleTags)[number], 'h2'>
 export type AlertBodyProps = AsTag<(typeof bodyTags)[number], 'div'>
 /** `as` is `div` (default) or `section`. */
 export type AlertActionsProps = AsTag<(typeof actionsTags)[number], 'div'>
+
+/** Spread `alert.iconProps`: the status icon, or the app's registered `info`, `success`, `warning` or `error`. */
+export type AlertIconProps = AlertIconPartProps
 
 /**
  * `aria-disabled` and `type` are left out: the close button is always `type="button"`, and
@@ -112,7 +115,7 @@ function AlertRootBase({
               children
             ) : (
               <>
-                {icon === undefined ? <Icon {...iconProps} /> : icon}
+                {icon === undefined ? <AlertIcon {...iconProps} /> : icon}
                 {children}
               </>
             ),
@@ -292,11 +295,17 @@ export function AlertClose({
       )}
       ref={ref}
     >
-      {hasVisibleText ? children : <Icon name="close" icon={close} />}
+      {hasVisibleText ? children : <LibraryIcon name="close" icon={CloseIcon} />}
     </button>
   )
 }
 AlertClose.displayName = 'Alert.Close'
+
+/** The status icon, decorative: the status is text. Pass `alert.iconProps` from `useAlert`. */
+export function AlertIcon(props: AlertIconProps): ReactElement {
+  return <LibraryIcon {...props} />
+}
+AlertIcon.displayName = 'Alert.Icon'
 
 /**
  * A status message in the content: something people need to know now, or the result of what
@@ -329,4 +338,5 @@ export const Alert = {
   Body: AlertBody,
   Actions: AlertActions,
   Close: AlertClose,
+  Icon: AlertIcon,
 } as const

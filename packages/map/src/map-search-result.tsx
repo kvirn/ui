@@ -1,5 +1,5 @@
-import { pin } from '@kvirn/icons'
-import { Icon } from '@kvirn/ui'
+import { PinIcon } from '@kvirn/icons/react'
+import { LibraryIcon } from '@kvirn/ui/internal'
 import { useRef } from 'react'
 import type { CSSProperties, ReactElement } from 'react'
 import { useMapContext } from './map-context.ts'
@@ -27,7 +27,7 @@ export function MapSearchResult(): ReactElement | null {
   const style = { '--kv-map-x': `${point.x}px`, '--kv-map-y': `${point.y}px` } as CSSProperties
   return (
     <span ref={elementRef} className="kv-map-search-result" style={style} aria-hidden="true">
-      <Icon icon={pin} className="kv-map-search-result-pin" />
+      <LibraryIcon name="marker" icon={PinIcon} className="kv-map-search-result-pin" />
     </span>
   )
 }

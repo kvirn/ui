@@ -7,8 +7,8 @@ import { readText } from '../alert/use-alert.ts'
 import { Alert } from '../alert/alert.tsx'
 import { useQuietAnnouncer } from '../announcer/use-announcer.ts'
 import { Button } from '../button/button.tsx'
-import { close } from '@kvirn/icons'
-import { Icon } from '../icon/icon.tsx'
+import { CloseIcon } from '@kvirn/icons/react'
+import { LibraryIcon } from '../icon/library-icon.tsx'
 import { useDismissableLayer } from '../popup/use-dismissable-layer.ts'
 import { useEnv } from '../provider/use-env.ts'
 import { useLocale } from '../provider/use-locale.ts'
@@ -41,7 +41,7 @@ function ToastClose({ timer, onClick }: ToastCloseProps) {
   }
   return (
     <button {...alert.closeProps} onClick={onClick}>
-      <Icon name="close" icon={close} />
+      <LibraryIcon name="close" icon={CloseIcon} />
       {timer === undefined ? null : (
         // Decorative: the time left is never announced. A new run restarts the animation, and
         // Close keeps its element and focus.
