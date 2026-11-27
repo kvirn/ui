@@ -24,6 +24,7 @@ import * as dateRangePicker from '../content/date-range-picker.api.ts'
 import * as definitionList from '../content/definition-list.api.ts'
 import * as dialog from '../content/dialog.api.ts'
 import * as disclosure from '../content/disclosure.api.ts'
+import * as displaySettings from '../content/display-settings.api.ts'
 import * as divider from '../content/divider.api.ts'
 import * as errorSummary from '../content/error-summary.api.ts'
 import * as field from '../content/field.api.ts'
@@ -64,6 +65,7 @@ import * as switchApi from '../content/switch.api.ts'
 import * as tableOfContents from '../content/table-of-contents.api.ts'
 import * as table from '../content/table.api.ts'
 import * as tabs from '../content/tabs.api.ts'
+import * as tag from '../content/tag.api.ts'
 import * as textInput from '../content/text-input.api.ts'
 import * as textarea from '../content/textarea.api.ts'
 import * as toast from '../content/toast.api.ts'
@@ -101,6 +103,7 @@ const apiModules: Readonly<Record<string, object>> = {
   'definition-list': definitionList,
   dialog,
   disclosure,
+  'display-settings': displaySettings,
   divider,
   'error-summary': errorSummary,
   field,
@@ -141,6 +144,7 @@ const apiModules: Readonly<Record<string, object>> = {
   'table-of-contents': tableOfContents,
   table,
   tabs,
+  tag,
   'text-input': textInput,
   textarea,
   toast,

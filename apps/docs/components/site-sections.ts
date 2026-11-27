@@ -390,6 +390,11 @@ const componentGroupList: readonly SummarisedGroup[] = [
         'popover',
         'A small panel that a button opens: a hint, a short form or a few controls.',
       ),
+      component(
+        'Tag',
+        'tag',
+        'A short fact in words, such as an applied filter. It is plain text or one button that removes it.',
+      ),
       component('Toast', 'toast', 'A short status message in the corner after something worked.'),
       component('Toggle', 'toggle', 'A button that is on or off, and says which.'),
       component(
@@ -417,6 +422,11 @@ const componentGroupList: readonly SummarisedGroup[] = [
         'DefinitionList',
         'definition-list',
         'Terms with their descriptions, and optionally a link to change each, as one native description list.',
+      ),
+      component(
+        'DisplaySettings',
+        'display-settings',
+        'Lets visitors choose a light or dark colour scheme, more contrast and less motion in one place.',
       ),
       component(
         'Focus',

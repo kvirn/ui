@@ -10,21 +10,10 @@ import {
   TableScrollRegion,
 } from '@kvirn/ui'
 import type { ReactNode } from 'react'
-import { messages } from '../messages/en.ts'
-import {
-  useDisplaySettingsOptionRows,
-  useDisplaySettingsResultRows,
-  useTagGroupOptionRows,
-  useTagGroupResultRows,
-} from '../content/hooks-and-utilities.api.ts'
-import { PropTable } from './api-block.tsx'
-import { apiHookPart } from './api-ids.ts'
 import { AnchoredHeading } from './anchored-heading.tsx'
 import { CodeBlock } from './code-block.tsx'
 import { Note } from './note.tsx'
 import { PageWithContents } from './page-contents.tsx'
-
-const apiText = messages.docs.api
 
 interface LinkedRow {
   name: string
@@ -111,28 +100,13 @@ function Entry({
   )
 }
 
-function HookTables({
-  hook,
-  headingId,
-  options,
-  result,
-}: {
-  hook: string
-  headingId: string
-  options: Parameters<typeof PropTable>[0]['rows']
-  result: Parameters<typeof PropTable>[0]['rows']
-}) {
-  return (
-    <>
-      <p>{apiText.options}</p>
-      <PropTable headingId={headingId} rows={options} part={apiHookPart(hook, 'options')} />
-      <p>{apiText.result}</p>
-      <PropTable headingId={headingId} rows={result} part={apiHookPart(hook, 'result')} />
-    </>
-  )
-}
-
-const providerImport = `import { useLocale, useDateSettings, useFormat, useTheme } from '@kvirn/ui'`
+const providerImport = `import {
+  useLocale,
+  useDateSettings,
+  useFormat,
+  useTheme,
+  useDisplaySettings,
+} from '@kvirn/ui'`
 
 const providerRows: readonly LinkedRow[] = [
   {
@@ -162,42 +136,15 @@ const providerRows: readonly LinkedRow[] = [
       'Reads and changes the visitor’s choice of colour scheme, contrast and motion. It also says whether the device uses its own colours.',
     signature: 'useTheme(): { colorScheme, contrast, motion, …, selectColorScheme, … }',
   },
+  {
+    name: 'useDisplaySettings',
+    href: '/components/display-settings#api-usedisplaysettings',
+    purpose:
+      'The three display choices, colour scheme, contrast and motion, with their labels, for your own markup. It draws nothing.',
+    signature:
+      'useDisplaySettings(options?: { messages?, short? }): { text, groups, isForcedColors }',
+  },
 ]
-
-const displaySettingsSignature = `import { useDisplaySettings } from '@kvirn/ui'
-
-function useDisplaySettings(options?: {
-  messages?: Partial<KvirnMessages['displaySettings']>
-  short?: boolean
-}): { text, groups, isForcedColors }`
-
-const displaySettingsExample = `import { useDisplaySettings } from '@kvirn/ui'
-
-function MyDisplayChoices() {
-  const { groups, isForcedColors, text } = useDisplaySettings()
-  return (
-    <div>
-      {groups.map((group) => (
-        <fieldset key={group.id}>
-          <legend>{group.legend}</legend>
-          {group.options.map((option) => (
-            <label key={option.value}>
-              <input
-                type="radio"
-                name={group.name}
-                value={option.value}
-                checked={group.value === option.value}
-                onChange={() => group.select(option.value)}
-              />{' '}
-              {option.label}
-            </label>
-          ))}
-        </fieldset>
-      ))}
-      {isForcedColors ? <p>{text.forcedColors}</p> : null}
-    </div>
-  )
-}`
 
 const focusImport = `import { useFocus, FocusScope, useRouteFocus, useAnnouncer, useToast } from '@kvirn/ui'`
 
@@ -315,51 +262,15 @@ const dataRows: readonly LinkedRow[] = [
       'With createColumnHelper, the features (such as rowSortingFeature), the row models (such as createSortedRowModel) and the filterFn_* and sortFn_* functions, these are the building blocks of useTable, from TanStack Table. KvirnUI re-exports them, so you install nothing else.',
     signature: 'tableFeatures({ rowSortingFeature, sortedRowModel: createSortedRowModel(), … })',
   },
+  {
+    name: 'useTagGroup',
+    href: '/components/tag#api-usetaggroup',
+    purpose:
+      'The focus rule and the announcement for a group of removable tags, such as applied filters, in your own markup.',
+    signature:
+      'useTagGroup(options?: { announceRemoval?, focusFallback?, messages? }): { labelId, labelRef, listRef, prepareRemoval, … }',
+  },
 ]
-
-const tagGroupSignature = `import { useTagGroup } from '@kvirn/ui'
-
-function useTagGroup(options?: {
-  announceRemoval?: boolean
-  focusFallback?: () => HTMLElement | null
-  messages?: Partial<KvirnMessages['tag']>
-}): { labelId, labelRef, listRef, hasItems, setHasItems, prepareRemoval, prepareClear, messages }`
-
-const tagGroupExample = `import { useState } from 'react'
-import { useTagGroup } from '@kvirn/ui'
-
-function AppliedFilters() {
-  const [filters, setFilters] = useState(['Year: 2025', 'Status: Open'])
-  const group = useTagGroup()
-
-  return (
-    <div>
-      <span id={group.labelId} ref={group.labelRef}>
-        Applied filters
-      </span>
-      {filters.length === 0 ? <p>No filters applied</p> : null}
-      {filters.length > 0 ? (
-        <ul role="list" ref={group.listRef} aria-labelledby={group.labelId}>
-          {filters.map((filter) => (
-            <li key={filter}>
-              <button
-                type="button"
-                data-kv-tag-remove=""
-                aria-label={group.messages.remove({ label: filter })}
-                onClick={(event) => {
-                  group.prepareRemoval(event.currentTarget, filter)
-                  setFilters(filters.filter((other) => other !== filter))
-                }}
-              >
-                {filter}
-              </button>
-            </li>
-          ))}
-        </ul>
-      ) : null}
-    </div>
-  )
-}`
 
 const localeSortSignature = `import { createLocaleSortFn } from '@kvirn/ui'
 
@@ -555,9 +466,12 @@ const mapIconsSignature = `import { mapIcons } from '@kvirn/map'
 // A frozen object. Each value is an icon from @kvirn/icons.
 mapIcons: {
   marker                          // the pin on a place, and the pin of an address search result
-  locate
+  add                             // Zoom in
   remove                          // Zoom out
   'arrow-north' 'arrow-south' 'arrow-west' 'arrow-east'   // the pan buttons
+  close                           // closes the details and the cluster popup
+  'chevron-down'                  // the base map switch
+  error info                      // the address search status
 }`
 
 const mapIconsExample = `// app/icons.ts
@@ -741,35 +655,6 @@ export function HooksAndUtilitiesPage() {
               </p>
               <CodeBlock code={providerImport} />
               <LinkedTable sectionId="provider" rows={providerRows} />
-              <Entry
-                id="use-display-settings"
-                name="useDisplaySettings"
-                purpose={
-                  <>
-                    The three display choices, colour scheme, contrast and motion, with their
-                    labels, for your own markup. It draws nothing and saves each choice through the
-                    provider, in this browser only. Use it when the ready-made{' '}
-                    <code>DisplaySettings</code> parts do not fit your layout.
-                  </>
-                }
-                signature={displaySettingsSignature}
-                exampleIntro={
-                  <>
-                    A settings page for a municipal service. Each group is a fieldset with a legend,
-                    so a screen reader announces its name. The{' '}
-                    <Link href="/accessibility-settings">display settings page</Link> of this site
-                    uses the ready-made <code>DisplaySettingsPanel</code>.
-                  </>
-                }
-                example={displaySettingsExample}
-              >
-                <HookTables
-                  hook="useDisplaySettings"
-                  headingId="use-display-settings"
-                  options={useDisplaySettingsOptionRows}
-                  result={useDisplaySettingsResultRows}
-                />
-              </Entry>
             </>
           ),
         },
@@ -881,34 +766,6 @@ export function HooksAndUtilitiesPage() {
             <>
               <CodeBlock code={dataImport} />
               <LinkedTable sectionId="data" rows={dataRows} />
-              <Entry
-                id="use-tag-group"
-                name="useTagGroup"
-                purpose={
-                  <>
-                    The focus rule and the announcement for a group of removable tags, such as
-                    applied filters, in your own markup. After a removal, focus goes to the next
-                    remove button, else the previous one, else a fallback. It never lands on the
-                    page body. The ready-made <code>TagGroup</code> and <code>Tag</code> parts use
-                    this hook.
-                  </>
-                }
-                signature={tagGroupSignature}
-                exampleIntro="The filters that are applied to a list of permits. Each tag is one button that removes it."
-                example={tagGroupExample}
-              >
-                <HookTables
-                  hook="useTagGroup"
-                  headingId="use-tag-group"
-                  options={useTagGroupOptionRows}
-                  result={useTagGroupResultRows}
-                />
-                <Note kind="reminder">
-                  Call <code>prepareRemoval</code> first in the click handler and change your state
-                  in the same event. Otherwise the group cannot move focus after the render and
-                  keyboard users lose their place (2.4.3 Focus Order).
-                </Note>
-              </Entry>
               <Entry
                 id="create-locale-sort-fn"
                 name="createLocaleSortFn"
@@ -1078,10 +935,8 @@ export function HooksAndUtilitiesPage() {
                   <>
                     The names and drawings of the icons the Map uses, for the <code>icons</code> of{' '}
                     <code>KvirnProvider</code>. The Map looks each icon up by its name, so when you
-                    register a name, every Map in the app draws your icon instead. The Map also
-                    draws <code>add</code> (Zoom in), <code>close</code> and{' '}
-                    <code>chevron-down</code>. They are not in <code>mapIcons</code>, so register
-                    those names yourself to swap them. No Map part draws <code>locate</code>. The{' '}
+                    register a name, every Map in the app draws your icon instead.{' '}
+                    <code>mapIcons</code> lists every icon the Map and AddressSearch draw. The{' '}
                     <Link href="/components/icon#package-sets">Icon page</Link> shows how to
                     register icons with <code>defineIcons</code> and draw them by name.
                   </>
@@ -1119,11 +974,11 @@ export function HooksAndUtilitiesPage() {
                   <>
                     The names of the icons the editor’s toolbar can draw, for{' '}
                     <code>RichTextEditor.Icon</code> (also exported as <code>ToolbarIcon</code>).
-                    The toolbar draws these icons itself. They are not registered in{' '}
-                    <code>KvirnProvider</code>, so registering a name such as <code>bold</code> does
-                    not change the toolbar. To use another icon on a control, give the control your
-                    own <code>icon</code>. <code>RichTextEditor.Icon</code> draws path data of your
-                    own too. The icon is decoration: the control’s <code>label</code> names it.
+                    Register one of these names in <code>KvirnProvider</code> (<code>bold</code>,
+                    say) and the toolbar draws your icon in its place. To use another icon on one
+                    control, give the control your own <code>icon</code>.{' '}
+                    <code>RichTextEditor.Icon</code> draws path data of your own too. The icon is
+                    decoration: the control’s <code>label</code> names it.
                   </>
                 }
                 signature={richTextIconNamesSignature}
