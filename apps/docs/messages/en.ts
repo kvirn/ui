@@ -811,7 +811,7 @@ export const messages = {
       allCategoriesLink: 'Search all categories',
       request: 'Missing an icon? Tell us which one you need.',
       copy: 'Copy import',
-      copyHidden: ({ importName }: { importName: string }) => ` ${importName}`,
+      copyHidden: ({ componentName }: { componentName: string }) => ` ${componentName}`,
       aliases: ({ list }: { list: string }) => `Also called: ${list}`,
       flips: 'Flips in right-to-left text',
       label: ({ label }: { label: string }) => `Translated label: “${label}”`,

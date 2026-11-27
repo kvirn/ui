@@ -21,7 +21,7 @@ import {
 import { useEffect, useRef, useState, useSyncExternalStore } from 'react'
 import type { FormEvent } from 'react'
 import type { IconSize, IconVariant } from '@kvirn/ui'
-import { iconCamelName, iconImportName } from '../lib/icon-import-name.ts'
+import { iconCamelName, iconComponentName } from '../lib/icon-import-name.ts'
 import { messages } from '../messages/en.ts'
 
 const text = messages.docs.icons
@@ -85,7 +85,7 @@ const toWords = (value: string) =>
 const matches = (icon: IconLibraryEntry, words: readonly string[]) => {
   const haystack = [
     icon.name,
-    iconImportName(icon.name),
+    iconComponentName(icon.name),
     ...icon.aliases,
     ...icon.tags,
     icon.meaning,
@@ -111,8 +111,8 @@ function IconTile({
   isHydrated: boolean
   settings: PreviewSettings
 }) {
-  const importName = iconImportName(icon.name)
-  const importLine = `import { ${importName} } from '@kvirn/icons'`
+  const componentName = iconComponentName(icon.name)
+  const importLine = `import { ${componentName} } from '@kvirn/icons/react'`
   const label = icon.hasLabel
     ? iconMessages[iconCamelName(icon.name) as keyof typeof iconMessages]
     : undefined
@@ -161,13 +161,13 @@ function IconTile({
                 <Icon name="copy" size="20" className="docs-icon-copy-idle" />
                 <Icon name="check" size="20" className="docs-icon-copy-done" />
                 <span className="docs-icon-copy-label">{text.copy}</span>
-                <VisuallyHidden>{text.copyHidden({ importName })}</VisuallyHidden>
+                <VisuallyHidden>{text.copyHidden({ componentName })}</VisuallyHidden>
               </Tooltip.Trigger>
               <Tooltip.Popup>
                 <Tooltip.Name>
                   {status === 'copied'
                     ? copyMessages.copied
-                    : `${text.copy}${text.copyHidden({ importName })}`}
+                    : `${text.copy}${text.copyHidden({ componentName })}`}
                 </Tooltip.Name>
               </Tooltip.Popup>
             </Tooltip.Root>
@@ -191,7 +191,7 @@ function IconTile({
           <code>{icon.name}</code>
         </h3>
         <p>
-          <code>{importName}</code>
+          <code>{componentName}</code>
         </p>
       </hgroup>
       <p>{icon.meaning}</p>

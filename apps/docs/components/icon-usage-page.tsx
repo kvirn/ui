@@ -13,45 +13,28 @@ export function IconUsagePage() {
       lead="Outline icons drawn for public-sector services. Each one is hidden from screen readers unless you give it a name."
       sections={[
         {
-          id: 'use-them',
-          label: 'How to use them',
+          id: 'use-an-icon',
+          label: 'Use an icon',
           content: (
             <>
               <p>
-                The icons are in the <code>@kvirn/icons</code> package. KvirnUI has no icons of its
-                own to fall back on: you import the ones you use, so you ship only those (your
-                bundle, the code you send to the browser). Pass an icon to the{' '}
-                <Link href="/components/icon">Icon</Link> component as <code>icon</code>, with or
-                without a <code>KvirnProvider</code>:
+                Every icon in the <code>@kvirn/icons</code> package is a React component, such as{' '}
+                <code>SearchIcon</code>. It works with or without KvirnUI, and in a Server Component
+                too. You import only the icons you use, so you ship only those (your bundle, the
+                code you send to the browser).
               </p>
               <CodeBlock
-                code={`import { search } from '@kvirn/icons'
+                code={`import { SearchIcon } from '@kvirn/icons/react'
 
-<Icon icon={search} />`}
+<SearchIcon />                  // decorative: hidden from screen readers
+<SearchIcon size={20} />
+<SearchIcon className="size-4" />
+<SearchIcon title="Search" />   // named: an image with an accessible name`}
               />
               <p>
                 The <Link href="/icons">icon gallery</Link> shows each name in kebab-case, such as{' '}
-                <code>chevron-down</code>. The import is the same name in camelCase, such as{' '}
-                <code>chevronDown</code>. Two names end in “Icon”, <code>deleteIcon</code> and{' '}
-                <code>newIcon</code>, because <code>delete</code> and <code>new</code> are reserved
-                words in JavaScript.
-              </p>
-              <p>
-                To use icons by name, register them once in <code>KvirnProvider</code>. You can also
-                register icons from Lucide or another set there.
-              </p>
-              <CodeBlock
-                code={`import { bus, cityHall } from '@kvirn/icons'
-
-const icons = defineIcons({ bus, 'city-hall': cityHall })
-
-<KvirnProvider icons={icons}>
-  <Icon name="bus" />
-</KvirnProvider>`}
-              />
-              <p>
-                <code>allIcons</code> from <code>@kvirn/icons/all</code> registers the whole set,
-                but it adds every icon to your bundle. Register only the ones you need.
+                <code>chevron-down</code>. The component is the same name in PascalCase with “Icon”
+                after it, such as <code>ChevronDownIcon</code>.
               </p>
               <ul>
                 <li>
@@ -59,18 +42,21 @@ const icons = defineIcons({ bus, 'city-hall': cityHall })
                   and leave the name out.
                 </li>
                 <li>
-                  Give it a <code>label</code> only when it stands alone and carries meaning. Then
-                  draw it at 20 pixels or larger: 16 pixels is for decoration only.
+                  Give it a <code>title</code> or <code>aria-label</code> only when it stands alone
+                  and carries meaning, and take the text from your app’s translations. Then draw it
+                  at 20 pixels or larger: 16 pixels is for decoration only.
                 </li>
                 <li>
-                  With the <code>Icon</code> component, icons that point along the reading direction
-                  flip in right-to-left text. The <Link href="/icons">icon gallery</Link> marks
-                  them.
+                  An icon that does something goes inside a <code>&lt;button&gt;</code> or{' '}
+                  <code>&lt;a&gt;</code>, and the name goes on that control, not on the icon.{' '}
+                  <code>tabIndex</code>, <code>onClick</code> and <code>aria-describedby</code> do
+                  not pass through to the icon for this reason. <code>size</code>,{' '}
+                  <code>className</code>, <code>title</code> and the other SVG props do.
                 </li>
                 <li>
                   Icons that stand alone, such as a status or a place, have a translated label. Get
                   it with <code>useIconLabel</code>; the <Link href="/icons">icon gallery</Link>{' '}
-                  marks them. See the <Link href="/components/icon">Icon</Link> page.
+                  marks them.
                 </li>
                 <li>
                   Variants such as <code>-add</code>, <code>-remove</code> and <code>-off</code>{' '}
@@ -85,42 +71,101 @@ const icons = defineIcons({ bus, 'city-hall': cityHall })
           ),
         },
         {
-          id: 'without-kvirnui',
-          label: 'Use them without KvirnUI',
+          id: 'with-kvirnui',
+          label: 'With KvirnUI’s theme',
           content: (
             <>
               <p>
-                The icons are free for any use, commercial and public-sector use included, under the
-                MIT licence. The package depends on nothing else. Each icon is plain drawing data,
-                so any app can use it. For React, <code>@kvirn/icons/react</code> has one component
-                per icon, such as <code>SearchIcon</code>, that works in a Server Component too
-                (React is the only thing it needs). Only the icons you import end up in your bundle.
-                Take <code>title</code> or <code>aria-label</code> from your app’s translations. An
-                icon that does something goes inside a <code>&lt;button&gt;</code> or{' '}
-                <code>&lt;a&gt;</code>, and the name goes on that control, not on the icon:
+                Inside KvirnUI, register the icons you use once in <code>KvirnProvider</code>, then
+                draw them by name with the <Link href="/components/icon">Icon</Link> component. The
+                name is a string, so it works in a Server Component too. A misspelt name is a type
+                error.
               </p>
               <CodeBlock
-                code={`import { SearchIcon } from '@kvirn/icons/react'
+                code={`import { arrowForward, search } from '@kvirn/icons'
 
-<SearchIcon />                  // decorative: hidden from screen readers
-<SearchIcon size={20} />
-<SearchIcon className="size-4" />
-<SearchIcon title="Search" />   // named: an image with an accessible name`}
+const icons = defineIcons({ search, 'arrow-forward': arrowForward })
+
+<KvirnProvider icons={icons}>
+  <Icon name="search" />
+  <Icon name="search" label="Search" size="24" variant="primary" />
+  <Icon name="arrow-forward" />
+</KvirnProvider>`}
               />
+              <p>
+                Icon adds the theme’s sizes (<code>size="24"</code>, which follows the reader’s own
+                text size), the colours <code>variant</code> picks, and a <code>label</code> that
+                names the icon. A directional icon, such as <code>arrow-forward</code>, flips in
+                right-to-left text by itself. You can also register icons from Lucide or another
+                set.
+              </p>
+              <p>
+                Register only the icons you need. <code>allIcons</code> from{' '}
+                <code>@kvirn/icons/all</code> registers the whole set, but it adds every icon to
+                your bundle.
+              </p>
+            </>
+          ),
+        },
+        {
+          id: 'colour-and-direction',
+          label: 'Colour and right-to-left',
+          content: (
+            <>
               <p>
                 Keep <code>currentColor</code>, the default, so the icon follows the text colour and
                 high-contrast modes. Do not hard-code a <code>fill</code> or <code>stroke</code>.
               </p>
               <p>
-                The icon components do not flip icons in right-to-left text. Each icon says whether
-                it should (<code>arrowForward.mirrorInRtl</code> from <code>@kvirn/icons</code>, and
-                the gallery above), and your code decides. A flip is one rule, for example{' '}
+                Icons that point along the reading direction should flip in right-to-left text. The{' '}
+                <Link href="/icons">icon gallery</Link> marks them, and each icon’s{' '}
+                <code>mirrorInRtl</code> says it (<code>arrowForward.mirrorInRtl</code> from{' '}
+                <code>@kvirn/icons</code>). Icons you register as data flip by themselves in{' '}
+                <code>Icon</code>. The bare icon components do not flip, so your code decides.
+              </p>
+              <p>
+                For a bare component, a flip is one rule, for example{' '}
                 <code>
                   .my-icon:dir(rtl) {'{'} transform: scaleX(-1) {'}'}
                 </code>
                 .
               </p>
             </>
+          ),
+        },
+        {
+          id: 'picked-at-runtime',
+          label: 'An icon picked at runtime',
+          content: (
+            <>
+              <p>
+                To draw an icon whose name you only know while the app runs, use{' '}
+                <code>SvgIcon</code> with <code>allIcons[name]</code> from{' '}
+                <code>@kvirn/icons/all</code>. That file holds every icon, so keep it for pickers
+                and galleries.
+              </p>
+              <CodeBlock
+                code={`import { allIcons, type LibraryIconName } from '@kvirn/icons/all'
+import { SvgIcon } from '@kvirn/icons/react'
+
+function PickedIcon({ name }: { name: LibraryIconName }) {
+  return <SvgIcon icon={allIcons[name]} />
+}`}
+              />
+            </>
+          ),
+        },
+        {
+          id: 'without-kvirnui',
+          label: 'Without KvirnUI or React',
+          content: (
+            <p>
+              The icons are free for any use, commercial and public-sector use included, under the
+              MIT licence, and the package depends on nothing else. Each icon is also plain drawing
+              data, such as <code>arrowForward.shapes</code> from <code>@kvirn/icons</code>, so any
+              framework can draw it. <code>@kvirn/icons/all</code> exports every icon and the list
+              of names, but it cannot be trimmed down to the icons you use.
+            </p>
           ),
         },
         {
