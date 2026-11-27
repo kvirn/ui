@@ -489,6 +489,7 @@ export const messages = {
       kvirnProvider: 'KvirnProvider',
       locales: 'Locales and strings',
       rendering: 'Rendering: server and client',
+      hooksAndUtilities: 'Hooks and utilities',
       componentGroups: {
         actions: 'Actions',
         content: 'Content',

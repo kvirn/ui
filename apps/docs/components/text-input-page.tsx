@@ -8,7 +8,12 @@ import { ExampleFrame } from './example-frame.tsx'
 import { Note } from './note.tsx'
 import { StringsBlock } from './strings-block.tsx'
 import { UseCase } from './use-case.tsx'
-import { textInputAttributes, textInputRows, useTextInputHook } from '../content/text-input.api.ts'
+import {
+  textInputAttributes,
+  textInputRows,
+  useMaskHook,
+  useTextInputHook,
+} from '../content/text-input.api.ts'
 import { Controlled } from '../examples/text-input/controlled.tsx'
 import { DefaultTextInput } from '../examples/text-input/default.tsx'
 import { InputTypes } from '../examples/text-input/input-types.tsx'
@@ -245,9 +250,9 @@ export function TextInputPage({
       contractSections={contractSectionList(contract)}
       api={
         <ApiBlock
-          importLine="import { TextInput, useTextInput } from '@kvirn/ui'"
+          importLine="import { TextInput, useTextInput, useMask } from '@kvirn/ui'"
           parts={parts}
-          hook={useTextInputHook}
+          hooks={[useTextInputHook, useMaskHook]}
           strings={
             <StringsBlock
               namespace="mask"

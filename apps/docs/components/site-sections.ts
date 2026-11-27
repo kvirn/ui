@@ -733,6 +733,7 @@ export const siteSections: readonly SiteSection[] = [
       { href: '/foundation/rendering', label: text.rendering },
       { href: '/foundation/theming', label: text.sections.theming },
       { href: '/foundation/icons', label: text.sections.icons },
+      { href: '/foundation/hooks-and-utilities', label: text.hooksAndUtilities },
     ],
   },
   {

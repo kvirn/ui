@@ -14,7 +14,9 @@ import {
   popoverRootRows,
   popoverTriggerAttributes,
   popoverTriggerRows,
+  useDismissableLayerHook,
   usePopoverHook,
+  usePopupHook,
 } from '../content/popover.api.ts'
 import { ApplicationRows } from '../examples/popover/application-rows.tsx'
 import { ControlledPopover } from '../examples/popover/controlled.tsx'
@@ -240,9 +242,9 @@ export function PopoverPage({
       contractSections={contractSectionList(contract)}
       api={
         <ApiBlock
-          importLine="import { Popover, usePopover } from '@kvirn/ui'"
+          importLine="import { Popover, usePopover, usePopup, useDismissableLayer } from '@kvirn/ui'"
           parts={parts}
-          hook={usePopoverHook}
+          hooks={[usePopoverHook, usePopupHook, useDismissableLayerHook]}
         />
       }
     />

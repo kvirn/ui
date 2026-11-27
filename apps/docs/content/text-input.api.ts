@@ -1,4 +1,10 @@
-import type { TextInputProps, UseTextInputOptions, UseTextInputResult } from '@kvirn/ui'
+import type {
+  TextInputProps,
+  UseMaskOptions,
+  UseMaskResult,
+  UseTextInputOptions,
+  UseTextInputResult,
+} from '@kvirn/ui'
 import { propRows } from '../components/api-block.tsx'
 import type { ApiHook, AttributeRow } from '../components/api-block.tsx'
 
@@ -115,6 +121,54 @@ export const useTextInputHook: ApiHook = {
       type: 'boolean',
       default: '–',
       description: 'Whether the input has keyboard focus.',
+    },
+  }),
+}
+
+export const useMaskHook: ApiHook = {
+  name: 'useMask',
+  intro:
+    'The mask of the mask prop, for your own <input>. It leaves out characters that do not fit, adds separators as the person types, and does not rewrite the text while an input method (such as a Japanese keyboard) is still composing it. The input stays native, so paste, autofill and undo keep working. It holds no value: the value lives in your form state or in the input. Spread inputProps through mergeProps, so your own props win, and write the format in a visible help text.',
+  options: propRows<UseMaskOptions>({
+    mask: {
+      type: 'MaskInput',
+      description:
+        'A name such as "postal-code" (the country comes from the provider), { preset, country? }, { pattern }, a RegExp that accepts partial values, or a mask from masks, such as masks.digits().',
+    },
+    onValueChange: {
+      type: '(value: string, details: TextInputChangeDetails) => void',
+      default: '–',
+      description:
+        'Called with the masked value on every change. details has reason, event, unmaskedValue, isComplete, isWithinRange (number masks) and rejected. It only reports.',
+    },
+    announceRejections: {
+      type: 'boolean',
+      default: 'true',
+      description:
+        'Announces politely, at most once every few seconds for each field, when the mask leaves out characters (4.1.3). Turn it off when you show your own message. Needs a KvirnProvider.',
+    },
+    messages: {
+      type: "Partial<KvirnMessages['mask']>",
+      default: '–',
+      description: 'Per-instance overrides for the rejection announcements.',
+    },
+  }),
+  result: propRows<UseMaskResult>({
+    inputProps: {
+      type: 'MaskInputPartProps',
+      default: '–',
+      description:
+        'Spread on the <input>: the suggested inputMode, autoCapitalize, spellCheck and dir, and the handlers and ref the mask needs. It never sets autocomplete.',
+    },
+    format: {
+      type: '(unmaskedValue: string) => string',
+      default: '–',
+      description: 'Writes a stored value the way the mask shows it, in the provider’s locale.',
+    },
+    unmask: {
+      type: '(value: string) => string',
+      default: '–',
+      description: 'Takes the separators out of a shown value, in the provider’s locale.',
     },
   }),
 }

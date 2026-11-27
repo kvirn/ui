@@ -171,7 +171,7 @@ export function TooltipPage({
             note={
               <Note kind="tip">
                 Tooltips share one delay for the whole page. Make a separate group with{' '}
-                <code>createTooltipGroup()</code> from <code>@kvirn/core</code> when a part of the
+                <code>createTooltipGroup()</code> from <code>@kvirn/ui</code> when a part of the
                 page should keep its own.
               </Note>
             }
