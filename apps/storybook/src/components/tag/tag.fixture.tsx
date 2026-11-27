@@ -204,6 +204,34 @@ export function StaticTags({ locale }: { locale: FormLocale }) {
   )
 }
 
+/** A locked tag beside removable ones. Clear all is rendered only while a tag can be cleared. */
+export function LockedAndRemovableTags({ locale }: { locale: FormLocale }) {
+  const { text } = tagTextsFor(locale)
+  const [chosen, setChosen] = useState(languages)
+  return (
+    <TagGroup.Root>
+      <TagGroup.Label>{text.groupLabel}</TagGroup.Label>
+      <TagGroup.List>
+        <Tag.Root>
+          <Tag.Label>{text.locked}</Tag.Label>
+        </Tag.Root>
+        {chosen.map((language) => (
+          <Tag.Root key={language}>
+            <Tag.Remove
+              onRemove={() => setChosen((current) => current.filter((l) => l !== language))}
+            >
+              {language}
+            </Tag.Remove>
+          </Tag.Root>
+        ))}
+      </TagGroup.List>
+      {chosen.length > 0 && (
+        <TagGroup.ClearAll onClear={() => setChosen([])}>{text.clearAll}</TagGroup.ClearAll>
+      )}
+    </TagGroup.Root>
+  )
+}
+
 /** The group with no tag: the list isn't rendered, the empty text is shown and Clear all is gone. */
 export function EmptyTags({ locale }: { locale: FormLocale }) {
   const { text } = tagTextsFor(locale)

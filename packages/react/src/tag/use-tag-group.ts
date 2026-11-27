@@ -103,11 +103,9 @@ export function useTagGroup({
       return
     }
     pending.current = undefined
-    // A removal the consumer refused leaves the buttons in place: nothing moves, nothing is said.
-    if (focus.buttons.some((button) => button.isConnected)) {
-      return
-    }
-    if (focus.buttons.length === 0) {
+    // A removal the consumer refused leaves every item in place: nothing moves, nothing is said.
+    // Clear all with a locked tag leaves that one in place, so one gone item is enough.
+    if (focus.buttons.every((button) => button.isConnected)) {
       return
     }
     if (focus.label !== undefined && announceRemoval) {
@@ -156,6 +154,7 @@ export function useTagGroup({
 
   const prepareClear = useCallback(() => {
     // The items, not the remove buttons: a list of static tags has none, and Clear all still goes.
+    // A locked tag may stay, so the check after the render asks whether any item went.
     pending.current = {
       buttons: [...(listElement.current?.children ?? [])] as HTMLElement[],
       target: undefined,

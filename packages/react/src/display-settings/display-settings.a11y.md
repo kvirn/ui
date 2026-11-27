@@ -33,7 +33,7 @@
 | ArrowUp, ArrowLeft    | on a radio                            | Moves to and selects the previous option in the group                                          | `display-settings.test.tsx › ArrowUp moves to and selects the previous radio`                                |
 | Escape                | in the open popup (floating, compact) | Closes the popup and returns focus to the button                                               | `display-settings.test.tsx › Enter opens a dialog named by the button, Escape closes it and focus returns`   |
 
-The inline panel has no Escape: it is in flow, not an overlay (`display-settings.test.tsx › Escape does not close it: the panel is in flow, not an overlay`). Opening a popup never moves focus (`display-settings.test.tsx › opening the popup does not move focus`).
+The inline panel has no Escape: it is in flow, not an overlay. Opening a popup never moves focus.
 
 ## Focus management
 
@@ -51,39 +51,60 @@ None. Choosing an option changes the page's appearance, which the user sees; it 
 - Message keys, in the `displaySettings` namespace: `displaySettings.button`, `colorSchemeLegend`, `colorSchemeLight`, `colorSchemeDark`, `colorSchemeSystem`, `contrastLegend`, `contrastStandard`, `contrastMore`, `contrastSystem`, `motionLegend`, `motionFull`, `motionReduce`, `motionSystem`, `forcedColors`, `systemShort`. Override per provider or with `messages` on the instance.
 - Using a panel on its own: put it in a container you name (a Card with a heading, a Popover or Dialog with `aria-label`). The panel has no trigger and no landmark.
 - Place it where a user looks for settings: the site header's masthead, or the footer.
-- Notes of your own (what less motion does, where the choice is kept) are children, after the groups. The pattern has none; the only note it shows is the forced-colours one, while forced colours are on.
+- Notes of your own (what less motion does, where the choice is kept) are children, after the groups. The component has none; the only note it shows is the forced-colours one, while forced colours are on.
 - The button's text is its name (2.5.3): override it with `messages.button`, never with an `aria-label`.
 - Wrap the app in `KvirnProvider`: the choices go through `useTheme()` and are kept by the provider in this browser only.
 
 ## Visual / modes
 
-- Inline: the panel is a Card in flow, on the content edge. Floating: the same Card in a popup of at most 40rem, with the popup shadow. Compact: a popup of at most 21rem, a row of segments per group; the radios are a transparent layer over their segment, so the browser's arrows, names and checked state stay. The checked segment is a primary fill and bolder, the ring is inset and `on-primary` on the checked one (the strip clips an outer ring); each segment is at least 32px high (2.5.8).
+- Inline: the panel is a card with an edge, in the page's flow. Floating: the same card in a popup, with a shadow that sets it off from the page. Compact: a narrower popup, a row of segments per group; the real radios sit invisibly over their segment, so the browser's arrows, names and checked state stay. The checked segment has a strong fill and bolder text, and its focus ring sits inside the segment, in a colour that stays readable on the fill; each segment is at least 32px high (2.5.8).
 - 320px: the three groups wrap into one column (1.4.10); the floating popup stays inside the viewport and scrolls when it is too tall.
-- forced-colors behaviour: the radios and the Card keep their system colours; the button keeps its `ButtonText` edge. A note says the device's colours replace the choices.
+- forced-colors behaviour: the radios and the card keep the system colours, and the button keeps a visible edge. A note says the device's colours replace the choices.
 - reduced-motion behaviour: nothing animates.
-- RTL: logical properties; the popup opens towards the inline end.
+- RTL: right-to-left languages mirror the layout; the popup opens below the button, aligned to the end of the line.
 
 ## WCAG SCs covered
 
-1.3.1, 1.4.1, 1.4.10, 1.4.11, 2.1.1, 2.4.3, 2.4.7, 2.4.11, 2.5.3, 3.2.2, 4.1.2.
+- 1.3.1 Info and Relationships (A)
+- 1.4.1 Use of Color (A)
+- 1.4.10 Reflow (AA)
+- 1.4.11 Non-text Contrast (AA)
+- 2.1.1 Keyboard (A)
+- 2.4.3 Focus Order (A)
+- 2.4.7 Focus Visible (AA)
+- 2.4.11 Focus Not Obscured (Minimum) (AA)
+- 2.5.3 Label in Name (A)
+- 2.5.8 Target Size (Minimum) (AA)
+- 3.2.2 On Input (A)
+- 4.1.2 Name, Role, Value (A)
 
 ## AT test record
 
-| AT + browser + OS                                                          | Agent check | Human check | Result  | Notes                                                                                                                |
-| -------------------------------------------------------------------------- | ----------- | ----------- | ------- | -------------------------------------------------------------------------------------------------------------------- |
-| **Automated (re-runnable tests)**                                          |             |             |         |                                                                                                                      |
-| axe, WCAG 2.2 A and AA, every story, light theme                           | pass        | n/a         | pass    | display-settings.stories.tsx, every story, light theme                                                               |
-| Markup and ARIA (roles, names, ids, states)                                | pass        | n/a         | pass    | `display-settings.test.tsx` (role, name and state): `the button is named by the message and controls a closed panel` |
-| Keyboard contract rows (Vitest browser)                                    | pass        | n/a         | pass    | 7 rows, each names a test in `display-settings.test.tsx`                                                             |
-| Focus order and management                                                 | pass        | n/a         | pass    | `display-settings.test.tsx`: `Enter opens the panel and Enter again closes it, and focus stays on the button`        |
-| Display modes (forced colours, 320px reflow, text spacing, reduced motion) | pass        | n/a         | pass    | the four sweep projects (`storybook-forced-colors`, `-reduced-motion`, `-reflow`, `-text-spacing`), run in CI        |
-| **Core (required for beta)**                                               |             |             |         |                                                                                                                      |
-| NVDA + Chrome + Windows                                                    | pending     | pending     | pending |                                                                                                                      |
-| VoiceOver + Safari + iOS                                                   | pending     | pending     | pending |                                                                                                                      |
-| **Release (before 1.0 and each minor)**                                    |             |             |         |                                                                                                                      |
-| JAWS + Chrome + Windows                                                    | pending     | pending     | pending |                                                                                                                      |
-| TalkBack + Chrome + Android                                                | pending     | pending     | pending |                                                                                                                      |
-| VoiceOver + Safari + macOS                                                 | pending     | pending     | pending |                                                                                                                      |
+| AT + browser + OS                                                          | Agent check | Human check | Result  | Notes                                                                                         |
+| -------------------------------------------------------------------------- | ----------- | ----------- | ------- | --------------------------------------------------------------------------------------------- |
+| **Automated (re-runnable tests)**                                          |             |             |         |                                                                                               |
+| axe, WCAG 2.2 A and AA, every story, light theme                           | pass        | n/a         | pass    | Every story, in the light theme                                                               |
+| Markup and ARIA (roles, names, ids, states)                                | pass        | n/a         | pass    | The button is named by its message and controls a closed panel; groups and options have names |
+| Keyboard contract rows (Vitest browser)                                    | pass        | n/a         | pass    | Every row in the Keyboard table has a named test                                              |
+| Focus order and management                                                 | pass        | n/a         | pass    | Opening never moves focus; Escape returns it to the button in a popup                         |
+| Display modes (forced colours, 320px reflow, text spacing, reduced motion) | pass        | n/a         | pass    | Swept in CI: forced colours, reduced motion, 320px reflow and text spacing                    |
+| **Core (required for beta)**                                               |             |             |         |                                                                                               |
+| NVDA + Chrome + Windows                                                    | pending     | pending     | pending |                                                                                               |
+| VoiceOver + Safari + iOS                                                   | pending     | pending     | pending |                                                                                               |
+| **Release (before 1.0 and each minor)**                                    |             |             |         |                                                                                               |
+| JAWS + Chrome + Windows                                                    | pending     | pending     | pending |                                                                                               |
+| TalkBack + Chrome + Android                                                | pending     | pending     | pending |                                                                                               |
+| VoiceOver + Safari + macOS                                                 | pending     | pending     | pending |                                                                                               |
+
+### What to check
+
+With the keyboard, and then a screen reader, try:
+
+1. Tab to the button and press Enter: the panel opens and focus stays on the button.
+2. Tab through the panel: each group is one stop.
+3. Use the arrow keys on a radio: the choice changes and takes effect at once.
+4. In Floating and Compact, press Escape: the popup closes and focus returns to the button.
+5. Turn on forced colours: the forced-colours note shows.
 
 ## Known issues
 

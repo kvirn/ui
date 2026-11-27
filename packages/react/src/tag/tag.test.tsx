@@ -308,6 +308,39 @@ describe('Tag keyboard', () => {
     expect(document.activeElement).toBe(label().element())
   })
 
+  test('Clear all with a locked tag removes the removable ones, then focuses the fallback', async () => {
+    function LockedFilters(): ReactElement {
+      const [tags, setTags] = useState(['Barn', 'Kultur'])
+      return (
+        <KvirnProvider>
+          <TagGroup.Root>
+            <TagGroup.Label>Selected filters</TagGroup.Label>
+            <TagGroup.List>
+              <Tag.Root>
+                <Tag.Label>Region: Scania</Tag.Label>
+              </Tag.Root>
+              {tags.map((tag) => (
+                <Tag.Root key={tag}>
+                  <Tag.Remove
+                    style={{ minBlockSize: '24px', minInlineSize: '24px' }}
+                    onRemove={() => setTags((current) => current.filter((t) => t !== tag))}
+                  >
+                    {tag}
+                  </Tag.Remove>
+                </Tag.Root>
+              ))}
+            </TagGroup.List>
+            <TagGroup.ClearAll style={{ minBlockSize: '24px' }} onClear={() => setTags([])} />
+          </TagGroup.Root>
+        </KvirnProvider>
+      )
+    }
+    await render(<LockedFilters />)
+    clearAll().element().focus()
+    await userEvent.keyboard('{Enter}')
+    expect(document.activeElement).toBe(label().element())
+  })
+
   test('Delete and Backspace on a remove button remove nothing', async () => {
     await render(<Filters />)
     removeButton('Kultur').element().focus()

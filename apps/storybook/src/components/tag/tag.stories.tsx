@@ -6,7 +6,14 @@ import { expect, userEvent, waitFor, within } from 'storybook/test'
 import { showSource, usageGuide } from '../../docs-source.ts'
 import { localeOf, withFormLocale } from '../form/form.fixture.tsx'
 import { expectNoHorizontalOverflow } from '../theme-story-assertions.ts'
-import { EmptyTags, FilterAList, LongTag, RemovableTags, StaticTags } from './tag.fixture.tsx'
+import {
+  EmptyTags,
+  FilterAList,
+  LockedAndRemovableTags,
+  LongTag,
+  RemovableTags,
+  StaticTags,
+} from './tag.fixture.tsx'
 
 // Components/Tag: a short fact in words, static or removable, and TagGroup, which moves focus
 // after a removal (contract: tag.a11y.md, design docs/design/tag-and-filters.md). A removable tag
@@ -47,6 +54,17 @@ export const Removable: Story = {
 export const Static: Story = {
   parameters: showSource('tag/tag.fixture.tsx', 'StaticTags'),
   render: (_args, { globals }) => <StaticTags locale={localeOf(globals)} />,
+}
+
+/** A locked tag stays when Clear all removes the rest, and Clear all is left out once only the locked tag remains. */
+export const LockedWithClearAll: Story = {
+  parameters: showSource('tag/tag.fixture.tsx', 'LockedAndRemovableTags'),
+  render: (_args, { globals }) => <LockedAndRemovableTags locale={localeOf(globals)} />,
+  play: async ({ canvas }) => {
+    await userEvent.click(canvas.getByRole('button', { name: /clear all/i }))
+    await expect(canvas.queryByRole('button', { name: /clear all/i })).toBeNull()
+    await expect(canvas.getAllByRole('listitem')).toHaveLength(1)
+  },
 }
 
 /** No tag: the list is gone, the empty text is shown and Clear all is not rendered. */

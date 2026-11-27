@@ -282,7 +282,8 @@ export function TagPage({ contract, sources }: { contract: Contract; sources: Ta
             keyboard: (
               <Note kind="tip">
                 Delete and Backspace do nothing on a tag, on purpose: a stray key must not remove
-                anything. Use Clear all when a person wants to remove every tag.
+                anything. Use Clear all when a person wants to remove every tag. Render it only
+                while a tag can be cleared: leave it out when only locked tags remain.
               </Note>
             ),
           }}
