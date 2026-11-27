@@ -9,6 +9,7 @@ import { resetDevWarnings } from '../dev/dev-warning.ts'
 import { KvirnProvider } from '../provider/kvirn-provider.tsx'
 import { Tag, TagGroup } from './tag.tsx'
 import type { TagGroupRootProps } from './tag.tsx'
+import { removeButtonAttribute, useTagGroup } from './use-tag-group.ts'
 
 // Contract: tag.a11y.md.
 
@@ -54,6 +55,44 @@ function Filters({
         <TagGroup.Empty>No filters selected</TagGroup.Empty>
         <TagGroup.ClearAll onClear={() => (refuse ? undefined : setTags([]))} />
       </TagGroup.Root>
+    </KvirnProvider>
+  )
+}
+
+function OwnMarkupGroup({ initial }: { initial: string[] }): ReactElement {
+  const [tags, setTags] = useState(initial)
+  const { labelId, labelRef, listRef, prepareRemoval } = useTagGroup()
+  return (
+    <>
+      <span id={labelId} ref={labelRef}>
+        Selected filters
+      </span>
+      <ul role="list" ref={listRef} aria-labelledby={labelId}>
+        {tags.map((tag) => (
+          <li key={tag}>
+            <button
+              type="button"
+              {...{ [removeButtonAttribute]: '' }}
+              aria-label={`Remove ${tag}`}
+              style={{ minBlockSize: '24px', minInlineSize: '24px' }}
+              onClick={(event) => {
+                prepareRemoval(event.currentTarget, tag)
+                setTags((current) => current.filter((t) => t !== tag))
+              }}
+            >
+              {tag}
+            </button>
+          </li>
+        ))}
+      </ul>
+    </>
+  )
+}
+
+function OwnMarkupFilters({ initial }: { initial: string[] }): ReactElement {
+  return (
+    <KvirnProvider>
+      <OwnMarkupGroup initial={initial} />
     </KvirnProvider>
   )
 }
@@ -276,6 +315,27 @@ describe('Tag keyboard', () => {
     await userEvent.keyboard('{Backspace}')
     expect(page.getByRole('listitem').elements()).toHaveLength(3)
     expect(document.activeElement).toBe(removeButton('Kultur').element())
+  })
+})
+
+describe('Tag group from the hook', () => {
+  test('Enter and Space remove the tag and focus the next remove button, in own markup', async () => {
+    await render(<OwnMarkupFilters initial={['Barn', 'Kultur', '2025']} />)
+    removeButton('Barn').element().focus()
+    await userEvent.keyboard('{Enter}')
+    expect(document.activeElement).toBe(removeButton('Kultur').element())
+    await userEvent.keyboard(' ')
+    expect(document.activeElement).toBe(removeButton('2025').element())
+    expect(page.getByRole('listitem').elements()).toHaveLength(1)
+    await expect.element(politeRegion()).toHaveTextContent('Kultur removed.')
+    expect(consoleWarn).not.toHaveBeenCalled()
+  })
+
+  test('removing the only tag focuses the fallback, never body, in own markup', async () => {
+    await render(<OwnMarkupFilters initial={['Barn']} />)
+    removeButton('Barn').element().focus()
+    await userEvent.keyboard('{Enter}')
+    expect(document.activeElement).toBe(label().element())
   })
 })
 

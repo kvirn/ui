@@ -36,11 +36,15 @@ import { Tag, TagGroup } from '@kvirn/ui'
 ```tsx
 import { useTagGroup } from '@kvirn/ui'
 
-const group = useTagGroup({ announceRemoval: false })
-<span id={group.labelId} ref={group.labelRef}>Selected filters</span>
-<ul role="list" ref={group.listRef} aria-labelledby={group.labelId}>…</ul>
-// In each remove button's onClick: group.prepareRemoval(event.currentTarget, 'Year: 2025'), then change your state.
-// Mark the button with data-kv-tag-remove so the group finds it.
+const { labelId, labelRef, listRef, prepareRemoval } = useTagGroup({ announceRemoval: false })
+<span id={labelId} ref={labelRef}>Selected filters</span>
+<ul role="list" ref={listRef} aria-labelledby={labelId}>…</ul>
+// The name keeps the visible text (2.5.3) and adds the action: your own "Remove {label}" string.
+<button type="button" data-kv-tag-remove aria-label="Remove Year: 2025" onClick={(event) => {
+  prepareRemoval(event.currentTarget, 'Year: 2025')
+  removeFilter('Year: 2025') // change your state in the same event
+}}>Year: 2025</button>
+// data-kv-tag-remove is what Tag.Remove renders: the group finds the remove buttons by it.
 ```
 
 ## Recipe: filter a list

@@ -549,15 +549,19 @@ describe('Map marker content', () => {
     expect(marker().element().querySelector('svg')).toBeNull()
   })
 
-  test('mapIcons lists the marker and the control icons, frozen', () => {
+  test('mapIcons lists exactly the icons the Map draws, frozen', () => {
     expect(Object.keys(mapIcons)).toEqual([
       'marker',
-      'locate',
+      'add',
       'remove',
       'arrow-north',
       'arrow-south',
       'arrow-west',
       'arrow-east',
+      'close',
+      'chevron-down',
+      'error',
+      'info',
     ])
     expect(Object.isFrozen(mapIcons)).toBe(true)
   })
@@ -886,6 +890,22 @@ describe('Map controls registered icons', () => {
     )
     expect(button('Zoom in').element().querySelector('[data-testid="replacement"]')).not.toBeNull()
     expect(button('Zoom out').element().querySelector('[data-testid="replacement"]')).toBeNull()
+  })
+
+  test('a registered marker replaces the default pin on a place', async () => {
+    const Replacement = (props: ComponentProps<'svg'>) => (
+      <svg {...props} data-testid="replacement" />
+    )
+    await render(
+      <KeyboardCase
+        provider={createMemoryProvider()}
+        places={placesEast(1, 0)}
+        markers
+        icons={{ marker: Replacement }}
+      />,
+    )
+    await expect.element(place(0)).toBeVisible()
+    expect(place(0).element().querySelector('[data-testid="replacement"]')).not.toBeNull()
   })
 })
 

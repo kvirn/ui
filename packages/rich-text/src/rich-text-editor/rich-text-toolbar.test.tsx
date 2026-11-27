@@ -1,9 +1,9 @@
 // kv-lang-ok-file: the tests run on the Swedish catalog and assert its built-in strings
-import { Field, KvirnProvider } from '@kvirn/ui'
+import { defineIcons, Field, KvirnProvider } from '@kvirn/ui'
 import { sv } from '@kvirn/i18n/sv'
 import { readAloud, readAnnouncements } from '@kvirn/testing/read-aloud'
 import { Mark } from '@tiptap/core'
-import type { ReactNode } from 'react'
+import type { ReactNode, SVGProps } from 'react'
 import { afterEach, beforeEach, describe, expect, test, vi } from 'vite-plus/test'
 import type { MockInstance } from 'vite-plus/test'
 import { page, userEvent } from 'vite-plus/test/browser'
@@ -1150,6 +1150,68 @@ describe('richTextIconNames', () => {
     for (const name of richTextIconNames) {
       const { container } = await render(<ToolbarIcon name={name} />)
       expect(container.querySelectorAll('svg path').length).toBeGreaterThan(0)
+    }
+  })
+
+  test('a registered name swaps a toolbar icon', async () => {
+    const Swapped = (props: SVGProps<SVGSVGElement>) => (
+      <svg data-testid="swapped-bold" {...props}>
+        <path d="M1 1h2" />
+      </svg>
+    )
+    await render(
+      <KvirnProvider locale="sv" messages={sv} icons={defineIcons({ bold: Swapped })}>
+        <RichTextEditor.Root name="description">
+          <RichTextEditor.Toolbar />
+          <RichTextEditor.Content />
+        </RichTextEditor.Root>
+      </KvirnProvider>,
+    )
+    const swapped = document.querySelector('[data-testid="swapped-bold"]')
+    expect(swapped).not.toBeNull()
+    expect(swapped?.closest('button')?.getAttribute('aria-label')).toBe('Fetstil')
+  })
+
+  test('the icons stay decorative', async () => {
+    const { container } = await render(<ToolbarIcon name="bold" />)
+    const svg = container.querySelector('svg')
+    expect(svg?.getAttribute('aria-hidden')).toBe('true')
+    expect(svg?.hasAttribute('role')).toBe(false)
+  })
+
+  test('the paths route still draws your own icon', async () => {
+    const { container } = await render(<ToolbarIcon paths={['M2 2h20']} />)
+    expect(container.querySelector('svg path')?.getAttribute('d')).toBe('M2 2h20')
+    expect(container.querySelector('svg')?.getAttribute('aria-hidden')).toBe('true')
+  })
+
+  test('right to left: the directional toolbar icons carry data-mirror-in-rtl, bold does not', async () => {
+    const Plain = (props: SVGProps<SVGSVGElement>) => (
+      <svg {...props}>
+        <path d="M1 1h2" />
+      </svg>
+    )
+    const directional = [
+      'undo',
+      'redo',
+      'bullet-list',
+      'numbered-list',
+      'indent',
+      'outdent',
+    ] as const
+    for (const icons of [undefined, defineIcons({ undo: Plain })]) {
+      const { container, unmount } = await render(
+        <KvirnProvider icons={icons}>
+          {directional.map((name) => (
+            <ToolbarIcon key={name} name={name} />
+          ))}
+          <ToolbarIcon name="bold" />
+        </KvirnProvider>,
+      )
+      const svgs = [...container.querySelectorAll('svg')]
+      expect(svgs.slice(0, -1).every((svg) => svg.hasAttribute('data-mirror-in-rtl'))).toBe(true)
+      expect(svgs.at(-1)?.hasAttribute('data-mirror-in-rtl')).toBe(false)
+      await unmount()
     }
   })
 })

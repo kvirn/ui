@@ -22,6 +22,7 @@ import {
 } from '@kvirn/icons'
 import type { IconData } from '@kvirn/icons'
 import { SvgIcon } from '@kvirn/icons/react'
+import { LibraryIcon } from '@kvirn/ui/internal'
 import type { ReactElement } from 'react'
 
 const icons = {
@@ -67,22 +68,23 @@ const noShapes: IconData = { shapes: [] }
 /**
  * A decorative icon for a toolbar control: an `<svg aria-hidden>` that takes the control's text
  * colour (`currentColor`) and a 20px size in rem, so it follows 200% zoom. The control
- * has its own name, so the icon is never the only label.
+ * has its own name, so the icon is never the only label. A built-in name draws the app's
+ * registered icon of that name when there is one.
  */
 export function ToolbarIcon({ name, paths, mirrorInRtl }: ToolbarIconProps): ReactElement {
+  if (paths === undefined && name !== undefined) {
+    return <LibraryIcon name={name} icon={icons[name]} size="20" mirrorInRtl={mirrorInRtl} />
+  }
   const data: IconData =
     paths === undefined
-      ? name === undefined
-        ? noShapes
-        : icons[name]
+      ? noShapes
       : { shapes: paths.map((pathData) => ['path', { d: pathData }] as const) }
-  const isMirrored = mirrorInRtl ?? (paths === undefined && data.mirrorInRtl === true)
   return (
     <SvgIcon
       icon={data}
       size="1.25rem"
       className="kv-icon kv-icon--size-20"
-      {...(isMirrored ? { 'data-mirror-in-rtl': '' } : {})}
+      {...(mirrorInRtl === true ? { 'data-mirror-in-rtl': '' } : {})}
     />
   )
 }
